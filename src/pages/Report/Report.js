@@ -11,7 +11,7 @@ const Report = () => {
   const { t } = useTranslation();
   const [fullName, setFullName] = useState(localStorage.getItem('userName') || "Friend");
   const [userID, setUserID] = useState(null);
-  const [avatarUrl, setAvatarUrl] = useState(null); // ✅ NEW STATE
+  const [avatarUrl, setAvatarUrl] = useState(null);
 
   // ✅ HELPER: Download Image
   const downloadImage = async (path) => {
@@ -37,7 +37,6 @@ const Report = () => {
         setUserID(session.user.id); 
         
         try {
-          // ✅ Fetch avatar_url too
           const { data, error } = await supabase
             .from('profiles')
             .select('first_name, last_name, avatar_url')
@@ -51,7 +50,7 @@ const Report = () => {
                  if (data.first_name) localStorage.setItem('userName', data.first_name);
              }
              if (data.avatar_url) {
-                 downloadImage(data.avatar_url); // ✅ Call helper
+                 downloadImage(data.avatar_url);
              }
           }
         } catch (error) {
@@ -63,8 +62,9 @@ const Report = () => {
     fetchUserData();
   }, []);
 
-  // URL Configuration
-  const backendUrl = "http://127.0.0.1:5050"; 
+  // ✅ UPDATED: URL Configuration for Production
+  // This uses your Vercel environment variable to point to Render instead of your local machine.
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:5050"; 
   const qrValue = userID ? `${backendUrl}/api/report/pdf/${userID}` : "";
 
   return (
@@ -94,7 +94,6 @@ const Report = () => {
 
            {/* Profile Pill */}
            <div className="profile-pill-large">
-              {/* ✅ UPDATE: Profile Icon / Image */}
               <div className="profile-icon-circle-large" style={{ overflow: 'hidden', padding: 0 }}>
                  {avatarUrl ? (
                     <img 
@@ -138,6 +137,9 @@ const Report = () => {
 
            {/* DOWNLOAD BUTTON */}
            <div style={{ marginTop: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                {/* If the QR code and button link still show a double slash (//), 
+                   ensure REACT_APP_BACKEND_URL in Vercel settings doesn't end with a "/"
+                */}
                 <a href={qrValue} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
                     <button style={{
                         display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 25px',
