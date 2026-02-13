@@ -1,7 +1,10 @@
 {
   "version": 2,
-  "outputDirectory": "build", 
+  "outputDirectory": "build",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
