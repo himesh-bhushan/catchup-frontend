@@ -56,7 +56,7 @@ const Dashboard = () => {
     
     // Ensure REACT_APP_GOOGLE_CLIENT_ID is set in Vercel
     const clientID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-    const redirectURI = encodeURIComponent("https://catchup-backend-6bpf.onrender.com/api/auth/google/callback");
+    const redirectURI = encodeURIComponent("https://backend.catchup.page/api/auth/google/callback");
     const state = user.id; // Passing user ID to backend via state
     
     const scope = encodeURIComponent(
