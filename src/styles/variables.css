@@ -1,0 +1,24 @@
+:root {
+  /* Colors extracted from your PDF */
+  --primary-red: #FF4B4B;    /* The Tomato Red */
+  --primary-green: #00A86B;  /* The Cape Green */
+  --bg-cream: #FFF9F0;       /* The Background color */
+  --text-dark: #333333;
+  --text-gray: #888888;
+  --card-white: #FFFFFF;
+  
+  /* Spacing */
+  --mobile-padding: 20px;
+  
+  /* Border Radius */
+  --radius-button: 30px;
+  --radius-card: 20px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif; /* You can import this font from Google Fonts */
+  background-color: var(--bg-cream);
+  color: var(--text-dark);
+}

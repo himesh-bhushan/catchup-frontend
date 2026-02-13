@@ -1,0 +1,58 @@
+/* Fixed Bar at the Top */
+.medical-id-sticky-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #FF3B30; /* Emergency Red */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000; /* On top of EVERYTHING */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  font-family: 'Poppins', sans-serif;
+}
+
+.medical-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.med-label {
+  font-weight: 400;
+  opacity: 0.9;
+  font-size: 0.75rem;
+}
+
+.med-divider {
+  opacity: 0.5;
+  margin: 0 5px;
+}
+
+.medical-icon-pulse {
+  margin-right: 15px;
+  font-size: 1.2rem;
+  animation: medPulse 2s infinite;
+}
+
+@keyframes medPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.animate-slide-down {
+  animation: slideDownBar 0.3s ease-out;
+}
+
+@keyframes slideDownBar {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+/* Adjust main app layout if bar is visible to prevent overlap */
+/* You might not need this if your nav is sticky, but good to keep in mind */

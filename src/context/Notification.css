@@ -1,0 +1,42 @@
+.notification-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--card-bg); /* Themed Background */
+  color: var(--text-primary);       /* Themed Text */
+  border: 1px solid var(--border-color);
+  
+  padding: 12px 25px;
+  border-radius: 50px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 9999;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  min-width: 300px;
+  justify-content: center;
+}
+
+/* Status Borders for extra clarity */
+.notification-toast.success { border-bottom: 3px solid #4CD964; }
+.notification-toast.error   { border-bottom: 3px solid #FF3B30; }
+.notification-toast.info    { border-bottom: 3px solid #007bff; }
+
+.toast-message {
+  white-space: nowrap;
+}
+
+/* Animation */
+.animate-slide-in {
+  animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translate(-50%, -20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}

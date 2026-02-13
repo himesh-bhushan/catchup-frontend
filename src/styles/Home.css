@@ -1,0 +1,164 @@
+/* Container padding */
+.dashboard-container {
+  padding: 30px;
+  max-width: 1200px; /* Limits width on big desktops */
+  margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Header */
+.dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.dash-header h1 {
+  font-size: 24px;
+  margin: 0;
+  color: #333;
+}
+
+.dash-header p {
+  margin: 0;
+  color: #888;
+}
+
+.profile-icon {
+  width: 50px;
+  height: 50px;
+  background-color: #eee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Score Section */
+.score-section {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.score-circle-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.score-content {
+  position: absolute;
+  text-align: center;
+}
+
+.tomato-avatar {
+  font-size: 50px;
+}
+
+.progress-ring__circle {
+  transition: stroke-dashoffset 0.35s;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  stroke-linecap: round;
+}
+
+.score-number {
+  font-size: 40px;
+  font-weight: 700;
+  color: #333;
+}
+
+.score-number span {
+  font-size: 14px;
+  color: #888;
+  font-weight: 400;
+}
+
+/* --- STATS GRID (The Responsive Part) --- */
+.stats-grid {
+  display: grid;
+  /* Mobile Default: 1 column */
+  grid-template-columns: 1fr; 
+  gap: 20px;
+}
+
+.stat-card {
+  border-radius: 20px;
+  padding: 25px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 140px; /* Fixed height for consistency */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Individual Card Colors [cite: 398-402] */
+.stat-card.heart { background-color: #FF3B30; } /* Red */
+.stat-card.sleep { background-color: #FF9500; } /* Orange */
+.stat-card.calories { background-color: #FFCC00; color: #333; } /* Yellow */
+.stat-card.water { background-color: #5856D6; } /* Blue/Purple */
+
+.stat-info h3 {
+  font-size: 16px;
+  margin: 0 0 5px 0;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.stat-info p {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.stat-info span {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.icon-wrapper {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+/* --- DESKTOP & TABLET MEDIA QUERIES --- */
+
+/* Tablet (2 columns) */
+@media (min-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr; /* 2 cards per row */
+  }
+}
+
+/* Desktop (Side-by-Side Layout) */
+@media (min-width: 1024px) {
+  .dashboard-container {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
+
+  .score-section {
+    flex: 1; /* Takes up 1/3 of space */
+    height: 400px; /* Taller on desktop */
+  }
+
+  .stats-grid {
+    flex: 2; /* Takes up 2/3 of space */
+    grid-template-columns: 1fr 1fr; /* Keep 2x2 grid for cards */
+  }
+}

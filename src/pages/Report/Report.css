@@ -1,0 +1,138 @@
+/* =========================================
+   1. GLOBAL PAGE LAYOUT
+========================================= */
+* { box-sizing: border-box; }
+
+.report-page-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  font-family: 'Poppins', sans-serif;
+  margin: 0; padding: 0;
+  overflow: hidden;
+  
+  /* ✅ CHANGED */
+  background-color: var(--bg-color); 
+  position: relative;
+}
+
+.share-health-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+/* =========================================
+   2. LEFT SECTION (Themed Background)
+========================================= */
+.share-left-section {
+  flex: 1;
+  /* ✅ CHANGED */
+  background-color: var(--bg-color); 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 40px;
+}
+
+.instructions-container {
+  display: flex; flex-direction: column; align-items: center;
+  width: 100%; max-width: 550px;
+}
+
+.sticky-note {
+  background-color: #FDE68A; /* Keep Yellow */
+  padding: 40px 30px; padding-bottom: 60px;
+  width: 100%; max-width: 420px; min-height: 280px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transform: rotate(-3deg); margin-bottom: 0;
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; justify-content: center;
+}
+
+.sticky-note h2 {
+  font-size: 28px; font-weight: 800; color: #000; /* Keep Black */
+  text-align: center; line-height: 1.2; margin-bottom: 25px;
+}
+
+.steps-list { display: block; }
+.steps-list p { font-size: 15px; color: #111; line-height: 1.6; margin-bottom: 12px; font-weight: 500; }
+
+.character-illustration { margin-top: -50px; z-index: 3; position: relative; }
+.tomato-img { width: 320px; height: auto; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.15)); object-fit: contain; transform: rotate(-3deg); }
+
+
+/* =========================================
+   3. RIGHT SECTION (Red - Brand Color)
+========================================= */
+.share-right-section {
+  flex: 1;
+  background-color: #EF4444; /* Keep Red */
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+
+.profile-pill-large {
+  display: flex; align-items: center; gap: 20px; margin-bottom: 40px;
+}
+
+.profile-icon-circle-large {
+  width: 70px; height: 70px;
+  background-color: var(--card-bg); /* ✅ Updated */
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.profile-text-large { display: flex; flex-direction: column; color: #fff; /* Keep White on Red */ }
+.profile-text-large h3 { margin: 0; font-size: 32px; font-weight: 700; }
+.profile-text-large span { font-size: 16px; opacity: 0.9; font-weight: 400; }
+
+.qr-card-large {
+  background-color: var(--card-bg); /* ✅ Updated */
+  border-radius: 40px; padding: 40px;
+  width: 380px; height: 380px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+.qr-svg { width: 100%; height: 100%; }
+
+
+/* =========================================
+   4. MOBILE ADJUSTMENTS
+========================================= */
+@media (max-width: 1024px) {
+
+  .report-page-container {
+    flex-direction: column; height: auto; overflow-y: scroll;
+    background-color: #EF4444; 
+  }
+
+  .share-health-wrapper { flex-direction: column; height: auto; }
+
+  .share-left-section {
+    min-height: 45vh; padding: 60px 20px 40px 20px; justify-content: flex-end; z-index: 1;
+    background-color: var(--bg-color); /* ✅ Updated */
+  }
+
+  .sticky-note { max-width: 320px; min-height: auto; padding: 30px 20px 40px 20px; margin-bottom: 0; }
+  .sticky-note h2 { font-size: 22px; margin-bottom: 0; }
+  .steps-list { display: none; }
+  .character-illustration { margin-top: -25px; }
+  .tomato-img { width: 280px; } 
+
+  .share-right-section {
+    padding: 50px 20px 110px 20px;
+    border-top-left-radius: 40px; border-top-right-radius: 40px;
+    margin-top: -180px; position: relative; z-index: 10;
+  }
+  
+  .profile-pill-large { margin-bottom: 20px; }
+  .profile-text-large h3 { font-size: 24px; }
+  .profile-text-large span { white-space: nowrap; font-size: 14px; }
+  .qr-card-large { width: 280px; height: 280px; }
+}

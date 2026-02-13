@@ -1,0 +1,71 @@
+/* --- 1. LIGHT THEME (Default) --- */
+:root, .theme-light {
+  --bg-app: #FFF9E6;        /* Cream background */
+  --bg-card: #FFFFFF;       /* White cards */
+  --text-main: #000000;
+  --text-secondary: #666666;
+  --border-color: #f0f0f0;
+  --accent-color: #FF4D4D;  /* Tomato Red */
+  --input-bg: #FFFFFF;
+}
+
+/* --- 2. DARK THEME --- */
+.theme-dark {
+  --bg-app: #121212;        /* Dark Gray Background */
+  --bg-card: #1E1E1E;       /* Slightly Lighter Cards */
+  --text-main: #E0E0E0;     /* White/Grey Text */
+  --text-secondary: #A0A0A0;
+  --border-color: #333333;
+  --accent-color: #FF6B6B;  /* Softer Red */
+  --input-bg: #2C2C2C;
+}
+
+/* --- 3. HIGH CONTRAST THEME --- */
+.theme-contrast {
+  --bg-app: #000000;        /* Pure Black */
+  --bg-card: #000000;       /* Pure Black */
+  --text-main: #FFFF00;     /* Yellow Text */
+  --text-secondary: #00FF00; /* Green Text */
+  --border-color: #FFFFFF;  /* White Borders */
+  --accent-color: #FFFF00;
+  --input-bg: #000000;
+}
+
+/* --- GLOBAL OVERRIDES --- */
+/* We use !important to override existing hardcoded styles */
+
+body {
+  background-color: var(--bg-app) !important;
+  color: var(--text-main) !important;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Update all cards and containers */
+.content-card, .profile-menu-side, .dashboard-content, .signup-container, 
+.details-form, .messages-container, .input-area, .sidebar {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Update Inputs and Forms */
+input, select, textarea, .custom-input {
+  background-color: var(--input-bg) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Specific text fixes */
+h1, h2, h3, h4, h5, h6, strong, label {
+  color: var(--text-main) !important;
+}
+.profile-value, p, span {
+  color: var(--text-secondary);
+}
+
+/* High Contrast Specifics: Add borders to everything */
+.theme-contrast .content-card, 
+.theme-contrast input, 
+.theme-contrast button {
+  border: 2px solid white !important;
+}

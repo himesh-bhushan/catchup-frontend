@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+
+/* Main Wrapper that holds both sides */
+.signin-page-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #fff;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* --- LEFT SIDE (Hero) --- */
+/* Default: Hidden on Mobile */
+.signin-hero-side {
+  display: none; 
+}
+
+/* --- RIGHT SIDE (Form) --- */
+.signin-form-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.signin-container {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  height: 100vh; /* Full height on mobile */
+  box-sizing: border-box;
+  justify-content: space-between; /* Spreads content out on mobile */
+}
+
+/* Mobile: Top Bar & Back Button */
+.top-bar {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+}
+
+/* Header Text */
+.header-section {
+  margin-bottom: 30px;
+}
+
+.header-section h1 {
+  color: #FF3B30;
+  font-size: 40px;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+}
+
+.header-section p {
+  color: #333;
+  font-size: 20px;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Inputs */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  position: relative;
+}
+
+.custom-input {
+  width: 100%;
+  padding: 18px 20px;
+  border-radius: 15px;
+  border: 1px solid #E0E0E0;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  box-sizing: border-box;
+  background-color: #fff; /* White background like design */
+}
+
+.custom-input:focus {
+  border-color: #FF3B30;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #B0B0B0;
+  cursor: pointer;
+  display: flex;
+}
+
+/* Forgot Password */
+.forgot-password-container {
+  text-align: right; /* Aligned right typically */
+  margin-top: 5px;
+}
+
+.forgot-password-btn {
+  background: none;
+  border: none;
+  color: #B0B0B0;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Footer & Buttons */
+.footer-section {
+  margin-top: auto;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.btn-signin-large {
+  width: 100%;
+  padding: 18px 0;
+  background-color: #FF3B30;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(255, 59, 48, 0.2);
+}
+
+.signup-link {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #888;
+}
+
+.signup-link span {
+  color: #5856D6; /* Blue-ish color for link */
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* --- DESKTOP STYLES (Split Screen) --- */
+@media (min-width: 1024px) {
+  
+  /* Show the Yellow Hero Side */
+  .signin-hero-side {
+    display: flex;
+    flex: 1; /* Takes 50% width */
+    background-color: #FFF9C4; /* The Light Yellow from screenshot */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .signin-hero-side h1 {
+    color: #FF3B30;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 30px;
+  }
+
+  .signin-hero-side img {
+    width: 60%;
+    max-width: 400px;
+    object-fit: contain;
+  }
+
+  /* Adjust Form Side for Desktop */
+  .signin-form-side {
+    flex: 1; /* Takes remaining 50% width */
+    background-color: #ffffff;
+    align-items: center; /* Center form horizontally */
+  }
+
+  .signin-container {
+    width: 100%;
+    max-width: 480px; /* Limit form width so it doesn't stretch */
+    height: auto; /* Let content dictate height */
+    justify-content: center;
+    padding: 0;
+  }
+
+  /* Hide the mobile Top Bar on desktop if you want a cleaner look */
+  .top-bar {
+    display: none; 
+  }
+  
+  .footer-section {
+    margin-top: 40px;
+  }
+}

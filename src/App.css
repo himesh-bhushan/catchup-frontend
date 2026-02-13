@@ -1,0 +1,70 @@
+/* src/App.css */
+
+/* 1. Global Reset */
+.app-container {
+  min-height: 100vh;
+  background-color: #ffffff;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevents accidental side scrolling */
+}
+
+/* 2. DESKTOP TWEAKS */
+@media (min-width: 768px) {
+  body {
+    /* REMOVED: display: flex, justify-content: center */
+    /* This allows the app to fill the whole browser window */
+    background-color: #ffffff;
+    margin: 0;
+  }
+
+  .app-container {
+    width: 100%;
+    max-width: none;  /* REMOVED the "Phone Width" limit */
+    box-shadow: none; /* REMOVED the shadow box */
+    margin: 0;
+  }
+}
+
+
+
+
+
+
+/* --- 1. DEFAULT (LIGHT) THEME --- */
+:root {
+  --bg-color: #f8f9fa;       /* Light Grey Background */
+  --card-bg: #ffffff;        /* White Cards */
+  --text-primary: #333333;   /* Dark Text */
+  --text-secondary: #666666; /* Grey Text */
+  --accent-color: #007bff;   /* Blue Buttons */
+  --border-color: #eeeeee;
+}
+
+/* --- 2. DARK MODE --- */
+[data-theme="dark"] {
+  --bg-color: #121212;       /* Very Dark Grey */
+  --card-bg: #1e1e1e;        /* Dark Grey Cards */
+  --text-primary: #ffffff;   /* White Text */
+  --text-secondary: #aaaaaa; /* Light Grey Text */
+  --accent-color: #4dabf7;   /* Lighter Blue */
+  --border-color: #333333;
+}
+
+/* --- 3. HIGH CONTRAST (Accessibility) --- */
+[data-theme="contrast"] {
+  --bg-color: #000000;       /* Pure Black */
+  --card-bg: #000000;        /* Pure Black */
+  --text-primary: #ffff00;   /* Yellow Text */
+  --text-secondary: #00ff00; /* Green Text */
+  --accent-color: #00ffff;   /* Cyan Buttons */
+  --border-color: #ffffff;   /* White Borders */
+}
+
+/* --- 4. APPLY VARIABLES GLOBALLY --- */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s; /* Smooth Transition */
+}

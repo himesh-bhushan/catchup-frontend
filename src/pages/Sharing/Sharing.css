@@ -1,0 +1,283 @@
+/* =========================================
+   1. GLOBAL PAGE SETUP
+========================================= */
+* {
+  box-sizing: border-box;
+}
+
+.sharing-page-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(180deg, #F2A892 0%, #F5CBA9 100%);
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 90;
+  overflow: hidden;
+}
+
+.pixel-font {
+  font-family: 'Courier New', Courier, monospace; 
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+/* =========================================
+   2. MAIN CONTAINER
+========================================= */
+.content-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column; 
+  padding-bottom: 80px; 
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all 0.5s ease;
+}
+
+/* =========================================
+   3. HEADER SECTION
+========================================= */
+.ranking-header-container {
+  display: flex;
+  align-items: center; 
+  width: 100%;
+  margin-top: 30px; 
+  margin-bottom: 40px; 
+  padding: 0; 
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.header-search-wrapper {
+  flex-grow: 1; 
+  display: flex;
+  min-width: 0; 
+}
+
+.header-search-wrapper input {
+  width: 100%;
+  padding: 12px 20px; 
+  border-radius: 40px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.45); 
+  font-size: 15px;
+  outline: none;
+  color: #333;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+}
+
+.header-action-btn {
+  margin-left: 15px; 
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; 
+}
+
+.icon-btn {
+  background: none; border: none; padding: 0; cursor: pointer; color: #000;
+  display: flex; align-items: flex-start;
+  transition: transform 0.2s;
+}
+.icon-btn:hover { transform: scale(1.1); }
+
+.plus-badge { font-weight: bold; font-size: 20px; margin-left: -5px; }
+
+
+/* =========================================
+   4. RANKING SECTION (Left)
+========================================= */
+.ranking-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px; 
+  width: 100%;
+}
+
+.podium-area {
+  display: flex; justify-content: center; align-items: flex-end;
+  gap: 15px; 
+  margin-bottom: 30px; 
+  margin-top: 0px;
+}
+.podium-card { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.rank-1 { order: 2; margin-bottom: 30px; }
+.rank-2 { order: 1; }
+.rank-3 { order: 3; }
+
+.podium-visual { position: relative; display: flex; flex-direction: column; align-items: center; }
+.avatar-circle {
+  width: 60px; height: 60px; 
+  background-color: #fff; border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border: 3px solid rgba(255,255,255,0.3);
+}
+.rank-1 .avatar-circle { width: 85px; height: 85px; }
+.crown-icon {
+  color: #FBC02D; font-size: 28px; position: absolute; top: -35px; z-index: 2;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+}
+.rank-label {
+  font-weight: 800; color: #fff; font-size: 14px; margin-bottom: 5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.score-text { color: #D32F2F; font-size: 16px; display: block; margin-top: 5px; }
+.rank-1 .score-text { font-size: 20px; }
+.handle-text { font-size: 11px; color: #5D4037; opacity: 0.8; }
+
+.ranking-list {
+  display: flex; flex-direction: column; gap: 12px; 
+  width: 100%; 
+  max-width: 1000px; 
+  margin: 0 auto;
+}
+.list-card {
+  background-color: #E65100;
+  background: linear-gradient(90deg, #E65100 0%, #EF6C00 100%);
+  border-radius: 16px; padding: 15px 20px;
+  display: flex; align-items: center; color: #fff;
+  box-shadow: 0 5px 15px rgba(230, 81, 0, 0.2);
+}
+.list-rank-col { display: flex; flex-direction: column; align-items: center; width: 30px; margin-right: 15px; }
+.rank-num { font-weight: 800; font-size: 13px; line-height: 1; }
+.rank-arrow { color: #B2FF59; font-size: 10px; margin-top: 3px; }
+.list-avatar { width: 35px; height: 35px; background-color: #fff; border-radius: 50%; margin-right: 15px; }
+.list-handle { flex: 1; font-size: 14px; font-weight: 600; }
+.list-score { font-size: 18px; }
+
+
+/* =========================================
+   5. SHARING CARD (Right)
+========================================= */
+.sharing-section {
+  flex: 1; display: flex; flex-direction: column; padding: 20px;
+}
+.mobile-sharing-nav { margin-top: 40px; margin-bottom: 20px; }
+.mobile-sharing-nav button { background: none; border: none; padding: 0; }
+
+.sharing-card {
+  background-color: #FFCC80; border-radius: 30px; padding: 30px; color: #000;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.1); height: 100%;
+}
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.card-header h3 { font-size: 24px; font-weight: 700; margin: 0; flex: 1; text-align: center; }
+
+/* Hide Close Button on Mobile */
+.close-btn { 
+  display: none; 
+  font-size: 26px; cursor: pointer; opacity: 0.6; transition: 0.2s; 
+}
+.close-btn:hover { opacity: 1; }
+
+.section-label { font-size: 14px; color: #4E342E; opacity: 0.8; margin-bottom: 12px; font-weight: 600; }
+.avatars-row { display: flex; gap: 12px; margin-bottom: 25px; }
+.avatar-placeholder { width: 45px; height: 45px; background: #D7CCC8; border-radius: 50%; }
+.avatar-placeholder.small { width: 35px; height: 35px; }
+
+.invite-container {
+  background-color: #fff; border-radius: 20px; padding: 20px;
+  display: flex; flex-direction: column; flex: 1;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
+}
+.invite-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+.invite-header span { color: #43A047; font-weight: 600; font-size: 15px; }
+.icon-green { color: #43A047; font-size: 20px; cursor: pointer; }
+.invite-scroll-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; max-height: 250px; }
+.invite-item { display: flex; align-items: center; cursor: pointer; padding: 5px 0; }
+.invite-avatar { width: 38px; height: 38px; background: #E0E0E0; border-radius: 50%; margin-right: 12px; }
+.invite-name { flex: 1; font-size: 14px; color: #333; font-weight: 500; }
+.icon-grey { color: #BDBDBD; }
+.invite-footer { text-align: right; color: #D32F2F; font-size: 13px; margin-top: 15px; cursor: pointer; font-weight: 700; }
+
+/* =========================================
+   6. UTILITIES
+========================================= */
+.mobile-hidden { display: none; }
+.desktop-hidden { display: none !important; }
+
+.modal-overlay { 
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+  background: rgba(0,0,0,0.4); 
+  display: flex; justify-content: center; align-items: center; 
+  z-index: 200; backdrop-filter: blur(4px); 
+}
+.modal-box { background: #fff; width: 320px; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+.modal-actions { display: flex; gap: 15px; margin-top: 25px; }
+.modal-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; }
+.modal-btn.send { background: #1976D2; color: #fff; }
+.modal-btn.cancel { background: #fff; border: 1px solid #D32F2F; color: #D32F2F; }
+
+
+/* =========================================
+   7. DESKTOP LAYOUT (min-width: 1024px)
+========================================= */
+@media (min-width: 1024px) {
+  
+  .sharing-page-wrapper { align-items: flex-start; }
+
+  /* Reset Mobile elements */
+  .mobile-hidden { display: flex !important; }
+  .mobile-sharing-nav { display: none; }
+
+  /* Show Close Button on Desktop */
+  .close-btn { display: block; }
+
+  .content-container {
+    width: 100%; 
+    /* UPDATED: Calculated Max-Width for Perfect Symmetry */
+    /* 550 (Left) + 50 (Gap) + 420 (Right) = 1020 Content */
+    /* + 100 Margins (50 on each side) = 1120px Total */
+    max-width: 1120px; 
+    
+    height: auto; min-height: 100vh;
+    padding: 0; flex-direction: row; align-items: flex-start;
+    margin: 0 auto; overflow: visible;
+  }
+
+  /* RE-ADD DESKTOP SPACINGS */
+  .ranking-header-container {
+    margin-top: 50px; 
+    margin-bottom: 80px; 
+    padding: 0 20px; 
+  }
+  
+  .header-search-wrapper input { padding: 15px 30px; font-size: 16px; }
+  .header-action-btn { margin-left: 20px; }
+  .podium-area { gap: 20px; margin-bottom: 40px; margin-top: 10px; }
+  
+  .avatar-circle { width: 70px; height: 70px; }
+  .rank-1 .avatar-circle { width: 100px; height: 100px; }
+
+
+  /* --- MODE 1: CENTERED (Default) --- */
+  .layout-centered { justify-content: center; }
+  .layout-centered .ranking-header-container { max-width: 900px; }
+  .layout-centered .ranking-section { max-width: 1000px; margin: 0 auto; align-items: center; padding-top: 0; }
+  .layout-centered .ranking-list { max-width: 900px; }
+  .layout-centered .sharing-section { display: none !important; }
+
+  /* --- MODE 2: SPLIT (Active) --- */
+  .layout-split { 
+    justify-content: center; 
+    gap: 50px; /* Equal Gap Between Panels */
+    padding: 0; 
+  }
+  .layout-split .ranking-section { max-width: 550px; }
+  .layout-split .ranking-header-container { max-width: 100%; }
+
+  /* --- SHARING CARD ANIMATION --- */
+  .sharing-section {
+    width: 420px; margin-top: 60px; padding: 0; flex: none;
+    animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+}

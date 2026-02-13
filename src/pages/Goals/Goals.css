@@ -1,0 +1,211 @@
+.goals-page-container {
+  min-height: 100vh;
+  background-color: #fff; 
+  padding: 40px 5%; /* Use percentage for better responsiveness */
+  font-family: 'Poppins', sans-serif;
+  max-width: 1600px; /* Allow it to go wide on large screens */
+  margin: 0 auto;
+}
+
+/* --- HEADER --- */
+.goals-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.back-btn {
+  background: none; border: none; font-size: 28px; cursor: pointer; color: #000;
+}
+
+.date-display h2 {
+  font-size: 32px; font-weight: 800; margin: 0; color: #000;
+}
+
+.header-actions {
+  display: flex; align-items: center; gap: 20px;
+}
+
+.date-picker-wrapper {
+  width: 50px; height: 50px;
+  border-radius: 50%; border: 1px solid #ddd;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; cursor: pointer; font-size: 22px;
+  background: #fff; transition: transform 0.2s;
+}
+.date-picker-wrapper:hover { transform: scale(1.05); }
+
+.hidden-date-input {
+  position: absolute; width: 100%; height: 100%;
+  opacity: 0; cursor: pointer;
+}
+
+.edit-btn {
+  background: none; border: none; font-size: 28px; cursor: pointer; color: #000;
+}
+
+/* --- LAYOUT GRID --- */
+.goals-layout {
+  display: flex;
+  gap: 80px; /* Large gap between Left list and Right sidebar */
+  align-items: stretch; /* Stretch to make them equal height if needed */
+}
+
+.goals-list {
+  flex: 1.2; 
+  display: flex; flex-direction: column; gap: 30px;
+}
+
+.goals-sidebar {
+  flex: 1; 
+  display: flex; flex-direction: column; 
+  justify-content: space-between; /* Pushes content apart */
+}
+
+/* --- GOAL CARD (Left Side) --- */
+.goal-card {
+  background-color: #FCE4E4; /* Light Pink */
+  border-radius: 30px; /* Softer rounded corners */
+  padding: 25px 40px;
+  display: flex; align-items: center; gap: 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+
+.goal-icon-wrapper {
+  width: 80px; height: 80px;
+  background: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.goal-icon-wrapper img { width: 90%; height: auto; object-fit: contain; }
+
+.goal-info { flex: 1; }
+.goal-info h3 { font-size: 20px; font-weight: 700; margin: 0 0 15px 0; color: #000; }
+
+/* Progress Bar Container */
+.goal-bar-container {
+  position: relative;
+  width: 100%; height: 35px; /* Taller bar like screenshot */
+  background-color: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.goal-bar-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.goal-text-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center; /* Center text */
+  font-size: 14px; color: #fff; font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  z-index: 2;
+  pointer-events: none; /* Let clicks pass through */
+}
+
+/* --- EDIT MODE INPUTS --- */
+/* This styling matches image_19e084.png (White inputs inside the bar) */
+.edit-inputs {
+  display: flex; align-items: center; gap: 10px; 
+  pointer-events: auto; /* Re-enable clicks */
+  width: 100%; padding: 0 10px;
+}
+
+.edit-inputs input {
+  width: 80px; padding: 5px; 
+  border: 1px solid #ddd; border-radius: 8px;
+  font-size: 15px; text-align: center; font-weight: 700;
+  background: #fff; color: #000;
+  outline: none;
+}
+.edit-inputs input:focus { border-color: #FF3B30; }
+
+.edit-inputs span { 
+  color: #333; font-weight: 700; font-size: 14px;
+}
+
+
+/* --- SIDEBAR (Right Side) --- */
+.goal-board-card {
+  background-color: #E69A78; /* Peach */
+  border-radius: 30px;
+  padding: 40px;
+  color: white;
+  min-height: 250px; /* Ensure substantial height */
+}
+
+.goal-board-card h2 { margin-top: 0; font-size: 32px; font-weight: 800; }
+
+.board-progress-container {
+  position: relative;
+  margin-top: 50px; 
+  height: 60px; display: flex; align-items: center;
+}
+
+.board-bar-bg {
+  width: 100%; height: 45px;
+  background-color: #F8E5A8; /* Yellow */
+  border-radius: 25px;
+  position: relative;
+}
+
+.board-bar-fill {
+  height: 100%;
+  background-color: transparent; 
+  border-radius: 25px;
+}
+
+.tomato-marker {
+  position: absolute; top: -25px; /* Pop out significantly */
+  width: 80px; height: 80px;
+  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+  filter: drop-shadow(0 5px 5px rgba(0,0,0,0.15));
+}
+.tomato-marker img { width: 100%; height: auto; }
+
+.board-text {
+  position: absolute;
+  width: 100%; text-align: center;
+  color: #000; font-weight: 800; font-size: 24px;
+  z-index: 5; top: 5px;
+}
+
+/* --- GYM ILLUSTRATION --- */
+/* Fixes the tiny image issue */
+.gym-illustration {
+  margin-top: 50px; /* Space from top card */
+  display: flex;
+  justify-content: flex-end; /* Align to right edge */
+  position: relative;
+  width: 100%;
+}
+
+.gym-illustration img {
+  width: 100%; 
+  max-width: 650px; /* INCREASED: Allows image to be big */
+  min-width: 300px;
+  height: auto;
+  object-fit: contain;
+  /* Negative margin pulls it down/right if you want it flush with edges */
+  margin-bottom: -10px; 
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1200px) {
+  .goals-layout { gap: 40px; }
+  .goal-card { padding: 20px; }
+}
+
+@media (max-width: 1024px) {
+  .goals-layout { flex-direction: column-reverse; }
+  .goals-sidebar { width: 100%; min-height: auto; margin-bottom: 40px; }
+  .gym-illustration { justify-content: center; margin-top: 30px; }
+  .gym-illustration img { max-width: 400px; }
+}

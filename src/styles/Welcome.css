@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap');
+
+/* Main Container */
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 30px;
+  background-color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+
+.hero-section {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* Pushes image to the bottom, near text */
+  overflow: hidden;      /* Hides the parts of the image that "zoom" out */
+  margin-bottom: 10px;   /* Small gap between image and text */
+}
+
+/* Image Styling */
+.hero-image {
+  /* ZOOM EFFECT: Making width > 100% forces it to zoom in */
+  width: 130%;           
+  max-width: 500px;      /* Allows it to get much bigger than before */
+  height: auto;
+  object-fit: contain;
+  
+  /* POSITIONING: Pulls it down tight against the text */
+  margin-bottom: -50px; 
+  margin-top: 0;
+}
+
+.image-placeholder {
+  width: 220px;
+  height: 220px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+}
+
+/* Text Section */
+.text-section {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+h1 {
+  /* This specific red matches your screenshot text */
+  color: #FF3B30; 
+  font-size: 40px; /* Large and bold */
+  font-weight: 800;
+  line-height: 1.2;
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-bottom: 5px;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Spacing between buttons */
+  margin-bottom: 20px;
+}
+
+/* Base Button Style */
+.btn {
+  width: 100%;
+  padding: 20px 0; /* Vertical padding makes them "thick" */
+  font-size: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 999px; 
+  transition: transform 0.1s;
+}
+
+/* "Sign up" - White with Black Border */
+.btn-signup {
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid #000000; /* Distinct black border */
+
+}
+
+/* "Sign in" - Solid Red */
+.btn-signin {
+  background-color: #FF3B30; /* Matches the header text red */
+  color: #ffffff;
+  border: 2px solid #FF3B30; /* Border matches fill */
+  margin-top: 5px;
+}
+
+/* Button Press Effect */
+.btn:active {
+  transform: scale(0.98);
+}

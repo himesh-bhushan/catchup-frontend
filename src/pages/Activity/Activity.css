@@ -1,0 +1,231 @@
+/* --- GLOBAL LAYOUT --- */
+.activity-page-wrapper {
+    min-height: 100vh;
+    padding: 40px 80px; 
+    background: #fff;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    box-sizing: border-box;
+}
+
+/* --- HEADER --- */
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+/* Group Title + Back Button + Calendar together */
+.header-left { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; /* Spacing between elements */
+}
+
+.header-left h2 { font-size: 1.8rem; font-weight: 600; margin: 0; color: #000; }
+
+.back-btn-icon {
+    background: none; border: none; cursor: pointer; padding: 0;
+    display: flex; align-items: center; color: #000; transition: transform 0.2s;
+}
+.back-btn-icon:hover { transform: translateX(-3px); }
+
+/* Updated Calendar Button Style */
+.calendar-wrapper {
+    background: #fff; width: 40px; height: 40px;
+    border-radius: 50%; border: 1px solid #ddd;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer; position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-left: 5px; /* Tiny nudge */
+}
+.calendar-wrapper:hover { transform: scale(1.05); border-color: #bbb; }
+.hidden-date-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+
+
+/* --- MAIN GRID --- */
+.activity-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr 1.4fr; 
+    gap: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* ✅ CHANGED: Vertically center all columns */
+    align-items: center;
+}
+
+/* --- LEFT SIDEBAR --- */
+.week-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    /* ✅ REMOVED: margin-top: 30px; -> Let the grid center it */
+    margin-top: 0; 
+}
+
+.day-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; 
+    /* ✅ UPDATED: Increased gap between letter and ring */
+    gap: 15px; 
+    cursor: pointer;
+    transition: 0.2s;
+}
+.day-letter-box {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: #E63946; font-size: 0.8rem;
+    border-radius: 50%;
+}
+.day-row.selected .day-letter-box { background-color: #F8E7D6; color: #D93025; }
+
+.mini-ring-wrapper {
+    /* ✅ UPDATED: Much bigger size */
+    width: 48px; 
+    height: 48px;
+    opacity: 0.5; 
+    transition: opacity 0.2s, transform 0.2s;
+}
+.day-row.selected .mini-ring-wrapper { opacity: 1; transform: scale(1.1); }
+
+.mini-circular-chart { display: block; max-width: 100%; overflow: visible; }
+.mini-circle-bg { fill: #F8E7D6; stroke: none; } /* Solid beige center for mini rings */
+.mini-circle { fill: none; stroke: #E63946; stroke-width: 6; stroke-linecap: round; } /* Thick stroke */
+
+
+/* --- CENTER RING --- */
+.main-ring-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* ✅ REMOVED: padding-top: 10px; */
+    padding-top: 0;
+}
+
+.large-ring-container {
+    width: 320px; height: 320px;
+    position: relative;
+    margin-bottom: 40px;
+}
+.large-circular-chart { transform: rotate(0deg); overflow: visible; }
+
+/* The Solid Beige Center */
+.circle-bg { fill: #F8E7D6; stroke: none; }
+
+/* The Red Progress Ring */
+.circle { 
+    fill: none; 
+    stroke: #D93025; 
+    stroke-width: 4; /* Refined thickness */
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.5s ease;
+}
+
+.ring-arrow-overlay {
+    position: absolute;
+    top: 10px;              /* Position near the top edge */
+    left: 50%;              /* Move to horizontal center */
+    transform: translateX(-50%); /* Perfect centering adjustment */
+    pointer-events: none;
+    color: white;
+    /* Removed the rotation so it points straight right at the start */
+}
+
+.change-goal-btn {
+    background: #E6685B; color: white; border: none;
+    padding: 12px 40px; border-radius: 12px;
+    font-size: 1rem; font-weight: 500; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(230, 104, 91, 0.2);
+    transition: transform 0.2s;
+}
+.change-goal-btn:hover { transform: translateY(-2px); }
+
+
+/* --- RIGHT COLUMN: STATS --- */
+.stats-graphs-section { padding-left: 0; }
+.stat-block { margin-bottom: 50px; }
+.stat-block h3 { margin: 0 0 5px 0; font-size: 1.2rem; font-weight: 400; color: #333; }
+.stat-highlight { display: flex; align-items: baseline; gap: 8px; margin-bottom: 25px; }
+
+.big-num { font-size: 2rem; font-weight: 700; line-height: 1; }
+.red-text { color: #E63946; }
+.black-text { color: #000; }
+.sub-text { font-size: 1rem; color: #E63946; font-weight: 600; text-transform: uppercase; }
+
+.dual-stat-header { display: flex; justify-content: space-between; margin-bottom: 25px; }
+
+/* Charts */
+.chart-outer-wrapper { position: relative; height: 90px; margin-bottom: 10px; width: 100%; }
+.grid-lines {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: space-between; z-index: 0;
+}
+.grid-line { width: 100%; height: 1px; background: #EAEAEA; }
+
+.bar-chart-container {
+    position: relative; z-index: 1; display: flex; align-items: flex-end;
+    justify-content: space-between; height: 100%; width: 100%; padding: 0 10px;
+}
+.bar-wrapper { width: 8%; height: 100%; display: flex; align-items: flex-end; }
+.bar-fill { width: 100%; background: #F25C54; border-radius: 2px 2px 0 0; transition: height 0.4s ease; }
+
+.chart-labels {
+    display: flex; justify-content: space-between; font-size: 0.7rem; color: #aaa; margin-top: 8px;
+}
+.total-burn {
+    margin-top: 15px; font-size: 0.75rem; color: #F25C54; font-weight: 600; text-transform: uppercase;
+}
+
+/* --- MODAL (POPUP) STYLES --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transform: scale(0.9);
+    animation: popIn 0.2s ease-out forwards;
+}
+
+.modal-content h3 { margin: 0 0 15px 0; color: #333; }
+
+.modal-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2rem;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    outline: none;
+    font-weight: bold;
+    color: #E63946;
+}
+.modal-input:focus { border-color: #E63946; }
+
+.modal-actions { display: flex; gap: 10px; justify-content: center; }
+
+.btn-save {
+    background: #E63946; color: white; border: none;
+    padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600;
+}
+.btn-cancel {
+    background: #eee; color: #333; border: none;
+    padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }

@@ -1,0 +1,585 @@
+/* =========================================
+   1. GLOBAL LAYOUT & WRAPPER
+========================================= */
+* { box-sizing: border-box; }
+
+.profile-wrapper {
+  min-height: 100vh;
+  /* ✅ CHANGED: Use variable for Dark Mode support */
+  background-color: var(--bg-color); 
+  color: var(--text-primary); /* ✅ Global Text Color */
+  font-family: 'Poppins', sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* ✅ PRESERVE YELLOW BACKGROUND (Light Mode Only) */
+[data-theme="light"] .profile-wrapper {
+  background-color: #FFF9C4; 
+}
+
+/* =========================================
+   2. SIDEBAR (MENU) STYLES
+========================================= */
+.profile-menu-side {
+  width: 400px; 
+  height: 100%;
+  border-right: 1px solid var(--border-color); /* ✅ Updated */
+  display: flex;
+  flex-direction: column;
+  padding: 0px;
+  overflow-y: auto;
+  /* ✅ CHANGED: Match wrapper background */
+  background-color: transparent; 
+}
+
+/* --- Menu Header --- */
+.profile-header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.nav-back-btn {
+  position: absolute; left: 0; top: 0;
+  background: none; border: none; cursor: pointer; padding: 10px 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-primary); /* ✅ Updated */
+  z-index: 10; transition: transform 0.2s;
+}
+
+.nav-back-btn:hover { transform: translateX(-3px); }
+
+.avatar-circle {
+  width: 80px; height: 80px;
+  background-color: var(--card-bg); /* ✅ Updated */
+  border-radius: 50%;
+  display: flex; justify-content: center; align-items: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-bottom: 10px;
+  font-size: 40px;
+  color: var(--text-primary); /* ✅ Updated */
+}
+
+.profile-name {
+  font-size: 24px; font-weight: 700;
+  color: var(--text-primary); /* ✅ Updated */
+  margin: 0;
+}
+
+/* --- Menu List Items --- */
+.menu-list { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+.menu-section-label {
+  font-size: 16px; font-weight: 700;
+  color: var(--text-primary); /* ✅ Updated */
+}
+
+.menu-item {
+  background-color: var(--card-bg); /* ✅ Updated */
+  padding: 15px 20px;
+  border-radius: 15px;
+  margin-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+  text-decoration: none;
+  color: var(--text-primary); /* ✅ Updated */
+  font-weight: 500;
+  border: 1px solid transparent; /* Placeholder for hover */
+}
+
+.menu-item:hover { transform: translateY(-2px); border-color: var(--border-color); }
+.menu-item.active { border: 2px solid #FF3B30; }
+
+.privacy-text {
+  font-size: 10px;
+  color: var(--text-secondary); /* ✅ Updated */
+  margin-top: 30px; text-align: center; line-height: 1.4; padding: 0 20px;
+}
+
+
+/* =========================================
+   3. CONTENT SIDE (DETAILS) STYLES
+========================================= */
+.profile-content-side {
+  flex: 1; height: 100%; padding: 40px 60px;
+  overflow-y: auto; display: flex; justify-content: center; 
+}
+
+/* --- Shared Content Header --- */
+.content-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+}
+
+.content-header h2 {
+  margin: 0; font-size: 20px;
+  color: var(--text-primary); /* ✅ Updated */
+}
+
+.mobile-back-btn { display: none; }
+
+/* --- White Card Container --- */
+.content-card {
+  background-color: var(--card-bg); /* ✅ Updated */
+  border-radius: 20px; padding: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  width: 100%; max-width: 600px; height: fit-content;
+  animation: fadeIn 0.3s ease-out;
+}
+
+
+/* =========================================
+   4. FORM & DATA STYLES (Details/Medical)
+========================================= */
+.details-form { display: flex; flex-direction: column; }
+
+.profile-label {
+  font-size: 14px;
+  color: #FF6B6B; /* Keep Brand Color */
+  margin-bottom: 5px; margin-top: 15px; font-weight: 500;
+  display: flex; justify-content: space-between;
+}
+
+.profile-value {
+  font-size: 18px; font-weight: 600;
+  color: var(--text-primary); /* ✅ Updated */
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color); /* ✅ Updated */
+  padding-bottom: 10px;
+}
+
+
+/* =========================================
+   5. TOGGLE SWITCHES (Shared)
+========================================= */
+.toggle-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; 
+  background: var(--card-bg); /* ✅ Updated */
+  padding: 15px;
+  border-radius: 12px; 
+  border: 1px solid var(--border-color); /* ✅ Updated */
+}
+
+.toggle-switch {
+  width: 50px; height: 28px;
+  background: #ccc; border-radius: 20px;
+  position: relative; cursor: pointer; transition: 0.3s;
+}
+
+.toggle-switch.on { background: #34C759; }
+
+.toggle-thumb {
+  width: 24px; height: 24px;
+  background: #fff; border-radius: 50%;
+  position: absolute; top: 2px; left: 2px;
+  transition: 0.3s;
+}
+
+.toggle-switch.on .toggle-thumb { left: 24px; }
+
+
+/* =========================================
+   6. DISPLAY SECTION STYLES
+========================================= */
+.display-section-wrapper {
+  display: flex; flex-direction: column; gap: 20px;
+  width: 100%; max-width: 600px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.display-card {
+  background-color: var(--card-bg); /* ✅ Updated */
+  border-radius: 20px; padding: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.card-label {
+  font-size: 16px; font-weight: 500; 
+  color: var(--text-primary); /* ✅ Updated */
+  margin-bottom: 15px; display: block;
+}
+
+.slider-row { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
+.font-icon-small { font-size: 16px; font-weight: 600; color: var(--text-secondary); }
+.font-icon-large { font-size: 28px; font-weight: 600; color: var(--text-primary); }
+.range-wrapper { flex: 1; display: flex; align-items: center; }
+
+/* Custom Range Input */
+.custom-range {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 12px;
+  background: var(--border-color); /* ✅ Updated */
+  border-radius: 10px; outline: none; cursor: pointer;
+}
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 28px; height: 28px;
+  background: var(--card-bg); /* ✅ Updated */
+  border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  cursor: pointer; 
+  border: 0.5px solid var(--text-secondary); /* ✅ Updated */
+}
+
+/* Pills (Language/Theme) */
+.display-pill {
+  background-color: var(--card-bg); /* ✅ Updated */
+  border-radius: 50px;
+  padding: 20px 25px; display: flex; justify-content: space-between;
+  align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  cursor: pointer; transition: transform 0.2s;
+}
+.display-pill:hover { transform: scale(1.01); }
+
+.pill-label { font-size: 16px; font-weight: 500; color: var(--text-primary); } /* ✅ Updated */
+.pill-right { display: flex; align-items: center; gap: 10px; }
+.pill-value { font-size: 14px; color: var(--text-secondary); } /* ✅ Updated */
+
+
+/* =========================================
+   7. NOTIFICATIONS SECTION STYLES
+========================================= */
+.notifications-wrapper {
+  display: flex; flex-direction: column; gap: 15px;
+  width: 100%; max-width: 600px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.notification-group { display: flex; flex-direction: column; }
+
+.notification-pill {
+  background-color: var(--card-bg); /* ✅ Updated */
+  border-radius: 50px;
+  padding: 20px 25px; display: flex; justify-content: space-between;
+  align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.pill-text { font-size: 18px; font-weight: 500; color: var(--text-primary); } /* ✅ Updated */
+
+.notification-caption {
+  font-size: 11px; 
+  color: var(--text-secondary); /* ✅ Updated */
+  margin-top: 8px; margin-left: 20px; margin-right: 20px;
+  line-height: 1.4; margin-bottom: 10px;
+}
+
+
+/* =========================================
+   8. MOBILE RESPONSIVENESS
+========================================= */
+@media (max-width: 1023px) {
+  
+  .profile-wrapper { flex-direction: column; padding: 0; }
+
+  /* --- View Switching --- */
+  .profile-wrapper.viewing-menu {
+    /* ✅ KEEP PEACH GRADIENT for Light Mode Mobile */
+    background: var(--bg-color);
+    min-height: 100vh; padding: 20px;
+  }
+  
+  [data-theme="light"] .profile-wrapper.viewing-menu {
+     background: linear-gradient(180deg, #FFCCBC 0%, #FFE0B2 100%);
+  }
+
+  .profile-wrapper.viewing-menu .profile-content-side { display: none; }
+
+  .profile-wrapper.viewing-content {
+    background-color: var(--bg-color); /* ✅ Updated */
+    padding: 20px;
+  }
+  [data-theme="light"] .profile-wrapper.viewing-content {
+      background-color: #FFF9C4; 
+  }
+  
+  .profile-wrapper.viewing-content .profile-menu-side { display: none; }
+
+  .profile-menu-side {
+    padding: 10px; border-right: none; width: 100%;
+    background: transparent;
+  }
+
+  .profile-content-side {
+    display: block; width: 100%; padding: 0;
+    background-color: transparent; 
+  }
+
+  .content-card {
+    box-shadow: none; padding: 20px; border-radius: 20px;
+    max-width: 100%; min-height: auto;
+  }
+
+  .mobile-back-btn { display: block; }
+}
+
+
+/* =========================================
+   9. DESKTOP SPECIFIC STYLES
+========================================= */
+@media (min-width: 1024px) {
+  .profile-wrapper {
+    display: flex; gap: 40px; padding: 40px 10%; align-items: flex-start;
+  }
+
+  .profile-menu-side { flex: 1; min-width: 300px; }
+
+  .profile-content-side {
+    flex: 2; display: block !important; 
+    background-color: transparent;
+  }
+
+  .mobile-back-btn { display: none !important; }
+
+  .notifications-wrapper { max-width: 100%; width: 100%; }
+  .display-section-wrapper { max-width: 100%; }
+  .content-card { max-width: 100%; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =========================================
+   8. APPS SECTION STYLES
+========================================= */
+
+.apps-wrapper {
+  display: flex; flex-direction: column; gap: 20px;
+  width: 100%; max-width: 600px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.section-subtitle {
+  font-size: 13px; color: var(--text-secondary); /* ✅ Updated */
+  margin-top: -10px; margin-bottom: 5px; line-height: 1.5;
+}
+
+/* --- Green Status Banner --- */
+.status-banner {
+  background-color: #E8F5E9; /* Keep Green */
+  border: 1px solid #4CAF50;
+  border-radius: 15px; padding: 15px 20px;
+  display: flex; align-items: flex-start; gap: 15px;
+}
+
+.banner-title { margin: 0; font-size: 16px; font-weight: 700; color: #000; }
+.banner-text { margin: 5px 0 0 0; font-size: 13px; color: #2E7D32; line-height: 1.3; }
+
+/* --- App Card Styles --- */
+.app-card {
+  background-color: var(--card-bg); /* ✅ Updated */
+  border-radius: 20px; padding: 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  display: flex; flex-direction: column;
+  border: 1px solid var(--border-color); /* ✅ Updated */
+}
+
+/* Specific Style for Connected Card */
+.connected-card {
+  background-color: #E8F5E9; 
+  border: 1px solid #4CAF50; 
+  color: #000; /* Ensure text visible on light green */
+}
+
+.app-card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+
+.app-icon {
+  width: 50px; height: 50px;
+  background-color: #fff;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+.app-name { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-primary); } /* ✅ Updated */
+.app-desc { margin: 4px 0 0 0; font-size: 12px; color: var(--text-secondary); line-height: 1.3; } /* ✅ Updated */
+
+.status-badge {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 13px; color: #2E7D32; font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Sync Tags */
+.sync-section { margin-bottom: 20px; }
+.sync-label { font-size: 13px; color: var(--text-secondary); display: block; margin-bottom: 8px; } /* ✅ Updated */
+
+.tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.sync-tag {
+  background-color: #C8E6C9; 
+  color: #1B5E20;
+  font-size: 11px; font-weight: 600;
+  padding: 4px 12px; border-radius: 20px; border: 1px solid #A5D6A7;
+}
+
+/* Stats */
+.card-divider { height: 1px; background-color: var(--border-color); margin: 10px 0 20px 0; opacity: 0.5; } /* ✅ Updated */
+
+.stats-row { display: flex; justify-content: space-between; margin-bottom: 25px; }
+.stat-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; } /* ✅ Updated */
+.stat-value { font-size: 14px; font-weight: 600; color: var(--text-primary); } /* ✅ Updated */
+
+/* Buttons */
+.card-actions { display: flex; gap: 15px; }
+
+.btn-action {
+  flex: 1; padding: 12px; border-radius: 25px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.btn-sync { border: none; background-color: #FFCDD2; color: #000; }
+.btn-disconnect { border: 1px solid #FF3B30; background-color: var(--card-bg); color: #FF3B30; }
+
+.btn-full-connect {
+  width: 100%;
+  background-color: #EF4444; color: #fff;
+  border: none; padding: 12px; border-radius: 25px;
+  font-weight: 600; font-size: 15px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  cursor: pointer; margin-top: 10px; transition: background 0.2s;
+}
+.btn-full-connect:hover { background-color: #D32F2F; }
+
+@media (min-width: 1024px) {
+  .apps-wrapper { max-width: 100%; }
+}
+
+
+/* =========================================
+   9. DEVICES SECTION STYLES
+========================================= */
+
+.devices-wrapper {
+  display: flex; flex-direction: column; gap: 20px;
+  width: 100%; max-width: 600px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.devices-card {
+  background-color: var(--card-bg); /* ✅ Updated */
+  border-radius: 20px; padding: 10px 25px; 
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  display: flex; flex-direction: column;
+}
+
+.device-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 0; cursor: pointer; transition: opacity 0.2s;
+}
+.device-item:hover { opacity: 0.7; }
+
+.device-info { display: flex; align-items: center; gap: 15px; }
+.device-name { font-size: 16px; font-weight: 500; color: var(--text-primary); } /* ✅ Updated */
+.device-divider { height: 1px; background-color: var(--border-color); width: 100%; } /* ✅ Updated */
+
+@media (min-width: 1024px) {
+  .devices-wrapper { max-width: 100%; }
+}
+
+
+/* =========================================
+   10. NOTIFICATIONS PAGE (Wide Design)
+========================================= */
+
+/* ✅ Wider Wrapper */
+.notifications-wrapper-wide {
+  width: 100%;
+  max-width: 800px; /* Increased from 600px to 800px */
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease-out;
+  margin-top: -10px; /* Pulls content up slightly to align title */
+}
+
+/* List Container */
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: px; /* More space between items */
+}
+
+/* The Notification Block */
+.notification-block {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ✅ Wider White Pill */
+.notification-pill-wide {
+  background-color: var(--card-bg);
+  border-radius: 50px;
+  padding: 20px 35px; /* Larger padding for "wide" look */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%; /* Force full width */
+  box-sizing: border-box;
+  
+  /* Soft Shadow */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease;
+}
+
+.notification-pill-wide:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* Label Text */
+.pill-label {
+  font-size: 1.1rem; /* Slightly smaller than before for cleaner look */
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Description Text */
+.notification-description {
+  margin-top: 12px;
+  margin-left: 25px; /* Align with text start */
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 95%;
+}
+
+/* Toggle Switch (Kept consistent) */
+.toggle-switch {
+  width: 52px;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 30px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.toggle-switch.on { background-color: #4CD964; }
+
+.toggle-thumb {
+  width: 26px;
+  height: 26px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: 0.3s cubic-bezier(0.3, 1.5, 0.7, 1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.toggle-switch.on .toggle-thumb { left: 24px; }
+
+/* Dark Mode Overrides */
+[data-theme="dark"] .toggle-switch { background-color: #555; }
+[data-theme="dark"] .toggle-switch.on { background-color: #4CD964; }

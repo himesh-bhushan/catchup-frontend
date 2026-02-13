@@ -1,0 +1,408 @@
+/* --- 1. GLOBAL LAYOUT --- */
+.dashboard-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  
+  /* ✅ CHANGED: Use variable for background, keeping gradient only for Light Mode */
+  background: var(--bg-color);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  display: flex; 
+  color: var(--text-primary); /* ✅ Global text color */
+}
+
+
+/* --- Widget Internals --- */
+.activity-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.ring-wrapper {
+  width: 140px;
+  height: 140px;
+  flex-shrink: 0;
+  position: relative; /* Ensures centering works */
+}
+
+.activity-ring {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Gradient is handled in JS */
+}
+
+/* ✅ UPDATED: Matches the design (Gap + Yellow Circle) */
+.inner-circle {
+  width: 78%;  /* Controls ring thickness (Smaller % = Thicker Ring) */
+  height: 78%;
+  
+  /* ✅ IMPORTANT: Force the yellow background regardless of theme variables */
+  background-color: #FFF9C4 !important; 
+  
+  /* ✅ The "Gap": This border color matches the card background (white or dark) */
+  border: 8px solid var(--card-bg); 
+  
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.02); /* Subtle inner depth */
+}
+
+.inner-circle img {
+  margin-bottom: 2px;
+  width: 45px; /* Fixed width for better stability */
+  height: auto;
+}
+
+.inner-circle span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333 !important; /* ✅ Always dark text inside the yellow circle */
+  margin-top: -2px;
+}
+
+/* ✅ PRESERVE PEACH GRADIENT (Light Mode Only) */
+[data-theme="light"] .dashboard-wrapper {
+  background: linear-gradient(180deg, #F2A892 0%, #F5CBA9 100%);
+}
+
+/* --- 2. MAIN CONTENT AREA --- */
+.dashboard-content {
+  flex: 1; 
+  padding: 20px; 
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* --- 3. HEADER STYLES --- */
+.dash-header {
+  margin-bottom: 10px; 
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* MOBILE HEADER */
+.mobile-header-top {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.mobile-avatar {
+  width: 45px; height: 45px; 
+  background: var(--text-primary); /* ✅ Changed from #000 */
+  color: var(--bg-color);          /* ✅ Changed from #fff */
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer; 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.mobile-title {
+  font-size: 24px; font-weight: 700; color: var(--text-primary); /* ✅ Updated */
+  display: block;
+}
+
+/* DESKTOP TITLE */
+.desktop-title {
+  display: none; 
+  font-size: 32px; 
+  font-weight: 700; 
+  color: var(--text-primary); /* ✅ Updated */
+  margin: 0 0 8px 0; 
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+/* --- NEW: SYNC STATUS --- */
+.sync-wrapper {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.sync-dots { display: flex; gap: 4px; }
+.sync-dot { width: 12px; height: 12px; background-color: #4CD964; border-radius: 50%; }
+.sync-text { font-size: 1rem; color: var(--text-secondary); font-weight: 400; } /* ✅ Updated */
+
+/* Refresh Button */
+.refresh-btn {
+    background: var(--card-bg); /* ✅ Updated */
+    color: var(--text-primary); /* ✅ Updated */
+    border: none; padding: 12px; border-radius: 50%;
+    cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s; font-size: 1.2rem;
+}
+.refresh-btn:hover { transform: scale(1.1); }
+
+
+/* --- 4. CENTER CARD (Connect / Loading) --- */
+.big-tile-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+    width: 100%;
+}
+
+.big-connect-card {
+    background: var(--card-bg); /* ✅ Updated */
+    border-radius: 30px;
+    padding: 60px 50px !important; 
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    display: flex; flex-direction: column; align-items: center;
+}
+
+.big-connect-card h2 { font-size: 1.8rem; margin: 20px 0 10px 0; color: var(--text-primary); font-weight: 700; } /* ✅ Updated */
+.big-connect-card p { color: var(--text-secondary); font-size: 1rem; margin-bottom: 30px; line-height: 1.6; } /* ✅ Updated */
+
+.connect-btn {
+    background: #ff3b30; color: white; border: none; padding: 15px 40px;
+    font-size: 1.1rem; border-radius: 40px; cursor: pointer; font-weight: 600;
+    transition: transform 0.2s; width: 100%; max-width: 280px;
+}
+.connect-btn:hover { transform: scale(1.05); background: #004d40; }
+.connect-btn:disabled { background: #ccc; transform: none; }
+
+.supported-devices { margin-top: 25px; color: #aaa; font-size: 0.85rem; font-weight: 500; }
+.icon-pulse { animation: pulse 2s infinite; font-size: 2.5rem; margin-bottom: 15px; }
+
+
+/* --- 5. GRID & WIDGETS --- */
+.dash-grid { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; }
+
+.card {
+  background: var(--card-bg); /* ✅ Updated */
+  border-radius: 24px; padding: 25px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05); cursor: pointer;
+  transition: transform 0.2s; position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.card:hover { transform: translateY(-3px); }
+
+/* Updated Header for Icons */
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.card-header h3 { margin: 0; font-size: 1.3rem; font-weight: 700; color: var(--text-primary); } /* ✅ Updated */
+.card-icon { width: 24px; height: 24px; object-fit: contain; }
+.card-arrow { color: #FF3B30; font-size: 1.4rem; }
+
+/* Widget Internals */
+.activity-content { display: flex; align-items: center; gap: 20px; }
+.ring-wrapper { width: 140px; height: 140px; flex-shrink: 0; }
+.activity-ring { width: 100%; height: 100%; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+
+/* Inner Circle - Match Card BG to look "cut out" */
+.inner-circle { 
+    width: 84%; height: 84%; 
+    background: var(--card-bg); /* ✅ Updated */
+    border-radius: 50%; display: flex; flex-direction: column; 
+    border: 10px solid var(--card-bg); /* ✅ Updated */
+    align-items: center; justify-content: center; 
+}
+.inner-circle span {
+    margin-top: -3px; font-size: 0.9rem; font-weight: 500;
+    color: var(--text-primary); /* ✅ Updated */
+    position: relative; top: -2px;
+}
+.activity-stats .stat-item p { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0; } /* ✅ Updated */
+.activity-stats .stat-item h4 { font-size: 0.85rem; color: var(--text-secondary); margin: 0; } /* ✅ Updated */
+
+/* Goals Section */
+.goals-progress-bar { background: var(--border-color); height: 18px; border-radius: 12px; position: relative; margin-bottom: 25px; margin-top: 10px; width: 100%; } /* ✅ Updated */
+.progress-fill { background: #FFE082; height: 100%; border-radius: 12px; }
+.progress-tomato { position: absolute; right: 20%; top: -20px; width: 50px; }
+.progress-text { position: absolute; left: 50%; top: -1px; font-size: 12px; font-weight: bold; transform: translateX(-50%); color: #444; }
+
+.goals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.goal-item { display: flex; flex-direction: column; gap: 4px; }
+
+.goal-title-wrapper { display: flex; align-items: center; gap: 8px; }
+.goal-bullet { width: 10px; height: 10px; border-radius: 50%; background: transparent; border: 2px solid #4CD964; }
+.goal-bullet.filled { background: #4CD964; }
+.goal-item h5 { margin: 0; font-size: 1rem; font-weight: 600; color: var(--text-primary); } /* ✅ Updated */
+.goal-item p { margin: 0; font-size: 0.85rem; color: var(--text-secondary); } /* ✅ Updated */
+
+/* Metrics */
+.bp-value { font-size: 3rem; font-weight: 600; color: var(--text-primary); margin-top: 10px; } /* ✅ Updated */
+.bp-value span { font-size: 1.2rem; color: var(--text-secondary); font-weight: 400; } /* ✅ Updated */
+
+.score-big { font-size: 3.5rem; font-weight: 300; margin-bottom: 15px; line-height: 1; color: var(--text-primary); } /* ✅ Updated */
+.score-big span { font-weight: 600; }
+
+.score-details-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.score-mini-box { padding: 12px 5px; border-radius: 12px; color: white; display: flex; flex-direction: column; font-size: 0.7rem; align-items: center; text-align: center; font-weight: 600; }
+.score-mini-box span:first-child { font-size: 0.65rem; opacity: 0.9; margin-bottom: 2px; }
+.score-mini-box span:last-child { font-size: 0.85rem; font-weight: 700; }
+
+.red { background: #FF3B30; } 
+.orange { background: #FF9500; } 
+.yellow { background: #FFCC00; color: #333 !important; } 
+.blue { background: #5856D6; }
+
+.heart-value { font-size: 3.5rem; font-weight: 300; line-height: 1; margin-top: auto; margin-bottom: 10px; color: var(--text-primary); } /* ✅ Updated */
+
+/* Fight Card */
+.fight-card { background: #FFE0B2; align-items: center; justify-content: center; min-height: 200px; }
+.speech-bubble { background: #fff; padding: 8px 16px; border-radius: 15px; font-size: 0.9rem; font-weight: 800; margin-bottom: 10px; }
+.fight-tomato { width: 100px; }
+
+/* Animations */
+.animate-fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+
+/* --- 6. DESKTOP ALIGNMENT --- */
+@media (min-width: 1024px) {
+  .mobile-header-top { display: none !important; }
+  .mobile-title { display: none !important; }
+  .desktop-title { display: block !important; }
+
+  .dashboard-content {
+    margin-left: 140px; 
+    padding: 40px 50px; 
+    max-width: 1400px; 
+  }
+
+  .header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    grid-template-rows: auto auto; 
+    gap: 25px;
+  }
+  
+  .activity-card { grid-column: 1 / 2; }
+  .goals-card { grid-column: 2 / 4; } 
+  .bp-card { grid-column: 1 / 2; }
+  .score-card { grid-column: 2 / 3; }
+  .heart-card { grid-column: 3 / 4; }
+}
+
+/* --- BRAND COLORS --- */
+.fitbit { background-color: #00B0B9; }
+.garmin { background-color: #000000; }
+.oura   { background-color: #333333; }
+.whoop  { background-color: #C32832; }
+
+@media screen and (min-width: 1024px) {
+    .fight-card { display: none !important; }
+}
+
+
+/* --- RECOMMENDATIONS CAROUSEL --- */
+.recommendations-section { width: 100%; margin-top: 40px; margin-bottom: 20px; }
+.recommendations-section h3 { font-size: 1.5rem; margin-bottom: 10px; color: var(--text-primary); font-weight: 700; } /* ✅ Updated */
+
+.recommendations-carousel { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 0px; padding-right: 5px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+.recommendations-carousel::-webkit-scrollbar { display: none; }
+
+.blog-card {
+    min-width: calc(33.333% - 15px);
+    background: var(--card-bg); /* ✅ Updated */
+    border-radius: 20px; overflow: hidden; cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex-shrink: 0; display: flex; flex-direction: column;
+}
+.blog-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+
+.blog-img-wrapper {
+    width: 100%; height: 180px; display: flex; align-items: center; justify-content: center;
+    background-color: var(--border-color); /* ✅ Updated fallback */
+}
+.blog-img-wrapper img { max-height: 75%; max-width: 75%; object-fit: contain; transition: transform 0.3s ease; }
+.blog-card:hover .blog-img-wrapper img { transform: scale(1.1); }
+
+.blog-content { padding: 20px; flex-grow: 1; display: flex; align-items: center; }
+.blog-content p { margin: 0; font-size: 1rem; font-weight: 600; color: var(--text-primary); line-height: 1.4; } /* ✅ Updated */
+
+@media screen and (max-width: 768px) {
+    .blog-card { min-width: 260px; }
+}
+
+
+/* --- Connect Device Screen --- */
+.connect-device-card-content { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 380px; }
+.connect-title-row { position: relative; width: 100%; text-align: center; margin-bottom: 20px; }
+
+.back-btn {
+    position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    color: var(--text-secondary); /* ✅ Updated */
+    padding: 10px; transition: color 0.2s;
+}
+.back-btn:hover { color: var(--text-primary); } /* ✅ Updated */
+
+.connect-device-title { margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--text-primary); } /* ✅ Updated */
+.connect-subtitle { margin-top: 5px; font-size: 0.9rem; color: var(--text-secondary); } /* ✅ Updated */
+
+.device-btn-container { display: flex; flex-direction: column; gap: 15px; width: 100%; margin-bottom: 30px; }
+.device-connect-btn { display: flex; align-items: center; justify-content: space-between; padding: 15px 25px; border: none; border-radius: 30px; font-size: 1rem; font-weight: 600; color: white; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; }
+.device-connect-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+.device-connect-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.device-connect-btn .device-label { display: flex; align-items: center; gap: 10px; }
+
+.fitbit { background: linear-gradient(135deg, #00B0B9, #00829B); }
+.garmin { background: linear-gradient(135deg, #007CC3, #00568C); }
+.oura { background: linear-gradient(135deg, #F9A825, #C68400); }
+.whoop { background: linear-gradient(135deg, #E53935, #C62828); }
+
+.device-illustration { max-width: 120px; height: auto; }
+.device-connect-footer { margin-top: 15px; font-size: 0.8rem; color: #aaa; }
+.icon-spin { animation: spin 2s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* --- CLINIC TILES --- */
+.clinics-grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 10px; }
+
+.clinic-tile {
+    background: var(--card-bg); /* ✅ Updated */
+    border-radius: 20px; padding: 20px; cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s;
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 140px; border: 1px solid var(--border-color); /* ✅ Added border for contrast */
+}
+.clinic-tile:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: #e0e0e0; }
+
+.clinic-tile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+
+.clinic-status-badge { font-size: 0.75rem; font-weight: 700; padding: 6px 12px; border-radius: 20px; text-transform: uppercase; }
+.clinic-status-badge.open { background-color: #e8f5e9; color: #2e7d32; }
+.clinic-status-badge.closed { background-color: #ffebee; color: #c62828; }
+
+.clinic-distance { background: #333; color: white; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
+
+.clinic-name {
+    margin: 0 0 15px 0; font-size: 1.1rem;
+    color: var(--text-primary); /* ✅ Updated */
+    font-weight: 700; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.clinic-tile-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: auto; } /* ✅ Updated */
+.clinic-phone { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; } /* ✅ Updated */
+.clinic-view-details { font-size: 0.9rem; color: #007bff; font-weight: 600; letter-spacing: 0.3px; }
