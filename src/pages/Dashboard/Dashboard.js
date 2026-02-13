@@ -281,14 +281,13 @@ const Dashboard = () => {
                             </div>
                             <p className="connect-subtitle">Choose a tracker to sync your health data.</p>
                             <div className="device-btn-container">
-                                {/* ✅ GOOGLE HEALTH BUTTON ADDED HERE */}
-                                <button onClick={handleGoogleConnect} className="device-connect-btn google-health" style={{backgroundColor: '#4285F4', color: 'white'}}>
-                                  <div className="device-label"><FiActivity size={20} /><span>Connect Google Health</span></div>
+                                {/* ✅ OURA BUTTON CONNECTED TO GOOGLE HEALTH HANDSHAKE */}
+                                <button onClick={handleGoogleConnect} className="device-connect-btn oura" disabled={connecting} style={{backgroundColor:'#000', color:'#fff'}}>
+                                    <div className="device-label"><FiActivity size={20} /><span>Connect Oura</span></div>
                                 </button>
-                                
+
                                 <button onClick={() => handleConnectProvider()} className="device-connect-btn fitbit" disabled={connecting}><div className="device-label"><FiBluetooth size={20} /><span>Connect Fitbit</span></div>{connecting && <FiRefreshCw className="icon-spin" />}</button>
                                 <button onClick={() => handleConnectProvider()} className="device-connect-btn garmin" disabled={connecting}><div className="device-label"><FiBluetooth size={20} /><span>Connect Garmin</span></div></button>
-                                <button onClick={() => handleConnectProvider()} className="device-connect-btn oura" disabled={connecting}><div className="device-label"><FiBluetooth size={20} /><span>Connect Oura</span></div></button>
                                 <button onClick={() => handleConnectProvider()} className="device-connect-btn whoop" disabled={connecting}><div className="device-label"><FiBluetooth size={20} /><span>Connect Whoop</span></div></button>
                             </div>
                             <img src={tomatoHero} alt="Tomato with watch" className="device-illustration" />
