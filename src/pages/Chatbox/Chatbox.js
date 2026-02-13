@@ -17,7 +17,7 @@ const Chatbox = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [medicalContext, setMedicalContext] = useState(null);
   const [firstName, setFirstName] = useState(localStorage.getItem('userName') || "Friend");
-  const [avatarUrl, setAvatarUrl] = useState(null); // ✅ NEW STATE
+  const [avatarUrl, setAvatarUrl] = useState(null);
 
   const [messages, setMessages] = useState(() => {
     const savedChats = localStorage.getItem('chat_history');
@@ -27,7 +27,6 @@ const Chatbox = () => {
     }];
   });
 
-  // ✅ HELPER: Download Image
   const downloadImage = async (path) => {
     if (!path) return;
     if (path.startsWith('http')) {
@@ -48,7 +47,6 @@ const Chatbox = () => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session?.user) {
-            // ✅ Fetch 'avatar_url' too
             const { data, error } = await supabase
                 .from('profiles')
                 .select('first_name, conditions, medications, allergies, avatar_url')
@@ -71,7 +69,7 @@ const Chatbox = () => {
                 }
 
                 if (data.avatar_url) {
-                    downloadImage(data.avatar_url); // ✅ Call helper
+                    downloadImage(data.avatar_url);
                 }
 
                 setMedicalContext({
@@ -106,20 +104,35 @@ const Chatbox = () => {
     }
   };
 
+  // ✅ UPDATED: Dynamic Backend Connection
   const callSafeBackend = async (userMessage) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const userId = session?.user?.id;
-      const response = await fetch("http://127.0.0.1:5050/api/chat", {
+
+      // Use the environment variable from Vercel, or fallback to local for dev
+      const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:5050";
+      
+      const response = await fetch(`${backendBaseUrl}/api/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: userMessage, userId: userId, context: medicalContext }), 
+          body: JSON.stringify({ 
+            message: userMessage, 
+            userId: userId, 
+            context: medicalContext 
+          }), 
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return errorData.reply || "The server is having trouble responding.";
+      }
+
       const data = await response.json();
-      if (!response.ok) return "Server error.";
       return data.reply || "I'm silent right now.";
     } catch (error) {
-      return "Network error. Make sure your backend server is running on port 5050.";
+      console.error("Chat Error:", error);
+      return "Unable to connect to CatchUp. Please ensure your internet is active or try again later.";
     }
   };
 
@@ -172,7 +185,6 @@ const Chatbox = () => {
                    </div>
                 </div>
 
-                {/* ✅ UPDATE: User Avatar */}
                 {msg.sender === 'user' && (
                     <div className="user-avatar-circle" style={{ overflow: 'hidden', padding: 0 }}>
                         {avatarUrl ? (
