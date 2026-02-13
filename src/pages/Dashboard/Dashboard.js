@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; // ✅ Added useLocation
 import DashboardNav from '../../components/DashboardNav';
 import { 
   FiChevronRight, FiUser, FiHeart, FiActivity, FiMoon, 
@@ -19,6 +19,7 @@ import { supabase } from '../../supabase';
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // ✅ Added to handle redirect params
   const { t } = useTranslation();
   
   // --- STATE ---
@@ -53,26 +54,12 @@ const Dashboard = () => {
   // ✅ NEW: Google Health Connection Logic
   const handleGoogleConnect = () => {
     if (!user) return;
-    
-    // Ensure REACT_APP_GOOGLE_CLIENT_ID is set in Vercel
     const clientID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     const redirectURI = encodeURIComponent("https://backend.catchup.page/api/auth/google/callback");
-    const state = user.id; // Passing user ID to backend via state
+    const state = user.id; 
+    const scope = encodeURIComponent("https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read");
     
-    const scope = encodeURIComponent(
-      "https://www.googleapis.com/auth/fitness.activity.read " +
-      "https://www.googleapis.com/auth/fitness.body.read"
-    );
-    
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-                    `response_type=code&` +
-                    `client_id=${clientID}&` +
-                    `redirect_uri=${redirectURI}&` +
-                    `scope=${scope}&` +
-                    `access_type=offline&` +
-                    `prompt=consent&` +
-                    `state=${state}`;
-    
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=${scope}&access_type=offline&prompt=consent&state=${state}`;
     window.location.href = authUrl;
   };
 
@@ -162,10 +149,10 @@ const Dashboard = () => {
         setUser(session.user);
 
         try {
-            // 1. Fetch Profile (Name, Goal, Avatar)
+            // 1. Fetch Profile (Name, Goal, Avatar, Google Connection)
             const { data: profile } = await supabase
                 .from('profiles')
-                .select('first_name, calorie_goal, avatar_url') // ✅ Fetch avatar_url
+                .select('first_name, calorie_goal, avatar_url, google_connected') // ✅ Added google_connected
                 .eq('id', session.user.id)
                 .single();
             
@@ -173,7 +160,12 @@ const Dashboard = () => {
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
                 if (profile.calorie_goal) currentGoal = profile.calorie_goal;
-                if (profile.avatar_url) downloadImage(profile.avatar_url); // ✅ Download avatar
+                if (profile.avatar_url) downloadImage(profile.avatar_url);
+                // ✅ Update UI if DB confirms connection
+                if (profile.google_connected) {
+                    setIsDeviceConnected(true);
+                    localStorage.setItem('deviceConnected', 'true');
+                }
             }
 
             // 2. Fetch TODAY'S Activity from DB
@@ -223,7 +215,17 @@ const Dashboard = () => {
   // --- INITIAL EFFECT ---
   useEffect(() => {
     fetchDashboardData();
-  }, [fetchDashboardData]);
+
+    // ✅ NEW: Handle success redirect after Google Health login
+    const params = new URLSearchParams(location.search);
+    if (params.get('sync') === 'success') {
+        setIsDeviceConnected(true);
+        localStorage.setItem('deviceConnected', 'true');
+        setShowConnectMenu(false);
+        navigate('/dashboard', { replace: true });
+        fetchDashboardData();
+    }
+  }, [fetchDashboardData, location.search, navigate]);
 
   const handleConnectProvider = () => {
     if (!user) return;
@@ -244,7 +246,6 @@ const Dashboard = () => {
         
         <header className="dash-header">
           <div className="mobile-header-top">
-             {/* ✅ Updated Mobile Avatar Click Area */}
              <div className="mobile-avatar" onClick={() => navigate('/profile')}>
                 {avatarUrl ? (
                     <img src={avatarUrl} alt="User" style={{width:'100%', height:'100%', borderRadius:'50%', objectFit:'cover'}} />
@@ -281,8 +282,8 @@ const Dashboard = () => {
                             </div>
                             <p className="connect-subtitle">Choose a tracker to sync your health data.</p>
                             <div className="device-btn-container">
-                                {/* ✅ OURA BUTTON CONNECTED TO GOOGLE HEALTH HANDSHAKE */}
-                                <button onClick={handleGoogleConnect} className="device-connect-btn oura" disabled={connecting} style={{backgroundColor:'#000', color:'#fff'}}>
+                                {/* ✅ OURA BUTTON: NOW TRIGGERING GOOGLE HEALTH HANDSHAKE */}
+                                <button onClick={handleGoogleConnect} className="device-connect-btn oura" style={{backgroundColor:'#000', color:'#fff'}}>
                                     <div className="device-label"><FiActivity size={20} /><span>Connect Oura</span></div>
                                 </button>
 
@@ -307,7 +308,6 @@ const Dashboard = () => {
             <div className="animate-fade-in">
                 <div className="dash-grid">
                     
-                    {/* ✅ ACTIVITY RING CARD (Linked to DB) */}
                     <div className="card activity-card" onClick={() => navigate('/activity')}>
                         <div className="card-header"><h3>{t('activity_ring') || "Activity Ring"}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="activity-content">
@@ -333,7 +333,6 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* ✅ GOALS CARD (Linked to /goals) */}
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('goals_completed') || "Goals Completed"}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="goals-progress-bar">
@@ -349,13 +348,11 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* ✅ BP CARD (Linked to /blood-pressure) */}
                     <div className="card bp-card" onClick={() => navigate('/blood-pressure')}>
                         <div className="card-header"><h3>{t('blood_pressure') || "Blood Pressure"}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="bp-value">120/80 <span>mmHg</span></div>
                     </div>
 
-                    {/* HEALTH SCORE CARD */}
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
                         <div className="card-header"><h3>{t('health_score') || "Health Score"}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="score-big">87 <span>SCORE</span></div>
@@ -367,7 +364,6 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* HEART CARD - Linked to DB Data */}
                     <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
                         <div className="card-header"><h3>{t('heart_rate') || "Heart Rate"}</h3><FiHeart className="card-icon-red" /><FiChevronRight className="card-arrow" /></div>
                         <div className="heart-visuals" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
@@ -381,7 +377,6 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Recommendations */}
                 <div className="recommendations-section">
                     <h3>{t('recommendations') || "Recommendations"}</h3>
                     <div className="recommendations-carousel">
@@ -394,7 +389,6 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Nearby Care */}
                 <div className="recommendations-section">
                     <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: '15px'}}>
                         <h3>{t('nearby_care') || "Find Nearby Care"}</h3>
@@ -421,9 +415,7 @@ const Dashboard = () => {
                                     </div>
                                     <span className="clinic-distance">{clinic.distance} km</span>
                                 </div>
-                                
                                 <h4 className="clinic-name">{clinic.name}</h4>
-                                
                                 <div className="clinic-tile-footer">
                                     <div className="clinic-phone">
                                     <span className="clinic-view-details">{t('view_details') || "View Details"}</span>
