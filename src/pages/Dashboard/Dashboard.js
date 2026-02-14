@@ -287,7 +287,7 @@ const Dashboard = () => {
             <div className="header-text-group">
                 <h1 className="desktop-title">{t('welcome_message', { name: firstName })}</h1>
                 {/* ✅ Added the Persistent Last Synced Label */}
-                {lastSynced && <p className="last-synced-label" style={{fontSize: '0.85rem', opacity: 0.7, margin: '4px 0 0 0'}}>Last updated: {lastSynced}</p>}
+                {lastSynced && <p className="last-synced-label" style={{fontSize: '0.85rem',color: '#000000', opacity: 0.7, margin: '4px 0 0 0'}}>Last updated: {lastSynced}</p>}
                 <h1 className="mobile-title">{t('welcome_message', { name: firstName })}</h1>
             </div>
             <div className="desktop-title"><button className="refresh-btn" onClick={handleRefreshSync}><FiRefreshCw className={loading ? "icon-spin" : ""} /></button></div>
