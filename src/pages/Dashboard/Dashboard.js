@@ -62,7 +62,7 @@ const Dashboard = () => {
         // Trigger the backend to pull fresh data from Google Fit
         await axios.post(`https://backend.catchup.page/api/wearables/google-sync/${user.id}`);
         
-        // ✅ NEW: Capture and persist the sync time
+        // ✅ Capture and persist the sync time
         const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         setLastSynced(now);
         localStorage.setItem('lastSynced', now);
@@ -285,17 +285,15 @@ const Dashboard = () => {
                     <FiUser />
                 )}
              </div>
-             {/* ✅ UPDATED: Mobile Refresh now triggers Sync */}
              <button className="refresh-btn" onClick={handleRefreshSync}><FiRefreshCw className={loading ? "icon-spin" : ""} /></button>
           </div>
           <div className="header-flex">
-            <div>
+            <div className="header-text-group">
                 <h1 className="desktop-title">{t('welcome_message', { name: firstName })}</h1>
-                {/* ✅ Added the Last Synced label under welcome */}
-                {lastSynced && <p className="last-synced-text" style={{ fontSize: '0.8rem', opacity: 0.7, marginTop: '4px' }}>Last updated: {lastSynced}</p>}
+                {/* ✅ Added the Persistent Last Synced Label */}
+                {lastSynced && <p className="last-synced-label" style={{fontSize: '0.85rem', opacity: 0.7, margin: '4px 0 0 0'}}>Last updated: {lastSynced}</p>}
                 <h1 className="mobile-title">{t('welcome_message', { name: firstName })}</h1>
             </div>
-            {/* ✅ UPDATED: Desktop Refresh now triggers Sync */}
             <div className="desktop-title"><button className="refresh-btn" onClick={handleRefreshSync}><FiRefreshCw className={loading ? "icon-spin" : ""} /></button></div>
           </div>
         </header>
@@ -318,7 +316,6 @@ const Dashboard = () => {
                             </div>
                             <p className="connect-subtitle">Choose a tracker to sync your health data.</p>
                             <div className="device-btn-container">
-                                {/* ✅ OURA BUTTON: Triggering Google Health handshake */}
                                 <button onClick={handleGoogleConnect} className="device-connect-btn oura" style={{backgroundColor:'#000', color:'#fff'}}>
                                     <div className="device-label"><FiActivity size={20} /><span>Connect Oura</span></div>
                                 </button>

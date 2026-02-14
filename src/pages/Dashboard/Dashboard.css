@@ -415,3 +415,25 @@
 .icon-spin {
   animation: spin 1s linear infinite;
 }
+
+.header-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.last-synced-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  padding: 0;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+/* Ensure it doesn't get hidden on mobile */
+@media (max-width: 768px) {
+  .last-synced-label {
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+}
