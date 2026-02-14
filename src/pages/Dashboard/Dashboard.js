@@ -27,7 +27,7 @@ const Dashboard = () => {
   const [firstName, setFirstName] = useState(localStorage.getItem('userName') || "Friend");
   const [user, setUser] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null); 
-  const [lastSynced, setLastSynced] = useState(null); // ✅ UPDATED: No longer uses localStorage
+  const [lastSynced, setLastSynced] = useState(null); // ✅ Fixed: Initialized to null
   
   // Activity Ring Data (Linked to DB)
   const [activityData, setActivityData] = useState({
@@ -53,7 +53,7 @@ const Dashboard = () => {
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
 
-  // ✅ UPDATED: Sync now relies on database state instead of localStorage
+  // ✅ Trigger + Sync Trigger
   const handleRefreshSync = async () => {
     if (!user) return;
     setLoading(true);
@@ -61,7 +61,7 @@ const Dashboard = () => {
       if (isDeviceConnected) {
         await axios.post(`https://backend.catchup.page/api/wearables/google-sync/${user.id}`);
       }
-      // Reload dashboard stats from Supabase (including new timestamp)
+      // Reload dashboard stats from Supabase (this pulls the fresh DB timestamp)
       await fetchDashboardData();
     } catch (err) {
       console.error("Sync Error:", err);
@@ -165,10 +165,10 @@ const Dashboard = () => {
         setUser(session.user);
 
         try {
-            // ✅ UPDATED: Pulling last_synced_at directly from DB
+            // 1. Fetch Profile including the new last_synced_at column
             const { data: profile } = await supabase
                 .from('profiles')
-                .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at') 
+                .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at') // ✅ Added column
                 .eq('id', session.user.id)
                 .single();
             
@@ -187,14 +187,14 @@ const Dashboard = () => {
                     localStorage.setItem('deviceConnected', 'true');
                 }
 
-                // ✅ NEW: Format the DB timestamp for UI display
+                // ✅ Fixed: Extract and format timestamp from the DB
                 if (profile.last_synced_at) {
                     const date = new Date(profile.last_synced_at);
                     const formattedDate = date.toLocaleString([], { 
-                      month: 'short', 
-                      day: 'numeric', 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
+                        month: 'short', 
+                        day: 'numeric', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
                     });
                     setLastSynced(formattedDate);
                 }
@@ -241,6 +241,7 @@ const Dashboard = () => {
     setLoading(false);
   }, []);
 
+  // --- INITIAL EFFECT ---
   useEffect(() => {
     fetchDashboardData();
 
@@ -265,6 +266,7 @@ const Dashboard = () => {
     }, 2000);
   };
 
+  // --- RENDER ---
   return (
     <div className="dashboard-wrapper">
       <DashboardNav />
@@ -284,7 +286,7 @@ const Dashboard = () => {
           <div className="header-flex">
             <div className="header-text-group">
                 <h1 className="desktop-title">{t('welcome_message', { name: firstName })}</h1>
-                {/* ✅ UPDATED: Label now displays DB persistent timestamp */}
+                {/* ✅ Added the Persistent Last Synced Label */}
                 {lastSynced && <p className="last-synced-label" style={{fontSize: '0.85rem', opacity: 0.7, margin: '4px 0 0 0'}}>Last updated: {lastSynced}</p>}
                 <h1 className="mobile-title">{t('welcome_message', { name: firstName })}</h1>
             </div>
