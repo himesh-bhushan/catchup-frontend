@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'; // ✅ Added useLocation
+import axios from 'axios'; // ✅ NEW: Added axios for sync calls
 import DashboardNav from '../../components/DashboardNav';
 import { 
   FiChevronRight, FiUser, FiHeart, FiActivity, FiMoon, 
@@ -50,6 +51,24 @@ const Dashboard = () => {
   // Location / Clinics
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
+
+  // ✅ NEW: Refresh + Google Sync Trigger
+  const handleRefreshSync = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      if (isDeviceConnected) {
+        // Trigger the backend to pull fresh data from Google Fit
+        await axios.post(`https://backend.catchup.page/api/wearables/google-sync/${user.id}`);
+      }
+      // Reload dashboard stats from Supabase
+      await fetchDashboardData();
+    } catch (err) {
+      console.error("Sync Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // ✅ NEW: Google Health Connection Logic
   const handleGoogleConnect = () => {
@@ -160,7 +179,13 @@ const Dashboard = () => {
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
                 if (profile.calorie_goal) currentGoal = profile.calorie_goal;
-                if (profile.avatar_url) downloadImage(profile.avatar_url);
+                
+                // ✅ Fix 400 Error: Extract filename from URL
+                if (profile.avatar_url) {
+                    const fileName = profile.avatar_url.split('/').pop();
+                    downloadImage(fileName);
+                }
+                
                 // ✅ Update UI if DB confirms connection
                 if (profile.google_connected) {
                     setIsDeviceConnected(true);
@@ -170,12 +195,13 @@ const Dashboard = () => {
 
             // 2. Fetch TODAY'S Activity from DB
             const todayStr = new Date().toISOString().split('T')[0];
+            // ✅ Fix 406 Error: Use maybeSingle instead of single
             const { data: todayLog } = await supabase
                 .from('activity_logs')
                 .select('calories, steps, distance')
                 .eq('user_id', session.user.id)
                 .eq('date', todayStr)
-                .single();
+                .maybeSingle();
 
             // 3. Process Activity Data
             const currentCals = todayLog ? todayLog.calories : 0;
@@ -198,7 +224,7 @@ const Dashboard = () => {
                 .eq('user_id', session.user.id)
                 .order('date', { ascending: false })
                 .limit(1)
-                .single();
+                .maybeSingle();
 
             setOtherStats(prev => ({
                 ...prev,
@@ -253,14 +279,16 @@ const Dashboard = () => {
                     <FiUser />
                 )}
              </div>
-             <button className="refresh-btn" onClick={fetchDashboardData}><FiRefreshCw /></button>
+             {/* ✅ UPDATED: Mobile Refresh now triggers Sync */}
+             <button className="refresh-btn" onClick={handleRefreshSync}><FiRefreshCw className={loading ? "icon-spin" : ""} /></button>
           </div>
           <div className="header-flex">
             <div>
                 <h1 className="desktop-title">{t('welcome_message', { name: firstName })}</h1>
                 <h1 className="mobile-title">{t('welcome_message', { name: firstName })}</h1>
             </div>
-            <div className="desktop-title"><button className="refresh-btn" onClick={fetchDashboardData}><FiRefreshCw /></button></div>
+            {/* ✅ UPDATED: Desktop Refresh now triggers Sync */}
+            <div className="desktop-title"><button className="refresh-btn" onClick={handleRefreshSync}><FiRefreshCw className={loading ? "icon-spin" : ""} /></button></div>
           </div>
         </header>
 
@@ -268,7 +296,7 @@ const Dashboard = () => {
             <div className="big-tile-container animate-fade-in">
                 <div className="big-connect-card">
                     <div className="icon-pulse"><img alt="Tomato" width="80%" src={tomato} /></div>
-                    <h3>{t('loading_data') || "Loading your wellness data..."}</h3>
+                    <h3>{t('loading_data') || "Syncing your wellness data..."}</h3>
                 </div>
             </div>
         ) : !isDeviceConnected ? ( 
@@ -282,7 +310,7 @@ const Dashboard = () => {
                             </div>
                             <p className="connect-subtitle">Choose a tracker to sync your health data.</p>
                             <div className="device-btn-container">
-                                {/* ✅ OURA BUTTON: NOW TRIGGERING GOOGLE HEALTH HANDSHAKE */}
+                                {/* ✅ OURA BUTTON: Triggering Google Health handshake */}
                                 <button onClick={handleGoogleConnect} className="device-connect-btn oura" style={{backgroundColor:'#000', color:'#fff'}}>
                                     <div className="device-label"><FiActivity size={20} /><span>Connect Oura</span></div>
                                 </button>
