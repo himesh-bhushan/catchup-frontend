@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // ✅ Added useLocation
-import axios from 'axios'; // ✅ NEW: Added axios for sync calls
+import { useNavigate, useLocation } from 'react-router-dom'; 
+import axios from 'axios'; 
 import DashboardNav from '../../components/DashboardNav';
 import { 
   FiChevronRight, FiUser, FiHeart, FiActivity, FiMoon, 
@@ -20,14 +20,14 @@ import { supabase } from '../../supabase';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ Added to handle redirect params
+  const location = useLocation(); 
   const { t } = useTranslation();
   
   // --- STATE ---
   const [firstName, setFirstName] = useState(localStorage.getItem('userName') || "Friend");
   const [user, setUser] = useState(null);
-  const [avatarUrl, setAvatarUrl] = useState(null); // ✅ NEW: Avatar State
-  const [lastSynced, setLastSynced] = useState(localStorage.getItem('lastSynced') || null); // ✅ NEW: Persistent Timestamp State
+  const [avatarUrl, setAvatarUrl] = useState(null); 
+  const [lastSynced, setLastSynced] = useState(null); // ✅ UPDATED: No longer uses localStorage
   
   // Activity Ring Data (Linked to DB)
   const [activityData, setActivityData] = useState({
@@ -40,8 +40,8 @@ const Dashboard = () => {
 
   // Other Stats (Heart Rate Linked to DB)
   const [otherStats, setOtherStats] = useState({
-    heart_rate: 72, // Default if no data
-    sleep: 28800 // 8 hours in seconds (Placeholder)
+    heart_rate: 72, 
+    sleep: 28800 
   });
 
   const [loading, setLoading] = useState(true);
@@ -53,21 +53,15 @@ const Dashboard = () => {
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
 
-  // ✅ NEW: Refresh + Google Sync Trigger
+  // ✅ UPDATED: Sync now relies on database state instead of localStorage
   const handleRefreshSync = async () => {
     if (!user) return;
     setLoading(true);
     try {
       if (isDeviceConnected) {
-        // Trigger the backend to pull fresh data from Google Fit
         await axios.post(`https://backend.catchup.page/api/wearables/google-sync/${user.id}`);
-        
-        // ✅ Capture and persist the sync time
-        const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        setLastSynced(now);
-        localStorage.setItem('lastSynced', now);
       }
-      // Reload dashboard stats from Supabase
+      // Reload dashboard stats from Supabase (including new timestamp)
       await fetchDashboardData();
     } catch (err) {
       console.error("Sync Error:", err);
@@ -76,7 +70,6 @@ const Dashboard = () => {
     }
   };
 
-  // ✅ NEW: Google Health Connection Logic
   const handleGoogleConnect = () => {
     if (!user) return;
     const clientID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -88,7 +81,6 @@ const Dashboard = () => {
     window.location.href = authUrl;
   };
 
-  // --- HELPER: Distance Calc ---
   const getDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371; 
     const dLat = (lat2 - lat1) * (Math.PI/180);
@@ -144,7 +136,6 @@ const Dashboard = () => {
       window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
   };
 
-  // ✅ NEW: Download Image Helper
   const downloadImage = async (path) => {
     try {
       const { data, error } = await supabase.storage.from('avatars').download(path);
@@ -174,10 +165,10 @@ const Dashboard = () => {
         setUser(session.user);
 
         try {
-            // 1. Fetch Profile (Name, Goal, Avatar, Google Connection)
+            // ✅ UPDATED: Pulling last_synced_at directly from DB
             const { data: profile } = await supabase
                 .from('profiles')
-                .select('first_name, calorie_goal, avatar_url, google_connected') // ✅ Added google_connected
+                .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at') 
                 .eq('id', session.user.id)
                 .single();
             
@@ -186,22 +177,30 @@ const Dashboard = () => {
                 if (profile.first_name) setFirstName(profile.first_name);
                 if (profile.calorie_goal) currentGoal = profile.calorie_goal;
                 
-                // ✅ Fix 400 Error: Extract filename from URL
                 if (profile.avatar_url) {
                     const fileName = profile.avatar_url.split('/').pop();
                     downloadImage(fileName);
                 }
                 
-                // ✅ Update UI if DB confirms connection
                 if (profile.google_connected) {
                     setIsDeviceConnected(true);
                     localStorage.setItem('deviceConnected', 'true');
                 }
+
+                // ✅ NEW: Format the DB timestamp for UI display
+                if (profile.last_synced_at) {
+                    const date = new Date(profile.last_synced_at);
+                    const formattedDate = date.toLocaleString([], { 
+                      month: 'short', 
+                      day: 'numeric', 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    });
+                    setLastSynced(formattedDate);
+                }
             }
 
-            // 2. Fetch TODAY'S Activity from DB
             const todayStr = new Date().toISOString().split('T')[0];
-            // ✅ Fix 406 Error: Use maybeSingle instead of single
             const { data: todayLog } = await supabase
                 .from('activity_logs')
                 .select('calories, steps, distance')
@@ -209,7 +208,6 @@ const Dashboard = () => {
                 .eq('date', todayStr)
                 .maybeSingle();
 
-            // 3. Process Activity Data
             const currentCals = todayLog ? todayLog.calories : 0;
             const currentSteps = todayLog ? todayLog.steps : 0;
             const currentDist = todayLog ? todayLog.distance : 0;
@@ -223,7 +221,6 @@ const Dashboard = () => {
                 percentage: percent
             });
 
-            // 4. Fetch Latest Heart Rate
             const { data: hrLog } = await supabase
                 .from('heart_rate_logs')
                 .select('bpm')
@@ -244,11 +241,9 @@ const Dashboard = () => {
     setLoading(false);
   }, []);
 
-  // --- INITIAL EFFECT ---
   useEffect(() => {
     fetchDashboardData();
 
-    // ✅ NEW: Handle success redirect after Google Health login
     const params = new URLSearchParams(location.search);
     if (params.get('sync') === 'success') {
         setIsDeviceConnected(true);
@@ -270,7 +265,6 @@ const Dashboard = () => {
     }, 2000);
   };
 
-  // --- RENDER ---
   return (
     <div className="dashboard-wrapper">
       <DashboardNav />
@@ -290,7 +284,7 @@ const Dashboard = () => {
           <div className="header-flex">
             <div className="header-text-group">
                 <h1 className="desktop-title">{t('welcome_message', { name: firstName })}</h1>
-                {/* ✅ Added the Persistent Last Synced Label */}
+                {/* ✅ UPDATED: Label now displays DB persistent timestamp */}
                 {lastSynced && <p className="last-synced-label" style={{fontSize: '0.85rem', opacity: 0.7, margin: '4px 0 0 0'}}>Last updated: {lastSynced}</p>}
                 <h1 className="mobile-title">{t('welcome_message', { name: firstName })}</h1>
             </div>
