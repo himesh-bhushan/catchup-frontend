@@ -27,6 +27,7 @@ const Dashboard = () => {
   const [firstName, setFirstName] = useState(localStorage.getItem('userName') || "Friend");
   const [user, setUser] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null); // ✅ NEW: Avatar State
+  const [lastSynced, setLastSynced] = useState(localStorage.getItem('lastSynced') || null); // ✅ NEW: Sync Timestamp State
   
   // Activity Ring Data (Linked to DB)
   const [activityData, setActivityData] = useState({
@@ -60,6 +61,11 @@ const Dashboard = () => {
       if (isDeviceConnected) {
         // Trigger the backend to pull fresh data from Google Fit
         await axios.post(`https://backend.catchup.page/api/wearables/google-sync/${user.id}`);
+        
+        // ✅ Update the last synced timestamp
+        const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        setLastSynced(now);
+        localStorage.setItem('lastSynced', now);
       }
       // Reload dashboard stats from Supabase
       await fetchDashboardData();
@@ -285,6 +291,8 @@ const Dashboard = () => {
           <div className="header-flex">
             <div>
                 <h1 className="desktop-title">{t('welcome_message', { name: firstName })}</h1>
+                {/* ✅ Added the Last Synced Label */}
+                {lastSynced && <p className="last-synced-label" style={{fontSize: '0.8rem', opacity: 0.7, marginTop: '4px'}}>Last updated: {lastSynced}</p>}
                 <h1 className="mobile-title">{t('welcome_message', { name: firstName })}</h1>
             </div>
             {/* ✅ UPDATED: Desktop Refresh now triggers Sync */}

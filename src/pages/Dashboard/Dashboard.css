@@ -406,3 +406,12 @@
 .clinic-tile-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: auto; } /* ✅ Updated */
 .clinic-phone { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; } /* ✅ Updated */
 .clinic-view-details { font-size: 0.9rem; color: #007bff; font-weight: 600; letter-spacing: 0.3px; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.icon-spin {
+  animation: spin 1s linear infinite;
+}
