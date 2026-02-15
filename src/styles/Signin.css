@@ -203,3 +203,63 @@
     margin-top: 40px;
   }
 }
+
+/* =========================================
+   📱 MOBILE SIGN-IN FIX (DESKTOP UNTOUCHED)
+   ========================================= */
+@media screen and (max-width: 768px) {
+    
+    /* 1. Prevent Infinite Scrolling */
+    html, body {
+        height: 100% !important;
+        overflow: hidden !important; /* Locks the screen size */
+    }
+
+    .signin-container {
+        height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 2. Fix Back Arrow Alignment */
+    /* Adjust this class name to match your specific back-arrow container */
+    .back-button-wrapper {
+        position: absolute !important;
+        top: 20px !important;
+        left: 20px !important;
+        z-index: 10 !important;
+    }
+
+    .back-arrow-icon {
+        font-size: 24px !important;
+        cursor: pointer;
+        /* Aligns arrow with the 'Hello' text top line */
+        margin-top: 10px !important; 
+    }
+
+    /* 3. Tighten Header Spacing */
+    .signin-header {
+        margin-top: 60px !important; /* Space for the back button */
+        margin-bottom: 20px !important;
+    }
+
+    .signin-header h1 {
+        font-size: 2.5rem !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* 4. Center and Polish Inputs */
+    .input-group {
+        width: 100% !important;
+        margin-bottom: 15px !important;
+    }
+
+    /* 5. Fix Button Position */
+    .signin-button {
+        margin-top: auto !important; /* Pushes button to bottom of screen */
+        margin-bottom: 40px !important;
+        width: 100% !important;
+    }
+}
