@@ -437,3 +437,49 @@
     margin-bottom: 8px;
   }
 }
+
+
+
+/* =========================================
+   📱 MOBILE-ONLY OVERRIDES (DESKTOP UNTOUCHED)
+   ========================================= */
+@media screen and (max-width: 768px) {
+    
+    /* 1. Fix Sign-In / Header Alignment */
+    .mobile-header-top, 
+    .connect-title-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 15px !important;
+        padding: 15px 20px !important;
+        width: 100% !important;
+    }
+
+    /* Ensure the back button doesn't float or overlap */
+    .back-btn {
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* 2. Prevent Infinite Scrolling */
+    html, body, .dashboard-wrapper {
+        height: 100% !important;
+        overflow: hidden !important; /* Disables the long scroll */
+    }
+
+    .dashboard-content {
+        height: calc(100% - 70px); /* Adjust based on your nav height */
+        overflow-y: auto !important; /* Allows scrolling ONLY inside the content area */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* 3. Black Last Sync Text for Mobile */
+    .last-synced-label {
+        color: #000000 !important;
+        opacity: 1 !important;
+        font-weight: 500 !important;
+    }
+}
