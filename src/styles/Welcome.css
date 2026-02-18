@@ -101,14 +101,14 @@ h1 {
 
 
 /* =========================================
-   📱 MOBILE LANDING PAGE (NO SCROLL)
+   📱 MOBILE LANDING REPAIR (NO SCROLL)
    ========================================= */
 @media screen and (max-width: 768px) {
     
-    /* 1. Lock the screen height to prevent scrolling */
+    /* 1. Lock the Viewport */
     html, body, .welcome-container {
-        height: 100% !important;
-        overflow: hidden !important;
+        height: 100vh !important;
+        overflow: hidden !important; /* Total scroll kill */
         margin: 0;
         padding: 0;
     }
@@ -117,56 +117,70 @@ h1 {
         display: flex !important;
         flex-direction: column !important;
         height: 100vh !important;
-        padding: 40px 20px !important;
+        padding: 20px 25px 30px 25px !important; 
         box-sizing: border-box !important;
+        justify-content: space-between !important; /* Anchors top, middle, and bottom */
+        align-items: center !important;
+    }
+
+    /* 2. Scale Image Down for Whitespace */
+    .hero-section {
+        height: 35vh !important; /* Reserves exactly 35% of screen for image */
+        margin-bottom: 0 !important;
+        align-items: center !important;
+    }
+
+    .hero-image {
+        width: 100% !important; /* Removed the 130% zoom to fit page */
+        max-height: 100% !important;
+        object-fit: contain !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* 3. Adjust the Text Section */
+    .text-section {
+        margin: 0 !important;
+        text-align: left !important;
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 32px !important; /* Slightly smaller for better fit */
+        margin-left: 0 !important;   /* Centers text feel on small screens */
         text-align: center !important;
     }
 
-    /* 2. Scale the image to fit the remaining space */
-    .hero-image {
-        max-height: 40vh !important; /* Prevents the tomato from being too tall */
-        width: auto !important;
-        object-fit: contain !important;
-        margin: 0 0 !important;
-    }
-    .hero-section {
-        justify-content: center !important; /* Centers the image horizontally */
-        align-items: center !important;  
-        margin: 0%;   /* Centers the image vertically */
-    }
-
-     /* 3. Adjust the Text Size */
-     .text-section {
-        font-size: 1.5rem !important; /* Tightens the "ketchup" text */
-        line-height: 1.1 !important;
-        color: #ff3b30 !important; /* CatchUp Red */
-    }
-
-    /* 3. Adjust the Text Size */
-    .text-section {
-        font-size: 1.5rem !important; /* Tightens the "ketchup" text */
-        line-height: 1.1 !important;
-        color: #ff3b30 !important; /* CatchUp Red */
-    }
-
-    /* 4. Group the buttons at the bottom */
+    /* 4. Properly Aligned Button Group */
     .button-group {
+        width: 100% !important;
         display: flex !important;
         flex-direction: column !important;
         gap: 12px !important;
-        width: 95% !important;
-        align-items: center;
-        align-self: center;
-        margin-bottom: 20px !important; /* Keeps buttons away from the home bar */
+        margin-bottom: 10px !important;
+        align-items: center !important;
     }
 
     .btn {
-        height: 40px !important; /* Standard touch-friendly height */
-        width: 90%;
-        padding: 20px 0; /* Vertical padding makes them "thick" */
-        font-size: 20px;
-        font-weight: 400;
-        border-radius: 999px; 
-        transition: transform 0.1s;
+        width: 100% !important; /* Full width buttons look cleaner on mobile */
+        height: 55px !important; /* Thick, premium touch feel */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        font-size: 1.2rem !important;
+        border-radius: 30px !important;
+    }
+
+    /* Keeping your original colors */
+    .btn-signup {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #000000 !important;
+    }
+
+    .btn-signin {
+        background-color: #FF3B30 !important;
+        color: #ffffff !important;
+        border: 2px solid #FF3B30 !important;
     }
 }
