@@ -162,13 +162,10 @@ h1 {
 
     .btn {
         height: 40px !important; /* Standard touch-friendly height */
-        align-items: center;
-        justify-content: center;
-        width: 100%;
+        width: 90%;
         padding: 20px 0; /* Vertical padding makes them "thick" */
         font-size: 20px;
         font-weight: 400;
-        cursor: pointer;
         border-radius: 999px; 
         transition: transform 0.1s;
     }
