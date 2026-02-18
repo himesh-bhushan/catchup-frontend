@@ -132,7 +132,7 @@ h1 {
 
     /* 3. Adjust the Text Size */
     .text-section {
-        font-size: 2.2rem !important; /* Tightens the "ketchup" text */
+        font-size: 1.8rem !important; /* Tightens the "ketchup" text */
         line-height: 1.1 !important;
         color: #ff3b30 !important; /* CatchUp Red */
     }
@@ -142,14 +142,14 @@ h1 {
         display: flex !important;
         flex-direction: column !important;
         gap: 12px !important;
-        width: 100% !important;
+        width: 95% !important;
         margin-bottom: 20px !important; /* Keeps buttons away from the home bar */
     }
 
     .landing-btn {
-        height: 55px !important; /* Standard touch-friendly height */
+        height: 40px !important; /* Standard touch-friendly height */
         border-radius: 30px !important;
-        font-weight: 600 !important;
-        font-size: 1.1rem !important;
+        font-weight: 500 !important;
+        font-size: 1rem !important;
     }
 }
