@@ -145,7 +145,8 @@ h1 {
 
     h1 {
         font-size: 32px !important; /* Slightly smaller for better fit */
-        margin-left: 0 !important;   /* Centers text feel on small screens */
+        margin-left: 10px !important;   /* Centers text feel on small screens */
+        margin-bottom: 20px;
         text-align: left !important;
     }
 
