@@ -119,7 +119,6 @@ h1 {
         height: 100vh !important;
         padding: 20px 25px 30px 25px !important; 
         box-sizing: border-box !important;
-        justify-content: space-between !important; /* Anchors top, middle, and bottom */
         align-items: center !important;
     }
 
@@ -147,7 +146,7 @@ h1 {
     h1 {
         font-size: 32px !important; /* Slightly smaller for better fit */
         margin-left: 0 !important;   /* Centers text feel on small screens */
-        text-align: center !important;
+        text-align: left !important;
     }
 
     /* 4. Properly Aligned Button Group */
