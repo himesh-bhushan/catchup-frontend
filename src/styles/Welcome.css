@@ -132,7 +132,7 @@ h1 {
     }
 
     /* 3. Adjust the Text Size */
-    .landing-title {
+    .text-section {
         font-size: 2.2rem !important; /* Tightens the "ketchup" text */
         line-height: 1.1 !important;
         margin: 15px 0 !important;
@@ -140,7 +140,7 @@ h1 {
     }
 
     /* 4. Group the buttons at the bottom */
-    .landing-button-group {
+    .button-group {
         display: flex !important;
         flex-direction: column !important;
         gap: 12px !important;
