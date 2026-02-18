@@ -127,7 +127,7 @@ h1 {
         max-height: 40vh !important; /* Prevents the tomato from being too tall */
         width: auto !important;
         object-fit: contain !important;
-        margin: 0 auto !important;
+        margin: 0 10px !important;
     }
 
     /* 3. Adjust the Text Size */
