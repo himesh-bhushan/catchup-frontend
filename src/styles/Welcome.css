@@ -101,84 +101,57 @@ h1 {
 
 
 /* =========================================
-   📱 MOBILE LANDING REPAIR (NO SCROLL)
+   📱 MOBILE LANDING PAGE (NO SCROLL)
    ========================================= */
 @media screen and (max-width: 768px) {
     
-    /* 1. Lock the Viewport */
+    /* 1. Lock the screen height to prevent scrolling */
     html, body, .landing-container {
-        height: 100vh !important;
-        overflow: hidden !important; /* Total scroll kill */
+        height: 100% !important;
+        overflow: hidden !important;
         margin: 0;
         padding: 0;
-        background-color: #ffffff;
     }
 
     .landing-wrapper {
         display: flex !important;
         flex-direction: column !important;
+        justify-content: space-between !important; /* Spreads content top to bottom */
         height: 100vh !important;
-        padding: 20px 25px 40px 25px !important; /* Extra bottom padding for home bar */
+        padding: 40px 20px !important;
         box-sizing: border-box !important;
-        justify-content: space-between !important;
-        align-items: center !important;
+        text-align: center !important;
     }
 
-    /* 2. Scale Hero Image */
+    /* 2. Scale the image to fit the remaining space */
     .landing-hero-img {
-        max-height: 35vh !important; /* Caps image at 35% of screen height */
+        max-height: 40vh !important; /* Prevents the tomato from being too tall */
         width: auto !important;
         object-fit: contain !important;
-        margin-top: 10px !important;
+        margin: 0 auto !important;
     }
 
-    /* 3. Tighten the Typography */
-    .landing-text-group {
-        flex-grow: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-    }
-
+    /* 3. Adjust the Text Size */
     .landing-title {
-        font-size: 2.4rem !important; /* Slightly smaller to prevent wrapping issues */
+        font-size: 2.2rem !important; /* Tightens the "ketchup" text */
         line-height: 1.1 !important;
-        color: #FF4B3E !important; /* Brighter red for visibility */
-        margin: 0 !important;
-        font-weight: 800 !important;
+        margin: 15px 0 !important;
+        color: #ff3b30 !important; /* CatchUp Red */
     }
 
-    /* 4. Align Buttons at the Bottom */
+    /* 4. Group the buttons at the bottom */
     .landing-button-group {
-        width: 100% !important;
         display: flex !important;
         flex-direction: column !important;
         gap: 12px !important;
-        margin-bottom: env(safe-area-inset-bottom); /* Fixes clipping on iPhone 15/16 */
+        width: 100% !important;
+        margin-bottom: 20px !important; /* Keeps buttons away from the home bar */
     }
 
     .landing-btn {
-        width: 100% !important;
-        height: 58px !important; /* Optimal touch target size */
-        border-radius: 18px !important;
+        height: 55px !important; /* Standard touch-friendly height */
+        border-radius: 30px !important;
+        font-weight: 600 !important;
         font-size: 1.1rem !important;
-        font-weight: 700 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: transform 0.1s ease;
-    }
-
-    /* Adjust button colors to match your brand */
-    .btn-signup {
-        background-color: #000000 !important;
-        color: #ffffff !important;
-        border: none !important;
-    }
-
-    .btn-signin {
-        background-color: #FF4B3E !important;
-        color: #ffffff !important;
-        border: none !important;
     }
 }
