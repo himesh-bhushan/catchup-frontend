@@ -127,12 +127,12 @@ h1 {
         max-height: 40vh !important; /* Prevents the tomato from being too tall */
         width: auto !important;
         object-fit: contain !important;
-        margin: 0 10px !important;
+        margin: 0  !important;
     }
 
     /* 3. Adjust the Text Size */
     .text-section {
-        font-size: 1.8rem !important; /* Tightens the "ketchup" text */
+        font-size: 1.5rem !important; /* Tightens the "ketchup" text */
         line-height: 1.1 !important;
         color: #ff3b30 !important; /* CatchUp Red */
     }
@@ -143,6 +143,7 @@ h1 {
         flex-direction: column !important;
         gap: 12px !important;
         width: 95% !important;
+        align-items: center;
         margin-bottom: 20px !important; /* Keeps buttons away from the home bar */
     }
 
