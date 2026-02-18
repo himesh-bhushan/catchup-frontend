@@ -113,7 +113,7 @@ h1 {
         padding: 0;
     }
 
-    .welcome-wrapper {
+    .welcome-container {
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important; /* Spreads content top to bottom */
