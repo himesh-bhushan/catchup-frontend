@@ -106,14 +106,14 @@ h1 {
 @media screen and (max-width: 768px) {
     
     /* 1. Lock the screen height to prevent scrolling */
-    html, body, .landing-container {
+    html, body, .welcome-container {
         height: 100% !important;
         overflow: hidden !important;
         margin: 0;
         padding: 0;
     }
 
-    .landing-wrapper {
+    .welcome-wrapper {
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important; /* Spreads content top to bottom */
