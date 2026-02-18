@@ -129,6 +129,18 @@ h1 {
         object-fit: contain !important;
         margin: 0 0 !important;
     }
+    .hero-section {
+        justify-content: center !important; /* Centers the image horizontally */
+        align-items: center !important;  
+        margin: 0%;   /* Centers the image vertically */
+    }
+
+     /* 3. Adjust the Text Size */
+     .text-section {
+        font-size: 1.5rem !important; /* Tightens the "ketchup" text */
+        line-height: 1.1 !important;
+        color: #ff3b30 !important; /* CatchUp Red */
+    }
 
     /* 3. Adjust the Text Size */
     .text-section {
