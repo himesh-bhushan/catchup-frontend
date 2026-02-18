@@ -124,7 +124,7 @@ h1 {
     }
 
     /* 2. Scale the image to fit the remaining space */
-    .landing-hero-img {
+    .hero-image {
         max-height: 40vh !important; /* Prevents the tomato from being too tall */
         width: auto !important;
         object-fit: contain !important;
