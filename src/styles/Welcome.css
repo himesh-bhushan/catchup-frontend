@@ -164,6 +164,8 @@ h1 {
         height: 40px !important; /* Standard touch-friendly height */
         border-radius: 30px !important;
         font-weight: 500 !important;
-        font-size: 1rem !important;
+        font-size: 1.2rem !important;
+        align-items: center
+        justify-content: center;
     }
 }
