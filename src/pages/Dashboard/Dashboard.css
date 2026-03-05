@@ -105,7 +105,7 @@
 .goal-item-detailed p { margin: 0; font-size: 0.8rem; color: var(--text-secondary); padding-left: 20px; line-height: 1.2; }
 
 /* 4 & 5. Small Tiles Data (BP & Heart) */
-.tile-value { display: flex; align-items: baseline; gap: 6px; font-size: 2.4rem; font-weight: 700; color: var(--text-primary); margin: 15px 0 5px 0; line-height: 1; }
+.tile-value { display: flex; align-content: center; align-items: baseline; gap: 6px; font-size: 2.4rem; font-weight: 700; color: var(--text-primary); margin: 15px 0 5px 0; line-height: 1; }
 .tile-value span { font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; }
 
 /* 6. Health Score Visual */
