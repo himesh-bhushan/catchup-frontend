@@ -171,4 +171,4 @@
 .clinic-status-badge.open { background-color: #e8f5e9; color: #2e7d32; }
 .clinic-status-badge.closed { background-color: #ffebee; color: #c62828; }
 .clinic-distance { background: #333; color: white; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
-.clinic-name { margin: 0 0 15px 0; font-size: 1.1rem; color: var(--text-primary); font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-line-clamp:
+.clinic-name { margin: 0 0 15px 0; font-size: 1.1rem; color: var(--text-primary); font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
