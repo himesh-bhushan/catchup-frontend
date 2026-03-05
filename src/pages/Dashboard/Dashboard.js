@@ -30,27 +30,20 @@ const Dashboard = () => {
   const [lastSynced, setLastSynced] = useState(null);
   
   const [activityData, setActivityData] = useState({
-    calories: 0,
-    steps: 0,
-    distance: 0,
-    goal: 500, 
-    percentage: 0
+    calories: 0, steps: 0, distance: 0, goal: 500, percentage: 0
   });
 
   const [otherStats, setOtherStats] = useState({
-    heart_rate: 72, 
-    sleep: 28800 
+    heart_rate: 72, sleep: 28800 
   });
 
   const [loading, setLoading] = useState(true);
   const [isDeviceConnected, setIsDeviceConnected] = useState(localStorage.getItem('deviceConnected') === 'true');
-  const [connecting, setConnecting] = useState(false); 
   const [showConnectMenu, setShowConnectMenu] = useState(false);
-  
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
 
-  // --- SYNC LOGIC ---
+  // --- REFRESH / SYNC ---
   const handleRefreshSync = async () => {
     if (!user) return;
     setLoading(true);
@@ -70,53 +63,8 @@ const Dashboard = () => {
     if (!user) return;
     const clientID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     const redirectURI = encodeURIComponent("https://backend.catchup.page/api/auth/google/callback");
-    const state = user.id; 
-    const scope = encodeURIComponent("https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read");
-    
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=${scope}&access_type=offline&prompt=consent&state=${state}`;
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=https://www.googleapis.com/auth/fitness.activity.read%20https://www.googleapis.com/auth/fitness.body.read&access_type=offline&prompt=consent&state=${user.id}`;
     window.location.href = authUrl;
-  };
-
-  // --- CLINIC / LOCATION LOGIC ---
-  const getDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; 
-    const dLat = (lat2 - lat1) * (Math.PI/180);
-    const dLon = (lon2 - lon1) * (Math.PI/180); 
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * (Math.PI/180)) * Math.cos(lat2 * (Math.PI/180)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    return (R * c).toFixed(1);
-  };
-
-  const fetchNearbyClinics = async (lat, lng) => {
-    try {
-        setLocationLoading(true);
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=clinic&limit=4&viewbox=${lng-0.05},${lat+0.05},${lng+0.05},${lat-0.05}&bounded=1`);
-        const data = await response.json();
-        if (data.length > 0) {
-            const formattedClinics = data.map(item => ({
-                id: item.place_id,
-                name: item.display_name.split(",")[0],
-                fullAddress: item.display_name,
-                lat: parseFloat(item.lat),
-                lng: parseFloat(item.lon),
-                distance: getDistance(lat, lng, parseFloat(item.lat), parseFloat(item.lon)),
-                status: "Open Now",
-                isOpen: true
-            }));
-            formattedClinics.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-            setClinics(formattedClinics);
-        }
-    } catch (err) { console.error("Clinic Fetch Error:", err); } finally { setLocationLoading(false); }
-  };
-
-  const handleGetLocation = () => {
-    if (navigator.geolocation) {
-      setLocationLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        (position) => { fetchNearbyClinics(position.coords.latitude, position.coords.longitude); },
-        () => { setLocationLoading(false); }
-      );
-    }
   };
 
   // --- DATA FETCHING ---
@@ -130,17 +78,14 @@ const Dashboard = () => {
             const { data: profile } = await supabase
                 .from('profiles')
                 .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at')
-                .eq('id', session.user.id)
-                .single();
+                .eq('id', session.user.id).single();
             
-            let currentGoal = 500;
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
-                if (profile.calorie_goal) currentGoal = profile.calorie_goal;
                 if (profile.avatar_url) {
                     const fileName = profile.avatar_url.split('/').pop();
-                    const { data: imgData } = await supabase.storage.from('avatars').download(fileName);
-                    if (imgData) setAvatarUrl(URL.createObjectURL(imgData));
+                    const { data: img } = await supabase.storage.from('avatars').download(fileName);
+                    if (img) setAvatarUrl(URL.createObjectURL(img));
                 }
                 if (profile.google_connected) setIsDeviceConnected(true);
                 if (profile.last_synced_at) {
@@ -149,31 +94,30 @@ const Dashboard = () => {
                 }
             }
 
-            const todayStr = new Date().toISOString().split('T')[0];
-            const { data: todayLog } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
+            const today = new Date().toISOString().split('T')[0];
+            const { data: log } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', today).maybeSingle();
+            
+            const goal = profile?.calorie_goal || 500;
+            const cals = log?.calories || 0;
 
-            const cals = todayLog?.calories || 0;
             setActivityData({
                 calories: cals,
-                steps: todayLog?.steps || 0,
-                distance: todayLog?.distance || 0,
-                goal: currentGoal,
-                percentage: currentGoal > 0 ? Math.min((cals / currentGoal) * 100, 100) : 0
+                steps: log?.steps || 0,
+                distance: log?.distance || 0,
+                goal: goal,
+                percentage: goal > 0 ? Math.min((cals / goal) * 100, 100) : 0
             });
 
-            const { data: hrLog } = await supabase.from('heart_rate_logs').select('bpm').eq('user_id', session.user.id).order('date', { ascending: false }).limit(1).maybeSingle();
-            setOtherStats(prev => ({ ...prev, heart_rate: hrLog ? hrLog.bpm : 72 }));
+            const { data: hr } = await supabase.from('heart_rate_logs').select('bpm').eq('user_id', session.user.id).order('date', {ascending: false}).limit(1).maybeSingle();
+            setOtherStats(prev => ({ ...prev, heart_rate: hr ? hr.bpm : 72 }));
 
         } catch (err) { console.error(err); }
     }
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
+  useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
 
-  // --- RENDER ---
   return (
     <div className="dashboard-wrapper">
       <DashboardNav />
@@ -192,51 +136,47 @@ const Dashboard = () => {
                 <h1 className="mobile-title">{t('welcome_message', { name: firstName })}</h1>
                 {lastSynced && <p className="last-synced-label">Last updated: {lastSynced}</p>}
             </div>
-            <div className="desktop-only-refresh"><button className="refresh-btn" onClick={handleRefreshSync}><FiRefreshCw className={loading ? "icon-spin" : ""} /></button></div>
+            <div className="desktop-only-refresh">
+                <button className="refresh-btn" onClick={handleRefreshSync}>
+                    <FiRefreshCw className={loading ? "icon-spin" : ""} />
+                </button>
+            </div>
           </div>
         </header>
 
         {loading ? (
-            <div className="big-tile-container animate-fade-in">
-                <div className="big-connect-card">
-                    <div className="icon-pulse"><img alt="Tomato" width="80%" src={tomato} /></div>
-                    <h3>{t('loading_data')}</h3>
-                </div>
-            </div>
+            <div className="big-tile-container"><div className="big-connect-card"><h3>{t('loading_data')}</h3></div></div>
         ) : !isDeviceConnected ? ( 
-            <div className="big-tile-container animate-fade-in">
+            <div className="big-tile-container">
                 <div className="big-connect-card">
                     {showConnectMenu ? (
                         <div className="connect-device-card-content">
-                            <div className="connect-title-row">
-                                <button onClick={() => setShowConnectMenu(false)} className="back-btn"><FiArrowLeft size={24} /></button>
-                                <h3 className="connect-device-title">Select Device</h3>
-                            </div>
-                            <div className="device-btn-container">
-                                <button onClick={handleGoogleConnect} className="device-connect-btn oura">Connect Oura</button>
-                                <button className="device-connect-btn fitbit">Connect Fitbit</button>
-                            </div>
+                            <button onClick={() => setShowConnectMenu(false)} className="back-btn"><FiArrowLeft size={24} /></button>
+                            <h3>Select Device</h3>
+                            <button onClick={handleGoogleConnect} className="device-connect-btn oura">Connect Oura</button>
+                            <button className="device-connect-btn fitbit">Connect Fitbit</button>
                         </div>
                     ) : (
-                        <div className="connect-prompt">
+                        <>
                             <FiWatch size={60} color="#00796b"/>
                             <h2>{t('connect_title')}</h2>
                             <button className="connect-btn" onClick={() => setShowConnectMenu(true)}>{t('connect_btn')}</button>
-                        </div>
+                        </>
                     )}
                 </div>
             </div>
         ) : (
             <div className="animate-fade-in">
-                {/* GRID START: 2-column Mobile / 3-column Desktop */}
+                {/* --- MAIN GRID START --- */}
                 <div className="dash-grid">
                     
+                    {/* Activity: Spans 2 cols on Mobile / 1 col on Desktop */}
                     <div className="card activity-card" onClick={() => navigate('/activity')}>
                         <div className="card-header"><h3>{t('Activity')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="activity-content">
                             <div className="ring-wrapper">
                                 <div className="activity-ring" style={{ background: `conic-gradient(#FF5252 0% ${activityData.percentage}%, #E0E0E0 0% 100%)` }}>
-                                    <div className="inner-circle"><img alt="Tomato" src={tomato} /><span>{Math.round(activityData.percentage)}%</span></div>
+                                    <div className="inner-circle"><img alt="Tomato" src={tomato} width="40" /><span>{Math.round(activityData.percentage)}%</span></div>
                                 </div>
                             </div>
                             <div className="activity-stats">
@@ -246,61 +186,41 @@ const Dashboard = () => {
                         </div>
                     </div>
 
+                    {/* Goals: Right side on Desktop / Below Activity on Mobile */}
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('Goals')}</h3><FiChevronRight className="card-arrow" /></div>
-                        <div className="goals-mini-display">3/4 Completed</div>
+                        <div className="goals-display">
+                            <span className="goals-count">3/4</span>
+                            <p>Goals Completed Today</p>
+                        </div>
                         <div className="progress-bar-simple"><div className="fill" style={{width: '75%'}}></div></div>
                     </div>
 
+                    {/* Small Tiles */}
                     <div className="card bp-card" onClick={() => navigate('/blood-pressure')}>
                         <div className="card-header"><h3>{t('BP')}</h3><FiChevronRight className="card-arrow" /></div>
-                        <div className="bp-value">120/80 <span>mmHg</span></div>
+                        <div className="tile-value">120/80</div>
+                        <span className="unit-label">mmHg</span>
                     </div>
 
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
                         <div className="card-header"><h3>{t('Score')}</h3><FiChevronRight className="card-arrow" /></div>
-                        <div className="score-big">87 <span>PTS</span></div>
+                        <div className="tile-value">87</div>
+                        <span className="unit-label">Health Pts</span>
                     </div>
 
                     <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
                         <div className="card-header"><h3>{t('Heart')}</h3><FiHeart className="card-icon-red" /></div>
-                        <div className="heart-value">{otherStats.heart_rate} <span>BPM</span></div>
+                        <div className="tile-value">{otherStats.heart_rate}</div>
+                        <span className="unit-label">BPM</span>
                     </div>
 
                     <div className="card fight-card mobile-only">
-                        <div className="speech-bubble">Keep it up!</div>
                         <img src={tomatoHero} alt="Fit Tomato" className="fight-tomato" />
+                        <p>Keep going!</p>
                     </div>
                 </div>
-
-                {/* Recommendations */}
-                <div className="recommendations-section">
-                    <h3>{t('recommendations')}</h3>
-                    <div className="recommendations-carousel">
-                        {[1,2,3].map(i => (
-                            <div key={i} className="blog-card">
-                                <div className="blog-img-wrapper" style={{backgroundColor: '#fff3e0'}}><img src={tomato} alt="blog" /></div>
-                                <div className="blog-content"><p>Wellness Tip #{i}</p></div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Clinics */}
-                <div className="recommendations-section">
-                    <div className="section-header-flex">
-                        <h3>{t('nearby_care')}</h3>
-                        <button onClick={handleGetLocation} className="loc-btn"><FiNavigation /> {locationLoading ? '...' : 'Find'}</button>
-                    </div>
-                    <div className="clinics-grid-container">
-                        {clinics.map(c => (
-                            <div key={c.id} className="clinic-tile">
-                                <h4>{c.name}</h4>
-                                <p>{c.distance} km away</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                {/* --- MAIN GRID END --- */}
             </div>
          )}
       </div>
