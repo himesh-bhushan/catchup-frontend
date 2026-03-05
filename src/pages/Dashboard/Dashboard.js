@@ -27,7 +27,7 @@ const Dashboard = () => {
   const [firstName, setFirstName] = useState(localStorage.getItem('userName') || "Friend");
   const [user, setUser] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null); 
-  const [lastSynced, setLastSynced] = useState(null); // ✅ Fixed: Initialized to null
+  const [lastSynced, setLastSynced] = useState(null); 
   
   // Activity Ring Data (Linked to DB)
   const [activityData, setActivityData] = useState({
@@ -53,7 +53,6 @@ const Dashboard = () => {
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
 
-  // ✅ Trigger + Sync Trigger
   const handleRefreshSync = async () => {
     if (!user) return;
     setLoading(true);
@@ -61,7 +60,6 @@ const Dashboard = () => {
       if (isDeviceConnected) {
         await axios.post(`https://backend.catchup.page/api/wearables/google-sync/${user.id}`);
       }
-      // Reload dashboard stats from Supabase (this pulls the fresh DB timestamp)
       await fetchDashboardData();
     } catch (err) {
       console.error("Sync Error:", err);
@@ -156,7 +154,6 @@ const Dashboard = () => {
     { id: 6, title: t('rec_move') || "The Science of Daily Movement", img: tomatoHero, color: "#e8f5e9" },
   ];
 
-  // --- MAIN DATA FETCH (Supabase Linked) ---
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     const { data: { session } } = await supabase.auth.getSession();
@@ -165,10 +162,9 @@ const Dashboard = () => {
         setUser(session.user);
 
         try {
-            // 1. Fetch Profile including the new last_synced_at column
             const { data: profile } = await supabase
                 .from('profiles')
-                .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at') // ✅ Added column
+                .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at')
                 .eq('id', session.user.id)
                 .single();
             
@@ -187,14 +183,10 @@ const Dashboard = () => {
                     localStorage.setItem('deviceConnected', 'true');
                 }
 
-                // ✅ Fixed: Extract and format timestamp from the DB
                 if (profile.last_synced_at) {
                     const date = new Date(profile.last_synced_at);
                     const formattedDate = date.toLocaleString([], { 
-                        month: 'short', 
-                        day: 'numeric', 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
+                        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
                     });
                     setLastSynced(formattedDate);
                 }
@@ -214,11 +206,7 @@ const Dashboard = () => {
             const percent = currentGoal > 0 ? Math.min((currentCals / currentGoal) * 100, 100) : 0;
 
             setActivityData({
-                calories: currentCals,
-                steps: currentSteps,
-                distance: currentDist,
-                goal: currentGoal,
-                percentage: percent
+                calories: currentCals, steps: currentSteps, distance: currentDist, goal: currentGoal, percentage: percent
             });
 
             const { data: hrLog } = await supabase
@@ -230,21 +218,16 @@ const Dashboard = () => {
                 .maybeSingle();
 
             setOtherStats(prev => ({
-                ...prev,
-                heart_rate: hrLog ? hrLog.bpm : 72 
+                ...prev, heart_rate: hrLog ? hrLog.bpm : 72 
             }));
 
-        } catch (err) {
-            console.error("Error fetching dashboard data:", err);
-        }
+        } catch (err) { console.error("Error fetching dashboard data:", err); }
     }
     setLoading(false);
   }, []);
 
-  // --- INITIAL EFFECT ---
   useEffect(() => {
     fetchDashboardData();
-
     const params = new URLSearchParams(location.search);
     if (params.get('sync') === 'success') {
         setIsDeviceConnected(true);
@@ -266,7 +249,6 @@ const Dashboard = () => {
     }, 2000);
   };
 
-  // --- RENDER ---
   return (
     <div className="dashboard-wrapper">
       <DashboardNav />
@@ -277,16 +259,13 @@ const Dashboard = () => {
              <div className="mobile-avatar" onClick={() => navigate('/profile')}>
                 {avatarUrl ? (
                     <img src={avatarUrl} alt="User" style={{width:'100%', height:'100%', borderRadius:'50%', objectFit:'cover'}} />
-                ) : (
-                    <FiUser />
-                )}
+                ) : ( <FiUser /> )}
              </div>
              <button className="refresh-btn" onClick={handleRefreshSync}><FiRefreshCw className={loading ? "icon-spin" : ""} /></button>
           </div>
           <div className="header-flex">
             <div className="header-text-group">
                 <h1 className="desktop-title">{t('welcome_message', { name: firstName })}</h1>
-                {/* ✅ Added the Persistent Last Synced Label */}
                 {lastSynced && <p className="last-synced-label" style={{fontSize: '0.85rem',color: '#000000', opacity: 0.7, margin: '4px 0 0 0'}}>Last updated: {lastSynced}</p>}
                 <h1 className="mobile-title">{t('welcome_message', { name: firstName })}</h1>
             </div>
@@ -315,7 +294,6 @@ const Dashboard = () => {
                                 <button onClick={handleGoogleConnect} className="device-connect-btn oura" style={{backgroundColor:'#000', color:'#fff'}}>
                                     <div className="device-label"><FiActivity size={20} /><span>Connect Oura</span></div>
                                 </button>
-
                                 <button onClick={() => handleConnectProvider()} className="device-connect-btn fitbit" disabled={connecting}><div className="device-label"><FiBluetooth size={20} /><span>Connect Fitbit</span></div>{connecting && <FiRefreshCw className="icon-spin" />}</button>
                                 <button onClick={() => handleConnectProvider()} className="device-connect-btn garmin" disabled={connecting}><div className="device-label"><FiBluetooth size={20} /><span>Connect Garmin</span></div></button>
                                 <button onClick={() => handleConnectProvider()} className="device-connect-btn whoop" disabled={connecting}><div className="device-label"><FiBluetooth size={20} /><span>Connect Whoop</span></div></button>
@@ -342,12 +320,7 @@ const Dashboard = () => {
                         <div className="activity-content">
                         <div className="ring-wrapper">
                             <div className="activity-ring" 
-                                style={{ 
-                                    background: `conic-gradient(
-                                        #FF5252 0% ${activityData.percentage}%, 
-                                        #E0E0E0 0% 100%
-                                    )` 
-                                }}>
+                                style={{ background: `conic-gradient(#FF5252 0% ${activityData.percentage}%, #E0E0E0 0% 100%)` }}>
                                 <div className="inner-circle">
                                     <img alt="Tomato" width="60%" src={tomato} />
                                     <span>{Math.round(activityData.percentage)}%</span>
@@ -382,6 +355,13 @@ const Dashboard = () => {
                         <div className="bp-value">120/80 <span>mmHg</span></div>
                     </div>
 
+                    <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
+                        <div className="card-header"><h3>{t('heart_rate') || "Heart Rate"}</h3><FiHeart className="card-icon-red" /><FiChevronRight className="card-arrow" /></div>
+                        <div className="heart-visuals" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                            <img alt="Heart Rate" width="80%" src={heartVisual} /></div>
+                        <div className="heart-value">{otherStats.heart_rate} <span>BPM</span></div>
+                    </div>
+
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
                         <div className="card-header"><h3>{t('health_score') || "Health Score"}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="score-big">87 <span>SCORE</span></div>
@@ -391,13 +371,6 @@ const Dashboard = () => {
                             <div className="score-mini-box yellow"><FiActivity /><span>Cal</span><strong>{activityData.calories}</strong></div>
                             <div className="score-mini-box blue"><FiDroplet /><span>{t('water')||"Water"}</span><strong>2 L</strong></div>
                         </div>
-                    </div>
-
-                    <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
-                        <div className="card-header"><h3>{t('heart_rate') || "Heart Rate"}</h3><FiHeart className="card-icon-red" /><FiChevronRight className="card-arrow" /></div>
-                        <div className="heart-visuals" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                            <img alt="Heart Rate" width="80%" src={heartVisual} /></div>
-                        <div className="heart-value">{otherStats.heart_rate} <span>BPM</span></div>
                     </div>
 
                     <div className="card fight-card">
