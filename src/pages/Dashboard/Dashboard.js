@@ -342,7 +342,7 @@ const Dashboard = () => {
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards') || 'Awards'}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="awards-content">
-                            <img src={awards} alt="Award" className="award-badge" />
+                            <img src={tomatoHero} alt="Award" className="award-badge" />
                             <div className="progress-bar-simple"><div className="fill"></div></div>
                         </div>
                     </div>
