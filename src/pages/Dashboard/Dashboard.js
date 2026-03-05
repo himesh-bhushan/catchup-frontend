@@ -360,12 +360,12 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* --- BOTTOM SECTION: CLINICS --- */}
+                {/* --- LOCATION SECTION --- */}
                 <div className="recommendations-section">
-                    <div className="section-header-flex">
+                    <div className="section-header-row">
                         <h3>{t('nearby_care') || "Find Nearby Care"}</h3>
                         <button onClick={handleGetLocation} className="loc-btn">
-                             <FiNavigation /> {locationLoading ? t('locating') : t('use_my_location')}
+                            <FiNavigation /> {locationLoading ? t('locating') : t('use_my_location') || "Use My Location"}
                         </button>
                     </div>
 
@@ -379,16 +379,12 @@ const Dashboard = () => {
                         {clinics.map((clinic) => (
                             <div key={clinic.id} className="clinic-tile" onClick={() => openGoogleMaps(clinic.name, clinic.fullAddress)}>
                                 <div className="clinic-tile-header">
-                                    <div className={`clinic-status-badge ${clinic.isOpen ? 'open' : 'closed'}`}>
-                                        {clinic.status}
-                                    </div>
+                                    <div className={`clinic-status-badge ${clinic.isOpen ? 'open' : 'closed'}`}>{clinic.status}</div>
                                     <span className="clinic-distance">{clinic.distance} km</span>
                                 </div>
                                 <h4 className="clinic-name">{clinic.name}</h4>
                                 <div className="clinic-tile-footer">
-                                    <div className="clinic-phone">
-                                        <span className="clinic-view-details">{t('view_details') || "View Details"}</span>
-                                    </div>
+                                    <span className="clinic-view-details">{t('view_details') || "View Details"}</span>
                                     <FiExternalLink size={16} color="var(--text-secondary)" />
                                 </div>
                             </div>
