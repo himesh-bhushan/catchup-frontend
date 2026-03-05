@@ -134,7 +134,7 @@
   object-fit: contain; 
   flex-grow: 1; 
   min-height: 0; 
-  margin: auto 0; 
+  margin:  0; 
 }
 .awards-content .progress-bar-simple { 
   width: 85%; 
@@ -193,23 +193,27 @@
   .desktop-title { display: block !important; }
   .header-flex { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; margin-bottom: 25px; }
 
-  /* Grid Math: 1 auto row for the top, 6 fractional rows for the bottom to create ratios */
+  /* 1. Remove global min-height so the Sync card is allowed to shrink */
+  .card { min-height: auto !important; }
+
+  /* 2. Lock the Grid: 1 auto row for the top, 6 FIXED 45px rows for the bottom */
+  /* This completely eliminates the infinite stretching whitespace */
   .dash-grid { 
     grid-template-columns: repeat(3, 1fr); 
-    grid-template-rows: auto repeat(6, 1fr); 
+    grid-template-rows: auto repeat(6, 45px); 
     gap: 25px; 
   }
   
   /* Top Row (Row 1) */
-  .activity-card { grid-column: 1 / 2; grid-row: 1 / 2; order: 1; min-height: 220px; }
+  .activity-card { grid-column: 1 / 2; grid-row: 1 / 2; order: 1; }
   .goals-card    { grid-column: 2 / 4; grid-row: 1 / 2; order: 2; }
   
-  /* Left Column: 1:1 Ratio (Each card spans exactly 3 rows) */
+  /* Left Column: 1:1 Ratio (Each spans 3 rows = exactly 185px tall) */
   .bp-card       { grid-column: 1 / 2; grid-row: 2 / 5; order: 3; }
   .heart-card    { grid-column: 1 / 2; grid-row: 5 / 8; order: 5; }
   
-  /* Right Columns: 1:2 Ratio (Sync spans 2 rows, bottom cards span 4 rows) */
-  .sync-card     { grid-column: 2 / 4; grid-row: 2 / 4; order: 4; justify-content: flex-start; }
+  /* Right Columns: 1:2 Ratio (Sync spans 2 rows = 115px, Bottom spans 4 rows = 255px) */
+  .sync-card     { grid-column: 2 / 4; grid-row: 2 / 4; order: 4; justify-content: center; padding: 15px 25px; }
   .score-card    { grid-column: 2 / 3; grid-row: 4 / 8; order: 6; justify-content: center; }
   .awards-card   { grid-column: 3 / 4; grid-row: 4 / 8; order: 7; justify-content: center; }
 
