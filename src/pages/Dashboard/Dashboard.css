@@ -43,6 +43,7 @@
 .refresh-btn { background: var(--card-bg); color: var(--text-primary); border: none; padding: 12px; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; font-size: 1.2rem; }
 .refresh-btn:hover { transform: scale(1.1); }
 .header-text-group { display: flex; flex-direction: column; }
+.greeting-small { margin: 0 0 5px 0; font-size: 1.2rem; font-weight: 600; color: var(--text-primary); }
 
 /* =========================================
    3. BIG CENTER CARD (Connect / Loading)
@@ -61,55 +62,117 @@
 /* =========================================
    4. GRID & WIDGET CARDS
    ========================================= */
-.dash-grid { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; }
+.dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; }
 
-.card { background: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+/* Explicit Mobile Tile Ordering */
+.sync-card     { grid-column: span 2; order: 1; }
+.activity-card { grid-column: span 2; order: 2; min-height: 180px; }
+.bp-card       { grid-column: 1 / 2; order: 3; }
+.heart-card    { grid-column: 2 / 3; order: 4; }
+.score-card    { grid-column: 1 / 2; order: 5; }
+.awards-card   { grid-column: 2 / 3; order: 6; }
+.goals-card    { grid-column: span 2; order: 7; }
+
+.card { background: var(--card-bg); border-radius: 24px; padding: 22px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;}
 .card:hover { transform: translateY(-3px); }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.card-header h3 { margin: 0; font-size: 1.3rem; font-weight: 700; color: var(--text-primary); }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.card-header h3 { margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--text-primary); }
 .card-arrow { color: #FF3B30; font-size: 1.4rem; }
+
+/* Sync Card Styling */
+.sync-card { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 18px 25px; min-height: auto !important;}
+.sync-header { display: flex; align-items: center; gap: 10px; }
+.sync-header .sync-dot { width: 14px; height: 14px; background-color: #4CD964; border-radius: 50%; }
+.sync-header h3 { font-size: 1.3rem !important; margin: 0; }
+.sync-card p { margin: 0; color: var(--text-secondary); font-size: 0.95rem; }
 
 /* Activity Card Ring */
 .activity-content { display: flex; align-items: center; gap: 20px; }
-.ring-wrapper { width: 140px; height: 140px; flex-shrink: 0; position: relative; }
+.ring-wrapper { width: 130px; height: 130px; flex-shrink: 0; position: relative; }
 .activity-ring { width: 100%; height: 100%; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
 .inner-circle { width: 78%; height: 78%; background-color: #FFF9C4 !important; border: 8px solid var(--card-bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.inner-circle span { font-size: 0.95rem; font-weight: 600; color: #333 !important; margin-top: -2px; }
+.inner-circle span { margin-top: -3px; font-size: 0.85rem; font-weight: 600; color: #333 !important; }
 .inner-circle img { margin-bottom: 2px; width: 45px; height: auto; }
+.activity-stats { display: flex; flex-direction: column; gap: 10px;}
 .activity-stats .stat-item p { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0; }
-.activity-stats .stat-item h4 { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
+.activity-stats .stat-item h4 { font-size: 0.85rem; color: var(--text-primary); font-weight: 600; margin: 0; }
+.activity-stats .unit { font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;}
 
 /* Goals Section */
-.goals-progress-bar { background: var(--border-color); height: 18px; border-radius: 12px; position: relative; margin-bottom: 25px; margin-top: 10px; width: 100%; }
-.progress-fill { background: #FFE082; height: 100%; border-radius: 12px; }
-.progress-tomato { position: absolute; right: 20%; top: -20px; width: 50px; }
-.progress-text { position: absolute; left: 50%; top: -1px; font-size: 12px; font-weight: bold; transform: translateX(-50%); color: #444; }
+.goals-progress-bar { background: #FFF9C4; height: 16px; border-radius: 12px; position: relative; margin: 15px 0 10px 0; width: 100%; }
+.progress-fill { background: #FFEB3B; height: 100%; border-radius: 12px; }
+.progress-tomato { position: absolute; right: 20%; top: -15px; width: 45px; }
+.progress-text { position: absolute; left: 50%; top: -1px; font-size: 12px; font-weight: bold; transform: translateX(-50%); color: #333; }
+.goals-detailed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+.goal-item-detailed { display: flex; flex-direction: column; gap: 4px; }
+.goal-item-header { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
+.goal-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #4CD964; background: transparent; }
+.goal-dot.filled { background-color: #4CD964; }
+.goal-item-detailed p { margin: 0; font-size: 0.8rem; color: var(--text-secondary); padding-left: 20px; line-height: 1.2; }
 
 /* Metrics & Score Values */
-.bp-value { font-size: 3rem; font-weight: 600; color: var(--text-primary); margin-top: 10px; }
-.bp-value span { font-size: 1.2rem; color: var(--text-secondary); font-weight: 400; }
-.score-big { font-size: 3.5rem; font-weight: 300; margin-bottom: 15px; line-height: 1; color: var(--text-primary); }
-.score-big span { font-weight: 600; font-size: 1.2rem; }
-.heart-value { font-size: 3.5rem; font-weight: 300; line-height: 1; margin-top: auto; margin-bottom: 10px; color: var(--text-primary); }
-.heart-value span { font-size: 1.2rem; font-weight: 400; color: var(--text-secondary); }
-.card-icon-red { color: #FF3B30; font-size: 1.3rem; }
+.tile-value { display: flex; align-items: baseline; gap: 6px; font-size: 2.4rem; font-weight: 700; color: var(--text-primary); margin: 15px 0 5px 0; line-height: 1; }
+.tile-value span { font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; }
+.score-ring-wrapper { width: 110px; height: 110px; position: relative; margin: 0 auto; }
+.score-ring { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#FF9500 0% 87%, #FFE0B2 87% 100%); display: flex; align-items: center; justify-content: center; }
+.score-inner { width: 70%; height: 70%; background: var(--card-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800; color: #FF3B30; }
 
-/* =========================================
-   FIXED PROPORTIONAL AWARD IMAGE scaling
-   ========================================= */
-.fight-card { background: #FFE0B2; align-items: center; justify-content: center; min-height: 200px; flex-direction: column; gap: 10px; padding: 25px; }
-.speech-bubble { background: #fff; padding: 8px 16px; border-radius: 15px; font-size: 0.9rem; font-weight: 800; color: #333; text-align: center; }
-
-.fight-tomato {
-  /* Remove fixed width: 100px */
-  width: auto;             /* Allow scaling naturally */
-  max-width: 80%;          /* Don't let it get wider than 80% of tile */
-  max-height: 60%;         /* Don't let it get taller than 60% of tile space */
-  height: auto;            /* Maintain aspect ratio */
-  object-fit: contain;     /* Ensure entire image fits in space */
-  margin-top: auto;        /* Pushes it below the speech bubble */
-  flex-grow: 1;            /* Encourages it to fill vertical space */
+/* Awards Visual (Proportional Fix Applied) */
+.awards-content { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  width: 100%; 
+  flex-grow: 1; 
+  justify-content: space-between; 
+  min-height: 0; 
 }
+.award-badge { 
+  width: 100%; 
+  height: 100%; 
+  max-height: 75%; 
+  object-fit: contain; 
+  flex-grow: 1; 
+  min-height: 0; 
+  margin: auto 0; 
+}
+.awards-content .progress-bar-simple { 
+  width: 85%; 
+  height: 8px; 
+  background: #E0E0E0; 
+  border-radius: 10px; 
+  margin-top: 10px; 
+  flex-shrink: 0; 
+}
+.awards-content .progress-bar-simple .fill { 
+  height: 100%; 
+  background: #4CD964; 
+  border-radius: 10px; 
+  width: 60%; 
+}
+
+/* --- RECOMMENDATIONS & CLINICS --- */
+.recommendations-section { width: 100%; margin-top: 40px; margin-bottom: 20px; }
+.section-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; }
+.section-header-row h3 { margin: 0 !important; font-size: 1.5rem; color: var(--text-primary); font-weight: 700; }
+.empty-clinics-state p { color: var(--text-secondary); font-size: 0.95rem; margin-top: 0; }
+
+.recommendations-carousel { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 5px; scroll-behavior: smooth; }
+.recommendations-carousel::-webkit-scrollbar { display: none; }
+.blog-card { min-width: calc(33.333% - 15px); background: var(--card-bg); border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.blog-img-wrapper { width: 100%; height: 150px; display: flex; align-items: center; justify-content: center; }
+.blog-img-wrapper img { max-height: 75%; max-width: 75%; object-fit: contain; }
+.blog-content { padding: 15px; flex-grow: 1; }
+.blog-content p { margin: 0; font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+
+.clinics-grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 10px; }
+.clinic-tile { background: var(--card-bg); border-radius: 20px; padding: 20px; min-height: 140px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
+.clinic-tile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.clinic-status-badge { font-size: 0.75rem; font-weight: 700; padding: 6px 12px; border-radius: 20px; text-transform: uppercase; background-color: #e8f5e9; color: #2e7d32; }
+.clinic-distance { background: #333; color: white; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
+.clinic-name { margin: 0 0 15px 0; font-size: 1.1rem; color: var(--text-primary); font-weight: 700; }
+.clinic-tile-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: auto; }
+.loc-btn { background-color: var(--text-primary); color: var(--bg-color); border: none; padding: 10px 20px; border-radius: 30px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 
 /* --- ANIMATIONS & UTILS --- */
 .animate-fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
@@ -119,38 +182,52 @@
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .icon-pulse { animation: pulse 2s infinite; font-size: 2.5rem; margin-bottom: 15px; }
 
+
 /* =========================================
    6. DESKTOP ALIGNMENT OVERRIDES (>=1024px)
    ========================================= */
 @media (min-width: 1024px) {
-  /* HIDE MOBILE HEADER */
-  .mobile-header-top, .mobile-title { display: none !important; }
-  /* SHOW DESKTOP HEADER */
-  .desktop-title { display: block !important; }
-
-  /* Desktop layout structure */
   .dashboard-content { margin-left: 140px; padding: 40px 50px; max-width: 1400px; }
-  .header-flex { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 10px; }
+  .mobile-header-top { display: none !important; }
+  .mobile-title { display: none !important; }
+  .desktop-title { display: block !important; }
+  .header-flex { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; margin-bottom: 25px; }
 
-  /* Main Grid Configuration (3 Columns) */
-  .dash-grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto; gap: 25px; }
+  /* Grid Math: 1 auto row for the top, 6 fractional rows for the bottom to create ratios */
+  .dash-grid { 
+    grid-template-columns: repeat(3, 1fr); 
+    grid-template-rows: auto repeat(6, 1fr); 
+    gap: 25px; 
+  }
   
-  /* Desktop tile spanning */
-  .activity-card { grid-column: 1 / 2; }
-  .goals-card { grid-column: 2 / 4; } 
-  .bp-card { grid-column: 1 / 2; }
-  .score-card { grid-column: 2 / 3; }
-  .heart-card { grid-column: 3 / 4; }
+  /* Top Row (Row 1) */
+  .activity-card { grid-column: 1 / 2; grid-row: 1 / 2; order: 1; min-height: 220px; }
+  .goals-card    { grid-column: 2 / 4; grid-row: 1 / 2; order: 2; }
   
-  /* Contradictory CSS removal for .fight-card - it now dangles naturally in next cell or spans columns as desired */
-  .fight-card { grid-column: span 1; display: flex !important; } /* Make sure it's visible on desktop per intent shown in images */
+  /* Left Column: 1:1 Ratio (Each card spans exactly 3 rows) */
+  .bp-card       { grid-column: 1 / 2; grid-row: 2 / 5; order: 3; }
+  .heart-card    { grid-column: 1 / 2; grid-row: 5 / 8; order: 5; }
+  
+  /* Right Columns: 1:2 Ratio (Sync spans 2 rows, bottom cards span 4 rows) */
+  .sync-card     { grid-column: 2 / 4; grid-row: 2 / 4; order: 4; justify-content: flex-start; }
+  .score-card    { grid-column: 2 / 3; grid-row: 4 / 8; order: 6; justify-content: center; }
+  .awards-card   { grid-column: 3 / 4; grid-row: 4 / 8; order: 7; justify-content: center; }
+
+  /* Desktop Typography & Sizing Scaling */
+  .tile-value { font-size: 3.5rem; }
+  .tile-value span { font-size: 1.4rem; }
+  .score-ring-wrapper { width: 140px; height: 140px; }
+  .score-inner { font-size: 2rem; }
 }
 
-/* Recommendations & Clinics styling dangled at end of original file */
-.recommendations-carousel { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 5px; scroll-behavior: smooth; }
-.recommendations-carousel::-webkit-scrollbar { display: none; }
-.blog-card { min-width: calc(33.333% - 15px); background: var(--card-bg); border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-@media screen and (max-width: 768px) { .blog-card { min-width: 260px; } }
-
-.clinics-grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 10px; }
-.clinic-tile { background: var(--card-bg); border-radius: 20px; padding: 20px; min-height: 140px; border: 1px solid var(--border-color); }
+/* =========================================
+   7. MOBILE SPECIFIC OVERRIDES (<=768px)
+   ========================================= */
+@media screen and (max-width: 768px) {
+    .goals-detailed-grid { grid-template-columns: 1fr; gap: 12px; }
+    .blog-card { min-width: 260px; }
+    .mobile-header-top, .connect-title-row { display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 15px !important; padding: 15px 20px !important; width: 100% !important; }
+    .back-btn { margin: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+    html, body, .dashboard-wrapper { height: 100% !important; overflow: hidden !important; }
+    .dashboard-content { height: calc(100% - 70px); overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+}
