@@ -125,7 +125,7 @@
     position: absolute; 
     top: 50%; 
     transform: translateY(-50%); 
-    right: -80px; 
+    right: -100px; 
     max-height: 120px; 
     z-index: 1; 
     object-fit: contain;
