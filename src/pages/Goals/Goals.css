@@ -123,10 +123,13 @@
 }
 .hero-image {
     position: absolute; 
-    top: 50%; /* Suspends the image perfectly in the middle */
-    transform: translateY(-50%); /* Adjusts it so it's perfectly centered */
-    right: 0px; /* Gives it a tiny bit of breathing room on the right */
-    max-height: 120px; /* Slightly smaller so it fits completely inside the box */
+    top: 50%; 
+    transform: translateY(-50%); 
+    
+    /* THE FIX: Pulls the image past the edge to hide the transparent space */
+    right: -40px; 
+    
+    max-height: 120px; 
     z-index: 1; 
     object-fit: contain;
 }
