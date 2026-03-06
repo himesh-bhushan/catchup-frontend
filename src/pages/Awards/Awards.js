@@ -47,8 +47,6 @@ const Awards = () => {
               
               {/* Left Column: Title + Current Challenge */}
               <div className="ac-left-col">
-                
-                {/* THE FIX: Title is securely inside the left column */}
                 <h3 className="ac-card-title">Monthly Achievements</h3>
                 
                 <div className="ac-main-badge-wrapper">
@@ -80,6 +78,14 @@ const Awards = () => {
             </div>
 
           </div>
+
+          {/* THE FIX: Restored the bottom section! */}
+          <div className="other-awards-section">
+             <div className="other-badge-wrapper">
+                <img src={awardsBadge} alt="New Challenger" className="other-badge" />
+             </div>
+          </div>
+
         </div>
         
       </div>

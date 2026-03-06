@@ -1,35 +1,43 @@
 /* =========================================
-   AWARDS PAGE (LARGE & FITTED - GRID BADGES SCALED UP)
+   HEALTH SCORE PAGE (ALIGNED TO RED BUTTON)
    ========================================= */
 
-/* Ensures the background retains that soft peach dashboard color */
-.dashboard-wrapper.awards-page-bg {
-    background-color: #F8DBCA !important; 
-    min-height: 100vh;
+/* Overrides dashboard background specifically for health score */
+.dashboard-wrapper.hs-page-bg,
+.hs-page-bg .dashboard-content {
+    background: #FFFFFF !important; 
+    background-color: #FFFFFF !important;
 }
 
-.awards-page-container {
+.hs-page-container {
     width: 100%;
-    /* Increased from 1100px to allow larger badges to fit cleanly */
-    max-width: 1300px; 
+    max-width: 1400px; 
     margin: 0 auto;
     font-family: 'Poppins', sans-serif;
-    color: #111;
-    padding: 20px 40px;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Added more top padding to push the whole block downward */
+    padding: 30px 40px; 
+    min-height: 100vh; 
 }
 
 /* --- Header --- */
-.awards-header-top {
+.hs-header {
     display: flex;
     align-items: center;
+    width: 100%;
     gap: 20px;
-    margin-bottom: 40px;
+    /* Pushes the content lower into the page */
+    margin-bottom: 50px; 
 }
 
-.awards-header-top h2 {
+.hs-header h2 {
     margin: 0;
-    font-size: 1.8rem;
-    font-weight: 500;
+    font-size: 1.6rem; 
+    font-weight: 600;
+    flex-grow: 1;
 }
 
 .icon-btn {
@@ -39,7 +47,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #111;
+    color: #333;
     padding: 8px;
     border-radius: 50%;
     transition: background 0.2s;
@@ -47,131 +55,196 @@
 
 .icon-btn:hover { background: rgba(0,0,0,0.05); }
 
-/* --- Main Achievements Card --- */
-.achievements-card {
-    background-color: #FBF7EC; 
-    border-radius: 20px;
-    padding: 50px 60px; /* Slightly thicker padding for the larger card */
+.date-picker-wrapper {
+    position: relative;
     display: flex;
-    gap: 80px; /* Increased gap to balance the larger images */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-}
-
-/* Left Column */
-.ac-left-col {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    width: 44px; 
+    height: 44px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    cursor: pointer;
 }
 
-.ac-left-col h3 {
-    align-self: flex-start;
-    font-size: 2rem; /* Scaled up slightly */
-    font-weight: 500;
-    margin: 0 0 30px 0;
-}
-
-.ac-main-badge {
-    /* MASSIVELY increased from 260px so it acts as a true hero image */
-    width: 350px; 
-    object-fit: contain;
-    filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); 
-}
-
-.ac-challenge-title {
-    font-size: 1.4rem; /* Scaled up */
-    font-weight: 500;
-    margin: 25px 0 15px 0;
-}
-
-.ac-progress-bar {
+.hidden-date-input {
+    position: absolute;
+    opacity: 0;
     width: 100%;
-    max-width: 260px; /* Widened to match the new image scale */
-    height: 14px; /* Slightly thicker bar */
-    background-color: #BDC3C7; 
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.ac-progress-fill {
     height: 100%;
-    background-color: #4CAF50; 
-    border-radius: 10px;
+    cursor: pointer;
 }
 
-/* Right Column (Grid) */
-.ac-right-col {
-    flex: 1.3; /* Gives the grid a tiny bit more space */
+/* --- Layout --- */
+.hs-content {
     display: flex;
-    align-items: center;
-    padding-top: 60px; 
-}
-
-.ac-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 50px 20px; /* SPREAD the rows out a bit vertically */
     width: 100%;
+    gap: 60px; 
+    align-items: center;
+    justify-content: center;
 }
 
-.ac-grid-item {
+/* --- Left Column (Donut & Legend) --- */
+.hs-left-col {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 40px; /* Breathes it out vertically */
+    flex: 1;
+}
+
+.hs-donut-container {
+    position: relative;
+    /* The Goldilocks size: 340px */
+    width: 340px; 
+    height: 340px;
+}
+
+.hs-donut-svg {
+    transform: rotate(-90deg); 
+}
+
+.hs-segment {
+    fill: none;
+    stroke-width: 16;
+    stroke-linecap: round; 
+    transition: stroke-dasharray 1s ease, stroke-dashoffset 1s ease;
+}
+
+.hs-segment.pink   { stroke: #F5B6B6; }
+.hs-segment.red    { stroke: #E54D48; }
+.hs-segment.orange { stroke: #F49E31; }
+.hs-segment.yellow { stroke: #FBE496; }
+
+.hs-donut-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem; /* Perfect scale for the 340px donut */
+    font-weight: 800;
+    color: #E54D48;
+}
+
+/* Legend */
+.hs-legend-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px; 
+    width: 100%;
+}
+
+.hs-legend-item {
+    display: flex;
+    align-items: stretch;
     gap: 12px;
 }
 
-.ac-grid-item img {
-    /* MASSIVELY increased from 110px so they are true medal-sized awards */
-    width: 170px; 
-    height: 170px;
-    object-fit: contain;
-    transition: all 0.3s ease;
+.hs-legend-bar {
+    width: 6px; 
+    border-radius: 5px;
 }
 
-.badge-earned {
-    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
-}
+.bg-red    { background-color: #E54D48; }
+.bg-yellow { background-color: #FBE496; }
+.bg-orange { background-color: #F49E31; }
+.bg-pink   { background-color: #F5B6B6; }
 
-.badge-unearned {
-    opacity: 0.25; 
-    filter: drop-shadow(0 0 0 transparent);
-}
-
-.ac-grid-item span {
-    font-size: 1rem; /* Scaled up the month text a little more */
-    font-weight: 400;
-    color: #333;
-}
-
-/* --- Bottom Section Placeholder --- */
-.other-awards-section {
-    margin-top: 50px;
+.hs-legend-text {
     display: flex;
-    gap: 40px;
-    overflow: hidden;
-    opacity: 0.8;
+    flex-direction: column;
 }
 
-.other-badge {
-    /* Scaled up from 180px */
-    width: 260px; 
-    object-fit: contain;
-    clip-path: inset(0 0 40% 0); 
+.hs-legend-title {
+    font-size: 0.95rem; 
+    color: #666;
+    font-weight: 500;
 }
 
-/* --- Responsive Adjustments --- */
-@media screen and (max-width: 1100px) {
-    .achievements-card {
+.hs-legend-desc {
+    font-size: 1.1rem; 
+    font-weight: 700;
+    color: #000;
+}
+
+/* --- Right Column (Big Pills) --- */
+.hs-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 22px; /* Perfect spacing to hit the red button line */
+    flex: 1.2;
+    width: 100%;
+}
+
+.hs-big-pill {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 30px; /* Thickened to push the bottom pill down */
+    border-radius: 20px; 
+    color: white;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.06);
+}
+
+.hs-icon-circle {
+    width: 52px; 
+    height: 52px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.hs-icon-circle svg {
+    width: 26px;
+    height: 26px;
+}
+
+.hs-pill-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.text-black { color: #000 !important; }
+
+.hs-pill-label {
+    font-size: 1.2rem; 
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+.hs-pill-value {
+    font-size: 2.2rem; 
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.hs-pill-value strong {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-left: 6px;
+    text-transform: uppercase;
+}
+
+/* Pill Colors */
+.pill-red    { background: #E54D48; }
+.pill-orange { background: #F49E31; }
+.pill-yellow { background: #FBE496; }
+.pill-blue   { background: #5D8BE0; }
+
+/* Responsive adjustments */
+@media screen and (max-width: 1024px) {
+    .hs-page-container {
+        min-height: auto; 
+    }
+    .hs-content {
         flex-direction: column;
-        padding: 40px;
-        gap: 50px;
+        gap: 40px;
     }
-    .ac-right-col {
-        padding-top: 0;
-    }
-    .ac-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .hs-right-col {
+        width: 100%;
     }
 }

@@ -1,5 +1,5 @@
 /* =========================================
-   AWARDS PAGE (PERFECT CENTER ALIGNMENT)
+   AWARDS PAGE (MATCHING FIGMA LAYOUT)
    ========================================= */
 
 .dashboard-wrapper.awards-page-bg {
@@ -48,26 +48,17 @@
 /* --- Main Achievements Card --- */
 .achievements-card {
     background-color: #FBF7EC; 
-    border-radius: 30px; 
-    padding: 50px 60px; 
-    display: flex;
-    flex-direction: column; 
+    border-radius: 20px; 
+    padding: 40px 50px; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.04);
     width: 100%;
 }
 
-/* THE FIX: Title sits cleanly at the top left */
-.ac-card-title {
-    align-self: flex-start; 
-    font-size: 2.2rem;
-    font-weight: 500;
-    margin: 0 0 40px 0; 
-}
-
 .ac-card-body {
     display: flex;
-    gap: 70px; /* Perfects the gap at the blue centerline */
-    align-items: center; /* THE FIX: Perfectly levels the badge and the grid */
+    gap: 80px; 
+    /* THE FIX: Forces both columns to start at the absolute top edge */
+    align-items: flex-start; 
     justify-content: space-between;
     width: 100%;
 }
@@ -77,7 +68,15 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; 
+}
+
+/* Title is perfectly at the top left */
+.ac-card-title {
+    align-self: flex-start; 
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 0 0 30px 0; 
 }
 
 .ac-main-badge-wrapper {
@@ -87,7 +86,7 @@
 }
 
 .ac-main-badge {
-    width: 330px; 
+    width: 300px; 
     object-fit: contain;
     filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); 
 }
@@ -118,7 +117,8 @@
     flex: 1.2; 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* THE FIX: Matches the height of the title so the grid drops perfectly in line with the big badge */
+    padding-top: 65px; 
 }
 
 .ac-grid {
@@ -136,8 +136,8 @@
 }
 
 .ac-grid-item img {
-    width: 105px; 
-    height: 105px;
+    width: 90px; 
+    height: 90px;
     object-fit: contain;
     transition: all 0.3s ease;
 }
@@ -152,9 +152,28 @@
 }
 
 .ac-grid-item span {
-    font-size: 1rem; 
+    font-size: 0.95rem; 
     font-weight: 400;
     color: #333;
+}
+
+/* --- THE FIX: Restored Bottom Section --- */
+.other-awards-section {
+    margin-top: 50px;
+    display: flex;
+    gap: 40px;
+    opacity: 0.9;
+}
+
+.other-badge-wrapper {
+    display: flex;
+}
+
+.other-badge {
+    width: 240px; 
+    object-fit: contain;
+    /* Crops the badge perfectly at the bottom */
+    clip-path: inset(0 0 35% 0); 
 }
 
 /* --- Responsive Adjustments --- */
@@ -162,6 +181,9 @@
     .ac-card-body {
         flex-direction: column;
         gap: 50px;
+    }
+    .ac-right-col {
+        padding-top: 0;
     }
     .ac-grid {
         grid-template-columns: repeat(3, 1fr);
