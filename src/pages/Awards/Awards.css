@@ -124,7 +124,10 @@
 .ac-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
-    gap: 40px 20px; 
+    
+    /* THE FIX: Shrunk the gap down from 40px 20px to pack them tighter */
+    gap: 25px 10px; 
+    
     width: 100%;
 }
 
@@ -136,8 +139,10 @@
 }
 
 .ac-grid-item img {
-    width: 90px; 
-    height: 90px;
+    /* THE FIX: Increased the size from 90px to make them pop! */
+    width: 115px; 
+    height: 115px;
+    
     object-fit: contain;
     transition: all 0.3s ease;
 }
