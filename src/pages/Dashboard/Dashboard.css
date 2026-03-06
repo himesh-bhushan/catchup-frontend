@@ -224,7 +224,7 @@
     font-size: 2.4rem; 
     font-weight: 700; 
     color: var(--text-primary); 
-    margin: 15px 0 5px 0; 
+    margin: auto 0;
     line-height: 1; 
 }
 .tile-value span { font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; }
