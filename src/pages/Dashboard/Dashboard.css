@@ -356,41 +356,40 @@
 .pill-blue .metric-icon-circle { color: #4A90E2; }
 
 
-/* Awards Visual (Image as Progress Bar) */
+/* =========================================
+   7. AWARDS VISUAL (Status Based)
+   ========================================= */
 .awards-content { 
   display: flex; 
   flex-direction: column; 
   align-items: center; 
   width: 100%; 
   flex-grow: 1; 
-  justify-content: center; /* Perfectly centers the larger image */
+  justify-content: center; /* Center the bigger image vertically */
   min-height: 0; 
+  padding: 10px 0; /* Breathing room at bottom */
 }
 
-.award-image-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  max-height: 90%; /* Increased size since the progress bar is gone */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.award-badge { 
-  position: absolute; /* Stacks the images perfectly on top of each other */
-  width: 100%; 
-  height: 100%; 
+.award-badge-status { 
+  /* Make it much bigger */
+  width: auto; 
+  height: auto;
+  max-width: 90%;  /* Utilizes almost full horizontal space of the tile */
+  max-height: 90%; /* Utilizes almost full vertical space after title */
   object-fit: contain; 
+  
+  /* Smooth transition when state changes */
+  transition: filter 0.5s ease-in-out, transform 0.3s ease; 
 }
 
-.grayscale-badge {
-  filter: grayscale(100%) opacity(30%); /* Makes the base look gray and inactive */
+/* Base style for not yet earned (Gray/Faded) */
+.not-earned-gray {
+  filter: grayscale(100%) opacity(30%); /* Full gray and semi-transparent "inactive" look */
 }
 
-.color-badge {
-  z-index: 2; /* Ensures the colored progress overlays the gray one */
-  transition: clip-path 0.5s ease-in-out; /* Adds a smooth animation if progress changes */
+/* Base style for earned (Full Color) */
+.earned-color {
+  filter: grayscale(0%) opacity(100%); /* Full pop of color, fully visible */
 }
 
 /* --- RECOMMENDATIONS & CLINICS --- */

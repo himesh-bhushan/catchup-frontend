@@ -28,6 +28,7 @@ const Dashboard = () => {
   const [firstName, setFirstName] = useState(localStorage.getItem('userName') || "Friend");
   const [user, setUser] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null); 
+  const [isAwardEarned, setIsAwardEarned] = useState(false); // ✅ NEW: Track award status
   
   // ✅ FIX: Re-added the missing state variables
   const [lastSynced, setLastSynced] = useState(null); 
@@ -175,6 +176,10 @@ const Dashboard = () => {
             
             const goal = profile?.calorie_goal || 500;
             const cals = todayLog?.calories || 0;
+            
+            // ✅ NEW: Award logic - earned if today's calories meet the goal
+            const dailyGoalMet = goal > 0 && cals >= goal;
+            setIsAwardEarned(dailyGoalMet);
 
             setActivityData({
                 calories: cals, steps: todayLog?.steps || 0, distance: todayLog?.distance || 0, goal: goal,
@@ -390,22 +395,16 @@ const Dashboard = () => {
                         </div>
                     </div>
                     
-                    {/* Awards (Image as Progress Bar) */}
+                    {/* Awards (Status Based) */}
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="awards-content">
-                            <div className="award-image-container">
-                                {/* Base image: Grayed out */}
-                                <img src={awards} alt="Award Base" className="award-badge grayscale-badge" />
-                                
-                                {/* Top image: Full color, acting as the progress fill */}
-                                <img 
-                                    src={awards} 
-                                    alt="Award Progress" 
-                                    className="award-badge color-badge" 
-                                    style={{ clipPath: 'inset(40% 0 0 0)' }} /* 60% Full = Top 40% hidden */
-                                />
-                            </div>
+                            {/* ✅ NEW: Bigger image with conditional grayscale class */}
+                            <img 
+                                src={awards} 
+                                alt="Award Badge" 
+                                className={`award-badge-status ${isAwardEarned ? 'earned-color' : 'not-earned-gray'}`} 
+                            />
                         </div>
                     </div>
                 </div>
