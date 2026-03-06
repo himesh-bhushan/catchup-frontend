@@ -231,14 +231,19 @@
 
 
 
-/* =========================================
+//* =========================================
    6. HEALTH SCORE VISUAL (SPLIT LAYOUT)
    ========================================= */
 
-/* Nudge the label up specifically for the Health Score card */
-.score-card .card-header {
-    margin-top: -5px !important;
+/* Nudges the Health Score Title upwards */
+.score-header-nudged {
+    margin-top: -10px !important; 
     margin-bottom: 15px !important;
+}
+
+/* Nudges the 87% text upwards */
+.score-label-nudge {
+    transform: translateY(-4px); 
 }
 
 .health-score-content {
@@ -256,7 +261,7 @@
     height: 120px; 
     position: relative; 
     flex-shrink: 0; 
-    margin: 0; /* Removed the auto margin so it snaps to the left */
+    margin: 0; /* Ensures it stays pinned to the left */
 }
 
 .score-ring { 
@@ -280,6 +285,7 @@
     font-weight: 800; 
     color: #EF473A; 
 }
+
 /* --- Right Side: Metric Pills --- */
 .score-metrics-list {
     display: flex;
@@ -344,17 +350,11 @@
 .pill-orange { background: #F7931E; }
 .pill-orange .metric-icon-circle { color: #F7931E; }
 
-.pill-yellow { background: #FDE08B; color: #333; } /* Dark text on yellow for readability */
+.pill-yellow { background: #FDE08B; color: #333; } 
 .pill-yellow .metric-icon-circle { color: #333; }
 
 .pill-blue   { background: #4A90E2; }
 .pill-blue .metric-icon-circle { color: #4A90E2; }
-
-/* Pill Colors mapped to your image */
-.pill-red    { background: #EF473A; }
-.pill-orange { background: #F7931E; }
-.pill-yellow { background: #FDE08B; color: #333; } /* Dark text for contrast */
-.pill-blue   { background: #4A90E2; }
 
 
 

@@ -330,25 +330,67 @@ const Dashboard = () => {
 
                     {/* Health Score */}
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
-                        <div className="card-header"><h3>{t('Health Score') || "Health Score"}</h3><FiChevronRight className="card-arrow" /></div>
-                        <div className="score-ring-wrapper">
-                            <div 
-                                className="score-ring"
-                                style={{
-                                    /* 4-Part Gradient matching your image colors */
-                                    background: `conic-gradient(
-                                        #EF473A 0% 35%,   /* Red slice */
-                                        #F7931E 35% 60%,  /* Orange slice */
-                                        #FDE08B 60% 85%,  /* Yellow slice */
-                                        #F8A8A8 85% 100%  /* Pink slice */
-                                    )`
-                                }}
-                            >
-                                <div className="score-inner">87%</div>
+                        <div className="card-header score-header-nudged">
+                            <h3>{t('Health Score') || "Health Score"}</h3>
+                            <FiChevronRight className="card-arrow" />
+                        </div>
+                        
+                        <div className="health-score-content">
+                            {/* Left Side: The Ring */}
+                            <div className="score-ring-wrapper">
+                                <div 
+                                    className="score-ring"
+                                    style={{
+                                        /* 4-Part Gradient perfectly matching the pills */
+                                        background: `conic-gradient(
+                                            #EF473A 0% 30%,   /* Red: Heart */
+                                            #F7931E 30% 55%,  /* Orange: Sleep */
+                                            #FDE08B 55% 80%,  /* Yellow: Calories */
+                                            #4A90E2 80% 100%  /* Blue: Water */
+                                        )`
+                                    }}
+                                >
+                                    <div className="score-inner">
+                                        <span className="score-label-nudge">87%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Side: The Metric Pills */}
+                            <div className="score-metrics-list">
+                                <div className="metric-pill pill-red">
+                                    <div className="metric-icon-circle"><FiHeart color="#EF473A" /></div>
+                                    <div className="metric-text-group">
+                                        <span className="metric-label">Heart Rate</span>
+                                        <span className="metric-value">{otherStats.heart_rate} <strong>BPM</strong></span>
+                                    </div>
+                                </div>
+                                <div className="metric-pill pill-orange">
+                                    <div className="metric-icon-circle"><FiMoon color="#F7931E" /></div>
+                                    <div className="metric-text-group">
+                                        <span className="metric-label">Sleep Hours</span>
+                                        <span className="metric-value">{(otherStats.sleep/3600).toFixed(1)} <strong>hours</strong></span>
+                                    </div>
+                                </div>
+                                <div className="metric-pill pill-yellow">
+                                    <div className="metric-icon-circle"><FiActivity color="#333" /></div>
+                                    <div className="metric-text-group">
+                                        <span className="metric-label">Calories Burned</span>
+                                        <span className="metric-value">{activityData.calories} <strong>KCAL</strong></span>
+                                    </div>
+                                </div>
+                                <div className="metric-pill pill-blue">
+                                    <div className="metric-icon-circle"><FiDroplet color="#4A90E2" /></div>
+                                    <div className="metric-text-group">
+                                        <span className="metric-label">Water Intake</span>
+                                        <span className="metric-value">2 <strong>L</strong></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
+                    
+                    {/* Awards (Restored) */}
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="awards-content">
