@@ -3,10 +3,10 @@
    ========================================= */
 
 /* Overrides dashboard background specifically for goals */
-.goals-page-bg {
-    background-color: #FFFFFF !important; /* THE FIX: Pure white page background */
-    color: #333;
-    font-family: 'Poppins', sans-serif;
+.dashboard-wrapper.goals-page-bg,
+.goals-page-bg .dashboard-content {
+    background: #FFFFFF !important; /* Forces pure white */
+    background-color: #FFFFFF !important;
 }
 
 .goals-page-container {
@@ -119,14 +119,14 @@
     margin: 0;
     font-size: 2.2rem;
     font-weight: 700;
-    color: #FFFFFF; /* Restored white text */
+    color: #FFFFFF !important; /* Blocks the red leak, forces white */
 }
-
 .hero-image {
     position: absolute; 
-    bottom: 0; /* Pinned exactly to the bottom */
-    right: 0;  /* Pinned exactly to the right corner */
-    max-height: 140px; 
+    top: 50%; /* Suspends the image perfectly in the middle */
+    transform: translateY(-50%); /* Adjusts it so it's perfectly centered */
+    right: 20px; /* Gives it a tiny bit of breathing room on the right */
+    max-height: 120px; /* Slightly smaller so it fits completely inside the box */
     z-index: 1; 
     object-fit: contain;
 }
@@ -135,6 +135,7 @@
     font-size: 1.3rem;
     font-weight: 700;
     margin: 0 0 15px 0;
+    color: #333333 !important; /* Blocks the red leak, forces dark gray */
 }
 
 .goal-section { margin-bottom: 30px; }
