@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiEdit2, FiCheck, FiMoon, FiDroplet, FiTarget, FiActivity } from 'react-icons/fi';
 import { supabase } from '../../supabase';
+
+// ✅ Import Navigation Bar
+import DashboardNav from '../../components/DashboardNav';
+
 import './Goals.css';
 
 // Images
@@ -10,7 +14,7 @@ import tomatoGym from '../../assets/tomato-health.png';
 const DEFAULT_GOALS = {
   steps_current: 0, steps_target: 10000,
   sleep_current: 0, sleep_target: 8,
-  exercise_current: 0, exercise_target: 1, // Assuming hours to match mockup
+  exercise_current: 0, exercise_target: 1, 
   water_current: 0, water_target: 3
 };
 
@@ -147,62 +151,72 @@ const Goals = () => {
 
   if (loading) {
     return (
-      <div className="goals-page-container flex-center">
-        <h2 style={{color: '#FF3B30'}}>Loading...</h2>
+      <div className="dashboard-wrapper goals-page-bg">
+        <DashboardNav />
+        <div className="dashboard-content flex-center">
+          <h2 style={{color: '#FF3B30'}}>Loading...</h2>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="goals-page-container">
-      {/* HEADER */}
-      <div className="goals-header-new">
-         <div className="header-left">
-             <button onClick={() => navigate('/dashboard')} className="icon-btn"><FiArrowLeft size={24} /></button>
-             <h2>Today, {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</h2>
-             <div className="date-picker-wrapper">
-                 <FiCalendar size={20} />
-                 <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="hidden-date-input"/>
+    // ✅ Reused Dashboard Wrappers to hold the Nav Bar
+    <div className="dashboard-wrapper goals-page-bg">
+      <DashboardNav />
+      <div className="dashboard-content">
+        
+        <div className="goals-page-container">
+          {/* HEADER */}
+          <div className="goals-header-new">
+             <div className="header-left">
+                 <button onClick={() => navigate('/dashboard')} className="icon-btn"><FiArrowLeft size={24} /></button>
+                 <h2>Today, {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</h2>
+                 <div className="date-picker-wrapper">
+                     <FiCalendar size={20} />
+                     <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="hidden-date-input"/>
+                 </div>
              </div>
-         </div>
-         <button className="icon-btn edit-toggle" onClick={() => isEditing ? handleSave() : setIsEditing(true)}>
-           {isEditing ? <FiCheck size={22} color="#4CD964" /> : <FiEdit2 size={22} />}
-         </button>
-      </div>
-
-      <div className="goals-content-new">
-          {/* HERO BANNER */}
-          <div className="goals-hero-banner">
-              <div className="hero-text">
-                  <p>Every healthy choice counts.</p>
-                  <h1>{countCompleted()}/4 Goals Completed</h1>
-              </div>
-              <img src={tomatoGym} alt="Working out" className="hero-image" />
+             <button className="icon-btn edit-toggle" onClick={() => isEditing ? handleSave() : setIsEditing(true)}>
+               {isEditing ? <FiCheck size={22} color="#4CD964" /> : <FiEdit2 size={22} />}
+             </button>
           </div>
 
-          {/* IN PROGRESS SECTION */}
-          {inProgressGoals.length > 0 && (
-              <div className="goal-section">
-                  <h3 className="section-title">In Progress</h3>
-                  <div className="goals-grid">
-                      {inProgressGoals.map(item => (
-                          <GoalCard key={item.id} item={item} isCompleted={false} />
-                      ))}
+          <div className="goals-content-new">
+              {/* HERO BANNER */}
+              <div className="goals-hero-banner">
+                  <div className="hero-text">
+                      <p>Every healthy choice counts.</p>
+                      <h1>{countCompleted()}/4 Goals Completed</h1>
                   </div>
+                  <img src={tomatoGym} alt="Working out" className="hero-image" />
               </div>
-          )}
 
-          {/* COMPLETED SECTION */}
-          {completedGoals.length > 0 && (
-              <div className="goal-section">
-                  <h3 className="section-title">Completed</h3>
-                  <div className="goals-grid completed-grid">
-                      {completedGoals.map(item => (
-                          <GoalCard key={item.id} item={item} isCompleted={true} />
-                      ))}
+              {/* IN PROGRESS SECTION */}
+              {inProgressGoals.length > 0 && (
+                  <div className="goal-section">
+                      <h3 className="section-title">In Progress</h3>
+                      <div className="goals-grid">
+                          {inProgressGoals.map(item => (
+                              <GoalCard key={item.id} item={item} isCompleted={false} />
+                          ))}
+                      </div>
                   </div>
-              </div>
-          )}
+              )}
+
+              {/* COMPLETED SECTION */}
+              {completedGoals.length > 0 && (
+                  <div className="goal-section">
+                      <h3 className="section-title">Completed</h3>
+                      <div className="goals-grid completed-grid">
+                          {completedGoals.map(item => (
+                              <GoalCard key={item.id} item={item} isCompleted={true} />
+                          ))}
+                      </div>
+                  </div>
+              )}
+          </div>
+        </div>
       </div>
     </div>
   );
