@@ -4,7 +4,7 @@
 
 /* Overrides dashboard background specifically for goals */
 .goals-page-bg {
-    background-color: #F8F9FA !important; 
+    background-color: #FFFFFF !important; /* THE FIX: Pure white page background */
     color: #333;
     font-family: 'Poppins', sans-serif;
 }
@@ -86,23 +86,19 @@
 }
 
 /* =========================================
-   7. HERO BANNER (WHITE & CORNERED)
+   7. HERO BANNER (GREEN & CORNERED IMAGE)
    ========================================= */
 .goals-hero-banner {
-    /* Change 1: White Background */
-    background-color: white !important; 
+    /* Restored the fresh, Catchup-themed green */
+    background-color: #6BCB77; 
     border-radius: 20px;
-    
-    /* Change 2: Add light border & softer shadow for visibility on white background */
-    border: 1px solid #eeeeee; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 15px rgba(107, 203, 119, 0.3);
+    border: none; /* Removed the gray border */
 
-    /* Layout updates for standard flow + absolute positioning */
-    display: block !important; 
-    position: relative; /* REQUIRED for the absolute image placement */
-    overflow: hidden; /* Ensures image gets clipped perfectly by the border-radius */
+    display: block; 
+    position: relative; 
+    overflow: hidden; /* Clips the image perfectly into the corner radius */
     
-    /* Breathing room for standard content flow */
     padding: 35px 40px; 
     margin-bottom: 30px;
 }
@@ -113,27 +109,25 @@
     max-width: 60%; /* Prevents text from colliding with the corner image */
 }
 
-/* Change 3: Ensure all text is dark gray now that background is white */
 .hero-text p {
     margin: 0 0 10px 0;
     font-size: 1.1rem;
-    color: #555555; /* Subtle dark gray */
+    color: rgba(255, 255, 255, 0.9); /* Restored white text */
 }
 
 .hero-text h1 {
     margin: 0;
     font-size: 2.2rem;
     font-weight: 700;
-    color: #333333; /* Strong dark gray */
+    color: #FFFFFF; /* Restored white text */
 }
 
-/* Change 4: Pinned perfectly to the bottom-right corner */
 .hero-image {
     position: absolute; 
-    bottom: 0; /* Pins to physical bottom edge */
-    right: 0;  /* Pins to physical right edge */
-    max-height: 130px; /* Size proportion for the corner layout */
-    z-index: 1; /* Sits behind text, but over background */
+    bottom: 0; /* Pinned exactly to the bottom */
+    right: 0;  /* Pinned exactly to the right corner */
+    max-height: 140px; 
+    z-index: 1; 
     object-fit: contain;
 }
 /* --- SECTIONS & CARDS --- */
