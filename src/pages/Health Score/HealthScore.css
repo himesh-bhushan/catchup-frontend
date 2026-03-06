@@ -1,5 +1,5 @@
 /* =========================================
-   HEALTH SCORE PAGE (FITTED TO PANIC BUTTON LINE)
+   HEALTH SCORE PAGE (ALIGNED TO RED BUTTON)
    ========================================= */
 
 /* Overrides dashboard background specifically for health score */
@@ -18,9 +18,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Reduced top padding to pull everything up */
-    padding: 10px 40px; 
-    max-height: 100vh; 
+    /* Added more top padding to push the whole block downward */
+    padding: 30px 40px; 
+    min-height: 100vh; 
 }
 
 /* --- Header --- */
@@ -29,13 +29,13 @@
     align-items: center;
     width: 100%;
     gap: 20px;
-    /* Squeezed the header closer to the content */
-    margin-bottom: 15px; 
+    /* Pushes the content lower into the page */
+    margin-bottom: 50px; 
 }
 
 .hs-header h2 {
     margin: 0;
-    font-size: 1.5rem; 
+    font-size: 1.6rem; 
     font-weight: 600;
     flex-grow: 1;
 }
@@ -60,8 +60,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px; 
-    height: 40px;
+    width: 44px; 
+    height: 44px;
     background: white;
     border-radius: 50%;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
@@ -90,15 +90,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px; /* Reduced gap between donut and legend */
+    gap: 40px; /* Breathes it out vertically */
     flex: 1;
 }
 
 .hs-donut-container {
     position: relative;
-    /* Scaled down to prevent pushing content too low */
-    width: 260px; 
-    height: 260px;
+    /* The Goldilocks size: 340px */
+    width: 340px; 
+    height: 340px;
 }
 
 .hs-donut-svg {
@@ -122,7 +122,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 3.2rem; /* Scaled to fit smaller donut */
+    font-size: 4rem; /* Perfect scale for the 340px donut */
     font-weight: 800;
     color: #E54D48;
 }
@@ -131,18 +131,18 @@
 .hs-legend-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px 20px; /* Tighter spacing */
+    gap: 20px 30px; 
     width: 100%;
 }
 
 .hs-legend-item {
     display: flex;
     align-items: stretch;
-    gap: 10px;
+    gap: 12px;
 }
 
 .hs-legend-bar {
-    width: 5px; 
+    width: 6px; 
     border-radius: 5px;
 }
 
@@ -157,13 +157,13 @@
 }
 
 .hs-legend-title {
-    font-size: 0.85rem; 
+    font-size: 0.95rem; 
     color: #666;
     font-weight: 500;
 }
 
 .hs-legend-desc {
-    font-size: 1rem; 
+    font-size: 1.1rem; 
     font-weight: 700;
     color: #000;
 }
@@ -172,7 +172,7 @@
 .hs-right-col {
     display: flex;
     flex-direction: column;
-    gap: 12px; /* Hugs the pills much closer together */
+    gap: 22px; /* Perfect spacing to hit the red button line */
     flex: 1.2;
     width: 100%;
 }
@@ -180,17 +180,16 @@
 .hs-big-pill {
     display: flex;
     align-items: center;
-    gap: 18px;
-    /* Thinned out the vertical padding to compress height */
-    padding: 12px 25px; 
-    border-radius: 18px; 
+    gap: 20px;
+    padding: 24px 30px; /* Thickened to push the bottom pill down */
+    border-radius: 20px; 
     color: white;
     box-shadow: 0 8px 15px rgba(0,0,0,0.06);
 }
 
 .hs-icon-circle {
-    width: 44px; /* Shrunk icons */
-    height: 44px;
+    width: 52px; 
+    height: 52px;
     background: white;
     border-radius: 50%;
     display: flex;
@@ -200,8 +199,8 @@
 }
 
 .hs-icon-circle svg {
-    width: 22px;
-    height: 22px;
+    width: 26px;
+    height: 26px;
 }
 
 .hs-pill-text {
@@ -212,19 +211,19 @@
 .text-black { color: #000 !important; }
 
 .hs-pill-label {
-    font-size: 1rem; 
+    font-size: 1.2rem; 
     font-weight: 400;
     opacity: 0.9;
 }
 
 .hs-pill-value {
-    font-size: 1.7rem; /* Shrunk text slightly to fit thinner pills */
+    font-size: 2.2rem; 
     font-weight: 700;
     line-height: 1.1;
 }
 
 .hs-pill-value strong {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     margin-left: 6px;
     text-transform: uppercase;
@@ -239,11 +238,11 @@
 /* Responsive adjustments */
 @media screen and (max-width: 1024px) {
     .hs-page-container {
-        max-height: none; 
+        min-height: auto; 
     }
     .hs-content {
         flex-direction: column;
-        gap: 30px;
+        gap: 40px;
     }
     .hs-right-col {
         width: 100%;
