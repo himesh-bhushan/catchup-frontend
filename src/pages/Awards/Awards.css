@@ -125,8 +125,8 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
     
-    /* THE FIX: Shrunk the gap down from 40px 20px to pack them tighter */
-    gap: 25px 10px; 
+    /* THE FIX: Squeezed the gaps vertically and horizontally */
+    gap: 15px 5px; 
     
     width: 100%;
 }
@@ -139,9 +139,9 @@
 }
 
 .ac-grid-item img {
-    /* THE FIX: Increased the size from 90px to make them pop! */
-    width: 115px; 
-    height: 115px;
+    /* THE FIX: Bumped up the size significantly! */
+    width: 135px; 
+    height: 135px;
     
     object-fit: contain;
     transition: all 0.3s ease;
