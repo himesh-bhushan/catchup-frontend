@@ -219,7 +219,7 @@
 .tile-value { 
     display: flex; 
     align-items: baseline; 
-    justify-content: center; /* This pushes the text to the absolute center */
+    justify-content: left; /* This pushes the text to the absolute center */
     gap: 6px; 
     font-size: 2.4rem; 
     font-weight: 700; 
