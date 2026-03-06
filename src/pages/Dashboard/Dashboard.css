@@ -228,9 +228,18 @@
     line-height: 1; 
 }
 .tile-value span { font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; }
+
+
+
 /* =========================================
    6. HEALTH SCORE VISUAL (SPLIT LAYOUT)
    ========================================= */
+
+/* Nudge the label up specifically for the Health Score card */
+.score-card .card-header {
+    margin-top: -5px !important;
+    margin-bottom: 15px !important;
+}
 
 .health-score-content {
     display: flex;
@@ -238,6 +247,7 @@
     justify-content: space-between;
     gap: 20px;
     flex-grow: 1;
+    width: 100%;
 }
 
 /* --- Left Side: Donut Ring --- */
@@ -246,6 +256,7 @@
     height: 120px; 
     position: relative; 
     flex-shrink: 0; 
+    margin: 0; /* Removed the auto margin so it snaps to the left */
 }
 
 .score-ring { 
@@ -269,12 +280,11 @@
     font-weight: 800; 
     color: #EF473A; 
 }
-
 /* --- Right Side: Metric Pills --- */
 .score-metrics-list {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Spacing between the pills */
+    gap: 8px; /* Spacing between the colored pills */
     flex-grow: 1;
     width: 100%;
 }
@@ -310,12 +320,14 @@
     font-size: 0.75rem;
     font-weight: 500;
     opacity: 0.9;
+    text-align: left;
 }
 
 .metric-value {
     font-size: 1.1rem;
     font-weight: 700;
     margin-top: 2px;
+    text-align: left;
 }
 
 .metric-value strong {
@@ -325,11 +337,27 @@
     text-transform: uppercase;
 }
 
+/* Pill Colors matching your exact reference image */
+.pill-red    { background: #EF473A; }
+.pill-red .metric-icon-circle { color: #EF473A; }
+
+.pill-orange { background: #F7931E; }
+.pill-orange .metric-icon-circle { color: #F7931E; }
+
+.pill-yellow { background: #FDE08B; color: #333; } /* Dark text on yellow for readability */
+.pill-yellow .metric-icon-circle { color: #333; }
+
+.pill-blue   { background: #4A90E2; }
+.pill-blue .metric-icon-circle { color: #4A90E2; }
+
 /* Pill Colors mapped to your image */
 .pill-red    { background: #EF473A; }
 .pill-orange { background: #F7931E; }
 .pill-yellow { background: #FDE08B; color: #333; } /* Dark text for contrast */
 .pill-blue   { background: #4A90E2; }
+
+
+
 /* Awards Visual (Proportional Fix Applied) */
 .awards-content { 
   display: flex; 
