@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiCalendar, FiEdit2, FiCheck } from 'react-icons/fi';
+import { FiArrowLeft, FiCalendar, FiEdit2, FiCheck, FiMoon, FiDroplet, FiTarget, FiActivity } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 import './Goals.css';
 
 // Images
-import tomatoSteps from '../../assets/tomato-run.png';
-import tomatoSleep from '../../assets/tomato-sleep.png';
 import tomatoGym from '../../assets/tomato-gym.png';
-import tomatoWater from '../../assets/tomato-water.png';
-import tomatoWinner from '../../assets/raise-hand.png';
 
-// ✅ FIXED: Defined outside the component to keep it stable
 const DEFAULT_GOALS = {
   steps_current: 0, steps_target: 10000,
   sleep_current: 0, sleep_target: 8,
-  exercise_current: 0, exercise_target: 60,
+  exercise_current: 0, exercise_target: 1, // Assuming hours to match mockup
   water_current: 0, water_target: 3
 };
 
@@ -24,18 +19,14 @@ const Goals = () => {
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]); 
   const [isEditing, setIsEditing] = useState(false);
-
-  // ✅ Use the external constant
   const [goals, setGoals] = useState(DEFAULT_GOALS);
 
   // --- 1. Fetch Data ---
   useEffect(() => {
     let mounted = true;
-
     const fetchGoals = async () => {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) return;
 
       try {
@@ -51,7 +42,6 @@ const Goals = () => {
         if (data) {
           if (mounted) setGoals(data);
         } else {
-          // Row missing: Insert defaults
           const { error: insertError } = await supabase
             .from('daily_goals')
             .insert({
@@ -60,8 +50,6 @@ const Goals = () => {
                steps_current: 0,
                steps_target: 10000
             });
-          
-          // ✅ Use the external constant here too
           if (!insertError && mounted) {
              setGoals({ ...DEFAULT_GOALS }); 
           }
@@ -72,11 +60,9 @@ const Goals = () => {
         if (mounted) setLoading(false);
       }
     };
-
     fetchGoals();
-
     return () => { mounted = false; };
-  }, [date]); // ✅ Dependency array is now correct
+  }, [date]);
 
   // --- 2. Update Data ---
   const handleSave = async () => {
@@ -105,12 +91,7 @@ const Goals = () => {
     setGoals(prev => ({ ...prev, [name]: Number(value) }));
   };
 
-  const calculateProgress = (current, target) => {
-    if (!target) return 0;
-    const pct = (current / target) * 100;
-    return Math.min(pct, 100);
-  };
-
+  // --- 3. Data Formatting ---
   const countCompleted = () => {
     let count = 0;
     if (goals.steps_current >= goals.steps_target) count++;
@@ -120,38 +101,53 @@ const Goals = () => {
     return count;
   };
 
-  const GoalCard = ({ title, currentKey, targetKey, unit, icon, color }) => (
-    <div className="goal-card">
-      <div className="goal-icon-wrapper">
-         <img src={icon} alt={title} />
-      </div>
-      <div className="goal-info">
-        <h3>{title}</h3>
-        <div className="goal-bar-container">
-           <div 
-             className="goal-bar-fill" 
-             style={{ width: `${calculateProgress(goals[currentKey], goals[targetKey])}%`, backgroundColor: color }}
-           ></div>
-           <div className="goal-text-overlay">
-              {isEditing ? (
-                 <div className="edit-inputs">
-                   <input type="number" name={currentKey} value={goals[currentKey]} onChange={handleChange} />
-                   <span>/</span>
-                   <input type="number" name={targetKey} value={goals[targetKey]} onChange={handleChange} />
-                   <span>{unit}</span>
-                 </div>
-              ) : (
-                 <span>{goals[currentKey]} / {goals[targetKey]} {unit}</span>
-              )}
-           </div>
+  const goalData = [
+    { id: 'steps', title: 'Meet step count', currentKey: 'steps_current', targetKey: 'steps_target', unit: 'steps', icon: <FiActivity /> },
+    { id: 'sleep', title: 'Sleep duration', currentKey: 'sleep_current', targetKey: 'sleep_target', unit: 'hours', icon: <FiMoon /> },
+    { id: 'exercise', title: 'Workout session', currentKey: 'exercise_current', targetKey: 'exercise_target', unit: 'hour', icon: <FiTarget /> },
+    { id: 'water', title: 'Water intake', currentKey: 'water_current', targetKey: 'water_target', unit: 'litre', icon: <FiDroplet /> }
+  ];
+
+  const inProgressGoals = goalData.filter(g => goals[g.currentKey] < goals[g.targetKey]);
+  const completedGoals = goalData.filter(g => goals[g.currentKey] >= goals[g.targetKey]);
+
+  // --- 4. Card Component ---
+  const GoalCard = ({ item, isCompleted }) => {
+    const current = goals[item.currentKey];
+    const target = goals[item.targetKey];
+    const pct = target ? Math.min((current / target) * 100, 100) : 0;
+    
+    return (
+      <div className={`new-goal-card ${isCompleted ? 'completed-card' : 'in-progress-card'}`}>
+        <div className="card-top">
+          <div className="card-icon">{item.icon}</div>
+          <h4>{item.title}</h4>
+        </div>
+        
+        <div className="card-progress-wrapper">
+          <div className="progress-bar-bg">
+            <div className="progress-bar-fill" style={{ width: `${pct}%` }}></div>
+          </div>
+          
+          <div className="progress-text-overlay">
+            {isEditing ? (
+                <div className="edit-inputs" onClick={(e) => e.stopPropagation()}>
+                  <input type="number" name={item.currentKey} value={current} onChange={handleChange} />
+                  <span>/</span>
+                  <input type="number" name={item.targetKey} value={target} onChange={handleChange} />
+                </div>
+            ) : (
+                <span>{current} / {target} {item.unit}</span>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   if (loading) {
     return (
-      <div className="goals-page-container" style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+      <div className="goals-page-container flex-center">
         <h2 style={{color: '#FF3B30'}}>Loading...</h2>
       </div>
     );
@@ -159,47 +155,54 @@ const Goals = () => {
 
   return (
     <div className="goals-page-container">
-      <div className="goals-header">
-         <button onClick={() => navigate('/dashboard')} className="back-btn"><FiArrowLeft /></button>
-         <div className="date-display">
-            <h2>Today, {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</h2>
+      {/* HEADER */}
+      <div className="goals-header-new">
+         <div className="header-left">
+             <button onClick={() => navigate('/dashboard')} className="icon-btn"><FiArrowLeft size={24} /></button>
+             <h2>Today, {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</h2>
+             <div className="date-picker-wrapper">
+                 <FiCalendar size={20} />
+                 <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="hidden-date-input"/>
+             </div>
          </div>
-         <div className="header-actions">
-            <div className="date-picker-wrapper">
-                <FiCalendar />
-                <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="hidden-date-input"/>
-            </div>
-            <button className="edit-btn" onClick={() => isEditing ? handleSave() : setIsEditing(true)}>
-              {isEditing ? <FiCheck /> : <FiEdit2 />}
-            </button>
-         </div>
+         <button className="icon-btn edit-toggle" onClick={() => isEditing ? handleSave() : setIsEditing(true)}>
+           {isEditing ? <FiCheck size={22} color="#4CD964" /> : <FiEdit2 size={22} />}
+         </button>
       </div>
 
-      <div className="goals-layout">
-         <div className="goals-list">
-            <GoalCard title="Meet step count" currentKey="steps_current" targetKey="steps_target" unit="steps" icon={tomatoSteps} color="#D32F2F" />
-            <GoalCard title="Sleep duration met" currentKey="sleep_current" targetKey="sleep_target" unit="hours" icon={tomatoSleep} color="#D32F2F" />
-            <GoalCard title="Go exercise for 1 hour" currentKey="exercise_current" targetKey="exercise_target" unit="min" icon={tomatoGym} color="#D32F2F" />
-            <GoalCard title="Drink 3 litre of water" currentKey="water_current" targetKey="water_target" unit="litre" icon={tomatoWater} color="#D32F2F" />
-         </div>
+      <div className="goals-content-new">
+          {/* HERO BANNER */}
+          <div className="goals-hero-banner">
+              <div className="hero-text">
+                  <p>Every healthy choice counts.</p>
+                  <h1>{countCompleted()}/4 Goals Completed</h1>
+              </div>
+              <img src={tomatoGym} alt="Working out" className="hero-image" />
+          </div>
 
-         <div className="goals-sidebar">
-            <div className="goal-board-card">
-               <h2>Goal Board</h2>
-               <div className="board-progress-container">
-                  <div className="board-bar-bg">
-                     <div className="board-bar-fill" style={{ width: `${(countCompleted() / 4) * 100}%` }}></div>
+          {/* IN PROGRESS SECTION */}
+          {inProgressGoals.length > 0 && (
+              <div className="goal-section">
+                  <h3 className="section-title">In Progress</h3>
+                  <div className="goals-grid">
+                      {inProgressGoals.map(item => (
+                          <GoalCard key={item.id} item={item} isCompleted={false} />
+                      ))}
                   </div>
-                  <div className="tomato-marker" style={{ left: `calc(${(countCompleted() / 4) * 100}% - 20px)` }}>
-                     <img src={tomatoWinner} alt="Marker" />
+              </div>
+          )}
+
+          {/* COMPLETED SECTION */}
+          {completedGoals.length > 0 && (
+              <div className="goal-section">
+                  <h3 className="section-title">Completed</h3>
+                  <div className="goals-grid completed-grid">
+                      {completedGoals.map(item => (
+                          <GoalCard key={item.id} item={item} isCompleted={true} />
+                      ))}
                   </div>
-                  <span className="board-text">{countCompleted()}/4</span>
-               </div>
-            </div>
-            <div className="gym-illustration">
-                <img src={tomatoGym} alt="Working out" /> 
-            </div>
-         </div>
+              </div>
+          )}
       </div>
     </div>
   );
