@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import tomatoHero from '../../assets/raise-hand.png';
 import heartVisual from '../../assets/heart-rate.png';
 import tomato from '../../assets/tomato.png';
+import awards from '../../assets/awards.png';
 
 // Styles & DB
 import './Dashboard.css';
@@ -337,7 +338,7 @@ const Dashboard = () => {
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="awards-content">
-                            <img src={tomatoHero} alt="Award" className="award-badge" />
+                            <img src={awards} alt="Award" className="award-badge" />
                             <div className="progress-bar-simple"><div className="fill"></div></div>
                         </div>
                     </div>
