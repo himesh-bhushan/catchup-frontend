@@ -248,8 +248,8 @@
 .health-score-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 15px; /* Reduced gap to fit better horizontally */
+    justify-content: flex-start; /* Keeps the pills glued to the donut ring */
+    gap: 25px; /* Creates a nice breathing space between ring and pills */
     flex-grow: 1;
     width: 100%;
 }
@@ -287,11 +287,11 @@
 
 /* --- Right Side: Metric Pills --- */
 .score-metrics-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px; /* Tighter vertical spacing so they don't overflow */
-    flex-grow: 1;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;  
+  /* THE MAGIC FIX: Removes flex-grow and forces a narrower width */
+  width: 140px;
 }
 
 .metric-pill {
