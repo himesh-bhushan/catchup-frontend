@@ -19,6 +19,7 @@ import Activity from './pages/Activity/Activity';
 import Goals from './pages/Goals/Goals';
 import BloodPressure from './pages/Features/BloodPressure';
 import HeartRate from './pages/Features/HeartRate';
+import HealthScore from './pages/Health Score/HealthScore';
 
 import './App.css'; 
 import PanicButton from './components/PanicButton';
@@ -60,6 +61,7 @@ function App() {
         <Route path="/chatbot" element={<ProtectedRoute><Chatbox /></ProtectedRoute>} />
         <Route path="/activity" element={<ProtectedRoute><Activity /></ProtectedRoute>} />
         <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
+        <Route path="/health-score" element={<HealthScore />} />
         <Route path="/blood-pressure" element={<ProtectedRoute><BloodPressure /></ProtectedRoute>} />
         <Route path="/heart-rate" element={<ProtectedRoute><HeartRate /></ProtectedRoute>} />
       </Routes>
