@@ -56,7 +56,6 @@
 
 .ac-card-body {
     display: flex;
-    gap: 80px; 
     /* THE FIX: Forces both columns to start at the absolute top edge */
     align-items: flex-start; 
     justify-content: space-between;
@@ -128,9 +127,7 @@
     /* Centers the tightly packed group inside the right column */
     justify-content: center; 
     
-    /* You can now perfectly control the exact pixel gap (Row-Gap Column-Gap) */
-    gap: 5px 5px; 
-    
+    /* You can now perfectly control the exact pixel gap (Row-Gap Column-Gap) */    
     width: 100%;
 }
 
