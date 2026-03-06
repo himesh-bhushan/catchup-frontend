@@ -5,7 +5,7 @@ import { supabase } from '../../supabase';
 import './Goals.css';
 
 // Images
-import tomatoGym from '../../assets/tomato-gym.png';
+import tomatoGym from '../../assets/tomato-health.png';
 
 const DEFAULT_GOALS = {
   steps_current: 0, steps_target: 10000,
