@@ -390,12 +390,22 @@ const Dashboard = () => {
                         </div>
                     </div>
                     
-                    {/* Awards (Restored) */}
+                    {/* Awards (Image as Progress Bar) */}
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="awards-content">
-                            <img src={awards} alt="Award" className="award-badge" />
-                            <div className="progress-bar-simple"><div className="fill"></div></div>
+                            <div className="award-image-container">
+                                {/* Base image: Grayed out */}
+                                <img src={awards} alt="Award Base" className="award-badge grayscale-badge" />
+                                
+                                {/* Top image: Full color, acting as the progress fill */}
+                                <img 
+                                    src={awards} 
+                                    alt="Award Progress" 
+                                    className="award-badge color-badge" 
+                                    style={{ clipPath: 'inset(40% 0 0 0)' }} /* 60% Full = Top 40% hidden */
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

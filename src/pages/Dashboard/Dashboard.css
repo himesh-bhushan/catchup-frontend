@@ -356,38 +356,41 @@
 .pill-blue .metric-icon-circle { color: #4A90E2; }
 
 
-/* Awards Visual (Proportional Fix Applied) */
+/* Awards Visual (Image as Progress Bar) */
 .awards-content { 
   display: flex; 
   flex-direction: column; 
   align-items: center; 
   width: 100%; 
   flex-grow: 1; 
-  justify-content: space-between; 
+  justify-content: center; /* Perfectly centers the larger image */
   min-height: 0; 
 }
+
+.award-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-height: 90%; /* Increased size since the progress bar is gone */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .award-badge { 
+  position: absolute; /* Stacks the images perfectly on top of each other */
   width: 100%; 
   height: 100%; 
-  max-height: 75%; 
   object-fit: contain; 
-  flex-grow: 1; 
-  min-height: 0; 
-  margin:  0; 
 }
-.awards-content .progress-bar-simple { 
-  width: 85%; 
-  height: 8px; 
-  background: #E0E0E0; 
-  border-radius: 10px; 
-  margin-top: 10px; 
-  flex-shrink: 0; 
+
+.grayscale-badge {
+  filter: grayscale(100%) opacity(30%); /* Makes the base look gray and inactive */
 }
-.awards-content .progress-bar-simple .fill { 
-  height: 100%; 
-  background: #4CD964; 
-  border-radius: 10px; 
-  width: 60%; 
+
+.color-badge {
+  z-index: 2; /* Ensures the colored progress overlays the gray one */
+  transition: clip-path 0.5s ease-in-out; /* Adds a smooth animation if progress changes */
 }
 
 /* --- RECOMMENDATIONS & CLINICS --- */
