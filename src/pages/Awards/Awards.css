@@ -1,7 +1,8 @@
 /* =========================================
-   AWARDS PAGE (MATCHING FIGMA LAYOUT)
+   AWARDS PAGE (FULL-SCREEN, LARGE & FITTED IMAGES)
    ========================================= */
 
+/* Ensures the background retains that soft peach dashboard color */
 .dashboard-wrapper.awards-page-bg {
     background-color: #F8DBCA !important; 
     min-height: 100vh;
@@ -9,7 +10,8 @@
 
 .awards-page-container {
     width: 100%;
-    max-width: 1200px; 
+    /* Increased from 1200px to allow larger elements to stretch beautiful */
+    max-width: 1400px; 
     margin: 0 auto;
     font-family: 'Poppins', sans-serif;
     color: #111;
@@ -21,12 +23,12 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    margin-bottom: 30px; 
+    margin-bottom: 40px; /* Increased from 30px for better vertical rhythm */
 }
 
 .awards-header-top h2 {
     margin: 0;
-    font-size: 1.8rem;
+    font-size: 2rem; /* Scaled up header text */
     font-weight: 500;
 }
 
@@ -49,17 +51,19 @@
 .achievements-card {
     background-color: #FBF7EC; 
     border-radius: 20px; 
-    padding: 40px 50px; 
+    padding: 50px 60px; /* Thicker padding for the larger card */
     box-shadow: 0 10px 30px rgba(0,0,0,0.04);
     width: 100%;
-    margin-bottom: 50px; 
+    margin-bottom: 60px; /* Increased from 50px pushes bottom section down more */
 }
 
 .ac-card-body {
     display: flex;
-    align-items: flex-start; 
+    /* Keeps vertical center alignment between left hero and right grid */
+    align-items: center; 
     justify-content: space-between;
     width: 100%;
+    gap: 80px; /* Ensures space between the massive hero badge and the grid */
 }
 
 /* Left Column */
@@ -70,12 +74,12 @@
     align-items: center; 
 }
 
-/* Title is perfectly at the top left */
+/* Title is scaled up and locked left */
 .ac-card-title {
     align-self: flex-start; 
-    font-size: 2rem;
+    font-size: 2.2rem; /* Scaled up */
     font-weight: 500;
-    margin: 0 0 30px 0; 
+    margin: 0 0 40px 0; /* More breathing room */
 }
 
 .ac-main-badge-wrapper {
@@ -85,21 +89,22 @@
 }
 
 .ac-main-badge {
-    width: 300px; 
+    /* MASSIVELY increased from 300px so it dominates the space */
+    width: 420px; 
     object-fit: contain;
     filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); 
 }
 
 .ac-challenge-title {
-    font-size: 1.4rem; 
+    font-size: 1.6rem; /* Scaled up */
     font-weight: 500;
-    margin: 25px 0 15px 0;
+    margin: 30px 0 15px 0;
 }
 
 .ac-progress-bar {
     width: 100%;
-    max-width: 240px; 
-    height: 14px; 
+    max-width: 280px; /* Widened bar to match new scale */
+    height: 16px; /* Slightly thicker */
     background-color: #BDC3C7; 
     border-radius: 10px;
     overflow: hidden;
@@ -113,7 +118,7 @@
 
 /* Right Column (Grid) */
 .ac-right-col {
-    flex: 1.2; 
+    flex: 1.3; /* Gives the grid a tiny bit more space to breathe */
     display: flex;
     flex-direction: column;
 }
@@ -122,7 +127,8 @@
     display: grid;
     grid-template-columns: repeat(4, max-content); 
     justify-content: center; 
-    gap: 15px 10px; 
+    /* Increased gap so the massive medals don't feel too cramped */
+    gap: 30px 20px; 
     width: 100%;
 }
 
@@ -130,15 +136,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 12px;
 }
 
 .ac-grid-item img {
-    width: 135px; 
-    height: 135px;
+    /* MASSIVELY increased from 115px to look like substantial medals */
+    width: 155px; 
+    height: 155px;
     object-fit: contain;
     transition: all 0.3s ease;
 }
 
+/* --- Badge Status Styles --- */
 .badge-earned {
     filter: drop-shadow(0 6px 10px rgba(0,0,0,0.15));
 }
@@ -149,45 +158,64 @@
 }
 
 .ac-grid-item span {
-    font-size: 0.95rem; 
+    font-size: 1rem; /* Scaled up month text */
     font-weight: 400;
     color: #333;
 }
 
-/* --- NEW: Milestone Awards Row --- */
+/* --- THE FIX: FITTED Milestone Awards Section --- */
 .milestone-awards-container {
     display: flex;
-    justify-content: center; 
-    gap: 80px; 
+    justify-content: center; /* Centers the 3 massive badges on the page */
+    gap: 100px; /* Space between the badges */
     width: 100%;
     padding: 20px;
+    margin-top: 30px;
 }
 
 .milestone-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    max-width: 240px; 
+    gap: 20px;
+    max-width: 300px; /* Widened to contain larger images and text */
     text-align: center;
 }
 
 .milestone-item img {
-    width: 150px; 
-    height: 150px;
+    /* BIGGER chunky badges, up from 150px */
+    width: 200px; 
+    height: 200px;
     object-fit: contain;
     transition: all 0.3s ease;
+    /* REMOVED: No clipping paths or inset rules. The image fits properly by design. */
 }
 
 .milestone-item span {
-    font-size: 1.1rem;
+    font-size: 1.2rem; /* Scaled up milestone text */
     font-weight: 400;
     color: #111;
     line-height: 1.4;
 }
 
 /* --- Responsive Adjustments --- */
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 1200px) {
+    .achievements-card {
+        padding: 40px;
+    }
+    .ac-main-badge {
+        width: 350px;
+    }
+    .ac-grid-item img {
+        width: 125px;
+        height: 125px;
+    }
+    .milestone-awards-container {
+        gap: 60px;
+    }
+}
+
+@media screen and (max-width: 1000px) {
     .ac-card-body {
         flex-direction: column;
         gap: 50px;
