@@ -125,10 +125,7 @@
     position: absolute; 
     top: 50%; 
     transform: translateY(-50%); 
-    
-    /* THE FIX: Pulls the image past the edge to hide the transparent space */
-    right: -40px; 
-    
+    right: -80px; 
     max-height: 120px; 
     z-index: 1; 
     object-fit: contain;
