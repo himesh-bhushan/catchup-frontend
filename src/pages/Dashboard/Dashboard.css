@@ -231,13 +231,13 @@
 
 
 
-//* =========================================
+/* =========================================
    6. HEALTH SCORE VISUAL (SPLIT LAYOUT)
    ========================================= */
 
 /* Nudges the Health Score Title upwards */
 .score-header-nudged {
-    margin-top: -10px !important; 
+    /* margin-top: -10px !important;  <-- REMOVE THIS LINE */
     margin-bottom: 15px !important;
 }
 
