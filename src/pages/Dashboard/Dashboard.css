@@ -376,7 +376,7 @@
   max-height: 100%; 
   object-fit: contain; 
   
-  transform: scale(1.5); 
+  transform: scale(1.25); 
   
   transition: filter 0.5s ease-in-out, transform 0.3s ease; 
 }
