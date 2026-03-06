@@ -2,6 +2,24 @@
    HEALTH SCORE PAGE
    ========================================= */
 
+/* Overrides dashboard background specifically for health score */
+.dashboard-wrapper.hs-page-bg,
+.hs-page-bg .dashboard-content {
+    background: #FFFFFF !important; 
+    background-color: #FFFFFF !important;
+}
+
+.hs-page-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 20px;
+}
 .hs-page-wrapper {
     min-height: 100vh;
     background-color: #FFFFFF;
