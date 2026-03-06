@@ -261,7 +261,7 @@
   .mobile-header-top { display: none !important; }
   .mobile-title { display: none !important; }
   .desktop-title { display: block !important; }
-  .header-flex { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; margin-bottom: 25px; }
+  .header-flex { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; margin-bottom: 5px; }
 
   /* 1. Remove global min-height so the Sync card is allowed to shrink */
   .card { min-height: auto !important; }
