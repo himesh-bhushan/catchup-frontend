@@ -1,5 +1,5 @@
 /* =========================================
-   AWARDS PAGE (IMMERSIVE FULLSCREEN CARD)
+   AWARDS PAGE (CENTERED FLOATING CARD)
    ========================================= */
 
 .dashboard-wrapper.awards-page-bg {
@@ -9,35 +9,35 @@
 
 .awards-page-container {
     width: 100%;
-    height: 100%; /* Forces container to take full available height */
+    max-width: 1100px; /* Brought the width back down so it feels like a neat card */
+    margin: 0 auto;
+    
+    /* THE MAGIC FIX: Centers the card vertically and horizontally */
+    min-height: 100vh; 
     display: flex;
+    align-items: center; 
+    justify-content: center; 
+    
     font-family: 'Poppins', sans-serif;
     color: #111;
-    padding: 30px; /* Space around the outer edges of the card */
+    padding: 40px; 
 }
 
 /* --- Main Achievements Card --- */
 .achievements-card {
     background-color: #FBF7EC; 
-    border-radius: 30px; /* Slightly softer corners for a massive card */
-    padding: 60px 80px; 
+    border-radius: 30px; 
+    padding: 50px 60px; /* Tightened the inner padding */
     display: flex;
     flex-direction: column; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.04);
     width: 100%;
-    flex-grow: 1; /* THE MAGIC FIX: Tells the card to stretch to the bottom of the screen */
-    justify-content: center; /* Centers everything vertically inside the card */
-}
-
-.ac-card-title {
-    font-size: 2.6rem;
-    font-weight: 500;
-    margin: 0 0 60px 0; 
+    /* Removed the flex-grow rule so it stops stretching infinitely */
 }
 
 .ac-card-body {
     display: flex;
-    gap: 80px;
+    gap: 60px; /* Reduced the massive gap between the left and right sides */
     align-items: center; 
     justify-content: space-between;
 }
@@ -51,21 +51,21 @@
 }
 
 .ac-main-badge {
-    width: 380px; /* Even bigger to command attention */
+    width: 320px; /* Scaled down slightly so it isn't overwhelming */
     object-fit: contain;
     filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); 
 }
 
 .ac-challenge-title {
-    font-size: 1.6rem; 
+    font-size: 1.4rem; 
     font-weight: 500;
-    margin: 30px 0 15px 0;
+    margin: 25px 0 15px 0;
 }
 
 .ac-progress-bar {
     width: 100%;
-    max-width: 280px; 
-    height: 16px; 
+    max-width: 240px; 
+    height: 14px; 
     background-color: #BDC3C7; 
     border-radius: 10px;
     overflow: hidden;
@@ -79,7 +79,7 @@
 
 /* Right Column (Grid) */
 .ac-right-col {
-    flex: 1.5; 
+    flex: 1.2; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -88,7 +88,7 @@
 .ac-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
-    gap: 40px 30px; 
+    gap: 30px 20px; /* Tighter grid spacing */
     width: 100%;
 }
 
@@ -96,18 +96,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px; 
+    gap: 12px; 
 }
 
 .ac-grid-item img {
-    width: 125px; /* Scaled up for the fullscreen layout */
-    height: 125px;
+    width: 105px; /* Balanced perfectly for the new card size */
+    height: 105px;
     object-fit: contain;
     transition: all 0.3s ease;
 }
 
 .badge-earned {
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.15));
 }
 
 .badge-unearned {
@@ -116,16 +116,16 @@
 }
 
 .ac-grid-item span {
-    font-size: 1.1rem; 
+    font-size: 1rem; 
     font-weight: 400;
     color: #333;
 }
 
 /* --- Responsive Adjustments --- */
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1100px) {
     .ac-card-body {
         flex-direction: column;
-        gap: 60px;
+        gap: 50px;
     }
     .ac-grid {
         grid-template-columns: repeat(3, 1fr);
