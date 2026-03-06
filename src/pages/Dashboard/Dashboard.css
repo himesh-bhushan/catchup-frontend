@@ -228,26 +228,37 @@
     line-height: 1; 
 }
 .tile-value span { font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; }
-/* 6. Health Score Visual */
+/* =========================================
+   6. HEALTH SCORE VISUAL (SPLIT LAYOUT)
+   ========================================= */
+
+.health-score-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-grow: 1;
+}
+
+/* --- Left Side: Donut Ring --- */
 .score-ring-wrapper { 
     width: 120px; 
     height: 120px; 
     position: relative; 
-    margin: auto; /* Perfectly centers it vertically and horizontally */
+    flex-shrink: 0; 
 }
 
 .score-ring { 
     width: 100%; 
     height: 100%; 
     border-radius: 50%; 
-    /* Background gradient is now handled dynamically in JS */
     display: flex; 
     align-items: center; 
     justify-content: center; 
 }
 
 .score-inner { 
-    width: 62%; /* Shrunk from 70% to make the colored donut ring thicker */
+    width: 62%; 
     height: 62%; 
     background: var(--card-bg); 
     border-radius: 50%; 
@@ -256,8 +267,69 @@
     justify-content: center; 
     font-size: 1.6rem; 
     font-weight: 800; 
-    color: #EF473A; /* Matches the red text in your image */
+    color: #EF473A; 
 }
+
+/* --- Right Side: Metric Pills --- */
+.score-metrics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Spacing between the pills */
+    flex-grow: 1;
+    width: 100%;
+}
+
+.metric-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    color: white;
+}
+
+.metric-icon-circle {
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.metric-text-group {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.metric-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.metric-value strong {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 3px;
+    text-transform: uppercase;
+}
+
+/* Pill Colors mapped to your image */
+.pill-red    { background: #EF473A; }
+.pill-orange { background: #F7931E; }
+.pill-yellow { background: #FDE08B; color: #333; } /* Dark text for contrast */
+.pill-blue   { background: #4A90E2; }
 /* Awards Visual (Proportional Fix Applied) */
 .awards-content { 
   display: flex; 
