@@ -228,10 +228,36 @@
     line-height: 1; 
 }
 .tile-value span { font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; }
-.score-ring-wrapper { width: 110px; height: 110px; position: relative; margin: 0 auto; }
-.score-ring { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#FF9500 0% 87%, #FFE0B2 87% 100%); display: flex; align-items: center; justify-content: center; }
-.score-inner { width: 70%; height: 70%; background: var(--card-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800; color: #FF3B30; }
+/* 6. Health Score Visual */
+.score-ring-wrapper { 
+    width: 120px; 
+    height: 120px; 
+    position: relative; 
+    margin: auto; /* Perfectly centers it vertically and horizontally */
+}
 
+.score-ring { 
+    width: 100%; 
+    height: 100%; 
+    border-radius: 50%; 
+    /* Background gradient is now handled dynamically in JS */
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+.score-inner { 
+    width: 62%; /* Shrunk from 70% to make the colored donut ring thicker */
+    height: 62%; 
+    background: var(--card-bg); 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 1.6rem; 
+    font-weight: 800; 
+    color: #EF473A; /* Matches the red text in your image */
+}
 /* Awards Visual (Proportional Fix Applied) */
 .awards-content { 
   display: flex; 
