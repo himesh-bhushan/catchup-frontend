@@ -1,5 +1,5 @@
 /* =========================================
-   AWARDS PAGE (LARGE & FITTED)
+   AWARDS PAGE (LARGE & FITTED - GRID BADGES SCALED UP)
    ========================================= */
 
 /* Ensures the background retains that soft peach dashboard color */
@@ -111,7 +111,7 @@
 .ac-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
-    gap: 40px 20px; /* Spread the rows out vertically a bit more */
+    gap: 50px 20px; /* SPREAD the rows out a bit vertically */
     width: 100%;
 }
 
@@ -123,9 +123,9 @@
 }
 
 .ac-grid-item img {
-    /* Increased from 75px to make them much more prominent */
-    width: 110px; 
-    height: 110px;
+    /* MASSIVELY increased from 110px so they are true medal-sized awards */
+    width: 170px; 
+    height: 170px;
     object-fit: contain;
     transition: all 0.3s ease;
 }
@@ -140,7 +140,7 @@
 }
 
 .ac-grid-item span {
-    font-size: 0.95rem; /* Scaled up the month text */
+    font-size: 1rem; /* Scaled up the month text a little more */
     font-weight: 400;
     color: #333;
 }
