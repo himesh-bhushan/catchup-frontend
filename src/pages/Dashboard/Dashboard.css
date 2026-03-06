@@ -365,17 +365,16 @@
   align-items: center; 
   width: 100%; 
   flex-grow: 1; 
-  justify-content: center; /* Center the bigger image vertically */
+  justify-content: center; 
   min-height: 0; 
-  padding: 10px 0; /* Breathing room at bottom */
+  padding: 0; /* REMOVED padding to give the image maximum room */
 }
 
 .award-badge-status { 
-  /* Make it much bigger */
-  width: auto; 
-  height: auto;
-  max-width: 90%;  /* Utilizes almost full horizontal space of the tile */
-  max-height: 90%; /* Utilizes almost full vertical space after title */
+  /* Force the image to grow as large as the tile allows */
+  width: 100%; 
+  height: 100%;
+  max-height: 100%; 
   object-fit: contain; 
   
   /* Smooth transition when state changes */
@@ -384,12 +383,12 @@
 
 /* Base style for not yet earned (Gray/Faded) */
 .not-earned-gray {
-  filter: grayscale(100%) opacity(30%); /* Full gray and semi-transparent "inactive" look */
+  filter: grayscale(100%) opacity(30%); 
 }
 
 /* Base style for earned (Full Color) */
 .earned-color {
-  filter: grayscale(0%) opacity(100%); /* Full pop of color, fully visible */
+  filter: grayscale(0%) opacity(100%); 
 }
 
 /* --- RECOMMENDATIONS & CLINICS --- */
