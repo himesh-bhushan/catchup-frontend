@@ -1,0 +1,174 @@
+/* =========================================
+   AWARDS PAGE
+   ========================================= */
+
+/* Ensures the background retains that soft peach dashboard color */
+.dashboard-wrapper.awards-page-bg {
+    background-color: #F8DBCA !important; 
+    min-height: 100vh;
+}
+
+.awards-page-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    font-family: 'Poppins', sans-serif;
+    color: #111;
+    padding: 20px 40px;
+}
+
+/* --- Header --- */
+.awards-header-top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.awards-header-top h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.icon-btn:hover { background: rgba(0,0,0,0.05); }
+
+/* --- Main Achievements Card --- */
+.achievements-card {
+    background-color: #FBF7EC; /* Beautiful soft cream color */
+    border-radius: 20px;
+    padding: 40px 50px;
+    display: flex;
+    gap: 60px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+
+/* Left Column */
+.ac-left-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ac-left-col h3 {
+    align-self: flex-start;
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin: 0 0 30px 0;
+}
+
+.ac-main-badge {
+    width: 260px;
+    object-fit: contain;
+    filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); /* Soft shadow under hero badge */
+}
+
+.ac-challenge-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 20px 0 15px 0;
+}
+
+.ac-progress-bar {
+    width: 100%;
+    max-width: 220px;
+    height: 12px;
+    background-color: #BDC3C7; /* Gray background */
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ac-progress-fill {
+    height: 100%;
+    background-color: #4CAF50; /* Green fill */
+    border-radius: 10px;
+}
+
+/* Right Column (Grid) */
+.ac-right-col {
+    flex: 1.2;
+    display: flex;
+    align-items: center;
+    padding-top: 50px; /* Pushes the grid down to align with the hero badge */
+}
+
+.ac-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    gap: 30px 20px;
+    width: 100%;
+}
+
+.ac-grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.ac-grid-item img {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.badge-earned {
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+}
+
+.badge-unearned {
+    opacity: 0.25; /* Washes out the unearned badges beautifully */
+    filter: drop-shadow(0 0 0 transparent);
+}
+
+.ac-grid-item span {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #333;
+}
+
+/* --- Bottom Section Placeholder --- */
+.other-awards-section {
+    margin-top: 40px;
+    display: flex;
+    gap: 30px;
+    overflow: hidden;
+    opacity: 0.8;
+}
+
+.other-badge {
+    width: 180px;
+    object-fit: contain;
+    /* Crops the top half off just like your mockup */
+    clip-path: inset(0 0 40% 0); 
+}
+
+/* --- Responsive Adjustments --- */
+@media screen and (max-width: 1024px) {
+    .achievements-card {
+        flex-direction: column;
+        padding: 30px;
+        gap: 40px;
+    }
+    .ac-right-col {
+        padding-top: 0;
+    }
+    .ac-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

@@ -20,6 +20,7 @@ import Goals from './pages/Goals/Goals';
 import BloodPressure from './pages/Features/BloodPressure';
 import HeartRate from './pages/Features/HeartRate';
 import HealthScore from './pages/Health Score/HealthScore';
+import Awards from './pages/Awards/Awards';
 
 import './App.css'; 
 import PanicButton from './components/PanicButton';
@@ -64,6 +65,7 @@ function App() {
         <Route path="/health-score" element={<HealthScore />} />
         <Route path="/blood-pressure" element={<ProtectedRoute><BloodPressure /></ProtectedRoute>} />
         <Route path="/heart-rate" element={<ProtectedRoute><HeartRate /></ProtectedRoute>} />
+        <Route path="/awards" element={<Awards />} />
       </Routes>
     </div>
     // ❌ REMOVED CLOSING </Router> TAG HERE
