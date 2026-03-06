@@ -328,10 +328,24 @@ const Dashboard = () => {
                         <div className="tile-value">{otherStats.heart_rate} <span>BPM</span></div>
                     </div>
 
+                    {/* Health Score */}
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
-                        <div className="card-header"><h3>{t('Health Score')}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="card-header"><h3>{t('Health Score') || "Health Score"}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="score-ring-wrapper">
-                            <div className="score-ring"><div className="score-inner">87%</div></div>
+                            <div 
+                                className="score-ring"
+                                style={{
+                                    /* 4-Part Gradient matching your image colors */
+                                    background: `conic-gradient(
+                                        #EF473A 0% 35%,   /* Red slice */
+                                        #F7931E 35% 60%,  /* Orange slice */
+                                        #FDE08B 60% 85%,  /* Yellow slice */
+                                        #F8A8A8 85% 100%  /* Pink slice */
+                                    )`
+                                }}
+                            >
+                                <div className="score-inner">87%</div>
+                            </div>
                         </div>
                     </div>
 
