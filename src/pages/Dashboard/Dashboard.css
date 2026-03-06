@@ -235,33 +235,32 @@
    6. HEALTH SCORE VISUAL (SPLIT LAYOUT)
    ========================================= */
 
-/* Nudges the Health Score Title upwards */
+/* Fixes the header so it stops bleeding out the top of the box */
 .score-header-nudged {
-    /* margin-top: -10px !important;  <-- REMOVE THIS LINE */
-    margin-bottom: 15px !important;
+    margin-top: 0 !important; 
+    margin-bottom: 10px !important;
 }
 
-/* Nudges the 87% text upwards */
 .score-label-nudge {
-    transform: translateY(-4px); 
+    transform: translateY(0); 
 }
 
 .health-score-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 15px; /* Reduced gap to fit better horizontally */
     flex-grow: 1;
     width: 100%;
 }
 
 /* --- Left Side: Donut Ring --- */
 .score-ring-wrapper { 
-    width: 120px; 
-    height: 120px; 
+    width: 100px; /* Scaled down from 120px */
+    height: 100px; /* Scaled down from 120px */
     position: relative; 
     flex-shrink: 0; 
-    margin: 0; /* Ensures it stays pinned to the left */
+    margin: 0; 
 }
 
 .score-ring { 
@@ -281,7 +280,7 @@
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    font-size: 1.6rem; 
+    font-size: 1.3rem; /* Scaled down font to fit the smaller ring */
     font-weight: 800; 
     color: #EF473A; 
 }
@@ -290,7 +289,7 @@
 .score-metrics-list {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Spacing between the colored pills */
+    gap: 6px; /* Tighter vertical spacing so they don't overflow */
     flex-grow: 1;
     width: 100%;
 }
@@ -298,52 +297,52 @@
 .metric-pill {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 8px 12px;
-    border-radius: 12px;
+    gap: 10px; /* Tighter horizontal spacing */
+    padding: 6px 10px; /* Thinner padding to reduce height */
+    border-radius: 10px;
     color: white;
 }
 
 .metric-icon-circle {
-    width: 30px;
-    height: 30px;
+    width: 26px; /* Smaller icon circles */
+    height: 26px;
     background: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     flex-shrink: 0;
 }
 
 .metric-text-group {
     display: flex;
     flex-direction: column;
-    line-height: 1.2;
+    line-height: 1.1; /* Tighter text stacking */
 }
 
 .metric-label {
-    font-size: 0.75rem;
+    font-size: 0.65rem; /* Shrunk label */
     font-weight: 500;
     opacity: 0.9;
     text-align: left;
 }
 
 .metric-value {
-    font-size: 1.1rem;
+    font-size: 0.95rem; /* Shrunk value */
     font-weight: 700;
     margin-top: 2px;
     text-align: left;
 }
 
 .metric-value strong {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 600;
     margin-left: 3px;
     text-transform: uppercase;
 }
 
-/* Pill Colors matching your exact reference image */
+/* Pill Colors */
 .pill-red    { background: #EF473A; }
 .pill-red .metric-icon-circle { color: #EF473A; }
 
@@ -355,7 +354,6 @@
 
 .pill-blue   { background: #4A90E2; }
 .pill-blue .metric-icon-circle { color: #4A90E2; }
-
 
 
 /* Awards Visual (Proportional Fix Applied) */
