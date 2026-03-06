@@ -125,7 +125,7 @@
     position: absolute; 
     top: 50%; /* Suspends the image perfectly in the middle */
     transform: translateY(-50%); /* Adjusts it so it's perfectly centered */
-    right: 20px; /* Gives it a tiny bit of breathing room on the right */
+    right: 0px; /* Gives it a tiny bit of breathing room on the right */
     max-height: 120px; /* Slightly smaller so it fits completely inside the box */
     z-index: 1; 
     object-fit: contain;
