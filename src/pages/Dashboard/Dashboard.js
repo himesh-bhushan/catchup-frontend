@@ -277,6 +277,17 @@ const Dashboard = () => {
                         </div>
                     </div>
 
+                    {/* --- SYNCING TILE (Fills the Desktop Gap) --- */}
+                    <div className="card sync-card">
+                        <div className="sync-header">
+                            <div className="sync-dot green"></div>
+                            <h3>{t('Syncing') || 'Syncing'}</h3>
+                        </div>
+                        <p>
+                            Synced with Google Fitness {lastSyncedAgo ? lastSyncedAgo : 'just now'}
+                        </p>
+                    </div>
+
                     {/* Goals Completed */}
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('Goals Completed')}</h3><FiChevronRight className="card-arrow" /></div>
