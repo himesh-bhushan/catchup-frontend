@@ -31,14 +31,16 @@
    2. HEADER STYLES
    ========================================= */
 .dash-header { margin-bottom: 10px; width: 100%; display: flex; flex-direction: column; }
+.header-text-group { 
+    display: flex; 
+    flex-direction: column; 
+}
 
-.last-synced-label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin: 0;
-  padding: 0;
-  opacity: 0.8;
-  font-weight: 400;
+.last-synced-label { 
+    font-size: 0.85rem; 
+    color: var(--text-secondary); 
+    margin: 5px 0 0 0; /* Adds a tiny gap below the title */
+    font-weight: 500; 
 }
 
 /* MOBILE HEADER TOP */
@@ -202,11 +204,6 @@
   .desktop-title { display: block !important; }
   .header-flex { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; margin-bottom: 25px; }
 
-  .last-synced-label {
-        color: #000000 !important;
-        opacity: 1 !important;
-        font-weight: 500 !important;
-    }
   /* 1. Remove global min-height so the Sync card is allowed to shrink */
   .card { min-height: auto !important; }
 
@@ -243,10 +240,6 @@
    ========================================= */
 @media screen and (max-width: 768px) {
     .goals-detailed-grid { grid-template-columns: 1fr; gap: 12px; }
-    .last-synced-label {
-    font-size: 0.75rem;
-    margin-bottom: 8px;
-  }
     .blog-card { min-width: 260px; }
     .mobile-header-top, .connect-title-row { display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 15px !important; padding: 15px 20px !important; width: 100% !important; }
     .back-btn { margin: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
