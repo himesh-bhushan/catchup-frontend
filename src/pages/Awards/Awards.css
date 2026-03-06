@@ -183,33 +183,36 @@
 /* --- NEW: Milestone Awards Row --- */
 .milestone-awards-container {
     display: flex;
-    flex-direction: row; /* THE FIX: Forces the 3 items to sit side-by-side */
-    justify-content: center; /* Centers the whole group perfectly */
-    align-items: flex-start; /* Keeps them aligned at their top edges */
-    gap: 80px; /* A nice, breathable gap between each award */
+    flex-direction: row; 
+    /* THE FIX: This pushes the left and right items to perfectly align with the edges of the white box! */
+    justify-content: space-between; 
+    align-items: flex-start; 
     width: 100%;
-    padding: 20px;
     margin-top: 20px;
+    /* Removed the hardcoded gap and padding so it relies entirely on the card's width */
 }
 
 .milestone-item {
     display: flex;
-    flex-direction: column; /* THE FIX: Forces the text to sit UNDER the image */
+    flex-direction: column; 
     align-items: center;
-    gap: 15px; /* Space between the image and text */
-    width: 250px; /* Gives each item a consistent width boundary */
+    gap: 20px; 
+    /* Widened the item container so the text doesn't squish */
+    width: 320px; 
     text-align: center;
 }
 
 .milestone-item img {
-    width: 180px; /* Big enough to look great, but fits perfectly 3-across */
-    height: 180px;
+    /* THE FIX: Massively increased the size so they fill the space beautifully! */
+    width: 250px; 
+    height: 250px;
     object-fit: contain;
     transition: all 0.3s ease;
 }
 
 .milestone-item span {
-    font-size: 1.15rem;
+    /* Scaled up the text slightly to match the new giant badges */
+    font-size: 1.3rem; 
     font-weight: 500;
     color: #111;
     line-height: 1.4;
