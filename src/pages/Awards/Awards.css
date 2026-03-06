@@ -13,7 +13,7 @@
     margin: 0 auto;
     font-family: 'Poppins', sans-serif;
     color: #111;
-    padding: 30px 40px; 
+    padding: 30px 40px 60px 40px; 
 }
 
 /* --- Header --- */
@@ -52,11 +52,11 @@
     padding: 40px 50px; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.04);
     width: 100%;
+    margin-bottom: 50px; 
 }
 
 .ac-card-body {
     display: flex;
-    /* THE FIX: Forces both columns to start at the absolute top edge */
     align-items: flex-start; 
     justify-content: space-between;
     width: 100%;
@@ -120,14 +120,9 @@
 
 .ac-grid {
     display: grid;
-    
-    /* THE FIX: Changed '1fr' to 'max-content' so they hug the images tightly */
     grid-template-columns: repeat(4, max-content); 
-    
-    /* Centers the tightly packed group inside the right column */
     justify-content: center; 
-    
-    /* You can now perfectly control the exact pixel gap (Row-Gap Column-Gap) */    
+    gap: 15px 10px; 
     width: 100%;
 }
 
@@ -138,10 +133,8 @@
 }
 
 .ac-grid-item img {
-    /* THE FIX: Bumped up the size significantly! */
     width: 135px; 
     height: 135px;
-    
     object-fit: contain;
     transition: all 0.3s ease;
 }
@@ -151,8 +144,8 @@
 }
 
 .badge-unearned {
-    opacity: 0.25; 
-    filter: drop-shadow(0 0 0 transparent);
+    opacity: 0.35; 
+    filter: grayscale(100%) drop-shadow(0 0 0 transparent);
 }
 
 .ac-grid-item span {
@@ -161,23 +154,36 @@
     color: #333;
 }
 
-/* --- THE FIX: Restored Bottom Section --- */
-.other-awards-section {
-    margin-top: 50px;
+/* --- NEW: Milestone Awards Row --- */
+.milestone-awards-container {
     display: flex;
-    gap: 40px;
-    opacity: 0.9;
+    justify-content: center; 
+    gap: 80px; 
+    width: 100%;
+    padding: 20px;
 }
 
-.other-badge-wrapper {
+.milestone-item {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    max-width: 240px; 
+    text-align: center;
 }
 
-.other-badge {
-    width: 240px; 
+.milestone-item img {
+    width: 150px; 
+    height: 150px;
     object-fit: contain;
-    /* Crops the badge perfectly at the bottom */
-    clip-path: inset(0 0 35% 0); 
+    transition: all 0.3s ease;
+}
+
+.milestone-item span {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #111;
+    line-height: 1.4;
 }
 
 /* --- Responsive Adjustments --- */
@@ -190,6 +196,11 @@
         padding-top: 0;
     }
     .ac-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, max-content);
+    }
+    .milestone-awards-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
     }
 }

@@ -4,13 +4,15 @@ import { FiArrowLeft } from 'react-icons/fi';
 import DashboardNav from '../../components/DashboardNav';
 import './Awards.css';
 
-// Import your existing award image
+// Import all your award images
 import awardsBadge from '../../assets/awards.png';
+import awardsBadge2 from '../../assets/awards2.png';
+import awardsBadge3 from '../../assets/awards3.png';
 
 const Awards = () => {
   const navigate = useNavigate();
 
-  // Data for the 12 months. Change 'earned' to true/false to light them up!
+  // Data for the 12 months.
   const monthlyData = [
     { name: 'January', earned: true },
     { name: 'February', earned: false },
@@ -24,6 +26,13 @@ const Awards = () => {
     { name: 'October', earned: false },
     { name: 'November', earned: false },
     { name: 'December', earned: false },
+  ];
+
+  // Data for the bottom milestone awards using your new images!
+  const milestoneAwards = [
+    { id: 1, title: '5 days workout-streak', image: awardsBadge, earned: true },
+    { id: 2, title: 'Rank #1 in LeaderBoard for 5 times', image: awardsBadge2, earned: false },
+    { id: 3, title: 'Invite 5 friends', image: awardsBadge3, earned: true },
   ];
 
   return (
@@ -76,18 +85,23 @@ const Awards = () => {
                 </div>
               </div>
             </div>
-
           </div>
 
-          {/* THE FIX: Restored the bottom section! */}
-          <div className="other-awards-section">
-             <div className="other-badge-wrapper">
-                <img src={awardsBadge} alt="New Challenger" className="other-badge" />
-             </div>
+          {/* Milestone Awards Section */}
+          <div className="milestone-awards-container">
+            {milestoneAwards.map((award) => (
+              <div key={award.id} className="milestone-item">
+                <img 
+                  src={award.image} 
+                  alt={award.title} 
+                  className={award.earned ? 'badge-earned' : 'badge-unearned'} 
+                />
+                <span>{award.title}</span>
+              </div>
+            ))}
           </div>
 
         </div>
-        
       </div>
     </div>
   );
