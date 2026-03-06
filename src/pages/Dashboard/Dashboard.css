@@ -248,7 +248,7 @@
 .health-score-content {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Keeps the pills glued to the donut ring */
+    justify-content: center; /* Keeps the pills glued to the donut ring */
     gap: 25px; /* Creates a nice breathing space between ring and pills */
     flex-grow: 1;
     width: 100%;
@@ -376,8 +376,7 @@
   max-height: 100%; 
   object-fit: contain; 
   
-  /* THE MAGIC FIX: Artificially inflates the image by 40% */
-  transform: scale(1.8); 
+  transform: scale(1.5); 
   
   transition: filter 0.5s ease-in-out, transform 0.3s ease; 
 }
