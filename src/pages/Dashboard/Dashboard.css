@@ -457,8 +457,8 @@
       grid-row: 2 / 4;    /* Spans exactly 2 rows (45px each) for the 1:2 ratio */
       order: 4; 
   }  
-  .score-card    { grid-column: 2 / 3; grid-row: 4 / 8; order: 6; justify-content: center; }
-  .awards-card   { grid-column: 3 / 4; grid-row: 4 / 8; order: 7; justify-content: center; }
+  .score-card    { grid-column: 2 / 3; grid-row: 4 / 8; order: 6; }
+  .awards-card   { grid-column: 3 / 4; grid-row: 4 / 8; order: 7; }
 
   /* Desktop Typography & Sizing Scaling */
   .tile-value { font-size: 3.5rem; }
