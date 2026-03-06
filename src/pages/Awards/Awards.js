@@ -1,6 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft } from 'react-icons/fi';
 import DashboardNav from '../../components/DashboardNav';
 import './Awards.css';
 
@@ -8,8 +6,6 @@ import './Awards.css';
 import awardsBadge from '../../assets/awards.png';
 
 const Awards = () => {
-  const navigate = useNavigate();
-
   // Data for the 12 months. Change 'earned' to true/false to light them up!
   const monthlyData = [
     { name: 'January', earned: true },
@@ -32,19 +28,9 @@ const Awards = () => {
       <div className="dashboard-content">
         
         <div className="awards-page-container">
-          
-          {/* Header */}
-          <div className="awards-header-top">
-            <button onClick={() => navigate('/dashboard')} className="icon-btn">
-              <FiArrowLeft size={28} />
-            </button>
-            <h2>Awards</h2>
-          </div>
-
-          {/* Main Achievements Card */}
+          {/* Main Fullscreen Achievements Card */}
           <div className="achievements-card">
             
-            {/* THE FIX: Title moved to the top of the card */}
             <h3 className="ac-card-title">Monthly Achievements</h3>
             
             <div className="ac-card-body">
@@ -79,15 +65,8 @@ const Awards = () => {
             </div>
 
           </div>
-
-          {/* Bottom Section Placeholder */}
-          <div className="other-awards-section">
-             <div className="other-badge-wrapper">
-                <img src={awardsBadge} alt="New Challenger" className="other-badge" />
-             </div>
-          </div>
-
         </div>
+        
       </div>
     </div>
   );
