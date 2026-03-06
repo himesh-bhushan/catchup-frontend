@@ -8,7 +8,7 @@ import './Awards.css';
 import awardsBadge from '../../assets/awards.png';
 
 const Awards = () => {
-  const navigate = useNavigate(); // Brought back navigation
+  const navigate = useNavigate();
 
   // Data for the 12 months. Change 'earned' to true/false to light them up!
   const monthlyData = [
@@ -33,7 +33,7 @@ const Awards = () => {
         
         <div className="awards-page-container">
           
-          {/* THE FIX: Restored Page Header */}
+          {/* Page Header */}
           <div className="awards-header-top">
             <button onClick={() => navigate('/dashboard')} className="icon-btn">
               <FiArrowLeft size={28} />
@@ -45,10 +45,10 @@ const Awards = () => {
           <div className="achievements-card">
             <div className="ac-card-body">
               
-              {/* Left Column: Current Challenge */}
+              {/* Left Column: Title + Current Challenge */}
               <div className="ac-left-col">
                 
-                {/* THE FIX: Title moved back to the top left */}
+                {/* THE FIX: Title is securely inside the left column */}
                 <h3 className="ac-card-title">Monthly Achievements</h3>
                 
                 <div className="ac-main-badge-wrapper">

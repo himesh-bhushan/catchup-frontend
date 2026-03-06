@@ -1,5 +1,5 @@
 /* =========================================
-   AWARDS PAGE (ALIGNED LAYOUT)
+   AWARDS PAGE (PERFECT CENTER ALIGNMENT)
    ========================================= */
 
 .dashboard-wrapper.awards-page-bg {
@@ -9,7 +9,7 @@
 
 .awards-page-container {
     width: 100%;
-    max-width: 1200px; /* Sized perfectly to contain the layout */
+    max-width: 1200px; 
     margin: 0 auto;
     font-family: 'Poppins', sans-serif;
     color: #111;
@@ -21,7 +21,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    margin-bottom: 30px; /* Restored header gap */
+    margin-bottom: 30px; 
 }
 
 .awards-header-top h2 {
@@ -56,11 +56,20 @@
     width: 100%;
 }
 
+/* THE FIX: Title sits cleanly at the top left */
+.ac-card-title {
+    align-self: flex-start; 
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin: 0 0 40px 0; 
+}
+
 .ac-card-body {
     display: flex;
-    gap: 80px; /* Defines the gap running down the blue centerline in your image */
-    align-items: stretch; 
+    gap: 70px; /* Perfects the gap at the blue centerline */
+    align-items: center; /* THE FIX: Perfectly levels the badge and the grid */
     justify-content: space-between;
+    width: 100%;
 }
 
 /* Left Column */
@@ -71,13 +80,6 @@
     align-items: center;
 }
 
-.ac-card-title {
-    align-self: flex-start; /* Locks the title to the left edge of the column */
-    font-size: 2rem;
-    font-weight: 500;
-    margin: 0 0 40px 0; 
-}
-
 .ac-main-badge-wrapper {
     display: flex;
     justify-content: center;
@@ -85,7 +87,7 @@
 }
 
 .ac-main-badge {
-    width: 320px; 
+    width: 330px; 
     object-fit: contain;
     filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); 
 }
@@ -116,8 +118,7 @@
     flex: 1.2; 
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 80px; /* THE FIX: Pushes the grid down to align with the center of the big badge */
+    justify-content: center;
 }
 
 .ac-grid {
@@ -161,9 +162,6 @@
     .ac-card-body {
         flex-direction: column;
         gap: 50px;
-    }
-    .ac-right-col {
-        padding-top: 0;
     }
     .ac-grid {
         grid-template-columns: repeat(3, 1fr);
