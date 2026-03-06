@@ -111,8 +111,22 @@
 
 .card { background: var(--card-bg); border-radius: 24px; padding: 22px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;}
 .card:hover { transform: translateY(-3px); }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.card-header h3 { margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--text-primary); }
+.card-header { 
+    display: flex; 
+    justify-content: space-between; /* Ensures maximum space between title and arrow */
+    align-items: center; 
+    margin-bottom: 10px; 
+    width: 100%;
+}
+
+.card-header h3 { 
+    margin: 0; 
+    margin-right: auto; /* This acts as a bumper, actively pushing the text to the far left */
+    text-align: left;   /* Forces the text alignment to the left */
+    font-size: 1.2rem; 
+    font-weight: 700; 
+    color: var(--text-primary); 
+}
 .card-arrow { color: #FF3B30; font-size: 1.4rem; }
 
 /* Sync Card Styling */
