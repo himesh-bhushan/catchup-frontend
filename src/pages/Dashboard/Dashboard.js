@@ -9,11 +9,10 @@ import {
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
-// Images
+// Images (Ensure these paths match your project)
 import tomatoHero from '../../assets/raise-hand.png';
 import heartVisual from '../../assets/heart-rate.png';
 import tomato from '../../assets/tomato.png';
-import awards from '../../assets/awards.png';
 
 // Styles & DB
 import './Dashboard.css';
@@ -28,22 +27,10 @@ const Dashboard = () => {
   const [firstName, setFirstName] = useState(localStorage.getItem('userName') || "Friend");
   const [user, setUser] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null); 
+  
+  // ✅ FIX: Re-added the missing state variables
+  const [lastSynced, setLastSynced] = useState(null); 
   const [lastSyncedAgo, setLastSyncedAgo] = useState(null);
-
-  // Helper to calculate "2 hours ago", "1 day ago", etc.
-  const calculateTimeAgo = (dateString) => {
-      const now = new Date();
-      const past = new Date(dateString);
-      const diffMs = now - past;
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMins / 60);
-      const diffDays = Math.floor(diffHours / 24);
-
-      if (diffMins < 1) return "just now";
-      if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
-      if (diffHours < 24) return `${diffHours} hr${diffHours > 1 ? 's' : ''} ago`;
-      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-  };
   
   const [activityData, setActivityData] = useState({
     calories: 0, steps: 0, distance: 0, goal: 500, percentage: 0
@@ -57,9 +44,23 @@ const Dashboard = () => {
   const [isDeviceConnected, setIsDeviceConnected] = useState(localStorage.getItem('deviceConnected') === 'true');
   const [connecting, setConnecting] = useState(false); 
   const [showConnectMenu, setShowConnectMenu] = useState(false);
-  
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
+
+  // --- HELPER: TIME AGO ---
+  const calculateTimeAgo = (dateString) => {
+      const now = new Date();
+      const past = new Date(dateString);
+      const diffMs = now - past;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffMins < 1) return "just now";
+      if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+      if (diffHours < 24) return `${diffHours} hr${diffHours > 1 ? 's' : ''} ago`;
+      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  };
 
   // --- REFRESH / SYNC ---
   const handleRefreshSync = async () => {
@@ -85,7 +86,7 @@ const Dashboard = () => {
     window.location.href = authUrl;
   };
 
-  // --- CLINIC / LOCATION LOGIC ---
+  // --- LOCATION LOGIC ---
   const getDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371; 
     const dLat = (lat2 - lat1) * (Math.PI/180);
@@ -95,58 +96,47 @@ const Dashboard = () => {
     return (R * c).toFixed(1);
   };
 
-  const getMockStatus = () => {
-      const statuses = ["Open Now", "Closing Soon", "Closed", "Open 24/7"];
-      return statuses[Math.floor(Math.random() * statuses.length)];
-  };
-
   const fetchNearbyClinics = async (lat, lng) => {
     try {
         setLocationLoading(true);
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=clinic&limit=4&viewbox=${lng-0.05},${lat+0.05},${lng+0.05},${lat-0.05}&bounded=1`);
         const data = await response.json();
         if (data.length > 0) {
-            const formattedClinics = data.map(item => {
-                const status = getMockStatus();
-                return {
-                    id: item.place_id,
-                    name: item.display_name.split(",")[0],
-                    fullAddress: item.display_name,
-                    lat: parseFloat(item.lat),
-                    lng: parseFloat(item.lon),
-                    distance: getDistance(lat, lng, parseFloat(item.lat), parseFloat(item.lon)),
-                    phone: "+1 234-567-8900",
-                    status: status,
-                    isOpen: status.includes("Open")
-                };
-            });
+            const formattedClinics = data.map(item => ({
+                id: item.place_id,
+                name: item.display_name.split(",")[0],
+                fullAddress: item.display_name,
+                lat: parseFloat(item.lat),
+                lng: parseFloat(item.lon),
+                distance: getDistance(lat, lng, parseFloat(item.lat), parseFloat(item.lon)),
+                status: "Open Now",
+                isOpen: true
+            }));
             formattedClinics.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
             setClinics(formattedClinics);
-        } else { alert("No clinics found nearby."); }
-    } catch (err) { console.error("Nominatim Error:", err); } finally { setLocationLoading(false); }
+        }
+    } catch (err) { console.error(err); } finally { setLocationLoading(false); }
   };
 
   const handleGetLocation = () => {
     if (navigator.geolocation) {
       setLocationLoading(true);
       navigator.geolocation.getCurrentPosition(
-        (position) => { fetchNearbyClinics(position.coords.latitude, position.coords.longitude); },
-        () => { alert("Location access denied."); setLocationLoading(false); }
+        (position) => fetchNearbyClinics(position.coords.latitude, position.coords.longitude),
+        () => setLocationLoading(false)
       );
-    } else { alert("Browser does not support geolocation"); }
+    }
   };
 
-  const openGoogleMaps = (clinicName, clinicAddress) => {
-      const query = encodeURIComponent(`${clinicName} ${clinicAddress}`);
-      window.open(`https://maps.google.com/?q=${query}`, '_blank');
+  const openGoogleMaps = (name, address) => {
+      window.open(`http://googleusercontent.com/maps.google.com/?q=${name} ${address}`, '_blank');
   };
 
-  // --- BLOG DATA ---
+  // --- RECOMMENDATIONS ---
   const recommendations = [
-    { id: 1, title: t('rec_tomatoes') || "The Health Benefits of Eating Tomatoes", img: tomato, color: "#fff3e0" },
-    { id: 2, title: t('rec_heart') || "5 Simple Steps to Better Heart Health", img: heartVisual, color: "#ffebee" },
-    { id: 3, title: t('rec_sleep') || "Why Sleep is Your Superpower", img: tomatoHero, color: "#e3f2fd" },
-    { id: 4, title: t('rec_water') || "Hydration Hacks for Daily Life", img: tomato, color: "#e0f7fa" },
+    { id: 1, title: t('rec_tomatoes') || "Health Benefits of Tomatoes", img: tomato, color: "#fff3e0" },
+    { id: 2, title: t('rec_heart') || "Better Heart Health", img: heartVisual, color: "#ffebee" },
+    { id: 3, title: t('rec_sleep') || "Why Sleep is Important", img: tomatoHero, color: "#e3f2fd" },
   ];
 
   // --- DATA FETCHING ---
@@ -162,19 +152,20 @@ const Dashboard = () => {
                 .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at')
                 .eq('id', session.user.id).single();
             
-            let currentGoal = 500;
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
-                if (profile.calorie_goal) currentGoal = profile.calorie_goal;
                 if (profile.avatar_url) {
                     const fileName = profile.avatar_url.split('/').pop();
                     const { data: img } = await supabase.storage.from('avatars').download(fileName);
                     if (img) setAvatarUrl(URL.createObjectURL(img));
                 }
                 if (profile.google_connected) setIsDeviceConnected(true);
+                
+                // ✅ UPDATE SYNC TIME AND RELATIVE TIME
                 if (profile.last_synced_at) {
                     const date = new Date(profile.last_synced_at);
                     setLastSynced(date.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }));
+                    setLastSyncedAgo(calculateTimeAgo(profile.last_synced_at));
                 }
             }
 
@@ -197,53 +188,40 @@ const Dashboard = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { 
-      fetchDashboardData(); 
-      const params = new URLSearchParams(location.search);
-      if (params.get('sync') === 'success') {
-          setIsDeviceConnected(true);
-          localStorage.setItem('deviceConnected', 'true');
-          setShowConnectMenu(false);
-          navigate('/dashboard', { replace: true });
-          fetchDashboardData();
-      }
-  }, [fetchDashboardData, location.search, navigate]);
+  useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
 
-  const handleConnectProvider = () => {
-    if (!user) return;
-    setConnecting(true);
-    setTimeout(() => { 
-        localStorage.setItem('deviceConnected', 'true'); 
-        setIsDeviceConnected(true); 
-        fetchDashboardData(); 
-        setConnecting(false); 
-    }, 2000);
-  };
-
+  // --- RENDER ---
   return (
     <div className="dashboard-wrapper">
       <DashboardNav />
       <div className="dashboard-content">
         
-        {/* --- HEADER --- */}
         <header className="dash-header">
           <div className="mobile-header-top">
              <div className="mobile-avatar" onClick={() => navigate('/profile')}>
                 {avatarUrl ? <img src={avatarUrl} alt="User" className="avatar-img-circle" /> : <FiUser />}
              </div>
-             <button className="refresh-btn" onClick={handleRefreshSync}><FiRefreshCw className={loading ? "icon-spin" : ""} /></button>
+             <button className="refresh-btn" onClick={handleRefreshSync}>
+                <FiRefreshCw className={loading ? "icon-spin" : ""} />
+             </button>
           </div>
+          
           <div className="header-flex">
+            {/* ✅ NEW BEAUTIFUL HEADER TEXT GROUP */}
             <div className="header-text-group">
-                {/* Desktop & Mobile Greeting */}
                 <h1 className="desktop-title">Welcome back, {firstName}</h1>
                 <h1 className="mobile-title">Hi, {firstName} <br/> Have a nice day</h1>
                 
-                {/* Last Synced Label directly underneath */}
                 {lastSynced && (
-                    <p className="last-synced-label">Last updated: {lastSynced}</p>
+                    <div className="last-synced-wrapper">
+                        <FiRefreshCw className={`sync-icon-small ${loading ? "icon-spin" : ""}`} />
+                        <p className="last-synced-label">
+                            Last updated: {lastSynced} <span className="sync-time-ago">({lastSyncedAgo})</span>
+                        </p>
+                    </div>
                 )}
             </div>
+            
             <div className="desktop-only-refresh">
                 <button className="refresh-btn" onClick={handleRefreshSync}>
                     <FiRefreshCw className={loading ? "icon-spin" : ""} />
@@ -253,7 +231,7 @@ const Dashboard = () => {
         </header>
 
         {loading ? (
-            <div className="big-tile-container"><div className="big-connect-card"><h3>{t('loading_data') || 'Loading...'}</h3></div></div>
+            <div className="big-tile-container"><div className="big-connect-card"><h3>{t('loading_data') || 'Syncing data...'}</h3></div></div>
         ) : !isDeviceConnected ? ( 
             <div className="big-tile-container">
                 <div className="big-connect-card">
@@ -262,13 +240,13 @@ const Dashboard = () => {
                             <button onClick={() => setShowConnectMenu(false)} className="back-btn"><FiArrowLeft size={24} /></button>
                             <h3>Select Device</h3>
                             <button onClick={handleGoogleConnect} className="device-connect-btn oura">Connect Oura</button>
-                            <button onClick={handleConnectProvider} className="device-connect-btn fitbit">Connect Fitbit</button>
+                            <button className="device-connect-btn fitbit">Connect Fitbit</button>
                         </div>
                     ) : (
                         <>
                             <FiWatch size={60} color="#00796b"/>
-                            <h2>{t('connect_title')}</h2>
-                            <button className="connect-btn" onClick={() => setShowConnectMenu(true)}>{t('connect_btn')}</button>
+                            <h2>{t('connect_title') || 'Connect Tracker'}</h2>
+                            <button className="connect-btn" onClick={() => setShowConnectMenu(true)}>{t('connect_btn') || 'Connect'}</button>
                         </>
                     )}
                 </div>
@@ -276,21 +254,12 @@ const Dashboard = () => {
         ) : (
             <div className="animate-fade-in">
                 
-                {/* --- MAIN DASHBOARD GRID --- */}
+                {/* --- MAIN GRID START --- */}
                 <div className="dash-grid">
                     
-                    {/* 1. Syncing Card */}
-                    <div className="card sync-card">
-                        <div className="sync-header">
-                            <div className="sync-dot"></div>
-                            <h3>{t('Syncing') || 'Syncing'}</h3>
-                        </div>
-                        <p>Synced with Apple Health & Google Fitness {lastSynced ? `at ${lastSynced}` : 'just now'}</p>
-                    </div>
-
-                    {/* 2. Activity Ring */}
+                    {/* Activity Ring */}
                     <div className="card activity-card" onClick={() => navigate('/activity')}>
-                        <div className="card-header"><h3>{t('Activity Ring') || 'Activity Ring'}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="card-header"><h3>{t('Activity Ring')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="activity-content">
                             <div className="ring-wrapper">
                                 <div className="activity-ring" style={{ background: `conic-gradient(#FF5252 0% ${activityData.percentage}%, #E0E0E0 0% 100%)` }}>
@@ -302,15 +271,15 @@ const Dashboard = () => {
                             </div>
                             <div className="activity-stats">
                                 <div className="stat-item"><h4>Move</h4><p>{activityData.calories}/{activityData.goal} <span className="unit">KCAL</span></p></div>
-                                <div className="stat-item"><h4>Step Count</h4><p>{activityData.steps}</p></div>
+                                <div className="stat-item"><h4>Steps</h4><p>{activityData.steps}</p></div>
                                 <div className="stat-item"><h4>Distance</h4><p>{(activityData.distance || 0).toFixed(2)} <span className="unit">KM</span></p></div>
                             </div>
                         </div>
                     </div>
 
-                    {/* 3. Goals Completed */}
+                    {/* Goals Completed */}
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
-                        <div className="card-header"><h3>{t('Goals Completed') || 'Goals Completed'}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="card-header"><h3>{t('Goals Completed')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="goals-progress-bar">
                             <div className="progress-fill" style={{width: '75%'}}></div>
                             <img alt="Tomato" width="100%" src={tomato} className="progress-tomato"  />
@@ -323,52 +292,48 @@ const Dashboard = () => {
                             </div>
                             <div className="goal-item-detailed">
                                 <div className="goal-item-header"><div className="goal-dot filled"></div> Exercise</div>
-                                <p>Go exercise one hour per day</p>
+                                <p>1 hour per day</p>
                             </div>
                             <div className="goal-item-detailed">
-                                <div className="goal-item-header"><div className="goal-dot filled"></div> Sleep Duration</div>
-                                <p>Sleep at least 7 hours per day</p>
+                                <div className="goal-item-header"><div className="goal-dot filled"></div> Sleep</div>
+                                <p>7 hours per day</p>
                             </div>
                             <div className="goal-item-detailed">
-                                <div className="goal-item-header"><div className="goal-dot filled"></div> Water Intake</div>
-                                <p>Drink 2 Litre of water</p>
+                                <div className="goal-item-header"><div className="goal-dot filled"></div> Water</div>
+                                <p>2 Liters</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* 4. Blood Pressure */}
+                    {/* Small Tiles */}
                     <div className="card bp-card" onClick={() => navigate('/blood-pressure')}>
-                        <div className="card-header"><h3>{t('Blood Pressure') || 'Blood Pressure'}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="card-header"><h3>{t('Blood Pressure')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="tile-value">120/80 <span>mmHg</span></div>
                     </div>
 
-                    {/* 5. Heart Rate */}
                     <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
-                        <div className="card-header"><h3>{t('Heart Rate') || 'Heart Rate'}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="card-header"><h3>{t('Heart Rate')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="tile-value">{otherStats.heart_rate} <span>BPM</span></div>
                     </div>
 
-                    {/* 6. Health Score */}
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
-                        <div className="card-header"><h3>{t('Health Score') || 'Health Score'}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="card-header"><h3>{t('Health Score')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="score-ring-wrapper">
-                            <div className="score-ring">
-                                <div className="score-inner">87%</div>
-                            </div>
+                            <div className="score-ring"><div className="score-inner">87%</div></div>
                         </div>
                     </div>
 
-                    {/* 7. Awards */}
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
-                        <div className="card-header"><h3>{t('Awards') || 'Awards'}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="awards-content">
-                            <img src={awards} alt="Award" className="award-badge" />
+                            <img src={tomatoHero} alt="Award" className="award-badge" />
                             <div className="progress-bar-simple"><div className="fill"></div></div>
                         </div>
                     </div>
                 </div>
+                {/* --- MAIN GRID END --- */}
 
-                {/* --- BOTTOM SECTION: RECOMMENDATIONS --- */}
+                {/* --- BOTTOM SECTIONS --- */}
                 <div className="recommendations-section">
                     <h3>{t('recommendations') || "Recommendations"}</h3>
                     <div className="recommendations-carousel">
@@ -381,19 +346,16 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* --- LOCATION SECTION --- */}
                 <div className="recommendations-section">
                     <div className="section-header-row">
                         <h3>{t('nearby_care') || "Find Nearby Care"}</h3>
                         <button onClick={handleGetLocation} className="loc-btn">
-                            <FiNavigation /> {locationLoading ? t('locating') : t('use_my_location') || "Use My Location"}
+                             <FiNavigation /> {locationLoading ? t('locating') : t('use_my_location') || "Use My Location"}
                         </button>
                     </div>
 
                     {clinics.length === 0 && !locationLoading && (
-                        <div className="empty-clinics-state">
-                            <p>{t('location_prompt') || 'Click "Use My Location" to see clinics near you.'}</p>
-                        </div>
+                        <div className="empty-clinics-state"><p>{t('location_prompt') || 'Click "Use My Location" to see clinics near you.'}</p></div>
                     )}
 
                     <div className="clinics-grid-container">
