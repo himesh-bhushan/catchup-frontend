@@ -181,7 +181,17 @@
 .goal-item-detailed p { margin: 0; font-size: 0.8rem; color: var(--text-secondary); padding-left: 20px; line-height: 1.2; }
 
 /* Metrics & Score Values */
-.tile-value { display: flex; align-items: baseline; gap: 6px; font-size: 2.4rem; font-weight: 700; color: var(--text-primary); margin: 15px 0 5px 0; line-height: 1; }
+.tile-value { 
+    display: flex; 
+    align-items: baseline; 
+    justify-content: center; /* This pushes the text to the absolute center */
+    gap: 6px; 
+    font-size: 2.4rem; 
+    font-weight: 700; 
+    color: var(--text-primary); 
+    margin: 15px 0 5px 0; 
+    line-height: 1; 
+}
 .tile-value span { font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; }
 .score-ring-wrapper { width: 110px; height: 110px; position: relative; margin: 0 auto; }
 .score-ring { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#FF9500 0% 87%, #FFE0B2 87% 100%); display: flex; align-items: center; justify-content: center; }
