@@ -1,8 +1,7 @@
 /* =========================================
-   AWARDS PAGE
+   AWARDS PAGE (PERFECTED LAYOUT)
    ========================================= */
 
-/* Ensures the background retains that soft peach dashboard color */
 .dashboard-wrapper.awards-page-bg {
     background-color: #F8DBCA !important; 
     min-height: 100vh;
@@ -10,7 +9,7 @@
 
 .awards-page-container {
     width: 100%;
-    max-width: 1100px;
+    max-width: 1200px; /* Perfect width for the split layout */
     margin: 0 auto;
     font-family: 'Poppins', sans-serif;
     color: #111;
@@ -48,12 +47,24 @@
 
 /* --- Main Achievements Card --- */
 .achievements-card {
-    background-color: #FBF7EC; /* Beautiful soft cream color */
+    background-color: #FBF7EC; 
     border-radius: 20px;
-    padding: 40px 50px;
+    padding: 45px 55px; 
+    display: flex;
+    flex-direction: column; /* Stacks the title above the split columns */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+
+.ac-card-title {
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin: 0 0 40px 0; /* Creates space between title and the badges */
+}
+
+.ac-card-body {
     display: flex;
     gap: 60px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    align-items: center; /* Centers the hero badge with the grid */
 }
 
 /* Left Column */
@@ -64,52 +75,42 @@
     align-items: center;
 }
 
-.ac-left-col h3 {
-    align-self: flex-start;
-    font-size: 1.8rem;
-    font-weight: 500;
-    margin: 0 0 30px 0;
-}
-
 .ac-main-badge {
-    width: 260px;
+    width: 290px; /* Sized perfectly to balance with the right grid */
     object-fit: contain;
-    filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); /* Soft shadow under hero badge */
+    filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); 
 }
 
 .ac-challenge-title {
-    font-size: 1.2rem;
+    font-size: 1.4rem; 
     font-weight: 500;
-    margin: 20px 0 15px 0;
+    margin: 25px 0 15px 0;
 }
 
 .ac-progress-bar {
     width: 100%;
-    max-width: 220px;
-    height: 12px;
-    background-color: #BDC3C7; /* Gray background */
+    max-width: 240px; 
+    height: 14px; 
+    background-color: #BDC3C7; 
     border-radius: 10px;
     overflow: hidden;
 }
 
 .ac-progress-fill {
     height: 100%;
-    background-color: #4CAF50; /* Green fill */
+    background-color: #4CAF50; 
     border-radius: 10px;
 }
 
 /* Right Column (Grid) */
 .ac-right-col {
-    flex: 1.2;
-    display: flex;
-    align-items: center;
-    padding-top: 50px; /* Pushes the grid down to align with the hero badge */
+    flex: 1.5; /* Gives the 12 medals a bit more breathing room */
 }
 
 .ac-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columns */
-    gap: 30px 20px;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 35px 20px; /* Tighter gaps makes the images look naturally larger together */
     width: 100%;
 }
 
@@ -117,12 +118,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 10px; 
 }
 
 .ac-grid-item img {
-    width: 75px;
-    height: 75px;
+    width: 95px; /* Sized beautifully for a 4x3 grid */
+    height: 95px;
     object-fit: contain;
     transition: all 0.3s ease;
 }
@@ -132,41 +133,36 @@
 }
 
 .badge-unearned {
-    opacity: 0.25; /* Washes out the unearned badges beautifully */
+    opacity: 0.25; 
     filter: drop-shadow(0 0 0 transparent);
 }
 
 .ac-grid-item span {
-    font-size: 0.8rem;
+    font-size: 0.95rem; 
     font-weight: 400;
     color: #333;
 }
 
 /* --- Bottom Section Placeholder --- */
 .other-awards-section {
-    margin-top: 40px;
+    margin-top: 50px;
     display: flex;
-    gap: 30px;
+    gap: 40px;
     overflow: hidden;
     opacity: 0.8;
 }
 
 .other-badge {
-    width: 180px;
+    width: 240px; 
     object-fit: contain;
-    /* Crops the top half off just like your mockup */
     clip-path: inset(0 0 40% 0); 
 }
 
 /* --- Responsive Adjustments --- */
-@media screen and (max-width: 1024px) {
-    .achievements-card {
+@media screen and (max-width: 1100px) {
+    .ac-card-body {
         flex-direction: column;
-        padding: 30px;
-        gap: 40px;
-    }
-    .ac-right-col {
-        padding-top: 0;
+        gap: 50px;
     }
     .ac-grid {
         grid-template-columns: repeat(3, 1fr);

@@ -44,40 +44,43 @@ const Awards = () => {
           {/* Main Achievements Card */}
           <div className="achievements-card">
             
-            {/* Left Column: Current Challenge */}
-            <div className="ac-left-col">
-              <h3>Monthly Achievements</h3>
-              
-              <div className="ac-main-badge-wrapper">
-                <img src={awardsBadge} alt="Monthly Mover" className="ac-main-badge" />
+            {/* THE FIX: Title moved to the top of the card */}
+            <h3 className="ac-card-title">Monthly Achievements</h3>
+            
+            <div className="ac-card-body">
+              {/* Left Column: Current Challenge */}
+              <div className="ac-left-col">
+                <div className="ac-main-badge-wrapper">
+                  <img src={awardsBadge} alt="Monthly Mover" className="ac-main-badge" />
+                </div>
+                
+                <h4 className="ac-challenge-title">November Challenge</h4>
+                
+                <div className="ac-progress-bar">
+                  <div className="ac-progress-fill" style={{ width: '60%' }}></div>
+                </div>
               </div>
-              
-              <h4 className="ac-challenge-title">November Challenge</h4>
-              
-              <div className="ac-progress-bar">
-                <div className="ac-progress-fill" style={{ width: '60%' }}></div>
-              </div>
-            </div>
 
-            {/* Right Column: 12-Month Grid */}
-            <div className="ac-right-col">
-              <div className="ac-grid">
-                {monthlyData.map((month) => (
-                  <div key={month.name} className="ac-grid-item">
-                    <img 
-                      src={awardsBadge} 
-                      alt={month.name} 
-                      className={month.earned ? 'badge-earned' : 'badge-unearned'} 
-                    />
-                    <span>{month.name}</span>
-                  </div>
-                ))}
+              {/* Right Column: 12-Month Grid */}
+              <div className="ac-right-col">
+                <div className="ac-grid">
+                  {monthlyData.map((month) => (
+                    <div key={month.name} className="ac-grid-item">
+                      <img 
+                        src={awardsBadge} 
+                        alt={month.name} 
+                        className={month.earned ? 'badge-earned' : 'badge-unearned'} 
+                      />
+                      <span>{month.name}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
           </div>
 
-          {/* Bottom Section Placeholder (For the cut-off badges in your design) */}
+          {/* Bottom Section Placeholder */}
           <div className="other-awards-section">
              <div className="other-badge-wrapper">
                 <img src={awardsBadge} alt="New Challenger" className="other-badge" />
