@@ -123,10 +123,15 @@
 
 .ac-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); 
     
-    /* THE FIX: Squeezed the gaps vertically and horizontally */
-    gap: 15px 5px; 
+    /* THE FIX: Changed '1fr' to 'max-content' so they hug the images tightly */
+    grid-template-columns: repeat(4, max-content); 
+    
+    /* Centers the tightly packed group inside the right column */
+    justify-content: center; 
+    
+    /* You can now perfectly control the exact pixel gap (Row-Gap Column-Gap) */
+    gap: 15px 10px; 
     
     width: 100%;
 }
