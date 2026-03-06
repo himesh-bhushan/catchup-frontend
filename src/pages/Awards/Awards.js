@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FiArrowLeft } from 'react-icons/fi';
 import DashboardNav from '../../components/DashboardNav';
 import './Awards.css';
 
@@ -6,6 +8,8 @@ import './Awards.css';
 import awardsBadge from '../../assets/awards.png';
 
 const Awards = () => {
+  const navigate = useNavigate(); // Brought back navigation
+
   // Data for the 12 months. Change 'earned' to true/false to light them up!
   const monthlyData = [
     { name: 'January', earned: true },
@@ -28,14 +32,25 @@ const Awards = () => {
       <div className="dashboard-content">
         
         <div className="awards-page-container">
-          {/* Main Fullscreen Achievements Card */}
+          
+          {/* THE FIX: Restored Page Header */}
+          <div className="awards-header-top">
+            <button onClick={() => navigate('/dashboard')} className="icon-btn">
+              <FiArrowLeft size={28} />
+            </button>
+            <h2>Awards</h2>
+          </div>
+
+          {/* Main Achievements Card */}
           <div className="achievements-card">
-            
-            <h3 className="ac-card-title">Monthly Achievements</h3>
-            
             <div className="ac-card-body">
+              
               {/* Left Column: Current Challenge */}
               <div className="ac-left-col">
+                
+                {/* THE FIX: Title moved back to the top left */}
+                <h3 className="ac-card-title">Monthly Achievements</h3>
+                
                 <div className="ac-main-badge-wrapper">
                   <img src={awardsBadge} alt="Monthly Mover" className="ac-main-badge" />
                 </div>
