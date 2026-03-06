@@ -112,26 +112,47 @@
 .card { background: var(--card-bg); border-radius: 24px; padding: 22px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;}
 .card:hover { transform: translateY(-3px); }
 .card-header { 
-    display: flex; 
-    justify-content: space-between; /* Ensures maximum space between title and arrow */
-    align-items: center; 
-    margin-bottom: 10px; 
-    width: 100%;
+    display: flex !important; 
+    justify-content: flex-start !important; /* Forces items to start from the left */
+    align-items: center !important; 
+    margin-bottom: 12px !important; 
+    width: 100% !important;
 }
 
 .card-header h3 { 
-    margin: 0; 
-    margin-right: auto; /* This acts as a bumper, actively pushing the text to the far left */
-    text-align: left;   /* Forces the text alignment to the left */
-    font-size: 1.2rem; 
-    font-weight: 700; 
-    color: var(--text-primary); 
+    margin: 0 !important; 
+    text-align: left !important;  /* Overrides any global centering */
+    font-size: 1.2rem !important; 
+    font-weight: 700 !important; 
+    color: var(--text-primary) !important; 
+    
+    /* This allows the text to fill the space, actively pushing the arrow away */
+    flex-grow: 1 !important; 
+    display: block !important;
 }
-.card-arrow { color: #FF3B30; font-size: 1.4rem; }
 
-/* Sync Card Styling */
-.sync-card { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 18px 25px; min-height: auto !important;}
-.sync-header { display: flex; align-items: center; gap: 10px; }
+.card-arrow { 
+    margin-left: auto !important; /* Bumper to keep arrow on the far right */
+    color: #FF3B30 !important; 
+    font-size: 1.4rem !important; 
+}
+
+/* Also ensure the Sync Card header doesn't get centered */
+.sync-header { 
+    display: flex !important; 
+    align-items: center !important; 
+    justify-content: flex-start !important; /* Locks to left */
+    gap: 10px !important; 
+    width: 100% !important;
+}
+
+.sync-header h3 { 
+    font-size: 1.3rem !important; 
+    margin: 0 !important; 
+    font-weight: 700 !important; 
+    text-align: left !important; 
+    color: var(--text-primary) !important; 
+}
 .sync-header .sync-dot { width: 14px; height: 14px; background-color: #4CD964; border-radius: 50%; }
 .sync-header h3 { font-size: 1.3rem !important; margin: 0; }
 .sync-card p { margin: 0; color: var(--text-secondary); font-size: 0.95rem; }
