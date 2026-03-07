@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, FiUserPlus, FiCheck, FiTrash2 } from 'react-icons/fi';
+import { FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, FiUserPlus, FiCheck, FiTrash2, FiUserCheck } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
 import DashboardNav from '../../components/DashboardNav';
@@ -18,16 +18,6 @@ const Sharing = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
-
-  // Mock data preserved from your original code
-  const leaderboardData = [
-    { rank: 1, name: '@kiki1215', score: '10204' },
-    { rank: 2, name: '@jane_19', score: '10008' },
-    { rank: 3, name: '@balabala:)', score: '9879' },
-    { rank: 4, name: '@jujurara', score: '9764' },
-    { rank: 5, name: '@12345670', score: '8709' },
-    { rank: 6, name: '@holyvoly', score: '7999' }
-  ];
 
   useEffect(() => {
     fetchIncomingRequests();
@@ -116,220 +106,155 @@ const Sharing = () => {
     if (!error) {
       setIncomingRequests(incomingRequests.filter(req => req.id !== requestId));
       fetchFriends();
-
-      if (newStatus === 'accepted')
-        setShowLeaderboard(true);
     }
   };
 
   return (
     <div className="dashboard-wrapper sharing-page-bg">
-
       <DashboardNav />
 
       <div className="dashboard-content">
-
         <div className="sharing-page-container">
 
-          {showLeaderboard ? (
-            /* --- LEADERBOARD VIEW --- */
-            <div className="leaderboard-wrapper">
+          <div className="sharing-onboarding-wrapper">
 
-              <div className="lb-header">
-                <button className="lb-icon-btn" onClick={() => setShowLeaderboard(false)}>
-                  <FiArrowLeft size={28} />
-                </button>
+            {!isSearching ? (
+              <>
+                <div className="avatar-group">
+                  <img src={avatar1} className="sharing-avatar side-avatar" alt="Avatar 1" />
+                  <img src={avatar2} className="sharing-avatar middle-avatar" alt="Avatar 2" />
+                  <img src={avatar3} className="sharing-avatar side-avatar" alt="Avatar 3" />
+                </div>
 
-                <input className="lb-search-bar" placeholder="Search friend" />
+                <h1 className="sharing-title">Health Sharing</h1>
+                <p className="sharing-subtitle">
+                  Invite your friends to join the fun and start sharing.
+                  The more you participate, the higher you climb on the leaderboard.
+                </p>
 
-                <button className="lb-icon-btn"
-                  onClick={() => {
-                    setShowLeaderboard(false);
-                    setIsSearching(true);
-                  }}>
-                  <FiUserPlus size={28} />
-                </button>
-              </div>
-              
-              {/* Leaderboard content would go here */}
-              <div className="lb-placeholder-text">Leaderboard is active.</div>
-            </div>
-
-          ) : (
-
-            <div className="sharing-onboarding-wrapper">
-
-              {!isSearching ? (
-                /* --- ONBOARDING VIEW --- */
-                <>
-                  <div className="avatar-group">
-                    <img src={avatar1} className="sharing-avatar side-avatar" alt="Avatar 1" />
-                    <img src={avatar2} className="sharing-avatar middle-avatar" alt="Avatar 2" />
-                    <img src={avatar3} className="sharing-avatar side-avatar" alt="Avatar 3" />
-                  </div>
-
-                  <h1 className="sharing-title">Health Sharing</h1>
-
-                  <p className="sharing-subtitle">
-                    Invite your friends to join the fun and start sharing.
-                    The more you participate, the higher you climb on the leaderboard.
-                  </p>
-
-                  <div className="sharing-features-grid">
-
-                    <div className="feature-item">
-                      <FiCheckCircle size={36} color="#E64A45" />
-                      <div className="feature-text-block">
-                        <h3>Stay in charge</h3>
-                        <p>
-                          Keep friends and family up to date on how you’re doing
-                          by securely sharing your health data.
-                        </p>
-                      </div>
+                <div className="sharing-features-grid">
+                  <div className="feature-item">
+                    <FiCheckCircle size={36} color="#E64A45" />
+                    <div className="feature-text-block">
+                      <h3>Stay in charge</h3>
+                      <p>Securely share your health data summary.</p>
                     </div>
-
-                    <div className="feature-item">
-                      <FiLock size={36} color="#E64A45" />
-                      <div className="feature-text-block">
-                        <h3>Private and Secure</h3>
-                        <p>
-                          Only a summary is shared, not detailed information.
-                          All data is encrypted and you can stop sharing anytime.
-                        </p>
-                      </div>
-                    </div>
-
                   </div>
+                  <div className="feature-item">
+                    <FiLock size={36} color="#E64A45" />
+                    <div className="feature-text-block">
+                      <h3>Private and Secure</h3>
+                      <p>All data is encrypted and you control what is seen.</p>
+                    </div>
+                  </div>
+                </div>
 
-                  <button
-                    className="share-cta-btn"
-                    onClick={() => setIsSearching(true)}
-                  >
-                    Share with Someone
+                <button className="share-cta-btn" onClick={() => setIsSearching(true)}>
+                  Share with Someone
+                </button>
+              </>
+            ) : (
+              <div className="inline-search-section theme-container">
+                <div className="search-header">
+                  <h3 className="theme-heading">Find and Approve Friends</h3>
+                  <button className="close-btn" onClick={() => setIsSearching(false)}>
+                    <FiX size={24} />
                   </button>
+                </div>
 
-                </>
-
-              ) : (
-                /* --- SEARCH & APPROVAL VIEW --- */
-                <div className="inline-search-section theme-container">
-
-                  <div className="search-header">
-                    <h3 className="theme-heading">Find and Approve Friends</h3>
-
-                    <button className="close-btn" onClick={() => setIsSearching(false)}>
-                      <FiX size={24} />
-                    </button>
-                  </div>
-
-                  {/* PENDING REQUESTS */}
-                  {incomingRequests.length > 0 && (
-                    <div className="request-group">
-                      <h4 className="section-label">Pending Invitations</h4>
-                      {incomingRequests.map((req) => (
-                        <div key={req.id} className="theme-card highlight-card">
-                          <div className="user-info-row">
-                            <div className="avatar-wrapper">
-                              {req.profiles?.avatar_url ? (
-                                  <img src={req.profiles.avatar_url} alt="Profile" className="theme-avatar-sm" />
-                              ) : (
-                                  <div className="theme-avatar-sm"><FiUser /></div>
-                              )}
-                            </div>
-                            <div className="text-group">
-                              <p className="name-bold">{req.profiles?.first_name} {req.profiles?.last_name}</p>
-                              <p className="subtext-red">Wants to share progress</p>
-                            </div>
-                          </div>
-                          <div className="action-btns-row">
-                            <button className="icon-btn approve" onClick={() => updateRequestStatus(req.id, 'accepted')}>
-                                <FiCheck /> Approve
-                            </button>
-                            <button className="icon-btn decline" onClick={() => updateRequestStatus(req.id, 'declined')}>
-                                <FiTrash2 />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* SEARCH INPUT */}
-                  <div className="search-input-wrapper">
-                    <input
-                      className="theme-search-input"
-                      placeholder="Search name or email..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
-
-                  {/* SEARCH RESULTS */}
-                  <div className="results-container">
-                    {searchResults.length > 0 && <h4 className="section-label">Search Results</h4>}
-                    {searchResults.map(u => (
-                      <div key={u.id} className="theme-card">
+                {/* PENDING REQUESTS */}
+                {incomingRequests.length > 0 && (
+                  <div className="request-group">
+                    <h4 className="section-label">Pending Invitations</h4>
+                    {incomingRequests.map((req) => (
+                      <div key={req.id} className="theme-card highlight-card">
                         <div className="user-info-row">
                           <div className="avatar-wrapper">
-                            {u.avatar_url ? (
-                              <img src={u.avatar_url} className="theme-avatar-sm" alt="User" />
+                            {req.profiles?.avatar_url ? (
+                                <img src={req.profiles.avatar_url} alt="Profile" className="theme-avatar-sm" />
                             ) : (
-                              <div className="theme-avatar-sm"><FiUser /></div>
+                                <div className="theme-avatar-sm"><FiUser /></div>
                             )}
                           </div>
                           <div className="text-group">
-                            <p className="name-bold">{u.first_name} {u.last_name}</p>
-                            <p className="subtext-gray">{u.email}</p>
+                            <p className="name-bold">{req.profiles?.first_name} {req.profiles?.last_name}</p>
+                            <p className="subtext-red">Requested to follow you</p>
                           </div>
                         </div>
-
-                        <button
-                          className="theme-btn-sm"
-                          onClick={() => handleSendRequest(u.id)}
-                        >
-                          Invite
-                        </button>
+                        <div className="action-btns-row">
+                          <button className="icon-btn approve" onClick={() => updateRequestStatus(req.id, 'accepted')}>
+                              <FiCheck /> Accept
+                          </button>
+                          <button className="icon-btn decline" onClick={() => updateRequestStatus(req.id, 'declined')}>
+                              <FiTrash2 />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
+                )}
 
-                  {/* CURRENT FRIENDS */}
-                  <div className="friends-list-group">
-                    <h4 className="section-label">Your Friends ({myFriends.length})</h4>
-                    <div className="friends-grid">
-                      {myFriends.map((friend) => (
-                        <div key={friend.id} className="theme-card">
-                          <div className="user-info-row">
-                            <div className="avatar-wrapper">
-                              {friend.avatar_url ? (
-                                  <img src={friend.avatar_url} alt="Profile" className="theme-avatar-sm" />
-                              ) : (
-                                  <div className="theme-avatar-sm"><FiUser /></div>
-                              )}
-                            </div>
-                            <div className="text-group">
-                              <p className="name-bold">{friend.first_name} {friend.last_name}</p>
-                              <span className="badge-online">Connected</span>
-                            </div>
-                          </div>
-                          <button className="theme-btn-outline" onClick={() => setShowLeaderboard(true)}>View Progress</button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
+                <div className="search-input-wrapper">
+                  <input
+                    className="theme-search-input"
+                    placeholder="Search name or email..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
 
-              )}
+                {/* SEARCH RESULTS */}
+                <div className="results-container">
+                  {searchResults.map(u => (
+                    <div key={u.id} className="theme-card">
+                      <div className="user-info-row">
+                        <div className="avatar-wrapper">
+                          {u.avatar_url ? (
+                            <img src={u.avatar_url} className="theme-avatar-sm" alt="User" />
+                          ) : (
+                            <div className="theme-avatar-sm"><FiUser /></div>
+                          )}
+                        </div>
+                        <p className="name-bold">{u.first_name} {u.last_name}</p>
+                      </div>
 
-            </div>
+                      <button className="theme-btn-sm" onClick={() => handleSendRequest(u.id)}>
+                        Invite
+                      </button>
+                    </div>
+                  ))}
+                </div>
 
-          )}
+                {/* FRIENDS LIST */}
+                <div className="friends-list-group">
+                  <h4 className="section-label">Your Friends ({myFriends.length})</h4>
+                  <div className="friends-grid">
+                    {myFriends.map((friend) => (
+                      <div key={friend.id} className="theme-card">
+                        <div className="user-info-row">
+                          <div className="avatar-wrapper">
+                            {friend.avatar_url ? (
+                                <img src={friend.avatar_url} alt="Profile" className="theme-avatar-sm" />
+                            ) : (
+                                <div className="theme-avatar-sm"><FiUser /></div>
+                            )}
+                          </div>
+                          <div className="text-group">
+                            <p className="name-bold">{friend.first_name} {friend.last_name}</p>
+                            <span className="badge-online">Connected</span>
+                          </div>
+                        </div>
+                        <button className="theme-btn-outline">View Stats</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
+              </div>
+            )}
+          </div>
         </div>
-
       </div>
-
     </div>
   );
 };
