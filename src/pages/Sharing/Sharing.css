@@ -32,7 +32,11 @@
     align-items: center;
     justify-content: center;
     flex: 1; 
-    max-width: 800px;
+    
+    /* THE FIX: Forces the parent to stretch so the child can grow! */
+    width: 100%; 
+    max-width: 1000px; 
+    
     margin: 0 auto;
     text-align: center;
 }
@@ -140,15 +144,15 @@
 .inline-search-section {
     width: 100%;
     
-    /* THE FIX: Increased from 600px to 800px to make it wider! */
+    /* Matches your requested wider layout! */
     max-width: 800px; 
     
     background-color: #FBF7EC; 
     border-radius: 20px;
-    padding: 30px 40px;
+    padding: 40px 50px; /* Thicker padding so the wider box feels balanced */
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     animation: fadeIn 0.3s ease;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .search-header {
