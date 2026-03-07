@@ -246,34 +246,28 @@
 
 /* --- ENHANCED APPROVE BUTTON --- */
 
-.icon-btn{
-  align-items: center;
-  background: none;
-  border: none;
-  border-radius: 20%;
-  color: #111;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  padding: 8px;
-  transition: background .2s;
-}
+
 
 .icon-btn.approve {
     background: linear-gradient(135deg, #E64A45 0%, #D53C38 100%);
     color: white;
     box-shadow: 0 4px 12px rgba(230, 74, 69, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20%;
+
 }
 
 .icon-btn.approve:hover {
     background: linear-gradient(135deg, #f05a55 0%, #e64a45 100%);
     transform: scale(1.02);
     box-shadow: 0 6px 15px rgba(230, 74, 69, 0.3);
+    border-radius: 20%;
+
 }
 
 .icon-btn.approve:active {
     transform: scale(0.98);
+    border-radius: 20%;
 }
 
 /* Same for the "Invite" button in search results */
