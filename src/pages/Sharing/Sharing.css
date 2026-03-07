@@ -139,8 +139,11 @@
 
 .inline-search-section {
     width: 100%;
-    max-width: 600px;
-    background-color: #FBF7EC; /* Soft off-white to contrast the peach */
+    
+    /* THE FIX: Increased from 600px to 800px to make it wider! */
+    max-width: 800px; 
+    
+    background-color: #FBF7EC; 
     border-radius: 20px;
     padding: 30px 40px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
