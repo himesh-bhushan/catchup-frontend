@@ -245,6 +245,20 @@
 }
 
 /* --- ENHANCED APPROVE BUTTON --- */
+
+.icon-btn{
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: 20%;
+  color: #111;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  transition: background .2s;
+}
+
 .icon-btn.approve {
     background: linear-gradient(135deg, #E64A45 0%, #D53C38 100%);
     color: white;
