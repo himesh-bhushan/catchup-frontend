@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiPlus } from 'react-icons/fi';
 import { supabase } from '../../supabase';
-import './HeartRate.css'; // We'll create this CSS next
+
+// --- THE FIX: Importing your sidebar component ---
+import DashboardNav from '../../components/DashboardNav';
+
+import './HeartRate.css';
 
 const HeartRate = () => {
   const navigate = useNavigate();
@@ -125,55 +129,63 @@ const HeartRate = () => {
   };
 
   return (
-    <div className="hr-page-container">
-      
-      <div className="hr-header">
-        <button className="hr-back-btn" onClick={() => navigate('/dashboard')}>
-            <FiArrowLeft />
-        </button>
-        
-        <div className="range-pills">
-           {['Day', 'Week', 'Month', '6 Months', 'Year'].map(r => (
-             <button key={r} className={`pill ${range === r ? 'active' : ''}`} onClick={() => setRange(r)}>{r}</button>
-           ))}
+    // --- THE FIX: Wrapping the page in the dashboard layout ---
+    <div className="dashboard-wrapper hr-page-wrapper-bg">
+      <DashboardNav />
+      <div className="dashboard-content">
+
+        <div className="hr-page-container">
+          
+          <div className="hr-header">
+            <button className="hr-back-btn" onClick={() => navigate('/dashboard')}>
+                <FiArrowLeft />
+            </button>
+            
+            <div className="range-pills">
+               {['Day', 'Week', 'Month', '6 Months', 'Year'].map(r => (
+                 <button key={r} className={`pill ${range === r ? 'active' : ''}`} onClick={() => setRange(r)}>{r}</button>
+               ))}
+            </div>
+
+            <button className="calendar-btn"><FiCalendar /></button>
+          </div>
+
+          <div className="stats-block">
+             <h2>Average <span className="highlight-red">{average || 0} BPM</span></h2>
+             <p className="date-range-sub">
+                {logs.length > 0 
+                   ? `${new Date(logs[0].date).getDate()}-${new Date(logs[logs.length-1].date).getDate()} ${new Date().toLocaleString('default', { month: 'short' })} ${new Date().getFullYear()}`
+                   : 'No Data'
+                }
+             </p>
+          </div>
+
+          <div className="chart-container">
+             {renderChart()}
+          </div>
+
+          <div className="today-reading-block">
+             <div className="today-header">
+                <h3>Today</h3>
+                <button className="add-reading-btn" onClick={() => setIsAdding(!isAdding)}>
+                   {isAdding ? 'Close' : <FiPlus />}
+                </button>
+             </div>
+             
+             {isAdding ? (
+                <div className="add-form">
+                   <input type="number" placeholder="72" value={newBPM} onChange={e => setNewBPM(e.target.value)} />
+                   <button onClick={handleAddReading}>Save</button>
+                </div>
+             ) : (
+                <h1 className="highlight-red">
+                   {todayLog.bpm || '--'} <span className="unit">BPM</span>
+                </h1>
+             )}
+             <p className="date-sub">{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          </div>
         </div>
 
-        <button className="calendar-btn"><FiCalendar /></button>
-      </div>
-
-      <div className="stats-block">
-         <h2>Average <span className="highlight-red">{average || 0} BPM</span></h2>
-         <p className="date-range-sub">
-            {logs.length > 0 
-               ? `${new Date(logs[0].date).getDate()}-${new Date(logs[logs.length-1].date).getDate()} ${new Date().toLocaleString('default', { month: 'short' })} ${new Date().getFullYear()}`
-               : 'No Data'
-            }
-         </p>
-      </div>
-
-      <div className="chart-container">
-         {renderChart()}
-      </div>
-
-      <div className="today-reading-block">
-         <div className="today-header">
-            <h3>Today</h3>
-            <button className="add-reading-btn" onClick={() => setIsAdding(!isAdding)}>
-               {isAdding ? 'Close' : <FiPlus />}
-            </button>
-         </div>
-         
-         {isAdding ? (
-            <div className="add-form">
-               <input type="number" placeholder="72" value={newBPM} onChange={e => setNewBPM(e.target.value)} />
-               <button onClick={handleAddReading}>Save</button>
-            </div>
-         ) : (
-            <h1 className="highlight-red">
-               {todayLog.bpm || '--'} <span className="unit">BPM</span>
-            </h1>
-         )}
-         <p className="date-sub">{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
       </div>
     </div>
   );
