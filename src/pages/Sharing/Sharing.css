@@ -526,3 +526,62 @@
     border-top: 1px solid #ddd;
     margin: 25px 0;
 }
+
+.request-group, .friends-list-group {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.request-group h4, .friends-list-group h4 {
+    font-size: 0.8rem;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.mini-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 12px 18px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 1px solid #eee;
+}
+
+.user-info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar-circle-sm {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+}
+
+.green-border { border: 2px solid #A4D65E; }
+
+.name-sm { font-weight: 600; font-size: 0.95rem; margin: 0; }
+.email-sm, .status-tag { font-size: 0.75rem; color: #777; margin: 0; }
+.status-tag { color: #A4D65E; font-weight: 700; }
+
+.add-btn-sm, .view-profile-btn {
+    background: #E64A45;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.view-profile-btn { background: #333; }
+.empty-msg { font-size: 0.9rem; color: #bbb; }
