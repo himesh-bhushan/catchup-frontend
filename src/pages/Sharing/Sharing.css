@@ -472,3 +472,57 @@
     font-size: 1.5rem;
     color: #FFD470; /* Golden yellow text for list scores */
 }
+
+/* --- Incoming Requests Styles --- */
+.incoming-requests-area {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.incoming-requests-area h4 {
+    font-size: 0.9rem;
+    color: #E64A45;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.request-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 12px 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ffe4e1;
+}
+
+.request-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.approve-btn, .decline-btn {
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.approve-btn { background-color: #A4D65E; color: white; }
+.decline-btn { background-color: #f4f4f4; color: #999; }
+
+.approve-btn:hover { background-color: #8bc34a; }
+.decline-btn:hover { background-color: #e0e0e0; color: #E64A45; }
+
+.search-divider {
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 25px 0;
+}
