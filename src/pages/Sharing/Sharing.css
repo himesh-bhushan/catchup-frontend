@@ -310,3 +310,165 @@
         display: none; 
     }
 }
+
+
+/* =========================================
+   LEADERBOARD STYLES (MATCHING FIGMA)
+   ========================================= */
+
+.leaderboard-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- Header --- */
+.lb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.lb-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lb-search-bar {
+    flex: 1;
+    background-color: #F0E8E1; /* Soft grey/peach input */
+    border: none;
+    border-radius: 20px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+}
+
+/* --- Podium Section --- */
+.lb-podium {
+    display: flex;
+    align-items: flex-end; /* Aligns them at the bottom so 1st place sticks up */
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 50px;
+    width: 100%;
+}
+
+.podium-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.podium-avatar {
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin: 10px 0;
+}
+
+.first-avatar {
+    width: 90px;
+    height: 90px;
+}
+
+.second-place .podium-avatar, 
+.third-place .podium-avatar {
+    width: 70px;
+    height: 70px;
+}
+
+/* Pixel/Retro look emulation using standard fonts */
+.podium-rank, .podium-score {
+    font-family: monospace; /* Gives it that blocky Figma feel */
+    font-weight: 900;
+    color: #E64A45;
+    letter-spacing: 1px;
+}
+
+.podium-rank { font-size: 1.4rem; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
+.podium-score { font-size: 1.6rem; }
+.first-score { font-size: 1.8rem; }
+
+.podium-name {
+    font-size: 0.9rem;
+    color: #666;
+    font-family: monospace;
+    margin-top: 5px;
+}
+
+.podium-crown {
+    font-size: 2rem;
+    margin-bottom: -5px;
+}
+
+/* --- Leaderboard List Section --- */
+.lb-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.lb-list-card {
+    background-color: #E65124; /* Solid Orange from Figma */
+    border-radius: 15px;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(230, 81, 36, 0.3);
+}
+
+.lb-card-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.lb-card-rank {
+    font-family: monospace;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.rank-up-arrow {
+    color: #A4D65E; /* Bright green */
+    font-size: 0.9rem;
+}
+
+.lb-card-avatar {
+    width: 50px;
+    height: 50px;
+    background-color: #fff;
+    border-radius: 50%;
+}
+
+.lb-card-name {
+    font-family: monospace;
+    font-size: 1rem;
+}
+
+.lb-card-score {
+    font-family: monospace;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #FFD470; /* Golden yellow text for list scores */
+}
