@@ -10,9 +10,15 @@
 }
 
 .goals-page-container {
-    max-width: 1000px;
-    margin: 0 auto;
     width: 100%;
+    
+    /* THE FIX: Increase this to match the Activity page width */
+    max-width: 1200px; 
+    
+    margin: 0 auto;
+    
+    /* Keep whatever padding you already have here! */
+    padding: 30px 40px; 
 }
 
 .flex-center {
@@ -140,11 +146,11 @@
 
 .goal-section { margin-bottom: 30px; }
 
-/* ✅ THE MAGIC FIX: Forces exactly 2 cards side-by-side per row */
 .goals-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); 
+    grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
     gap: 20px;
+    width: 100%; /* Forces the grid to stretch across the newly widened container */
 }
 
 /* Base Card */
