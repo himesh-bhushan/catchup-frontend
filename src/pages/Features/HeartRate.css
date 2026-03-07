@@ -1,10 +1,22 @@
+/* --- ADDED: Overrides dashboard background specifically for Heart Rate page --- */
+.dashboard-wrapper.hr-page-wrapper-bg,
+.hr-page-wrapper-bg .dashboard-content {
+    background: #FFFFFF !important; 
+    background-color: #FFFFFF !important;
+    min-height: 100vh;
+}
+
 .hr-page-container {
-  height: 100vh; 
-  overflow: hidden; 
-  background-color: #fff;
-  padding: 20px 60px;
-  font-family: 'Poppins', sans-serif;
+  /* THE FIX: Added width 100% to force it to stretch! */
+  width: 100%;
   max-width: 1200px;
+  
+  /* Changed to min-height and removed overflow: hidden to allow safe scrolling */
+  min-height: 100vh; 
+  
+  background-color: #fff;
+  padding: 30px 40px; /* Standardized padding with other pages */
+  font-family: 'Poppins', sans-serif;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
