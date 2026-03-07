@@ -19,6 +19,7 @@ const Sharing = () => {
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
 
+  // Mock data preserved from your original code
   const leaderboardData = [
     { rank: 1, name: '@kiki1215', score: '10204' },
     { rank: 2, name: '@jane_19', score: '10008' },
@@ -42,7 +43,7 @@ const Sharing = () => {
       .select(`
         id,
         sender_id,
-        profiles:sender_id (first_name, last_name, email)
+        profiles:sender_id (first_name, last_name, email, avatar_url)
       `)
       .eq('receiver_id', user.id)
       .eq('status', 'pending');
@@ -60,8 +61,8 @@ const Sharing = () => {
         id,
         sender_id,
         receiver_id,
-        sender:profiles!friend_requests_sender_id_fkey (id, first_name, last_name, email),
-        receiver:profiles!friend_requests_receiver_id_fkey (id, first_name, last_name, email)
+        sender:profiles!friend_requests_sender_id_fkey (id, first_name, last_name, email, avatar_url),
+        receiver:profiles!friend_requests_receiver_id_fkey (id, first_name, last_name, email, avatar_url)
       `)
       .eq('status', 'accepted')
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
@@ -83,7 +84,7 @@ const Sharing = () => {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, first_name, last_name, email')
+        .select('id, first_name, last_name, email, avatar_url')
         .or(`email.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`)
         .limit(5);
 
@@ -107,7 +108,6 @@ const Sharing = () => {
   };
 
   const updateRequestStatus = async (requestId, newStatus) => {
-
     const { error } = await supabase
       .from('friend_requests')
       .update({ status: newStatus })
@@ -132,7 +132,7 @@ const Sharing = () => {
         <div className="sharing-page-container">
 
           {showLeaderboard ? (
-
+            /* --- LEADERBOARD VIEW --- */
             <div className="leaderboard-wrapper">
 
               <div className="lb-header">
@@ -150,7 +150,9 @@ const Sharing = () => {
                   <FiUserPlus size={28} />
                 </button>
               </div>
-
+              
+              {/* Leaderboard content would go here */}
+              <div className="lb-placeholder-text">Leaderboard is active.</div>
             </div>
 
           ) : (
@@ -158,12 +160,12 @@ const Sharing = () => {
             <div className="sharing-onboarding-wrapper">
 
               {!isSearching ? (
-
+                /* --- ONBOARDING VIEW --- */
                 <>
                   <div className="avatar-group">
-                    <img src={avatar1} className="sharing-avatar side-avatar" />
-                    <img src={avatar2} className="sharing-avatar middle-avatar" />
-                    <img src={avatar3} className="sharing-avatar side-avatar" />
+                    <img src={avatar1} className="sharing-avatar side-avatar" alt="Avatar 1" />
+                    <img src={avatar2} className="sharing-avatar middle-avatar" alt="Avatar 2" />
+                    <img src={avatar3} className="sharing-avatar side-avatar" alt="Avatar 3" />
                   </div>
 
                   <h1 className="sharing-title">Health Sharing</h1>
@@ -177,7 +179,7 @@ const Sharing = () => {
 
                     <div className="feature-item">
                       <FiCheckCircle size={36} color="#E64A45" />
-                      <div>
+                      <div className="feature-text-block">
                         <h3>Stay in charge</h3>
                         <p>
                           Keep friends and family up to date on how you’re doing
@@ -188,7 +190,7 @@ const Sharing = () => {
 
                     <div className="feature-item">
                       <FiLock size={36} color="#E64A45" />
-                      <div>
+                      <div className="feature-text-block">
                         <h3>Private and Secure</h3>
                         <p>
                           Only a summary is shared, not detailed information.
@@ -209,33 +211,76 @@ const Sharing = () => {
                 </>
 
               ) : (
-
-                <div className="inline-search-section">
+                /* --- SEARCH & APPROVAL VIEW --- */
+                <div className="inline-search-section theme-container">
 
                   <div className="search-header">
-                    <h3>Find and Approve Friends</h3>
+                    <h3 className="theme-heading">Find and Approve Friends</h3>
 
-                    <button onClick={() => setIsSearching(false)}>
+                    <button className="close-btn" onClick={() => setIsSearching(false)}>
                       <FiX size={24} />
                     </button>
                   </div>
 
-                  <input
-                    className="theme-search-input"
-                    placeholder="Search name or email..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
+                  {/* PENDING REQUESTS */}
+                  {incomingRequests.length > 0 && (
+                    <div className="request-group">
+                      <h4 className="section-label">Pending Invitations</h4>
+                      {incomingRequests.map((req) => (
+                        <div key={req.id} className="theme-card highlight-card">
+                          <div className="user-info-row">
+                            <div className="avatar-wrapper">
+                              {req.profiles?.avatar_url ? (
+                                  <img src={req.profiles.avatar_url} alt="Profile" className="theme-avatar-sm" />
+                              ) : (
+                                  <div className="theme-avatar-sm"><FiUser /></div>
+                              )}
+                            </div>
+                            <div className="text-group">
+                              <p className="name-bold">{req.profiles?.first_name} {req.profiles?.last_name}</p>
+                              <p className="subtext-red">Wants to share progress</p>
+                            </div>
+                          </div>
+                          <div className="action-btns-row">
+                            <button className="icon-btn approve" onClick={() => updateRequestStatus(req.id, 'accepted')}>
+                                <FiCheck /> Approve
+                            </button>
+                            <button className="icon-btn decline" onClick={() => updateRequestStatus(req.id, 'declined')}>
+                                <FiTrash2 />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
+                  {/* SEARCH INPUT */}
+                  <div className="search-input-wrapper">
+                    <input
+                      className="theme-search-input"
+                      placeholder="Search name or email..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+
+                  {/* SEARCH RESULTS */}
                   <div className="results-container">
-
+                    {searchResults.length > 0 && <h4 className="section-label">Search Results</h4>}
                     {searchResults.map(u => (
-
                       <div key={u.id} className="theme-card">
-
                         <div className="user-info-row">
-                          <FiUser />
-                          <span>{u.first_name} {u.last_name}</span>
+                          <div className="avatar-wrapper">
+                            {u.avatar_url ? (
+                              <img src={u.avatar_url} className="theme-avatar-sm" alt="User" />
+                            ) : (
+                              <div className="theme-avatar-sm"><FiUser /></div>
+                            )}
+                          </div>
+                          <div className="text-group">
+                            <p className="name-bold">{u.first_name} {u.last_name}</p>
+                            <p className="subtext-gray">{u.email}</p>
+                          </div>
                         </div>
 
                         <button
@@ -244,11 +289,33 @@ const Sharing = () => {
                         >
                           Invite
                         </button>
-
                       </div>
-
                     ))}
+                  </div>
 
+                  {/* CURRENT FRIENDS */}
+                  <div className="friends-list-group">
+                    <h4 className="section-label">Your Friends ({myFriends.length})</h4>
+                    <div className="friends-grid">
+                      {myFriends.map((friend) => (
+                        <div key={friend.id} className="theme-card">
+                          <div className="user-info-row">
+                            <div className="avatar-wrapper">
+                              {friend.avatar_url ? (
+                                  <img src={friend.avatar_url} alt="Profile" className="theme-avatar-sm" />
+                              ) : (
+                                  <div className="theme-avatar-sm"><FiUser /></div>
+                              )}
+                            </div>
+                            <div className="text-group">
+                              <p className="name-bold">{friend.first_name} {friend.last_name}</p>
+                              <span className="badge-online">Connected</span>
+                            </div>
+                          </div>
+                          <button className="theme-btn-outline" onClick={() => setShowLeaderboard(true)}>View Progress</button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                 </div>
