@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiArrowRight } from 'react-icons/fi';
 import { supabase } from '../../supabase'; 
+
+// --- ADDED: Import Navigation Bar ---
+import DashboardNav from '../../components/DashboardNav'; 
+
 import './Activity.css';
 
 const Activity = () => {
@@ -151,127 +155,135 @@ const Activity = () => {
   if (!dailyStats) return <div style={{padding: '40px'}}>Loading Activity...</div>;
 
   return (
-    <div className="activity-page-wrapper">
-      <header className="activity-header">
-        <div className="header-left">
-            <button className="back-btn-icon" onClick={() => navigate('/dashboard')}>
-                <FiArrowLeft size={28} />
-            </button>
-            <h2>Today, {dailyStats.fullDate}</h2>
-            <div className="calendar-wrapper" onClick={() => dateInputRef.current.showPicker()}>
-                <FiCalendar size={20} color="#333" />
-                <input type="date" ref={dateInputRef} onChange={handleDateChange} className="hidden-date-input"/>
-            </div>
-        </div>
-      </header>
+    // --- ADDED: Dashboard Wrappers ---
+    <div className="dashboard-wrapper activity-page-bg">
+      <DashboardNav />
+      <div className="dashboard-content">
 
-      <div className="activity-grid">
-        {/* SIDEBAR: WEEKLY PROGRESS */}
-        <div className="week-sidebar">
-            {weeklyData.map((day, index) => {
-                const isSelected = day.date.toDateString() === selectedDate.toDateString();
-                // Safe check for percentage
-                const dashArray = `${Math.min((day.percentage || 0) * 100, 100)}, 100`;
+        {/* --- CHANGED: Renamed class to match your new CSS --- */}
+        <div className="activity-page-container">
+          <header className="activity-header">
+            <div className="header-left">
+                <button className="back-btn-icon" onClick={() => navigate('/dashboard')}>
+                    <FiArrowLeft size={28} />
+                </button>
+                <h2>Today, {dailyStats.fullDate}</h2>
+                <div className="calendar-wrapper" onClick={() => dateInputRef.current.showPicker()}>
+                    <FiCalendar size={20} color="#333" />
+                    <input type="date" ref={dateInputRef} onChange={handleDateChange} className="hidden-date-input"/>
+                </div>
+            </div>
+          </header>
+
+          <div className="activity-grid">
+            {/* SIDEBAR: WEEKLY PROGRESS */}
+            <div className="week-sidebar">
+                {weeklyData.map((day, index) => {
+                    const isSelected = day.date.toDateString() === selectedDate.toDateString();
+                    // Safe check for percentage
+                    const dashArray = `${Math.min((day.percentage || 0) * 100, 100)}, 100`;
+                    
+                    return (
+                        <div key={index} className={`day-row ${isSelected ? 'selected' : ''}`} onClick={() => setSelectedDate(day.date)}>
+                            <div className="day-letter-box">{day.dayLabel}</div>
+                            <div className="mini-ring-wrapper">
+                                <svg viewBox="0 0 36 36" className="mini-circular-chart">
+                                    <circle cx="18" cy="18" r="15.9155" className="mini-circle-bg" />
+                                    <path 
+                                        className="mini-circle" 
+                                        strokeDasharray={dashArray} 
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* MAIN RING SECTION */}
+            <div className="main-ring-section">
+                <div className="large-ring-container">
+                    <svg viewBox="0 0 36 36" className="large-circular-chart">
+                        <circle cx="18" cy="18" r="15.9155" className="circle-bg" />
+                        <path 
+                            className="circle" 
+                            strokeDasharray={`${Math.min(dailyStats.percentage * 100, 100)}, 100`} 
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
+                        />
+                    </svg>
+                    {/* Visual icon inside ring */}
+                    <div className="ring-arrow-overlay"><FiArrowRight color="white" size={24} /></div>
+                </div>
+                <button className="change-goal-btn" onClick={() => setShowModal(true)}>Change Goal</button>
+            </div>
+
+            {/* STATS & GRAPHS */}
+            <div className="stats-graphs-section">
                 
-                return (
-                    <div key={index} className={`day-row ${isSelected ? 'selected' : ''}`} onClick={() => setSelectedDate(day.date)}>
-                        <div className="day-letter-box">{day.dayLabel}</div>
-                        <div className="mini-ring-wrapper">
-                            <svg viewBox="0 0 36 36" className="mini-circular-chart">
-                                <circle cx="18" cy="18" r="15.9155" className="mini-circle-bg" />
-                                <path 
-                                    className="mini-circle" 
-                                    strokeDasharray={dashArray} 
-                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
-                                />
-                            </svg>
+                {/* Calories Card */}
+                <div className="stat-block">
+                    <h3>Move</h3>
+                    <div className="stat-highlight">
+                        <span className="big-num red-text">{dailyStats.calories.current}</span>
+                        <span className="sub-text">/{dailyStats.calories.goal} KCAL</span>
+                    </div>
+                    <div className="chart-outer-wrapper">
+                        <div className="grid-lines"><div className="grid-line"></div><div className="grid-line"></div><div className="grid-line"></div></div>
+                        <div className="bar-chart-container">
+                            {dailyStats.calories.history.map((val, i) => (
+                                <div key={i} className="bar-wrapper">
+                                    {/* Visual cap at 100% height */}
+                                    <div className="bar-fill" style={{height: `${Math.min((val / (dailyStats.calories.goal / 5)) * 100, 100)}%`}}></div>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                );
-            })}
-        </div>
+                    <div className="chart-labels"><span>0:00</span><span>6:00</span><span>12:00</span><span>18:00</span></div>
+                </div>
 
-        {/* MAIN RING SECTION */}
-        <div className="main-ring-section">
-            <div className="large-ring-container">
-                 <svg viewBox="0 0 36 36" className="large-circular-chart">
-                    <circle cx="18" cy="18" r="15.9155" className="circle-bg" />
-                    <path 
-                        className="circle" 
-                        strokeDasharray={`${Math.min(dailyStats.percentage * 100, 100)}, 100`} 
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
-                    />
-                 </svg>
-                 {/* Visual icon inside ring */}
-                 <div className="ring-arrow-overlay"><FiArrowRight color="white" size={24} /></div>
+                {/* Steps & Distance Card */}
+                <div className="stat-block">
+                    <div className="dual-stat-header">
+                        <div>
+                            <h3>Steps</h3>
+                            <span className="big-num black-text">{dailyStats.steps.current}</span>
+                        </div>
+                        <div>
+                            <h3>Distance</h3>
+                            <span className="big-num black-text">{dailyStats.distance}KM</span>
+                        </div>
+                    </div>
+                    <div className="chart-outer-wrapper">
+                        <div className="grid-lines"><div className="grid-line"></div><div className="grid-line"></div><div className="grid-line"></div></div>
+                        <div className="bar-chart-container">
+                            {dailyStats.steps.history.map((val, i) => (
+                                <div key={i} className="bar-wrapper">
+                                    <div className="bar-fill" style={{height: `${Math.min(val / 500 * 100, 100)}%`, opacity: 0.8}}></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="chart-labels"><span>0:00</span><span>6:00</span><span>12:00</span><span>18:00</span></div>
+                </div>
             </div>
-            <button className="change-goal-btn" onClick={() => setShowModal(true)}>Change Goal</button>
-        </div>
+          </div>
 
-        {/* STATS & GRAPHS */}
-        <div className="stats-graphs-section">
-            
-            {/* Calories Card */}
-            <div className="stat-block">
-                <h3>Move</h3>
-                <div className="stat-highlight">
-                    <span className="big-num red-text">{dailyStats.calories.current}</span>
-                    <span className="sub-text">/{dailyStats.calories.goal} KCAL</span>
-                </div>
-                <div className="chart-outer-wrapper">
-                    <div className="grid-lines"><div className="grid-line"></div><div className="grid-line"></div><div className="grid-line"></div></div>
-                    <div className="bar-chart-container">
-                        {dailyStats.calories.history.map((val, i) => (
-                            <div key={i} className="bar-wrapper">
-                                {/* Visual cap at 100% height */}
-                                <div className="bar-fill" style={{height: `${Math.min((val / (dailyStats.calories.goal / 5)) * 100, 100)}%`}}></div>
-                            </div>
-                        ))}
+          {/* MODAL */}
+          {showModal && (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <h3>Set Daily Calorie Goal</h3>
+                    <input type="number" className="modal-input" value={newGoal} onChange={(e) => setNewGoal(e.target.value)} />
+                    <div className="modal-actions">
+                        <button className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
+                        <button className="btn-save" onClick={handleSaveGoal}>Save</button>
                     </div>
                 </div>
-                <div className="chart-labels"><span>0:00</span><span>6:00</span><span>12:00</span><span>18:00</span></div>
             </div>
-
-            {/* Steps & Distance Card */}
-            <div className="stat-block">
-                <div className="dual-stat-header">
-                    <div>
-                        <h3>Steps</h3>
-                        <span className="big-num black-text">{dailyStats.steps.current}</span>
-                    </div>
-                    <div>
-                        <h3>Distance</h3>
-                        <span className="big-num black-text">{dailyStats.distance}KM</span>
-                    </div>
-                </div>
-                <div className="chart-outer-wrapper">
-                    <div className="grid-lines"><div className="grid-line"></div><div className="grid-line"></div><div className="grid-line"></div></div>
-                    <div className="bar-chart-container">
-                        {dailyStats.steps.history.map((val, i) => (
-                            <div key={i} className="bar-wrapper">
-                                <div className="bar-fill" style={{height: `${Math.min(val / 500 * 100, 100)}%`, opacity: 0.8}}></div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="chart-labels"><span>0:00</span><span>6:00</span><span>12:00</span><span>18:00</span></div>
-            </div>
+          )}
         </div>
       </div>
-
-      {/* MODAL */}
-      {showModal && (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <h3>Set Daily Calorie Goal</h3>
-                <input type="number" className="modal-input" value={newGoal} onChange={(e) => setNewGoal(e.target.value)} />
-                <div className="modal-actions">
-                    <button className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
-                    <button className="btn-save" onClick={handleSaveGoal}>Save</button>
-                </div>
-            </div>
-        </div>
-      )}
     </div>
   );
 };
