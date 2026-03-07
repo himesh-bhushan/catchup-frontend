@@ -1,4 +1,139 @@
 /* =========================================
+   SHARING PAGE (ONBOARDING & SEARCH)
+   ========================================= */
+
+/* --- Page Background --- */
+.dashboard-wrapper.sharing-page-bg {
+    background-color: #F8DBCA !important; /* Soft peach background */
+    min-height: 100vh;
+}
+
+.sharing-page-bg .dashboard-content {
+    background: transparent !important;
+}
+
+/* --- Main Container --- */
+.sharing-page-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 40px;
+    font-family: 'Poppins', sans-serif;
+    color: #111;
+    display: flex;
+    flex-direction: column;
+    min-height: 90vh; 
+}
+
+/* --- Centered Onboarding Content --- */
+.sharing-onboarding-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1; 
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* --- Overlapping Avatars --- */
+.avatar-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.sharing-avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #fff;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.side-avatar {
+    width: 100px;
+    height: 100px;
+    z-index: 1;
+}
+
+.middle-avatar {
+    width: 130px;
+    height: 130px;
+    z-index: 2;
+    margin: 0 -25px; /* Pulls the side avatars underneath the middle one */
+}
+
+/* --- Titles --- */
+.sharing-title {
+    font-size: 2.8rem;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    color: #000;
+}
+
+.sharing-subtitle {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: #555;
+    margin: 0 0 50px 0;
+    font-weight: 400;
+}
+
+/* --- Features Grid --- */
+.sharing-features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    text-align: left;
+    margin-bottom: 60px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.feature-icon {
+    margin-top: 5px; 
+}
+
+.feature-text h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: #000;
+}
+
+.feature-text p {
+    font-size: 1.05rem;
+    color: #555;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* --- Share Button --- */
+.share-cta-btn {
+    background-color: #E64A45; 
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 15px;
+    padding: 20px 60px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 8px 15px rgba(230, 74, 69, 0.2);
+}
+
+.share-cta-btn:hover {
+    background-color: #D33A36;
+    transform: translateY(-2px);
+}
+
+/* =========================================
    INLINE SEARCH STYLES
    ========================================= */
 
@@ -153,4 +288,18 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Responsive Adjustments --- */
+@media screen and (max-width: 900px) {
+    .sharing-features-grid {
+        grid-template-columns: 1fr; 
+        gap: 40px;
+    }
+    .sharing-title {
+        font-size: 2.2rem;
+    }
+    .sharing-subtitle br {
+        display: none; 
+    }
 }
