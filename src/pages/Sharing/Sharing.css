@@ -1,18 +1,19 @@
 /* --- THEMED SEARCH CONTAINER --- */
 .theme-container {
-    background-color: #FFF9F5 !important;
-    border: 2px solid #F8DBCA;
+    background-color: #FFFDFB !important;
+    border: 1px solid #FDE6D8;
     width: 100%;
-    max-width: 850px; /* Stretched for better layout */
-    padding: 40px;
-    border-radius: 24px;
+    max-width: 800px;
+    padding: 30px;
+    border-radius: 28px;
     margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
 }
 
 .theme-heading {
-    color: #111;
-    font-size: 1.8rem;
-    font-weight: 700;
+    color: #222;
+    font-size: 1.5rem;
+    font-weight: 800;
     margin: 0;
 }
 
@@ -20,16 +21,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .section-label {
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: 0.75rem;
+    font-weight: 800;
     color: #E64A45;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin: 25px 0 15px 5px;
+    letter-spacing: 1.2px;
+    margin: 25px 0 12px 5px;
 }
 
 /* --- THEME CARDS --- */
@@ -38,32 +39,37 @@
     justify-content: space-between;
     align-items: center;
     background: #ffffff;
-    padding: 15px 20px;
-    border-radius: 18px;
+    padding: 12px 16px;
+    border-radius: 20px;
     margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(230, 74, 69, 0.05);
-    border: 1px solid transparent;
+    border: 1px solid #f2f2f2;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }
 
 .highlight-card {
-    background: #FFF0ED;
-    border: 1px dashed #E64A45;
+    background: #FFF9F8;
+    border: 1px solid #FFD8D4;
 }
 
 /* --- ACTION BUTTONS ROW (Side-by-Side) --- */
 .action-btns-row {
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
 }
 
 /* --- AVATARS & TEXT --- */
 .theme-avatar-sm {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px; /* Squircle style */
-    background: #F8DBCA;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px; /* High-end Squircle look */
+    background: #FDE6D8;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,7 +79,7 @@
 }
 
 .active-border {
-    border: 2px solid #E64A45;
+    border: 2.5px solid #E64A45;
     background: white;
 }
 
@@ -92,12 +98,14 @@
     font-weight: 700;
     color: #111;
     margin: 0;
+    font-size: 1rem;
 }
 
 .subtext-red {
     font-size: 0.8rem;
     color: #E64A45;
     margin: 0;
+    font-weight: 500;
 }
 
 /* --- BUTTONS --- */
@@ -107,23 +115,24 @@
     border: none;
     padding: 10px 18px;
     border-radius: 12px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
+    transition: background 0.2s;
 }
 
 .theme-btn-outline {
     background: transparent;
     color: #E64A45;
-    border: 2px solid #E64A45;
-    padding: 8px 15px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.85rem;
+    border: 1.5px solid #E64A45;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.8rem;
     cursor: pointer;
 }
 
 .icon-btn {
-    padding: 10px 16px;
+    padding: 8px 16px;
     border-radius: 12px;
     border: none;
     display: flex;
@@ -131,48 +140,50 @@
     justify-content: center;
     gap: 8px;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 0.85rem;
     transition: 0.2s ease;
 }
 
 .icon-btn.approve { 
-    background: #A4D65E; 
+    background: #E64A45; /* Updated to Red for Screenshot 2 look */
     color: white; 
 }
 
 .icon-btn.decline { 
-    background: #f4f4f4; 
-    color: #999; 
+    background: #F5F5F5; 
+    color: #AAA; 
 }
 
 .icon-btn.decline:hover {
-    background: #E64A45;
-    color: white;
+    background: #FFEBEA;
+    color: #E64A45;
 }
 
 /* --- SEARCH INPUT --- */
 .theme-search-input {
     width: 100%;
-    padding: 18px 24px;
-    border-radius: 20px;
-    border: 2px solid #F8DBCA;
+    padding: 16px 20px;
+    border-radius: 18px;
+    border: 1px solid #FDE6D8;
     background: white;
     font-size: 1rem;
     outline: none;
-    margin: 20px 0;
+    margin: 15px 0;
+    font-weight: 500;
 }
 
 .theme-search-input:focus {
     border-color: #E64A45;
 }
 
+/* --- STATUS INDICATORS --- */
 .badge-online {
     font-size: 0.65rem;
-    background: #A4D65E;
-    color: white;
+    background: #E8F5E9;
+    color: #4CAF50;
     padding: 2px 8px;
-    border-radius: 20px;
+    border-radius: 6px;
     font-weight: 800;
     text-transform: uppercase;
     width: fit-content;
@@ -180,7 +191,22 @@
 }
 
 .empty-state-text {
-    color: #aaa;
+    color: #bbb;
     font-style: italic;
+    font-size: 0.9rem;
     margin-left: 5px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: #E64A45;
 }
