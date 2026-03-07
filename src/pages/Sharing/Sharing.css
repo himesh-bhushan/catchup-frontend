@@ -429,9 +429,10 @@
 }
 
 /* --- LEADERBOARD STYLE 2 (PODIUM) --- */
+/* --- LEADERBOARD STYLE (PODIUM) --- */
 .leaderboard-wrapper {
     width: 100%;
-    max-width: 800px;
+    max-width: 1000px; /* Stretches properly to page */
     margin: 0 auto;
     animation: fadeIn 0.3s ease-in-out;
 }
@@ -440,7 +441,9 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 50px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 50px auto;
 }
 
 .lb-transparent-btn {
@@ -460,21 +463,21 @@
 
 .lb-search-bar-alt {
     flex: 1;
-    padding: 14px 20px;
-    border-radius: 10px;
+    padding: 16px 20px;
+    border-radius: 12px;
     border: none;
-    background: #F4F4F4;
-    font-size: 1rem;
+    background: #FFF;
+    font-size: 1.05rem;
     outline: none;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
-/* Podium */
+/* Podium Structure */
 .lb-podium {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 30px;
+    gap: 40px;
     margin-bottom: 50px;
 }
 
@@ -487,70 +490,80 @@
 .podium-rank {
     color: #FFF;
     font-weight: 800;
-    font-size: 1.4rem;
-    margin-bottom: 10px;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .podium-avatar {
-    width: 75px;
-    height: 75px;
+    width: 80px;
+    height: 80px;
     background: #FFF;
     border-radius: 50%;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.podium-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .first-avatar {
-    width: 95px;
-    height: 95px;
+    width: 100px;
+    height: 100px;
 }
 
 .podium-crown {
-    font-size: 2rem;
-    margin-bottom: -5px;
+    font-size: 2.2rem;
+    margin-bottom: -10px;
     z-index: 10;
-    color: #FFD700;
 }
 
 .podium-score {
     color: #E64A45;
     font-weight: 800;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-family: 'Courier New', Courier, monospace;
     letter-spacing: 1px;
 }
 
 .first-score {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
 }
 
 .podium-name {
     color: #666;
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-family: monospace;
-    margin-top: 2px;
+    margin-top: 5px;
 }
 
-/* List Cards */
+/* Podium Horizontal Cards */
 .lb-list-alt {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    padding-bottom: 50px;
 }
 
 .lb-list-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #E55B3C; /* Bright orange/red */
+    background: #D4664C; /* Solid orange styling */
     width: 100%;
-    max-width: 550px;
-    padding: 15px 30px;
+    max-width: 650px; /* Stretches properly under podium */
+    padding: 18px 30px;
     border-radius: 16px;
     color: #FFF;
-    box-shadow: 0 8px 20px rgba(229, 91, 60, 0.25);
+    box-shadow: 0 8px 20px rgba(212, 102, 76, 0.25);
 }
 
 .lb-card-left {
@@ -561,14 +574,14 @@
 
 .lb-card-rank {
     font-weight: 800;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     text-align: center;
     line-height: 1.1;
 }
 
 .rank-up-arrow {
-    color: #A4D65E; /* Bright green */
-    font-size: 0.9rem;
+    color: #A4D65E;
+    font-size: 1rem;
 }
 
 .lb-card-avatar {
@@ -576,19 +589,29 @@
     height: 55px;
     background: #FFF;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lb-card-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .lb-card-name {
     font-family: monospace;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
 }
 
 .lb-card-score {
     font-family: 'Courier New', Courier, monospace;
     font-weight: 800;
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     letter-spacing: 1.5px;
-    color: #FFDDAA; /* Soft yellow text */
+    color: #FFDDAA;
 }
 
 @keyframes fadeIn {

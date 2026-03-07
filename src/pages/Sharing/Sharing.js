@@ -20,15 +20,6 @@ const Sharing = () => {
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
 
-  const leaderboardData = [
-    { rank: 1, name: '@kiki1215', score: '10204' },
-    { rank: 2, name: '@jane_19', score: '10008' },
-    { rank: 3, name: '@balabala:)', score: '9879' },
-    { rank: 4, name: '@jujurara', score: '9764' },
-    { rank: 5, name: '@12345670', score: '8709' },
-    { rank: 6, name: '@holyvoly', score: '7999' }
-  ];
-
   useEffect(() => {
     // Check if user has completed onboarding before
     const hasOnboarded = localStorage.getItem('has_onboarded_sharing');
@@ -77,7 +68,10 @@ const Sharing = () => {
       const friendsList = data.map(rel =>
         rel.sender_id === user.id ? rel.receiver : rel.sender
       );
-      setMyFriends(friendsList);
+      
+      // Sort friends by score if available, otherwise fallback
+      const sortedFriends = friendsList.sort((a, b) => (b.score || 0) - (a.score || 0));
+      setMyFriends(sortedFriends);
       
       // Optimization: If they already have friends, they shouldn't see onboarding
       if (friendsList.length > 0) {
@@ -153,6 +147,7 @@ const Sharing = () => {
           {showLeaderboard ? (
             /* --- LEADERBOARD VIEW --- */
             <div className="leaderboard-wrapper">
+              
               <div className="lb-header">
                 <button className="lb-transparent-btn" onClick={() => { setIsSearching(true); setShowLeaderboard(false); }}>
                   <FiArrowLeft size={28} />
@@ -164,38 +159,51 @@ const Sharing = () => {
               </div>
               
               <div className="lb-podium">
+                {/* 2nd Place */}
                 <div className="podium-col second-place">
                     <span className="podium-rank">2ND</span>
-                    <div className="podium-avatar"></div>
-                    <span className="podium-score">{leaderboardData[1].score}</span>
-                    <span className="podium-name">{leaderboardData[1].name}</span>
+                    <div className="podium-avatar">
+                      {myFriends[1]?.avatar_url ? <img src={myFriends[1].avatar_url} alt="" /> : (myFriends[1] ? <FiUser size={40} color="#E64A45" /> : null)}
+                    </div>
+                    <span className="podium-score">{myFriends[1]?.score || 0}</span>
+                    <span className="podium-name">{myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase() || 'user'}` : ''}</span>
                 </div>
+                
+                {/* 1st Place */}
                 <div className="podium-col first-place">
                     <span className="podium-crown">👑</span>
-                    <div className="podium-avatar first-avatar"></div>
-                    <span className="podium-score first-score">{leaderboardData[0].score}</span>
-                    <span className="podium-name">{leaderboardData[0].name}</span>
+                    <div className="podium-avatar first-avatar">
+                      {myFriends[0]?.avatar_url ? <img src={myFriends[0].avatar_url} alt="" /> : (myFriends[0] ? <FiUser size={50} color="#E64A45" /> : null)}
+                    </div>
+                    <span className="podium-score first-score">{myFriends[0]?.score || 0}</span>
+                    <span className="podium-name">{myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase() || 'user'}` : ''}</span>
                 </div>
+                
+                {/* 3rd Place */}
                 <div className="podium-col third-place">
                     <span className="podium-rank">3RD</span>
-                    <div className="podium-avatar"></div>
-                    <span className="podium-score">{leaderboardData[2].score}</span>
-                    <span className="podium-name">{leaderboardData[2].name}</span>
+                    <div className="podium-avatar">
+                      {myFriends[2]?.avatar_url ? <img src={myFriends[2].avatar_url} alt="" /> : (myFriends[2] ? <FiUser size={40} color="#E64A45" /> : null)}
+                    </div>
+                    <span className="podium-score">{myFriends[2]?.score || 0}</span>
+                    <span className="podium-name">{myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase() || 'user'}` : ''}</span>
                 </div>
               </div>
 
               <div className="lb-list-alt">
-                {leaderboardData.slice(3).map((item) => (
-                  <div key={item.rank} className="lb-list-card">
+                {myFriends.slice(3).map((friend, index) => (
+                  <div key={friend.id || index} className="lb-list-card">
                     <div className="lb-card-left">
                       <div className="lb-card-rank">
-                        {item.rank}TH<br/>
+                        {index + 4}TH<br/>
                         <span className="rank-up-arrow">▲</span>
                       </div>
-                      <div className="lb-card-avatar"></div>
-                      <span className="lb-card-name">{item.name}</span>
+                      <div className="lb-card-avatar">
+                         {friend.avatar_url ? <img src={friend.avatar_url} alt="" /> : <FiUser size={30} color="#E64A45" />}
+                      </div>
+                      <span className="lb-card-name">@{friend.first_name?.toLowerCase() || 'user'}</span>
                     </div>
-                    <span className="lb-card-score">{item.score}</span>
+                    <span className="lb-card-score">{friend.score || 0}</span>
                   </div>
                 ))}
               </div>
