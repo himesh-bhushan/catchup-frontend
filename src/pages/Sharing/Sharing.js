@@ -133,8 +133,7 @@ const Sharing = () => {
 
           {showLeaderboard ? (
             /* --- LEADERBOARD VIEW --- */
-            <div className="leaderboard-wrapper">
-
+            <div className="leaderboard-wrapper theme-container">
               <div className="lb-header">
                 <button className="lb-icon-btn" onClick={() => setShowLeaderboard(false)}>
                   <FiArrowLeft size={28} />
@@ -151,10 +150,29 @@ const Sharing = () => {
                 </button>
               </div>
               
-              {/* Leaderboard content would go here */}
-              <div className="lb-placeholder-text">Leaderboard is active.</div>
+              <div className="lb-list-container">
+                <h4 className="section-label">Global Leaderboard</h4>
+                {leaderboardData.map((item, index) => (
+                  <div key={index} className={`lb-row-card ${index < 3 ? 'top-three' : ''}`}>
+                    <div className="lb-left-section">
+                      <div className={`lb-rank-badge rank-${item.rank}`}>
+                        {item.rank}
+                      </div>
+                      <div className="avatar-wrapper">
+                        <div className="theme-avatar-sm">
+                          <FiUser />
+                        </div>
+                      </div>
+                      <span className="lb-username">{item.name}</span>
+                    </div>
+                    <div className="lb-right-section">
+                      <span className="lb-score">{Number(item.score).toLocaleString()}</span>
+                      <span className="lb-pts">pts</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-
           ) : (
 
             <div className="sharing-onboarding-wrapper">

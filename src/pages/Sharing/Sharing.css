@@ -317,3 +317,118 @@
     padding: 50px;
     color: #999;
 }
+
+/* --- LEADERBOARD SPECIFIC STYLING --- */
+.leaderboard-wrapper {
+    margin-top: 20px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.lb-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.lb-icon-btn {
+    background: #FFF;
+    border: 1px solid #FDE6D8;
+    color: #E64A45;
+    padding: 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.lb-icon-btn:hover {
+    background: #FDE6D8;
+}
+
+.lb-search-bar {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 14px;
+    border: 1px solid #FDE6D8;
+    background: white;
+    font-size: 1rem;
+    outline: none;
+}
+
+/* --- LEADERBOARD ROWS --- */
+.lb-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lb-row-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 18px;
+    border: 1px solid #f2f2f2;
+}
+
+.lb-row-card.top-three {
+    border-left: 4px solid #E64A45;
+    background: #FFFDFB;
+}
+
+.lb-left-section {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.lb-rank-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    background: #F5F5F5;
+    color: #888;
+}
+
+/* Rank Colors */
+.rank-1 { background: #FFD700; color: #856404; } /* Gold */
+.rank-2 { background: #C0C0C0; color: #383d41; } /* Silver */
+.rank-3 { background: #CD7F32; color: #721c24; } /* Bronze */
+
+.lb-username {
+    font-weight: 700;
+    color: #222;
+    font-size: 1rem;
+}
+
+.lb-right-section {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.lb-score {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #E64A45;
+}
+
+.lb-pts {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #AAA;
+    text-transform: uppercase;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
