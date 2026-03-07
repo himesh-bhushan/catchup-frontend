@@ -13,13 +13,13 @@ import './Sharing.css';
 const Sharing = () => {
 
   const [isSearching, setIsSearching] = useState(false);
+  // Default to false, logic in useEffect will determine if we flip this to true
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
 
-  // Mock data preserved from your original code
   const leaderboardData = [
     { rank: 1, name: '@kiki1215', score: '10204' },
     { rank: 2, name: '@jane_19', score: '10008' },
@@ -30,6 +30,12 @@ const Sharing = () => {
   ];
 
   useEffect(() => {
+    // Check if user has completed onboarding before
+    const hasOnboarded = localStorage.getItem('has_onboarded_sharing');
+    if (hasOnboarded === 'true') {
+        setShowLeaderboard(true);
+    }
+    
     fetchIncomingRequests();
     fetchFriends();
   }, []);
@@ -72,6 +78,12 @@ const Sharing = () => {
         rel.sender_id === user.id ? rel.receiver : rel.sender
       );
       setMyFriends(friendsList);
+      
+      // Optimization: If they already have friends, they shouldn't see onboarding
+      if (friendsList.length > 0) {
+          localStorage.setItem('has_onboarded_sharing', 'true');
+          setShowLeaderboard(true);
+      }
     }
   };
 
@@ -103,8 +115,13 @@ const Sharing = () => {
       .from('friend_requests')
       .insert([{ sender_id: user.id, receiver_id: receiverId, status: 'pending' }]);
 
-    if (error) alert("Request already exists.");
-    else alert("Request sent!");
+    if (error) {
+        alert("Request already exists.");
+    } else {
+        // Once they interact with the social features, consider onboarding complete
+        localStorage.setItem('has_onboarded_sharing', 'true');
+        alert("Request sent!");
+    }
   };
 
   const updateRequestStatus = async (requestId, newStatus) => {
@@ -117,8 +134,10 @@ const Sharing = () => {
       setIncomingRequests(incomingRequests.filter(req => req.id !== requestId));
       fetchFriends();
 
-      if (newStatus === 'accepted')
+      if (newStatus === 'accepted') {
+        localStorage.setItem('has_onboarded_sharing', 'true');
         setShowLeaderboard(true);
+      }
     }
   };
 
@@ -135,7 +154,11 @@ const Sharing = () => {
             /* --- LEADERBOARD VIEW --- */
             <div className="leaderboard-wrapper theme-container">
               <div className="lb-header">
-                <button className="lb-icon-btn" onClick={() => setShowLeaderboard(false)}>
+                {/* Updated this button to allow returning to the "Settings/Friends" view if needed */}
+                <button className="lb-icon-btn" onClick={() => {
+                    setIsSearching(true);
+                    setShowLeaderboard(false);
+                }}>
                   <FiArrowLeft size={28} />
                 </button>
 
@@ -235,7 +258,15 @@ const Sharing = () => {
                   <div className="search-header">
                     <h3 className="theme-heading">Find and Approve Friends</h3>
 
-                    <button className="close-btn" onClick={() => setIsSearching(false)}>
+                    <button className="close-btn" onClick={() => {
+                        // If they have friends, closing search should go back to leaderboard
+                        if (myFriends.length > 0) {
+                            setShowLeaderboard(true);
+                            setIsSearching(false);
+                        } else {
+                            setIsSearching(false);
+                        }
+                    }}>
                       <FiX size={24} />
                     </button>
                   </div>
