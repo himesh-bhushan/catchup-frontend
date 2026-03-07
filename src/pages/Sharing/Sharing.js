@@ -27,12 +27,11 @@ const Sharing = () => {
         return;
       }
 
-      // Query the 'profiles' table for name or email
-      // Change 'name' to 'full_name' or 'username' if your DB uses a different column!
+      // THE FIX: Updated to match your exact Supabase columns (first_name, last_name)
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, name, email, avatar_url')
-        .or(`email.ilike.%${searchTerm}%,name.ilike.%${searchTerm}%`)
+        .select('id, first_name, last_name, email')
+        .or(`email.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`)
         .limit(5);
 
       if (error) {
@@ -53,6 +52,7 @@ const Sharing = () => {
         return;
     }
 
+    // Note: You need a table named 'friend_requests' for this to work!
     const { error } = await supabase
       .from('friend_requests')
       .insert([
@@ -159,15 +159,15 @@ const Sharing = () => {
                         {searchResults.map((resultUser) => (
                             <div key={resultUser.id} className="inline-result-item">
                                 <div className="result-user-info">
-                                    {resultUser.avatar_url ? (
-                                        <img src={resultUser.avatar_url} alt="avatar" className="result-avatar" />
-                                    ) : (
-                                        <div className="result-avatar-placeholder">
-                                            <FiUser size={24} color="#ccc" />
-                                        </div>
-                                    )}
+                                    {/* Using placeholder since avatar_url isn't in your DB */}
+                                    <div className="result-avatar-placeholder">
+                                        <FiUser size={24} color="#ccc" />
+                                    </div>
                                     <div className="result-text-block">
-                                        <span className="result-name">{resultUser.name || 'Unknown User'}</span>
+                                        {/* THE FIX: Combines first_name and last_name */}
+                                        <span className="result-name">
+                                            {resultUser.first_name} {resultUser.last_name || ''}
+                                        </span>
                                         <span className="result-email">{resultUser.email}</span>
                                     </div>
                                 </div>
