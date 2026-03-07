@@ -3,15 +3,24 @@
     background-color: #FFF9F5 !important;
     border: 2px solid #F8DBCA;
     width: 100%;
-    max-width: 850px;
+    max-width: 850px; /* Stretched for better layout */
     padding: 40px;
     border-radius: 24px;
+    margin: 0 auto;
 }
 
 .theme-heading {
     color: #111;
     font-size: 1.8rem;
     font-weight: 700;
+    margin: 0;
+}
+
+.search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
 .section-label {
@@ -53,19 +62,30 @@
 .theme-avatar-sm {
     width: 44px;
     height: 44px;
-    border-radius: 14px;
+    border-radius: 14px; /* Squircle style */
     background: #F8DBCA;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #E64A45;
     font-size: 1.2rem;
-    object-fit: cover; /* Ensures Supabase images fit perfectly */
+    object-fit: cover;
 }
 
 .active-border {
     border: 2px solid #E64A45;
     background: white;
+}
+
+.user-info-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.text-group {
+    display: flex;
+    flex-direction: column;
 }
 
 .name-bold {
@@ -113,6 +133,7 @@
     cursor: pointer;
     font-weight: 600;
     font-size: 0.9rem;
+    transition: 0.2s ease;
 }
 
 .icon-btn.approve { 
@@ -121,7 +142,7 @@
 }
 
 .icon-btn.decline { 
-    background: #f0f0f0; 
+    background: #f4f4f4; 
     color: #999; 
 }
 
@@ -133,19 +154,17 @@
 /* --- SEARCH INPUT --- */
 .theme-search-input {
     width: 100%;
-    padding: 16px 20px;
-    border-radius: 18px;
+    padding: 18px 24px;
+    border-radius: 20px;
     border: 2px solid #F8DBCA;
     background: white;
     font-size: 1rem;
     outline: none;
-    margin-bottom: 10px;
+    margin: 20px 0;
 }
 
-.search-divider {
-    border: 0;
-    border-top: 1px solid #F8DBCA;
-    margin: 20px 0;
+.theme-search-input:focus {
+    border-color: #E64A45;
 }
 
 .badge-online {
@@ -156,4 +175,12 @@
     border-radius: 20px;
     font-weight: 800;
     text-transform: uppercase;
+    width: fit-content;
+    margin-top: 2px;
+}
+
+.empty-state-text {
+    color: #aaa;
+    font-style: italic;
+    margin-left: 5px;
 }

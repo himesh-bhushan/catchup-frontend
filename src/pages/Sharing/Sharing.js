@@ -210,7 +210,7 @@ const Sharing = () => {
                             )}
                             <div className="text-group">
                               <p className="name-bold">{req.profiles?.first_name} {req.profiles?.last_name}</p>
-                              <p className="subtext-red">Wants to share progress</p>
+                              <p className="subtext-red">Wants to connect</p>
                             </div>
                           </div>
                           <div className="action-btns-row">
@@ -223,7 +223,6 @@ const Sharing = () => {
                           </div>
                         </div>
                       ))}
-                      <hr className="search-divider" />
                     </div>
                   )}
 
