@@ -14,7 +14,6 @@ import './Sharing.css';
 const Sharing = () => {
   // --- STATES ---
   const [isSearching, setIsSearching] = useState(false);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [incomingRequests, setIncomingRequests] = useState([]);
@@ -228,7 +227,7 @@ const Sharing = () => {
                               <span className="badge-online">Connected</span>
                             </div>
                           </div>
-                          <button className="theme-btn-outline" onClick={() => { /* Logic to view friend details */ }}>View Progress</button>
+                          <button className="theme-btn-outline">View Progress</button>
                         </div>
                       ))}
                     </div>
