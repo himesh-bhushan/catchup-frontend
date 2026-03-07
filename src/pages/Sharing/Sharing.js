@@ -44,7 +44,7 @@ const Sharing = () => {
       .select(`
         id,
         sender_id,
-        profiles:sender_id (first_name, last_name, email, avatar_url)
+        profiles:sender_id (first_name, last_name, email)
       `)
       .eq('receiver_id', user.id)
       .eq('status', 'pending');
@@ -62,8 +62,8 @@ const Sharing = () => {
         id,
         sender_id,
         receiver_id,
-        sender:profiles!friend_requests_sender_id_fkey (id, first_name, last_name, email, avatar_url),
-        receiver:profiles!friend_requests_receiver_id_fkey (id, first_name, last_name, email, avatar_url)
+        sender:profiles!friend_requests_sender_id_fkey (id, first_name, last_name, email),
+        receiver:profiles!friend_requests_receiver_id_fkey (id, first_name, last_name, email)
       `)
       .eq('status', 'accepted')
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
@@ -83,7 +83,7 @@ const Sharing = () => {
       }
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, first_name, last_name, email, avatar_url')
+        .select('id, first_name, last_name, email')
         .or(`email.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`)
         .limit(5);
 
@@ -131,26 +131,28 @@ const Sharing = () => {
                 <input type="text" className="lb-search-bar" placeholder="Search friend" />
                 <button className="lb-icon-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}><FiUserPlus size={28} /></button>
               </div>
+
               <div className="lb-podium">
                 <div className="podium-col second-place">
-                    <span className="podium-rank">2ND</span>
-                    <div className="podium-avatar"></div>
-                    <span className="podium-score">{leaderboardData[1].score}</span>
-                    <span className="podium-name">{leaderboardData[1].name}</span>
+                  <span className="podium-rank">2ND</span>
+                  <div className="podium-avatar"></div>
+                  <span className="podium-score">{leaderboardData[1].score}</span>
+                  <span className="podium-name">{leaderboardData[1].name}</span>
                 </div>
                 <div className="podium-col first-place">
-                    <span className="podium-crown">👑</span>
-                    <div className="podium-avatar first-avatar"></div>
-                    <span className="podium-score first-score">{leaderboardData[0].score}</span>
-                    <span className="podium-name">{leaderboardData[0].name}</span>
+                  <span className="podium-crown">👑</span>
+                  <div className="podium-avatar first-avatar"></div>
+                  <span className="podium-score first-score">{leaderboardData[0].score}</span>
+                  <span className="podium-name">{leaderboardData[0].name}</span>
                 </div>
                 <div className="podium-col third-place">
-                    <span className="podium-rank">3RD</span>
-                    <div className="podium-avatar"></div>
-                    <span className="podium-score">{leaderboardData[2].score}</span>
-                    <span className="podium-name">{leaderboardData[2].name}</span>
+                  <span className="podium-rank">3RD</span>
+                  <div className="podium-avatar"></div>
+                  <span className="podium-score">{leaderboardData[2].score}</span>
+                  <span className="podium-name">{leaderboardData[2].name}</span>
                 </div>
               </div>
+
               <div className="lb-list">
                 {leaderboardData.slice(3).map((user) => (
                   <div key={user.rank} className="lb-list-card">
@@ -203,26 +205,19 @@ const Sharing = () => {
                       {incomingRequests.map((req) => (
                         <div key={req.id} className="theme-card highlight-card">
                           <div className="user-info-row">
-                            {req.profiles?.avatar_url ? (
-                                <img src={req.profiles.avatar_url} alt="Profile" className="theme-avatar-sm" />
-                            ) : (
-                                <div className="theme-avatar-sm"><FiUser /></div>
-                            )}
+                            <div className="theme-avatar-sm"><FiUser /></div>
                             <div className="text-group">
                               <p className="name-bold">{req.profiles?.first_name} {req.profiles?.last_name}</p>
-                              <p className="subtext-red">Wants to connect</p>
+                              <p className="subtext-red">Wants to share progress</p>
                             </div>
                           </div>
-                          <div className="action-btns-row">
-                            <button className="icon-btn approve" onClick={() => updateRequestStatus(req.id, 'accepted')}>
-                                <FiCheck /> Approve
-                            </button>
-                            <button className="icon-btn decline" onClick={() => updateRequestStatus(req.id, 'declined')}>
-                                <FiTrash2 />
-                            </button>
+                          <div className="action-btns">
+                            <button className="icon-btn approve" onClick={() => updateRequestStatus(req.id, 'accepted')}><FiCheck /></button>
+                            <button className="icon-btn decline" onClick={() => updateRequestStatus(req.id, 'declined')}><FiTrash2 /></button>
                           </div>
                         </div>
                       ))}
+                      <hr className="search-divider" />
                     </div>
                   )}
 
@@ -242,11 +237,7 @@ const Sharing = () => {
                     {searchResults.map((u) => (
                       <div key={u.id} className="theme-card">
                         <div className="user-info-row">
-                            {u.avatar_url ? (
-                                <img src={u.avatar_url} alt="Profile" className="theme-avatar-sm" />
-                            ) : (
-                                <div className="theme-avatar-sm"><FiUser /></div>
-                            )}
+                          <div className="theme-avatar-sm"><FiUser /></div>
                           <p className="name-bold">{u.first_name} {u.last_name}</p>
                         </div>
                         <button className="theme-btn-sm" onClick={() => handleSendRequest(u.id)}>Invite</button>
@@ -264,11 +255,7 @@ const Sharing = () => {
                         {myFriends.map((friend) => (
                           <div key={friend.id} className="theme-card friend-card">
                             <div className="user-info-row">
-                                {friend.avatar_url ? (
-                                    <img src={friend.avatar_url} alt="Profile" className="theme-avatar-sm active-border" />
-                                ) : (
-                                    <div className="theme-avatar-sm active-border"><FiUser /></div>
-                                )}
+                              <div className="theme-avatar-sm active-border"><FiUser /></div>
                               <div className="text-group">
                                 <p className="name-bold">{friend.first_name} {friend.last_name}</p>
                                 <span className="badge-online">Connected</span>
