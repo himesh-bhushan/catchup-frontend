@@ -585,3 +585,151 @@
 
 .view-profile-btn { background: #333; }
 .empty-msg { font-size: 0.9rem; color: #bbb; }
+
+/* --- THEMED SEARCH CONTAINER --- */
+.theme-container {
+    background-color: #FFF9F5 !important; /* Lighter version of your peach */
+    border: 2px solid #F8DBCA;
+}
+
+.theme-heading {
+    color: #111;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.section-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #E64A45;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin: 25px 0 15px 5px;
+}
+
+/* --- THEME CARDS --- */
+.theme-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 15px 20px;
+    border-radius: 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 12px rgba(230, 74, 69, 0.05);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.theme-card:hover {
+    transform: translateY(-2px);
+    border-color: #F8DBCA;
+    box-shadow: 0 6px 15px rgba(230, 74, 69, 0.1);
+}
+
+.highlight-card {
+    background: #FFF0ED; /* Very light red/peach tint */
+    border: 1px dashed #E64A45;
+}
+
+/* --- AVATARS & TEXT --- */
+.theme-avatar-sm {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px; /* Squircle look */
+    background: #F8DBCA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #E64A45;
+    font-size: 1.2rem;
+}
+
+.active-border {
+    border: 2px solid #E64A45;
+    background: white;
+}
+
+.name-bold {
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}
+
+.subtext-red {
+    font-size: 0.8rem;
+    color: #E64A45;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* --- BUTTONS --- */
+.theme-btn-sm {
+    background-color: #E64A45;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.theme-btn-outline {
+    background: transparent;
+    color: #E64A45;
+    border: 2px solid #E64A45;
+    padding: 8px 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.theme-btn-outline:hover {
+    background: #E64A45;
+    color: white;
+}
+
+.icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.icon-btn.approve { background: #E64A45; color: white; }
+.icon-btn.decline { background: #f0f0f0; color: #999; }
+
+/* --- BADGE --- */
+.badge-online {
+    font-size: 0.7rem;
+    background: #E64A45;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* --- SEARCH INPUT --- */
+.theme-search-input {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 18px;
+    border: 2px solid #F8DBCA;
+    background: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 10px;
+}
+
+.theme-search-input:focus {
+    border-color: #E64A45;
+}

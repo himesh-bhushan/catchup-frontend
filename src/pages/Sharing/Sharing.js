@@ -19,7 +19,7 @@ const Sharing = () => {
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
 
-  // --- DUMMY LEADERBOARD DATA (For UI Demo) ---
+  // --- DUMMY LEADERBOARD DATA ---
   const leaderboardData = [
     { rank: 1, name: '@kiki1215', score: '10204' },
     { rank: 2, name: '@jane_19', score: '10008' },
@@ -29,7 +29,7 @@ const Sharing = () => {
     { rank: 6, name: '@holyvoly', score: '7999' }
   ];
 
-  // --- INITIAL DATA FETCH (Requests & Friends) ---
+  // --- DATA FETCHING ---
   useEffect(() => {
     fetchIncomingRequests();
     fetchFriends();
@@ -112,7 +112,7 @@ const Sharing = () => {
 
     if (!error) {
       setIncomingRequests(incomingRequests.filter(req => req.id !== requestId));
-      fetchFriends(); // Refresh friends list if accepted
+      fetchFriends();
       if (newStatus === 'accepted') setShowLeaderboard(true);
     }
   };
@@ -124,9 +124,7 @@ const Sharing = () => {
         <div className="sharing-page-container">
           
           {showLeaderboard ? (
-            /* =========================================
-               VIEW 1: LEADERBOARD
-               ========================================= */
+            /* --- LEADERBOARD VIEW --- */
             <div className="leaderboard-wrapper">
               <div className="lb-header">
                 <button className="lb-icon-btn" onClick={() => setShowLeaderboard(false)}><FiArrowLeft size={28} /></button>
@@ -169,9 +167,7 @@ const Sharing = () => {
               </div>
             </div>
           ) : (
-            /* =========================================
-               VIEW 2: ONBOARDING / CONNECTIONS
-               ========================================= */
+            /* --- MAIN VIEW --- */
             <div className="sharing-onboarding-wrapper">
               {!isSearching ? (
                 <>
@@ -193,31 +189,31 @@ const Sharing = () => {
                     </div>
                   </div>
                   <button className="share-cta-btn" onClick={() => setIsSearching(true)}>Share with Someone</button>
-                  <button className="share-cta-btn" style={{marginTop:'15px', background:'#333'}} onClick={() => setShowLeaderboard(true)}>Leaderboard</button>
                 </>
               ) : (
-                <div className="inline-search-section">
+                /* --- FIND AND APPROVE FRIENDS VIEW --- */
+                <div className="inline-search-section theme-container">
                   <div className="search-header">
-                    <h3>Connections</h3>
-                    <button className="cancel-search-btn" onClick={() => setIsSearching(false)}><FiX size={28} /></button>
+                    <h3 className="theme-heading">Find and Approve Friends</h3>
+                    <button className="close-btn" onClick={() => setIsSearching(false)}><FiX size={24} /></button>
                   </div>
 
                   {/* PENDING REQUESTS */}
                   {incomingRequests.length > 0 && (
                     <div className="request-group">
-                      <h4>Pending Invitations</h4>
+                      <h4 className="section-label">Pending Invitations</h4>
                       {incomingRequests.map((req) => (
-                        <div key={req.id} className="mini-card pending-card">
+                        <div key={req.id} className="theme-card highlight-card">
                           <div className="user-info-row">
-                            <div className="avatar-circle-sm"><FiUser /></div>
-                            <div>
-                              <p className="name-sm">{req.profiles?.first_name} {req.profiles?.last_name}</p>
-                              <p className="email-sm">Wants to connect</p>
+                            <div className="theme-avatar-sm"><FiUser /></div>
+                            <div className="text-group">
+                              <p className="name-bold">{req.profiles?.first_name} {req.profiles?.last_name}</p>
+                              <p className="subtext-red">Wants to share progress</p>
                             </div>
                           </div>
                           <div className="action-btns">
-                            <button className="check-btn" onClick={() => updateRequestStatus(req.id, 'accepted')}><FiCheck /></button>
-                            <button className="x-btn" onClick={() => updateRequestStatus(req.id, 'declined')}><FiTrash2 /></button>
+                            <button className="icon-btn approve" onClick={() => updateRequestStatus(req.id, 'accepted')}><FiCheck /></button>
+                            <button className="icon-btn decline" onClick={() => updateRequestStatus(req.id, 'declined')}><FiTrash2 /></button>
                           </div>
                         </div>
                       ))}
@@ -226,45 +222,49 @@ const Sharing = () => {
                   )}
 
                   {/* SEARCH BAR */}
-                  <input 
-                    type="text" 
-                    className="inline-search-input" 
-                    placeholder="Find someone by name or email..." 
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
+                  <div className="search-bar-wrapper">
+                    <input 
+                      type="text" 
+                      className="theme-search-input" 
+                      placeholder="Search name or email..." 
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
 
                   {/* SEARCH RESULTS */}
                   <div className="results-container">
                     {searchResults.map((u) => (
-                      <div key={u.id} className="mini-card">
+                      <div key={u.id} className="theme-card">
                         <div className="user-info-row">
-                          <div className="avatar-circle-sm"><FiUser /></div>
-                          <div><p className="name-sm">{u.first_name} {u.last_name}</p></div>
+                          <div className="theme-avatar-sm"><FiUser /></div>
+                          <p className="name-bold">{u.first_name} {u.last_name}</p>
                         </div>
-                        <button className="add-btn-sm" onClick={() => handleSendRequest(u.id)}>Invite</button>
+                        <button className="theme-btn-sm" onClick={() => handleSendRequest(u.id)}>Invite</button>
                       </div>
                     ))}
                   </div>
 
                   {/* FRIENDS LIST */}
                   <div className="friends-list-group">
-                    <h4>Your Friends ({myFriends.length})</h4>
+                    <h4 className="section-label">Your Friends ({myFriends.length})</h4>
                     {myFriends.length === 0 ? (
-                      <p className="empty-msg">No connections yet.</p>
+                      <p className="empty-state-text">No friends added yet.</p>
                     ) : (
-                      myFriends.map((friend) => (
-                        <div key={friend.id} className="mini-card friend-card">
-                          <div className="user-info-row">
-                            <div className="avatar-circle-sm green-border"><FiUser /></div>
-                            <div>
-                              <p className="name-sm">{friend.first_name} {friend.last_name}</p>
-                              <p className="status-tag">Connected</p>
+                      <div className="friends-grid">
+                        {myFriends.map((friend) => (
+                          <div key={friend.id} className="theme-card friend-card">
+                            <div className="user-info-row">
+                              <div className="theme-avatar-sm active-border"><FiUser /></div>
+                              <div className="text-group">
+                                <p className="name-bold">{friend.first_name} {friend.last_name}</p>
+                                <span className="badge-online">Connected</span>
+                              </div>
                             </div>
+                            <button className="theme-btn-outline" onClick={() => setShowLeaderboard(true)}>View Progress</button>
                           </div>
-                          <button className="view-profile-btn" onClick={() => setShowLeaderboard(true)}>Progress</button>
-                        </div>
-                      ))
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>
