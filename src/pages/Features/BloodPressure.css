@@ -10,6 +10,14 @@
   flex-direction: column;
 }
 
+/* Overrides dashboard background specifically for the Blood Pressure page */
+.dashboard-wrapper.bp-page-wrapper-bg,
+.bp-page-wrapper-bg .dashboard-content {
+    background: #FFFFFF !important; 
+    background-color: #FFFFFF !important;
+    min-height: 100vh;
+}
+
 /* --- FIXED HEADER --- */
 .bp-header {
   display: flex;
