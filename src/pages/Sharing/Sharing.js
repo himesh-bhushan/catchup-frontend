@@ -154,39 +154,37 @@ const Sharing = () => {
             /* --- LEADERBOARD VIEW --- */
             <div className="leaderboard-wrapper theme-container">
               <div className="lb-header">
-                {/* Updated this button to allow returning to the "Settings/Friends" view if needed */}
-                <button className="lb-icon-btn" onClick={() => {
-                    setIsSearching(true);
-                    setShowLeaderboard(false);
-                }}>
-                  <FiArrowLeft size={28} />
+                <button className="lb-icon-btn" onClick={() => { setIsSearching(true); setShowLeaderboard(false); }}>
+                  <FiArrowLeft size={24} />
                 </button>
-
                 <input className="lb-search-bar" placeholder="Search friend" />
-
-                <button className="lb-icon-btn"
-                  onClick={() => {
-                    setShowLeaderboard(false);
-                    setIsSearching(true);
-                  }}>
-                  <FiUserPlus size={28} />
+                <button className="lb-icon-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
+                  <FiUserPlus size={24} />
                 </button>
               </div>
               
               <div className="lb-list-container">
-                <h4 className="section-label">Global Leaderboard</h4>
+                <h3 className="lb-main-title">Leaderboard</h3>
+                
+                {/* Table Header Row */}
+                <div className="lb-table-header">
+                  <span className="col-rank">Rank</span>
+                  <span className="col-user">User</span>
+                  <span className="col-score">Score</span>
+                </div>
+
                 {leaderboardData.map((item, index) => (
-                  <div key={index} className={`lb-row-card ${index < 3 ? 'top-three' : ''}`}>
+                  <div key={index} className="lb-row-card">
                     <div className="lb-left-section">
-                      <div className={`lb-rank-badge rank-${item.rank}`}>
+                      <div className={`lb-rank-number rank-${item.rank}`}>
                         {item.rank}
                       </div>
-                      <div className="avatar-wrapper">
-                        <div className="theme-avatar-sm">
-                          <FiUser />
+                      <div className="lb-user-info">
+                        <div className="lb-avatar-circle">
+                          <FiUser size={16} />
                         </div>
+                        <span className="lb-username">{item.name}</span>
                       </div>
-                      <span className="lb-username">{item.name}</span>
                     </div>
                     <div className="lb-right-section">
                       <span className="lb-score">{Number(item.score).toLocaleString()}</span>
