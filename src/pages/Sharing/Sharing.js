@@ -1,8 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiLock, FiCheckCircle } from 'react-icons/fi';
+import { FiLock, FiCheckCircle } from 'react-icons/fi';
 
-// 1. WE IMPORT THE NAVIGATION BAR HERE:
+// Import the Navigation Bar
 import DashboardNav from '../../components/DashboardNav'; 
 
 // Import your avatar images
@@ -13,27 +12,15 @@ import avatar3 from '../../assets/avatar3.png';
 import './Sharing.css';
 
 const Sharing = () => {
-  const navigate = useNavigate();
-
   return (
-    // 2. THE DASHBOARD WRAPPER KEEPS EVERYTHING ALIGNED
     <div className="dashboard-wrapper sharing-page-bg">
       
-      {/* 3. THE NAVIGATION BAR IS RENDERED HERE ON THE LEFT */}
       <DashboardNav />
       
-      {/* 4. YOUR PAGE CONTENT SITS ON THE RIGHT */}
       <div className="dashboard-content">
         
         <div className="sharing-page-container">
           
-          {/* Header with Back Button */}
-          <div className="sharing-header-top">
-            <button onClick={() => navigate('/dashboard')} className="sharing-back-btn">
-              <FiArrowLeft size={32} color="#111" />
-            </button>
-          </div>
-
           {/* Centered Onboarding Content */}
           <div className="sharing-onboarding-wrapper">
             
