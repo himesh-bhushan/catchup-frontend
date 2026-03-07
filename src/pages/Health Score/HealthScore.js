@@ -6,8 +6,6 @@ import { supabase } from '../../supabase';
 // --- ADDED: Import Navigation Bar ---
 import DashboardNav from '../../components/DashboardNav';
 
-import './HeartRate.css';
-
 const HeartRate = () => {
   const navigate = useNavigate();
   const [range, setRange] = useState('Week'); 
