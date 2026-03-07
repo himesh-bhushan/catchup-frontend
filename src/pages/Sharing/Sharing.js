@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FiLock, FiCheckCircle, FiX, FiUser, FiCheck, FiTrash2 } from 'react-icons/fi';
 import { supabase } from '../../supabase'; 
+
 import DashboardNav from '../../components/DashboardNav'; 
 
+// Assets for onboarding view
 import avatar1 from '../../assets/avatar1.png';
 import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
@@ -59,6 +61,7 @@ const Sharing = () => {
       <DashboardNav />
       <div className="dashboard-content">
         <div className="sharing-page-container">
+          
           <div className="sharing-onboarding-wrapper">
             {!isSearching ? (
               <>
@@ -69,6 +72,16 @@ const Sharing = () => {
                 </div>
                 <h1 className="sharing-title">Health Sharing</h1>
                 <p className="sharing-subtitle">Invite friends to climb the leaderboard.</p>
+                <div className="sharing-features-grid">
+                  <div className="feature-item">
+                    <FiCheckCircle size={36} color="#E64A45" />
+                    <div className="feature-text"><h3>Stay in charge</h3><p>Securely share your summary data.</p></div>
+                  </div>
+                  <div className="feature-item">
+                    <FiLock size={36} color="#E64A45" />
+                    <div className="feature-text"><h3>Private</h3><p>Encrypted data you can stop sharing anytime.</p></div>
+                  </div>
+                </div>
                 <button className="share-cta-btn" onClick={() => setIsSearching(true)}>Share with Someone</button>
               </>
             ) : (
@@ -78,6 +91,7 @@ const Sharing = () => {
                   <button className="close-btn" onClick={() => setIsSearching(false)}><FiX size={24} /></button>
                 </div>
 
+                {/* PENDING REQUESTS SECTION */}
                 {incomingRequests.length > 0 && (
                   <div className="request-group">
                     <h4 className="section-label">Pending Invitations</h4>
@@ -93,7 +107,7 @@ const Sharing = () => {
                           </div>
                           <div className="text-group">
                             <p className="name-bold">{req.profiles?.first_name} {req.profiles?.last_name}</p>
-                            <p className="subtext-red">Wants to connect</p>
+                            <p className="subtext-red">Wants to share progress</p>
                           </div>
                         </div>
                         <div className="action-btns-row">
@@ -117,6 +131,7 @@ const Sharing = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
 
+                {/* FRIENDS LIST SECTION */}
                 <div className="friends-list-group">
                   <h4 className="section-label">Your Friends ({myFriends.length})</h4>
                   <div className="friends-grid">
