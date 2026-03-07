@@ -428,90 +428,167 @@
     text-transform: uppercase;
 }
 
-/* --- UPDATED LEADERBOARD LAYOUT --- */
-.lb-main-title {
-    font-size: 1.5rem;
-    font-weight: 800;
-    margin-bottom: 20px;
-    color: #111;
+/* --- LEADERBOARD STYLE 2 (PODIUM) --- */
+.leaderboard-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
-.lb-table-header {
+.lb-header {
     display: flex;
-    padding: 0 15px 10px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #AAA;
-    text-transform: uppercase;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 50px;
+}
+
+.lb-transparent-btn {
+    background: transparent;
+    border: none;
+    color: #111;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    transition: opacity 0.2s;
+}
+
+.lb-transparent-btn:hover {
+    opacity: 0.7;
+}
+
+.lb-search-bar-alt {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: none;
+    background: #F4F4F4;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Podium */
+.lb-podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.podium-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.podium-rank {
+    color: #FFF;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.podium-avatar {
+    width: 75px;
+    height: 75px;
+    background: #FFF;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.first-avatar {
+    width: 95px;
+    height: 95px;
+}
+
+.podium-crown {
+    font-size: 2rem;
+    margin-bottom: -5px;
+    z-index: 10;
+    color: #FFD700;
+}
+
+.podium-score {
+    color: #E64A45;
+    font-weight: 800;
+    font-size: 1.5rem;
+    font-family: 'Courier New', Courier, monospace;
     letter-spacing: 1px;
 }
 
-.col-rank { width: 50px; }
-.col-user { flex: 1; margin-left: 10px; }
-.col-score { width: 80px; text-align: right; }
+.first-score {
+    font-size: 1.8rem;
+}
 
-.lb-row-card {
+.podium-name {
+    color: #666;
+    font-size: 0.95rem;
+    font-family: monospace;
+    margin-top: 2px;
+}
+
+/* List Cards */
+.lb-list-alt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.lb-list-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #F5F5F5; /* Thin separator instead of cards */
-    transition: background 0.2s;
+    background: #E55B3C; /* Bright orange/red */
+    width: 100%;
+    max-width: 550px;
+    padding: 15px 30px;
+    border-radius: 16px;
+    color: #FFF;
+    box-shadow: 0 8px 20px rgba(229, 91, 60, 0.25);
 }
 
-.lb-row-card:last-child {
-    border-bottom: none;
-}
-
-.lb-row-card:hover {
-    background: #FFF9F8;
-}
-
-.lb-rank-number {
-    width: 30px;
-    font-weight: 800;
-    font-size: 1rem;
-    color: #444;
-}
-
-/* Rank Highlights */
-.rank-1 { color: #E64A45; font-size: 1.2rem; }
-.rank-2 { color: #FF8A80; }
-.rank-3 { color: #FFAB91; }
-
-.lb-user-info {
+.lb-card-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 20px;
 }
 
-.lb-avatar-circle {
-    width: 36px;
-    height: 36px;
-    background: #FDE6D8;
-    border-radius: 50%; /* Circle avatars for leaderboard */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #E64A45;
-}
-
-.lb-username {
-    font-weight: 600;
-    color: #333;
-}
-
-.lb-score {
+.lb-card-rank {
     font-weight: 800;
-    color: #111;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
+    text-align: center;
+    line-height: 1.1;
 }
 
-.lb-pts {
-    font-weight: 600;
-    color: #999;
-    font-size: 0.8rem;
-    margin-left: 4px;
+.rank-up-arrow {
+    color: #A4D65E; /* Bright green */
+    font-size: 0.9rem;
+}
+
+.lb-card-avatar {
+    width: 55px;
+    height: 55px;
+    background: #FFF;
+    border-radius: 50%;
+}
+
+.lb-card-name {
+    font-family: monospace;
+    font-size: 1.1rem;
+}
+
+.lb-card-score {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 800;
+    font-size: 1.6rem;
+    letter-spacing: 1.5px;
+    color: #FFDDAA; /* Soft yellow text */
 }
 
 @keyframes fadeIn {

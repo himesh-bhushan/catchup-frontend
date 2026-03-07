@@ -152,44 +152,50 @@ const Sharing = () => {
 
           {showLeaderboard ? (
             /* --- LEADERBOARD VIEW --- */
-            <div className="leaderboard-wrapper theme-container">
+            <div className="leaderboard-wrapper">
               <div className="lb-header">
-                <button className="lb-icon-btn" onClick={() => { setIsSearching(true); setShowLeaderboard(false); }}>
-                  <FiArrowLeft size={24} />
+                <button className="lb-transparent-btn" onClick={() => { setIsSearching(true); setShowLeaderboard(false); }}>
+                  <FiArrowLeft size={28} />
                 </button>
-                <input className="lb-search-bar" placeholder="Search friend" />
-                <button className="lb-icon-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
-                  <FiUserPlus size={24} />
+                <input className="lb-search-bar-alt" placeholder="Search friend" />
+                <button className="lb-transparent-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
+                  <FiUserPlus size={28} />
                 </button>
               </div>
               
-              <div className="lb-list-container">
-                <h3 className="lb-main-title">Leaderboard</h3>
-                
-                {/* Table Header Row */}
-                <div className="lb-table-header">
-                  <span className="col-rank">Rank</span>
-                  <span className="col-user">User</span>
-                  <span className="col-score">Score</span>
+              <div className="lb-podium">
+                <div className="podium-col second-place">
+                    <span className="podium-rank">2ND</span>
+                    <div className="podium-avatar"></div>
+                    <span className="podium-score">{leaderboardData[1].score}</span>
+                    <span className="podium-name">{leaderboardData[1].name}</span>
                 </div>
+                <div className="podium-col first-place">
+                    <span className="podium-crown">👑</span>
+                    <div className="podium-avatar first-avatar"></div>
+                    <span className="podium-score first-score">{leaderboardData[0].score}</span>
+                    <span className="podium-name">{leaderboardData[0].name}</span>
+                </div>
+                <div className="podium-col third-place">
+                    <span className="podium-rank">3RD</span>
+                    <div className="podium-avatar"></div>
+                    <span className="podium-score">{leaderboardData[2].score}</span>
+                    <span className="podium-name">{leaderboardData[2].name}</span>
+                </div>
+              </div>
 
-                {leaderboardData.map((item, index) => (
-                  <div key={index} className="lb-row-card">
-                    <div className="lb-left-section">
-                      <div className={`lb-rank-number rank-${item.rank}`}>
-                        {item.rank}
+              <div className="lb-list-alt">
+                {leaderboardData.slice(3).map((item) => (
+                  <div key={item.rank} className="lb-list-card">
+                    <div className="lb-card-left">
+                      <div className="lb-card-rank">
+                        {item.rank}TH<br/>
+                        <span className="rank-up-arrow">▲</span>
                       </div>
-                      <div className="lb-user-info">
-                        <div className="lb-avatar-circle">
-                          <FiUser size={16} />
-                        </div>
-                        <span className="lb-username">{item.name}</span>
-                      </div>
+                      <div className="lb-card-avatar"></div>
+                      <span className="lb-card-name">{item.name}</span>
                     </div>
-                    <div className="lb-right-section">
-                      <span className="lb-score">{Number(item.score).toLocaleString()}</span>
-                      <span className="lb-pts">pts</span>
-                    </div>
+                    <span className="lb-card-score">{item.score}</span>
                   </div>
                 ))}
               </div>
