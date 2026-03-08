@@ -172,7 +172,12 @@ const HealthScore = () => {
                 <div className="hs-icon-circle"><FiMoon size={24} color="#000" /></div>
                 <div className="hs-pill-text">
                   <span className="hs-pill-label">Sleep Hours</span>
-                  <span className="hs-pill-value">{(stats.sleepSeconds / 3600).toFixed(1)} <strong>hours</strong></span>
+                  <span className="hs-pill-value">
+                    {stats.sleepSeconds > 0 
+                      ? (stats.sleepSeconds / 3600).toFixed(1) 
+                      : '0.0'} 
+                    <strong> hours</strong>
+                  </span>
                 </div>
               </div>
 
