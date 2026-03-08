@@ -83,7 +83,7 @@ const Signin = () => {
     try {
       // Supabase Password Reset
       const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
-        redirectTo: 'http://localhost:3000/reset-password', // Change if your URL differs
+        redirectTo: 'https://www.catchup.page/update-password', // Change if your URL differs
       });
 
       if (error) throw error;
