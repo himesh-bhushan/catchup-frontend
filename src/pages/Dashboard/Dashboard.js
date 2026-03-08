@@ -380,7 +380,12 @@ const Dashboard = () => {
                                     <div className="metric-icon-circle"><FiMoon color="#F7931E" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Sleep Hours</span>
-                                        <span className="metric-value">{(otherStats.sleep/3600).toFixed(1)} <strong>hours</strong></span>
+                                        <span className="hs-pill-value">
+                                            {stats.sleepSeconds > 0 
+                                                ? (stats.sleepSeconds / 3600).toFixed(1) 
+                                                : '0.0'} 
+                                            <strong> hours</strong>
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="metric-pill pill-yellow">
@@ -394,7 +399,10 @@ const Dashboard = () => {
                                     <div className="metric-icon-circle"><FiDroplet color="#4A90E2" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Water Intake</span>
-                                        <span className="metric-value">{otherStats.water_intake} <strong>L</strong></span>
+                                        <span className="hs-pill-value">
+                                            {stats.water ? (stats.water / 1000).toFixed(1) : '0.0'} 
+                                            <strong> L</strong>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
