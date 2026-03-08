@@ -193,7 +193,10 @@ const HealthScore = () => {
                 <div className="hs-icon-circle"><FiDroplet size={24} color="#000" /></div>
                 <div className="hs-pill-text">
                   <span className="hs-pill-label">Water Intake</span>
-                  <span className="hs-pill-value">{stats.water || '0'} <strong>L</strong></span>
+                  <span className="hs-pill-value">
+                    {stats.water ? (stats.water / 1000).toFixed(1) : '0.0'} 
+                    <strong> L</strong>
+                  </span>
                 </div>
               </div>
             </div>
