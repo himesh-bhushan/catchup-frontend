@@ -25,6 +25,7 @@ import Awards from './pages/Awards/Awards';
 import './App.css'; 
 import PanicButton from './components/PanicButton';
 import ProtectedRoute from './components/ProtectedRoute';
+import UpdatePassword from './pages/UpdatePassword/UpdatePassword';
 
 const LandingPage = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -48,6 +49,7 @@ function App() {
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/update-password" element={<UpdatePassword />} />
 
         {/* Dashboard */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

@@ -1,0 +1,122 @@
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../supabase'; // Adjust this path if your supabase.js is elsewhere
+import { useNavigate } from 'react-router-dom';
+import { FiLock, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
+
+// Using one of your existing avatars for the CatchUp branding
+import avatar1 from '../../assets/avatar1.png'; 
+
+import './UpdatePassword.css';
+
+const UpdatePassword = () => {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  // Verify the user actually arrived here with a valid recovery session
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setErrorMsg("Your reset link has expired or is invalid. Please request a new one.");
+      }
+    };
+    checkSession();
+  }, []);
+
+  const handleUpdatePassword = async (e) => {
+    e.preventDefault();
+    setErrorMsg('');
+    setMessage('');
+
+    if (newPassword !== confirmPassword) {
+      setErrorMsg("Passwords do not match.");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setErrorMsg("Password must be at least 6 characters long.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      setErrorMsg(error.message);
+    } else {
+      setMessage("Password updated successfully! Redirecting...");
+      setTimeout(() => navigate('/dashboard'), 2000); // Send them to dashboard or login
+    }
+  };
+
+  return (
+    <div className="auth-page-wrapper">
+      <div className="auth-card">
+        <div className="auth-header">
+          <div className="auth-avatar-wrapper">
+            <img src={avatar1} alt="CatchUp Tomato" className="auth-avatar" />
+          </div>
+          <h2 className="auth-title">Create New Password</h2>
+          <p className="auth-subtitle">Your new password must be different from previously used passwords.</p>
+        </div>
+
+        <form className="auth-form" onSubmit={handleUpdatePassword}>
+          <div className="input-group">
+            <FiLock className="input-icon" />
+            <input
+              type="password"
+              className="auth-input"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <FiLock className="input-icon" />
+            <input
+              type="password"
+              className="auth-input"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {errorMsg && (
+            <div className="status-message error">
+              <FiAlertCircle /> {errorMsg}
+            </div>
+          )}
+
+          {message && (
+            <div className="status-message success">
+              <FiCheckCircle /> {message}
+            </div>
+          )}
+
+          <button 
+            type="submit" 
+            className="auth-submit-btn"
+            disabled={isLoading || !!errorMsg.includes("expired")}
+          >
+            {isLoading ? 'Updating...' : 'Reset Password'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default UpdatePassword;
