@@ -72,8 +72,6 @@ const Dashboard = () => {
     if (!user) return;
     setLoading(true);
     try {
-      // If using Apple Shortcuts, this button primarily refreshes the UI
-      // If Google is connected, it triggers the backend sync
       if (isDeviceConnected) {
         await axios.post(`https://backend.catchup.page/api/wearables/google-sync/${user.id}`);
       }
@@ -154,7 +152,6 @@ const Dashboard = () => {
     if (session?.user) {
         setUser(session.user);
         try {
-            // ✅ UPDATED: Now selecting all the new Apple Health columns
             const { data: profile } = await supabase
                 .from('profiles')
                 .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at, heart_rate, sleep_seconds, water_intake, blood_pressure')
@@ -175,10 +172,10 @@ const Dashboard = () => {
                     setLastSyncedAgo(calculateTimeAgo(profile.last_synced_at));
                 }
 
-                // ✅ UPDATED: Setting the new metrics into state
+                // ✅ NECESSARY CHANGE: Ensure sleep_seconds is stored correctly
                 setOtherStats({
                     heart_rate: profile.heart_rate || 0,
-                    sleep: profile.sleep_seconds || 0,
+                    sleep: profile.sleep_seconds || 0, // Keep in seconds here, convert in UI
                     water_intake: profile.water_intake || 0,
                     blood_pressure: profile.blood_pressure || "--/--"
                 });
@@ -328,16 +325,20 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* ✅ UPDATED: Blood Pressure Tile with Real Data */}
                     <div className="card bp-card" onClick={() => navigate('/blood-pressure')}>
                         <div className="card-header"><h3>{t('Blood Pressure')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="tile-value">{otherStats.blood_pressure} <span>mmHg</span></div>
                     </div>
 
-                    {/* ✅ UPDATED: Heart Rate Tile with Real Data */}
                     <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
                         <div className="card-header"><h3>{t('Heart Rate')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="tile-value">{otherStats.heart_rate} <span>BPM</span></div>
+                    </div>
+
+                    {/* ✅ NECESSARY CHANGE: Added dedicated Sleep Tile (Optional but helpful for visibility) */}
+                    <div className="card sleep-card" onClick={() => navigate('/sleep')}>
+                        <div className="card-header"><h3>{t('Sleep')}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="tile-value">{(otherStats.sleep / 3600).toFixed(1)} <span>hrs</span></div>
                     </div>
 
                     {/* Health Score */}
@@ -374,8 +375,8 @@ const Dashboard = () => {
                                         <span className="metric-value">{otherStats.heart_rate} <strong>BPM</strong></span>
                                     </div>
                                 </div>
-                                {/* ✅ UPDATED: Sleep Pill with Real Data */}
-                                <div className="metric-pill pill-orange">
+                                {/* ✅ NECESSARY CHANGE: Correct sleep calculation displayed here */}
+                                <div className="metric-pill pill-orange" onClick={() => navigate('/sleep')}>
                                     <div className="metric-icon-circle"><FiMoon color="#F7931E" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Sleep Hours</span>
@@ -389,7 +390,6 @@ const Dashboard = () => {
                                         <span className="metric-value">{activityData.calories} <strong>KCAL</strong></span>
                                     </div>
                                 </div>
-                                {/* ✅ UPDATED: Water Pill with Real Data */}
                                 <div className="metric-pill pill-blue">
                                     <div className="metric-icon-circle"><FiDroplet color="#4A90E2" /></div>
                                     <div className="metric-text-group">
