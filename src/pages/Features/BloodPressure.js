@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiCalendar, FiPlus } from 'react-icons/fi';
+import { FiArrowLeft, FiCalendar, FiPlus, FiActivity } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
-// --- ADDED: Import Navigation Bar ---
+// --- Components ---
 import DashboardNav from '../../components/DashboardNav';
 
+// --- Styles ---
 import './BloodPressure.css';
 
 const BloodPressure = () => {
@@ -17,50 +18,68 @@ const BloodPressure = () => {
   
   const [isAdding, setIsAdding] = useState(false);
   const [newReading, setNewReading] = useState({ systolic: '', diastolic: '' });
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchBPLogs = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+  const fetchBPData = useCallback(async () => {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
-      // 🟢 CHANGE: Fetch from blood_pressure_logs to get the history for the graph
-      const { data, error } = await supabase
+    try {
+      // 1. FETCH LATEST FROM PROFILE (Matches Dashboard 110/75)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('blood_pressure')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.blood_pressure) {
+        const [sys, dia] = profile.blood_pressure.split('/');
+        setTodayLog({ 
+          systolic: parseInt(sys), 
+          diastolic: parseInt(dia), 
+          date: new Date().toISOString() 
+        });
+      }
+
+      // 2. FETCH HISTORY FROM LOGS (For the Graph & Previous Days)
+      const { data: history, error: historyError } = await supabase
         .from('blood_pressure_logs')
         .select('systolic, diastolic, date')
         .eq('user_id', user.id)
         .order('date', { ascending: true });
 
-      if (error) {
-          console.error('Error fetching BP logs:', error);
-          return;
-      }
+      if (!historyError && history && history.length > 0) {
+        setLogs(history);
 
-      if (data && data.length > 0) {
-        setLogs(data);
-        
-        // The last item in the sorted array is our "latest" reading
-        const latest = data[data.length - 1];
-        setTodayLog(latest);
-
-        // Calculate Average for the range
-        const avgSys = Math.round(data.reduce((acc, curr) => acc + curr.systolic, 0) / data.length);
-        const avgDia = Math.round(data.reduce((acc, curr) => acc + curr.diastolic, 0) / data.length);
-        
-        setAverage({ systolic: avgSys, diastolic: avgDia });
+        // Calculate Average across all historical entries
+        const totalSys = history.reduce((sum, log) => sum + log.systolic, 0);
+        const totalDia = history.reduce((sum, log) => sum + log.diastolic, 0);
+        setAverage({
+          systolic: Math.round(totalSys / history.length),
+          diastolic: Math.round(totalDia / history.length)
+        });
       }
-    };
-    
-    fetchBPLogs();
-  }, [range]);
+    } catch (err) {
+      console.error("Error fetching BP data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBPData();
+  }, [fetchBPData, range]);
 
   const handleAddReading = async () => {
     if (!newReading.systolic || !newReading.diastolic) return;
 
     const { data: { user } } = await supabase.auth.getUser();
     const todayStr = new Date().toISOString().split('T')[0];
+    const formattedBP = `${newReading.systolic}/${newReading.diastolic}`;
 
-    // 🟢 CHANGE: Upsert into blood_pressure_logs so it shows in history
-    const { error } = await supabase
+    // Update both tables to keep Dashboard and History in sync
+    const { error: logError } = await supabase
       .from('blood_pressure_logs')
       .upsert({
         user_id: user.id,
@@ -69,15 +88,15 @@ const BloodPressure = () => {
         diastolic: parseInt(newReading.diastolic)
       }, { onConflict: 'user_id,date' });
 
-    if (!error) {
-      // Also update profile for the dashboard summary
-      await supabase
+    const { error: profError } = await supabase
         .from('profiles')
-        .update({ blood_pressure: `${newReading.systolic}/${newReading.diastolic}` })
+        .update({ blood_pressure: formattedBP })
         .eq('id', user.id);
 
+    if (!logError && !profError) {
       setIsAdding(false);
-      window.location.reload(); // Refresh to pull updated history
+      setNewReading({ systolic: '', diastolic: '' });
+      fetchBPData(); // Refresh UI without full reload
     }
   };
 
@@ -89,17 +108,18 @@ const BloodPressure = () => {
     if (logs.length < 1) {
        return (
          <div className="no-data-container">
-            <p>Sync your Apple Health or add a reading below to see your trends.</p>
+            <FiActivity size={40} color="#ccc" />
+            <p>No history for this period. Sync Apple Health to see your trends.</p>
          </div>
        );
     }
 
     const minVal = 40; 
     const maxVal = 200;
-    
     const getY = (val) => height - ((val - minVal) / (maxVal - minVal)) * height;
     const getX = (index) => (index / (Math.max(logs.length - 1, 1))) * (width - padding);
 
+    // Create points for Systolic line
     const points = logs.map((log, i) => `${getX(i)},${getY(log.systolic)}`).join(' ');
 
     return (
@@ -113,19 +133,19 @@ const BloodPressure = () => {
            </g>
         ))}
 
-        {/* Line */}
+        {/* Line connecting points */}
         {logs.length > 1 && (
             <polyline points={points} fill="none" stroke="#FF3B30" strokeWidth="4" strokeLinecap="round" />
         )}
 
-        {/* Dots */}
+        {/* Dots for each day */}
         {logs.map((log, i) => (
           <g key={i}>
             <circle cx={getX(i)} cy={getY(log.systolic)} r="7" fill="#FF3B30" stroke="white" strokeWidth="3" />
           </g>
         ))}
 
-        {/* X-Axis Labels */}
+        {/* X-Axis Dates */}
         {logs.map((log, i) => (
           <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="#999" textAnchor="middle" fontFamily="Poppins">
             {new Date(log.date).toLocaleDateString('en-US', { weekday: 'short' })}
@@ -148,7 +168,7 @@ const BloodPressure = () => {
             </button>
             
             <div className="range-pills">
-               {['Day', 'Week', 'Month', '6 Months', 'Year'].map(r => (
+               {['Day', 'Week', 'Month', 'Year'].map(r => (
                  <button key={r} className={`pill ${range === r ? 'active' : ''}`} onClick={() => setRange(r)}>{r}</button>
                ))}
             </div>
@@ -159,17 +179,17 @@ const BloodPressure = () => {
           <div className="stats-block">
              <h2>Average <span className="highlight-red">{average.systolic || '--'}/{average.diastolic || '--'}</span></h2>
              <p className="date-range-sub">
-                Based on your {range.toLowerCase()} history
+                Trends from your recorded history
              </p>
           </div>
 
           <div className="chart-container">
-             {renderChart()}
+             {loading ? <div className="loader-box">Syncing...</div> : renderChart()}
           </div>
 
           <div className="today-reading-block">
              <div className="today-header">
-                <h3>Latest Reading</h3>
+                <h3>Latest Entry</h3>
                 <button className="add-reading-btn" onClick={() => setIsAdding(!isAdding)}>
                    {isAdding ? 'Close' : <FiPlus />}
                 </button>
@@ -179,14 +199,14 @@ const BloodPressure = () => {
                 <div className="add-form">
                    <input 
                       type="number" 
-                      placeholder="Systolic (120)" 
+                      placeholder="Systolic" 
                       value={newReading.systolic} 
                       onChange={e => setNewReading({...newReading, systolic: e.target.value})} 
                    />
                    <span className="divider">/</span>
                    <input 
                       type="number" 
-                      placeholder="Diastolic (80)" 
+                      placeholder="Diastolic" 
                       value={newReading.diastolic} 
                       onChange={e => setNewReading({...newReading, diastolic: e.target.value})} 
                    />
@@ -198,10 +218,7 @@ const BloodPressure = () => {
                 </h1>
              )}
              <p className="date-sub">
-                {todayLog.date 
-                  ? new Date(todayLog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-                  : new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-                }
+                {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
              </p>
           </div>
         </div>
