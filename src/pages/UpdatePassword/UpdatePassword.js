@@ -14,18 +14,36 @@ const UpdatePassword = () => {
   const [message, setMessage] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isChecking, setIsChecking] = useState(true); // <-- Added state to block the page while checking
   const navigate = useNavigate();
 
   // Verify the user actually arrived here with a valid recovery session
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      
       if (!session) {
-        setErrorMsg("Your reset link has expired or is invalid. Please request a new one.");
+        // No session? They typed the URL manually or the link expired. Kick them to signin!
+        navigate('/signin'); 
+      } else {
+        // Valid session! Let them see the form.
+        setIsChecking(false);
       }
     };
+    
     checkSession();
-  }, []);
+
+    // Catch the specific password recovery event just in case
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsChecking(false);
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
@@ -53,10 +71,20 @@ const UpdatePassword = () => {
     if (error) {
       setErrorMsg(error.message);
     } else {
-      setMessage("Password updated successfully! Redirecting...");
-      setTimeout(() => navigate('/dashboard'), 2000); // Send them to dashboard or login
+      setMessage("Password updated successfully! Redirecting to login...");
+      // Changed to redirect to the login page after 2 seconds
+      setTimeout(() => navigate('/signin'), 2000); 
     }
   };
+
+  // Prevent the form from flashing on the screen while we check their credentials
+  if (isChecking) {
+    return (
+      <div className="auth-page-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <p style={{ color: '#E64A45', fontWeight: 'bold', fontSize: '1.2rem' }}>Verifying secure link...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-page-wrapper">
