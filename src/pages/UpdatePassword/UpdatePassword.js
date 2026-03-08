@@ -14,34 +14,47 @@ const UpdatePassword = () => {
   const [message, setMessage] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isChecking, setIsChecking] = useState(true); // <-- Added state to block the page while checking
+  const [isChecking, setIsChecking] = useState(true); // Blocks the page while checking
   const navigate = useNavigate();
 
-  // Verify the user actually arrived here with a valid recovery session
+  // Verify the user arrived via a valid email link
   useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        // No session? They typed the URL manually or the link expired. Kick them to signin!
-        navigate('/signin'); 
-      } else {
-        // Valid session! Let them see the form.
-        setIsChecking(false);
-      }
-    };
+    // 1. Check the URL for the secure token Supabase attaches from the email
+    const hash = window.location.hash;
+    const search = window.location.search;
     
-    checkSession();
+    // Check for both Hash (implicit flow) and Search (PKCE flow) parameters
+    const hasSecureToken = hash.includes('type=recovery') || search.includes('code=');
 
-    // Catch the specific password recovery event just in case
+    // 2. If there's no token, they typed it manually. Boot them instantly!
+    if (!hasSecureToken) {
+      navigate('/signin');
+      return;
+    }
+
+    // 3. If they DO have the token, wait for Supabase to establish the secure session
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      // Supabase fires this event the millisecond the email link is verified
       if (event === 'PASSWORD_RECOVERY') {
         setIsChecking(false);
       }
     });
 
+    // Fallback just in case Supabase processed the token before the listener attached
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setIsChecking(false);
+      } else {
+        // Token was in the URL, but it was expired or invalid
+        setErrorMsg("Your reset link has expired or is invalid. Please request a new one.");
+        setIsChecking(false);
+      }
+    });
+
     return () => {
-      authListener.subscription.unsubscribe();
+      if (authListener && authListener.subscription) {
+        authListener.subscription.unsubscribe();
+      }
     };
   }, [navigate]);
 
@@ -72,7 +85,7 @@ const UpdatePassword = () => {
       setErrorMsg(error.message);
     } else {
       setMessage("Password updated successfully! Redirecting to login...");
-      // Changed to redirect to the login page after 2 seconds
+      // Send them to the sign-in page after 2 seconds
       setTimeout(() => navigate('/signin'), 2000); 
     }
   };
