@@ -19,67 +19,65 @@ const BloodPressure = () => {
   const [newReading, setNewReading] = useState({ systolic: '', diastolic: '' });
 
   useEffect(() => {
-    const fetchBPFromProfile = async () => {
+    const fetchBPLogs = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // 🟢 FETCH: Get the live reading from the profiles table
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('blood_pressure')
-        .eq('id', user.id)
-        .single();
+      // 🟢 CHANGE: Fetch from blood_pressure_logs to get the history for the graph
+      const { data, error } = await supabase
+        .from('blood_pressure_logs')
+        .select('systolic, diastolic, date')
+        .eq('user_id', user.id)
+        .order('date', { ascending: true });
 
       if (error) {
-          console.error('Error fetching BP:', error);
+          console.error('Error fetching BP logs:', error);
           return;
       }
 
-      if (profile && profile.blood_pressure) {
-        // Split the "120/80" string into numbers
-        const parts = profile.blood_pressure.split('/');
-        const sys = parseInt(parts[0]);
-        const dia = parseInt(parts[1]);
-
-        const latestReading = {
-            systolic: sys,
-            diastolic: dia,
-            date: new Date().toISOString().split('T')[0]
-        };
-
-        setTodayLog(latestReading);
-        setAverage({ systolic: sys, diastolic: dia });
+      if (data && data.length > 0) {
+        setLogs(data);
         
-        // We put it in an array so the chart has at least one point to show
-        setLogs([latestReading]);
+        // The last item in the sorted array is our "latest" reading
+        const latest = data[data.length - 1];
+        setTodayLog(latest);
+
+        // Calculate Average for the range
+        const avgSys = Math.round(data.reduce((acc, curr) => acc + curr.systolic, 0) / data.length);
+        const avgDia = Math.round(data.reduce((acc, curr) => acc + curr.diastolic, 0) / data.length);
+        
+        setAverage({ systolic: avgSys, diastolic: avgDia });
       }
     };
     
-    fetchBPFromProfile();
+    fetchBPLogs();
   }, [range]);
 
   const handleAddReading = async () => {
     if (!newReading.systolic || !newReading.diastolic) return;
 
     const { data: { user } } = await supabase.auth.getUser();
-    const formattedBP = `${newReading.systolic}/${newReading.diastolic}`;
+    const todayStr = new Date().toISOString().split('T')[0];
 
-    // 🟢 UPDATE: Save back to the profiles table
+    // 🟢 CHANGE: Upsert into blood_pressure_logs so it shows in history
     const { error } = await supabase
-      .from('profiles')
-      .update({ blood_pressure: formattedBP })
-      .eq('id', user.id);
+      .from('blood_pressure_logs')
+      .upsert({
+        user_id: user.id,
+        date: todayStr,
+        systolic: parseInt(newReading.systolic),
+        diastolic: parseInt(newReading.diastolic)
+      }, { onConflict: 'user_id,date' });
 
     if (!error) {
+      // Also update profile for the dashboard summary
+      await supabase
+        .from('profiles')
+        .update({ blood_pressure: `${newReading.systolic}/${newReading.diastolic}` })
+        .eq('id', user.id);
+
       setIsAdding(false);
-      setTodayLog({ systolic: parseInt(newReading.systolic), diastolic: parseInt(newReading.diastolic) });
-      setAverage({ systolic: parseInt(newReading.systolic), diastolic: parseInt(newReading.diastolic) });
-      setLogs([{ 
-          systolic: parseInt(newReading.systolic), 
-          diastolic: parseInt(newReading.diastolic), 
-          date: new Date().toISOString().split('T')[0] 
-      }]);
-      setNewReading({ systolic: '', diastolic: '' });
+      window.location.reload(); // Refresh to pull updated history
     }
   };
 
@@ -88,10 +86,10 @@ const BloodPressure = () => {
     const height = 250; 
     const padding = 50; 
 
-    if (logs.length < 1 || !logs[0].systolic) {
+    if (logs.length < 1) {
        return (
          <div className="no-data-container">
-            <p>Sync your Apple Health or add a reading below</p>
+            <p>Sync your Apple Health or add a reading below to see your trends.</p>
          </div>
        );
     }
@@ -159,9 +157,9 @@ const BloodPressure = () => {
           </div>
 
           <div className="stats-block">
-             <h2>Latest Reading <span className="highlight-red">{average.systolic || '--'}/{average.diastolic || '--'}</span></h2>
+             <h2>Average <span className="highlight-red">{average.systolic || '--'}/{average.diastolic || '--'}</span></h2>
              <p className="date-range-sub">
-                Synced from Apple Health
+                Based on your {range.toLowerCase()} history
              </p>
           </div>
 
@@ -171,7 +169,7 @@ const BloodPressure = () => {
 
           <div className="today-reading-block">
              <div className="today-header">
-                <h3>Current Status</h3>
+                <h3>Latest Reading</h3>
                 <button className="add-reading-btn" onClick={() => setIsAdding(!isAdding)}>
                    {isAdding ? 'Close' : <FiPlus />}
                 </button>
@@ -200,7 +198,10 @@ const BloodPressure = () => {
                 </h1>
              )}
              <p className="date-sub">
-                {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {todayLog.date 
+                  ? new Date(todayLog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+                  : new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+                }
              </p>
           </div>
         </div>
