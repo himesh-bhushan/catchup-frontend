@@ -9,7 +9,7 @@ import {
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
-// Images (Ensure these paths match your project)
+// Images
 import tomatoHero from '../../assets/raise-hand.png';
 import heartVisual from '../../assets/heart-rate.png';
 import tomato from '../../assets/tomato.png';
@@ -28,9 +28,8 @@ const Dashboard = () => {
   const [firstName, setFirstName] = useState(localStorage.getItem('userName') || "Friend");
   const [user, setUser] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null); 
-  const [isAwardEarned, setIsAwardEarned] = useState(false); // ✅ NEW: Track award status
+  const [isAwardEarned, setIsAwardEarned] = useState(false);
   
-  // ✅ FIX: Re-added the missing state variables
   const [lastSynced, setLastSynced] = useState(null); 
   const [lastSyncedAgo, setLastSyncedAgo] = useState(null);
   
@@ -38,8 +37,12 @@ const Dashboard = () => {
     calories: 0, steps: 0, distance: 0, goal: 500, percentage: 0
   });
 
+  // ✅ UPDATED: Added water and blood pressure to initial state
   const [otherStats, setOtherStats] = useState({
-    heart_rate: 72, sleep: 28800 
+    heart_rate: 0, 
+    sleep: 0,
+    water_intake: 0,
+    blood_pressure: "--/--"
   });
 
   const [loading, setLoading] = useState(true);
@@ -69,6 +72,8 @@ const Dashboard = () => {
     if (!user) return;
     setLoading(true);
     try {
+      // If using Apple Shortcuts, this button primarily refreshes the UI
+      // If Google is connected, it triggers the backend sync
       if (isDeviceConnected) {
         await axios.post(`https://backend.catchup.page/api/wearables/google-sync/${user.id}`);
       }
@@ -149,9 +154,10 @@ const Dashboard = () => {
     if (session?.user) {
         setUser(session.user);
         try {
+            // ✅ UPDATED: Now selecting all the new Apple Health columns
             const { data: profile } = await supabase
                 .from('profiles')
-                .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at')
+                .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at, heart_rate, sleep_seconds, water_intake, blood_pressure')
                 .eq('id', session.user.id).single();
             
             if (profile) {
@@ -163,12 +169,19 @@ const Dashboard = () => {
                 }
                 if (profile.google_connected) setIsDeviceConnected(true);
                 
-                // ✅ UPDATE SYNC TIME AND RELATIVE TIME
                 if (profile.last_synced_at) {
                     const date = new Date(profile.last_synced_at);
                     setLastSynced(date.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }));
                     setLastSyncedAgo(calculateTimeAgo(profile.last_synced_at));
                 }
+
+                // ✅ UPDATED: Setting the new metrics into state
+                setOtherStats({
+                    heart_rate: profile.heart_rate || 0,
+                    sleep: profile.sleep_seconds || 0,
+                    water_intake: profile.water_intake || 0,
+                    blood_pressure: profile.blood_pressure || "--/--"
+                });
             }
 
             const todayStr = new Date().toISOString().split('T')[0];
@@ -176,8 +189,6 @@ const Dashboard = () => {
             
             const goal = profile?.calorie_goal || 500;
             const cals = todayLog?.calories || 0;
-            
-            // ✅ NEW: Award logic - earned if today's calories meet the goal
             const dailyGoalMet = goal > 0 && cals >= goal;
             setIsAwardEarned(dailyGoalMet);
 
@@ -185,9 +196,6 @@ const Dashboard = () => {
                 calories: cals, steps: todayLog?.steps || 0, distance: todayLog?.distance || 0, goal: goal,
                 percentage: goal > 0 ? Math.min((cals / goal) * 100, 100) : 0
             });
-
-            const { data: hr } = await supabase.from('heart_rate_logs').select('bpm').eq('user_id', session.user.id).order('date', {ascending: false}).limit(1).maybeSingle();
-            setOtherStats(prev => ({ ...prev, heart_rate: hr ? hr.bpm : 72 }));
 
         } catch (err) { console.error(err); }
     }
@@ -213,7 +221,6 @@ const Dashboard = () => {
           </div>
           
           <div className="header-flex">
-            {/* ✅ NEW BEAUTIFUL HEADER TEXT GROUP */}
             <div className="header-text-group">
                 <h1 className="desktop-title">Welcome back, {firstName}</h1>
                 <h1 className="mobile-title">Hi, {firstName} <br/> Have a nice day</h1>
@@ -260,7 +267,6 @@ const Dashboard = () => {
         ) : (
             <div className="animate-fade-in">
                 
-                {/* --- MAIN GRID START --- */}
                 <div className="dash-grid">
                     
                     {/* Activity Ring */}
@@ -283,14 +289,14 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* --- SYNCING TILE (Fills the Desktop Gap) --- */}
+                    {/* Syncing TILE */}
                     <div className="card sync-card">
                         <div className="sync-header">
                             <div className="sync-dot green"></div>
                             <h3>{t('Syncing') || 'Syncing'}</h3>
                         </div>
                         <p>
-                            Synced with Google Fitness {lastSyncedAgo ? lastSyncedAgo : 'just now'}
+                            Synced with Health Tracker {lastSyncedAgo ? lastSyncedAgo : 'just now'}
                         </p>
                     </div>
 
@@ -304,7 +310,7 @@ const Dashboard = () => {
                         </div>
                         <div className="goals-detailed-grid">
                             <div className="goal-item-detailed">
-                                <div className="goal-item-header"><div className="goal-dot"></div> Daily Steps</div>
+                                <div className="goal-item-header"><div className="goal-dot filled"></div> Daily Steps</div>
                                 <p>Walk 5,000 steps per day</p>
                             </div>
                             <div className="goal-item-detailed">
@@ -322,12 +328,13 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* Small Tiles */}
+                    {/* ✅ UPDATED: Blood Pressure Tile with Real Data */}
                     <div className="card bp-card" onClick={() => navigate('/blood-pressure')}>
                         <div className="card-header"><h3>{t('Blood Pressure')}</h3><FiChevronRight className="card-arrow" /></div>
-                        <div className="tile-value">120/80 <span>mmHg</span></div>
+                        <div className="tile-value">{otherStats.blood_pressure} <span>mmHg</span></div>
                     </div>
 
+                    {/* ✅ UPDATED: Heart Rate Tile with Real Data */}
                     <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
                         <div className="card-header"><h3>{t('Heart Rate')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="tile-value">{otherStats.heart_rate} <span>BPM</span></div>
@@ -341,17 +348,15 @@ const Dashboard = () => {
                         </div>
                         
                         <div className="health-score-content">
-                            {/* Left Side: The Ring */}
                             <div className="score-ring-wrapper">
                                 <div 
                                     className="score-ring"
                                     style={{
-                                        /* 4-Part Gradient perfectly matching the pills */
                                         background: `conic-gradient(
-                                            #EF473A 0% 30%,   /* Red: Heart */
-                                            #F7931E 30% 55%,  /* Orange: Sleep */
-                                            #FDE08B 55% 80%,  /* Yellow: Calories */
-                                            #4A90E2 80% 100%  /* Blue: Water */
+                                            #EF473A 0% 30%,   
+                                            #F7931E 30% 55%,  
+                                            #FDE08B 55% 80%,  
+                                            #4A90E2 80% 100%  
                                         )`
                                     }}
                                 >
@@ -361,7 +366,6 @@ const Dashboard = () => {
                                 </div>
                             </div>
 
-                            {/* Right Side: The Metric Pills */}
                             <div className="score-metrics-list">
                                 <div className="metric-pill pill-red">
                                     <div className="metric-icon-circle"><FiHeart color="#EF473A" /></div>
@@ -370,6 +374,7 @@ const Dashboard = () => {
                                         <span className="metric-value">{otherStats.heart_rate} <strong>BPM</strong></span>
                                     </div>
                                 </div>
+                                {/* ✅ UPDATED: Sleep Pill with Real Data */}
                                 <div className="metric-pill pill-orange">
                                     <div className="metric-icon-circle"><FiMoon color="#F7931E" /></div>
                                     <div className="metric-text-group">
@@ -384,22 +389,21 @@ const Dashboard = () => {
                                         <span className="metric-value">{activityData.calories} <strong>KCAL</strong></span>
                                     </div>
                                 </div>
+                                {/* ✅ UPDATED: Water Pill with Real Data */}
                                 <div className="metric-pill pill-blue">
                                     <div className="metric-icon-circle"><FiDroplet color="#4A90E2" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Water Intake</span>
-                                        <span className="metric-value">2 <strong>L</strong></span>
+                                        <span className="metric-value">{otherStats.water_intake} <strong>L</strong></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    {/* Awards (Status Based) */}
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="awards-content">
-                            {/* ✅ NEW: Bigger image with conditional grayscale class */}
                             <img 
                                 src={awards} 
                                 alt="Award Badge" 
@@ -408,9 +412,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                {/* --- MAIN GRID END --- */}
 
-                {/* --- BOTTOM SECTIONS --- */}
                 <div className="recommendations-section">
                     <h3>{t('recommendations') || "Recommendations"}</h3>
                     <div className="recommendations-carousel">
