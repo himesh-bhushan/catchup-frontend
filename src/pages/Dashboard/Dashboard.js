@@ -132,8 +132,9 @@ const Dashboard = () => {
   };
 
   const openGoogleMaps = (name, address) => {
-      window.open(`http://googleusercontent.com/maps.google.com/?q=${name} ${address}`, '_blank');
-  };
+    const searchQuery = encodeURIComponent(`${name} ${address}`);
+    window.open(`https://www.google.com/maps/search/?api=1&query=${searchQuery}`, '_blank');
+};
 
   // --- RECOMMENDATIONS ---
   const recommendations = [
