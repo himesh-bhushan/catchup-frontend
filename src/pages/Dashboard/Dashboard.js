@@ -341,11 +341,11 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* PERFECTLY ALIGNED 3-COLUMN TRIO ROW */}
-                    <div className="trio-row-wrapper" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+                    {/* PERFECTLY ALIGNED 3-COLUMN TRIO ROW (Sync -> Water -> Sleep) */}
+                    <div className="trio-row-wrapper" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: '20px', width: '100%' }}>
                         
-                        <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                            <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                        <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                            <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                                 <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing') || 'Syncing'}</h3>
                             </div>
@@ -354,7 +354,7 @@ const Dashboard = () => {
                             </p>
                         </div>
 
-                        <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
                                 <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
@@ -364,7 +364,7 @@ const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
                                 <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
@@ -448,7 +448,7 @@ const Dashboard = () => {
                                     alignItems: 'center',
                                     justifyContent: 'center'
                                 }}>
-                                    <span style={{ color: '#DE4B4E', fontWeight: 'bold', fontSize: '1.2rem' }}>{totalScore}</span>
+                                    <span style={{ color: '#DE4B4E', fontWeight: 'bold', fontSize: '1.2rem' }}>{totalScore}%</span>
                                 </div>
                             </div>
 
