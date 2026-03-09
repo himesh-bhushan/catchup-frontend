@@ -121,8 +121,8 @@
 }
 
 .podium-crown {
-    font-size: 2.2rem;
-    margin-bottom: -15px;
+    font-size: 3.2rem; /* Increased size significantly */
+    margin-bottom: 12px; /* Changed from negative to positive to move it up and create a gap */
     z-index: 10;
 }
 
