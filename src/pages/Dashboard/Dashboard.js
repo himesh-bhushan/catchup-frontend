@@ -342,7 +342,8 @@ const Dashboard = () => {
                     </div>
 
                     {/* PERFECTLY ALIGNED 3-COLUMN TRIO ROW (Sync -> Water -> Sleep) */}
-                    <div className="trio-row-wrapper" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: '20px', width: '100%' }}>
+                    {/* Changed gridTemplateColumns to 2fr 1fr 1fr to make Sync exactly double the width */}
+                    <div className="trio-row-wrapper" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '20px', width: '100%' }}>
                         
                         <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
                             <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
