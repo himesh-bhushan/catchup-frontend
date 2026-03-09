@@ -153,12 +153,12 @@
 }
 
 /* --- DASHBOARD GRID & GLASS CARDS --- */
-.dashboard-grid-layout { display: flex; flex-direction: column; gap: 20px; }
+.dashboard-grid-layout { display: flex; flex-direction: column; gap: 25px; }
 
 .glass-card {
     background: #FFFFFF;
     border-radius: 20px;
-    padding: 22px 25px;
+    padding: 25px 30px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.03);
     border: 1px solid #f0f0f0;
 }
@@ -167,55 +167,50 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
     width: 100%;
 }
 
-.dash-card-header h3 { margin: 0; font-size: 1.2rem; font-weight: 900; color: #222; }
+.dash-card-header h3 { margin: 0; font-size: 1.25rem; font-weight: 900; color: #222; }
 
 /* --- TOP ROW: ACTIVITY RING & HEALTH SCORE --- */
 .activity-main-row {
     display: grid;
     grid-template-columns: 1fr 1.1fr; 
-    gap: 20px;
+    gap: 25px;
 }
 
-/* Activity Ring Vertically & Horizontally Centered */
-.activity-card-centered {
+/* Activity Ring Styling (Side-by-side dashboard style) */
+.activity-body-side {
     display: flex;
-    flex-direction: column;
-}
-
-.activity-body-centered {
-    display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between; /* Space out the ring and stats perfectly */
-    flex: 1;
-    width: 100%;
+    justify-content: flex-start;
+    gap: 35px;
 }
 
-.dash-ring-wrapper-huge {
+.dash-ring-wrapper-large {
     position: relative;
-    width: 180px; height: 180px;
-    margin: 10px auto 25px auto; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 150px; 
+    height: 150px;
     flex-shrink: 0;
 }
 
-.dash-ring-wrapper-huge svg { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotate(-90deg); }
-.dash-bg-ring { fill: none; stroke: #F3F3F3; stroke-width: 16; }
+.dash-ring-wrapper-large svg { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.dash-bg-ring { fill: none; stroke: #EAEAEA; stroke-width: 16; }
 .dash-meter-ring { 
-    fill: none; stroke: #E64A45; stroke-width: 16; stroke-linecap: round; 
+    fill: none; stroke: #E64A45; stroke-width: 16; stroke-linecap: butt; 
     transition: stroke-dasharray 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
 }
 
-/* Center Text Inside Ring */
-.dash-ring-inner-centered {
+.dash-ring-inner-yellow {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background-color: #FFFBEB; 
+    border-radius: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -223,32 +218,23 @@
     z-index: 2;
 }
 
-.inner-percent-large { font-size: 2.8rem; font-weight: 900; color: #111; line-height: 1;}
-.inner-label-small { font-size: 0.85rem; font-weight: 800; color: #888; text-transform: uppercase; margin-top: 4px; letter-spacing: 1px;}
+.inner-avatar { width: 45px; height: 45px; border-radius: 50%; margin-bottom: 2px; object-fit: cover; }
+.inner-emoji { font-size: 2rem; margin-bottom: 2px; }
+.inner-percent { font-size: 1.3rem; font-weight: 900; color: #111; }
 
-/* 3 Stat Boxes Below Ring */
-.dash-stats-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    width: 100%;
-}
-
-.stat-box {
-    background: #F8F9FA;
-    padding: 15px 10px;
-    border-radius: 14px;
-    flex: 1;
+.dash-stats-list {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    gap: 15px;
+    flex: 1;
 }
 
-.stat-box-val { font-size: 1.4rem; font-weight: 900; color: #111; line-height: 1; }
-.stat-box-lbl { font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase; margin-top: 6px; }
+.dash-stat-item { display: flex; flex-direction: column; gap: 2px; }
+.stat-lbl { font-size: 0.9rem; font-weight: 800; color: #333; text-transform: capitalize; }
+.stat-val { font-size: 1.6rem; font-weight: 900; color: #222; display: flex; align-items: baseline; gap: 4px; }
+.stat-val small { font-size: 0.85rem; font-weight: 700; color: #888; text-transform: uppercase; }
 
-/* --- HEALTH SCORE --- */
+/* Health Score Card Styling */
 .hs-body {
     display: flex;
     align-items: center;
@@ -322,21 +308,23 @@
 /* --- BOTTOM ROW: WEEKLY RINGS & AWARDS --- */
 .awards-weekly-row {
     display: grid;
-    grid-template-columns: 1.5fr 1fr; /* Stretches the weekly performance */
-    gap: 20px;
+    grid-template-columns: 1.6fr 1fr; /* Stretches the weekly performance */
+    gap: 25px; /* Matches top row gap */
+    align-items: stretch; /* Make both cards fill equal height */
 }
 
 /* --- WEEKLY 7-DAY MINI RINGS --- */
 .weekly-chart-card {
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .weekly-rings-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 10px;
+    padding: 10px 10px 20px 10px;
     flex: 1; /* Stretch perfectly to fill space */
 }
 
@@ -361,6 +349,16 @@
 .awards-card {
     display: flex;
     flex-direction: column;
+    height: 100%;
+}
+
+.awards-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 10px 0 20px 0;
 }
 
 .award-badge-status {
@@ -377,6 +375,27 @@
 .award-badge-status.not-earned-gray {
     filter: grayscale(100%) opacity(0.5);
 }
+
+.award-share-btn {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #DE4B4E;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(222, 75, 78, 0.3);
+    transition: transform 0.2s;
+}
+
+.award-share-btn:hover {
+    transform: scale(1.05);
+}
+
 
 /* --- FIND FRIENDS SECTION --- */
 .theme-container {
@@ -441,5 +460,5 @@
     .sharing-page-container { padding: 20px; }
     .lb-podium { gap: 30px; }
     .activity-main-row, .awards-weekly-row { grid-template-columns: 1fr; }
-    .hs-body { flex-direction: column; text-align: center; }
+    .activity-body-side, .hs-body { flex-direction: column; text-align: center; }
 }

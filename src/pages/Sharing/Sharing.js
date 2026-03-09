@@ -11,7 +11,7 @@ import DashboardNav from '../../components/DashboardNav';
 import avatar1 from '../../assets/avatar1.png';
 import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
-import awards from '../../assets/awards.png'; // Ensure this exists
+import awards from '../../assets/award.png'; // Ensure this exists
 
 import './Sharing.css';
 
@@ -113,7 +113,7 @@ const Sharing = () => {
       d.setDate(d.getDate() - i);
       days.push({
         dateStr: d.toISOString().split('T')[0],
-        dayName: d.toLocaleDateString('en-US', { weekday: 'short' })
+        dayName: d.toLocaleDateString('en-US', { weekday: 'short' })[0]
       });
     }
     return days;
@@ -203,6 +203,7 @@ const Sharing = () => {
     return () => clearTimeout(delaySearch);
   }, [searchTerm]);
 
+  // Safely check if the user has any awards
   const isAwardEarned = friendStats?.awards && friendStats.awards.length > 0;
 
   return (
@@ -237,14 +238,14 @@ const Sharing = () => {
                   {/* --- TOP ROW: ACTIVITY RING & HEALTH SCORE --- */}
                   <div className="activity-main-row">
                     
-                    {/* Activity Ring (Centered Style) */}
-                    <div className="glass-card dash-style-card activity-card-centered">
+                    {/* Activity Ring (Dashboard Side-by-side Style) */}
+                    <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
-                        <h3>Daily Activity</h3>
+                        <h3>Activity Ring</h3>
                         <FiChevronRight color="#E64A45" />
                       </div>
-                      <div className="dash-card-body activity-body-centered">
-                        <div className="dash-ring-wrapper-huge">
+                      <div className="dash-card-body activity-body-side">
+                        <div className="dash-ring-wrapper-large">
                           <svg viewBox="0 0 100 100">
                             <circle className="dash-bg-ring" cx="50" cy="50" r="38" />
                             <circle 
@@ -253,23 +254,27 @@ const Sharing = () => {
                               style={{ strokeDasharray: `${(friendStats?.movePercent * 2.38)}, 238` }}
                             />
                           </svg>
-                          <div className="dash-ring-inner-centered">
-                            <span className="inner-percent-large">{Math.round(friendStats?.movePercent)}%</span>
-                            <span className="inner-label-small">OF GOAL</span>
+                          <div className="dash-ring-inner-yellow">
+                            {viewingFriend.avatar_url ? (
+                              <img src={viewingFriend.avatar_url} alt="user" className="inner-avatar" />
+                            ) : (
+                              <span className="inner-emoji">🍅</span>
+                            )}
+                            <span className="inner-percent">{Math.round(friendStats?.movePercent)}%</span>
                           </div>
                         </div>
-                        <div className="dash-stats-row">
-                          <div className="stat-box">
-                            <span className="stat-box-val">{friendStats?.healthScore || 0}</span>
-                            <span className="stat-box-lbl">VITALITY</span>
+                        <div className="dash-stats-list">
+                          <div className="dash-stat-item">
+                            <span className="stat-lbl">Move</span>
+                            <span className="stat-val">{friendStats?.activity?.calories || 0}/500 <small>KCAL</small></span>
                           </div>
-                          <div className="stat-box">
-                            <span className="stat-box-val">{friendStats?.activity?.calories || 0}</span>
-                            <span className="stat-box-lbl">KCAL</span>
+                          <div className="dash-stat-item">
+                            <span className="stat-lbl">Steps</span>
+                            <span className="stat-val">{friendStats?.activity?.steps || 0}</span>
                           </div>
-                          <div className="stat-box">
-                            <span className="stat-box-val">{friendStats?.activity?.steps || 0}</span>
-                            <span className="stat-box-lbl">STEPS</span>
+                          <div className="dash-stat-item">
+                            <span className="stat-lbl">Distance</span>
+                            <span className="stat-val">{((friendStats?.activity?.steps || 0) * 0.0008).toFixed(2)} <small>KM</small></span>
                           </div>
                         </div>
                       </div>
@@ -316,7 +321,7 @@ const Sharing = () => {
                     </div>
                   </div>
 
-                  {/* --- BOTTOM ROW: WEEKLY PERFORMANCE & AWARD --- */}
+                  {/* --- BOTTOM ROW: WEEKLY RINGS & AWARDS --- */}
                   <div className="awards-weekly-row">
                     
                     {/* Weekly Performance Rings */}
@@ -342,12 +347,12 @@ const Sharing = () => {
                     </div>
 
                     {/* Single Award Card */}
-                    <div className="glass-card awards-card" style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div className="glass-card awards-card">
                         <div className="dash-card-header">
                             <h3>Awards</h3>
                             <FiChevronRight className="card-arrow" color="#E64A45" />
                         </div>
-                        <div className="awards-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, padding: '10px 0' }}>
+                        <div className="awards-content">
                             <img 
                                 src={awards} 
                                 alt="Award Badge" 
@@ -357,26 +362,13 @@ const Sharing = () => {
                             {isAwardEarned && (
                                 <button 
                                     onClick={handleShare}
-                                    style={{
-                                        marginTop: '15px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        background: '#DE4B4E',
-                                        color: 'white',
-                                        border: 'none',
-                                        padding: '8px 20px',
-                                        borderRadius: '20px',
-                                        fontWeight: 'bold',
-                                        cursor: 'pointer',
-                                        boxShadow: '0 4px 10px rgba(222, 75, 78, 0.3)',
-                                        transition: 'transform 0.2s'
-                                    }}>
+                                    className="award-share-btn">
                                     <FiShare2 size={16} /> Share
                                 </button>
                             )}
                         </div>
                     </div>
+
                   </div>
 
                 </div>
@@ -392,9 +384,8 @@ const Sharing = () => {
                 <div className="lb-search-bar-alt" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
                   Find and add friends...
                 </div>
-                <button className="lb-transparent-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
-                  <FiUserPlus size={28} />
-                </button>
+                {/* Empty div to preserve perfect flex center layout for the search bar */}
+                <div style={{ width: '28px' }}></div> 
               </div>
               
               <div className="lb-podium">
