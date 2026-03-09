@@ -11,7 +11,7 @@ import DashboardNav from '../../components/DashboardNav';
 import avatar1 from '../../assets/avatar1.png';
 import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
-import awards from '../../assets/awards.png'; // Make sure you have this image in your assets folder
+import awards from '../../assets/award.png'; // Ensure this exists
 
 import './Sharing.css';
 
@@ -142,7 +142,7 @@ const Sharing = () => {
       const goal = profile?.calorie_goal > 0 ? profile.calorie_goal : 500;
       const movePct = ((activity?.calories || 0) / goal) * 100;
 
-      // Process Weekly Data for Bar Chart
+      // Process Weekly Data for 7 mini rings
       const last7Days = getLast7Days();
       const processedWeekly = last7Days.map(day => {
         const log = (weeklyLogs || []).find(l => l.date === day.dateStr);
@@ -203,7 +203,7 @@ const Sharing = () => {
     return () => clearTimeout(delaySearch);
   }, [searchTerm]);
 
-  const isAwardEarned = friendStats?.awards?.length > 0;
+  const isAwardEarned = friendStats?.awards && friendStats.awards.length > 0;
 
   return (
     <div className="dashboard-wrapper sharing-page-bg">
@@ -237,7 +237,7 @@ const Sharing = () => {
                   {/* --- TOP ROW: ACTIVITY RING & HEALTH SCORE --- */}
                   <div className="activity-main-row">
                     
-                    {/* Activity Ring (Vertically and Horizontally Centered) */}
+                    {/* Activity Ring (Centered Style) */}
                     <div className="glass-card dash-style-card activity-card-centered">
                       <div className="dash-card-header">
                         <h3>Daily Activity</h3>
@@ -255,7 +255,7 @@ const Sharing = () => {
                           </svg>
                           <div className="dash-ring-inner-centered">
                             <span className="inner-percent-large">{Math.round(friendStats?.movePercent)}%</span>
-                            <span className="inner-label-small">of goal</span>
+                            <span className="inner-label-small">OF GOAL</span>
                           </div>
                         </div>
                         <div className="dash-stats-row">
@@ -316,17 +316,24 @@ const Sharing = () => {
                     </div>
                   </div>
 
-                  {/* --- BOTTOM ROW: WEEKLY PERFORMANCE & SINGLE AWARD --- */}
+                  {/* --- BOTTOM ROW: WEEKLY PERFORMANCE & AWARD --- */}
                   <div className="awards-weekly-row">
                     
-                    {/* Weekly Performance Bar Chart */}
+                    {/* Weekly Performance Rings */}
                     <div className="glass-card weekly-chart-card">
                       <div className="dash-card-header"><h3>Weekly Performance</h3></div>
-                      <div className="weekly-bar-chart">
+                      <div className="weekly-rings-container">
                         {friendWeeklyData.map((day, i) => (
-                          <div key={i} className="bar-col">
-                            <div className="bar-track">
-                              <div className="bar-fill" style={{ height: `${day.percent}%` }}></div>
+                          <div key={i} className="mini-ring-col">
+                            <div className="mini-ring-wrapper">
+                              <svg viewBox="0 0 50 50">
+                                <circle className="dash-bg-ring-mini" cx="25" cy="25" r="20" />
+                                <circle 
+                                  className={`dash-meter-ring-mini ${day.percent >= 100 ? 'goal-reached' : ''}`} 
+                                  cx="25" cy="25" r="20" 
+                                  style={{ strokeDasharray: `${(day.percent * 1.25)}, 125` }}
+                                />
+                              </svg>
                             </div>
                             <span className="bar-day-lbl">{day.dayName}</span>
                           </div>
@@ -334,13 +341,13 @@ const Sharing = () => {
                       </div>
                     </div>
 
-                    {/* Dashboard Provided Award Code Snippet */}
+                    {/* Single Award Card */}
                     <div className="glass-card awards-card" style={{ display: 'flex', flexDirection: 'column' }}>
                         <div className="dash-card-header">
                             <h3>Awards</h3>
                             <FiChevronRight className="card-arrow" color="#E64A45" />
                         </div>
-                        <div className="awards-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, padding: '20px 0' }}>
+                        <div className="awards-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, padding: '10px 0' }}>
                             <img 
                                 src={awards} 
                                 alt="Award Badge" 
@@ -351,14 +358,14 @@ const Sharing = () => {
                                 <button 
                                     onClick={handleShare}
                                     style={{
-                                        marginTop: '25px',
+                                        marginTop: '15px',
                                         display: 'flex',
                                         alignItems: 'center',
                                         gap: '8px',
                                         background: '#DE4B4E',
                                         color: 'white',
                                         border: 'none',
-                                        padding: '10px 24px',
+                                        padding: '8px 20px',
                                         borderRadius: '20px',
                                         fontWeight: 'bold',
                                         cursor: 'pointer',
