@@ -1,39 +1,48 @@
-/* Additional custom styles just for the fun Water Bottle visualizer */
+/* Specific styling for the fun desktop water visualizer */
 .visual-card {
-    padding: 25px;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
   
+.visual-card .card-header {
+    width: 100%;
+}
+
 .water-bottle-container {
     display: flex;
-    align-items: stretch;
-    gap: 30px;
-    height: 250px;
-    margin-top: 20px;
+    align-items: center;
+    gap: 40px;
+    height: 300px;
+    margin-top: 10px;
 }
   
 .water-bottle {
-    width: 120px;
+    width: 140px;
     height: 100%;
-    border: 6px solid #e0e0e0;
-    border-radius: 20px 20px 10px 10px;
+    border: 8px solid #f0f0f0;
+    border-radius: 25px 25px 15px 15px;
     position: relative;
     overflow: hidden;
-    background-color: #f9f9f9;
+    background-color: #fcfcfc;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
 }
   
 .water-bottle::before {
     content: '';
     position: absolute;
-    top: -6px;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 40px;
-    height: 15px;
-    background: #e0e0e0;
-    border-radius: 5px 5px 0 0;
+    width: 50px;
+    height: 20px;
+    background: #f0f0f0;
+    border-radius: 6px 6px 0 0;
 }
   
 .water-liquid {
@@ -49,10 +58,10 @@
 .water-liquid::after {
     content: '';
     position: absolute;
-    top: -5px;
+    top: -6px;
     left: 0;
     width: 100%;
-    height: 10px;
+    height: 12px;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 50%;
 }
@@ -61,8 +70,9 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 10px 0;
-    font-size: 0.9rem;
+    height: 100%;
+    padding: 15px 0;
+    font-size: 1.1rem;
     color: #666;
-    font-weight: 500;
+    font-weight: 600;
 }

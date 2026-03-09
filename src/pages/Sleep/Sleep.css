@@ -1,61 +1,75 @@
-/* Reusable Detail Page Layout (Use this for both Sleep and Water) */
+/* Remove hardcoded background so it uses your beautiful peach theme! */
 .detail-page-bg {
-  background-color: #F8F9FA;
+  background-color: transparent;
 }
 
 .detail-page-container {
-  max-width: 800px;
+  max-width: 1200px; /* Stretches the container to full desktop width */
+  width: 100%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px;
 }
 
 .detail-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
 .detail-header h2 {
-  font-size: 1.5rem;
-  color: #333;
-  font-weight: 700;
+  font-size: 2rem;
+  color: var(--text-primary, #333);
+  font-weight: 800;
   margin: 0;
 }
 
 .icon-btn {
   background: white;
-  border: 1px solid #eee;
+  border: none;
   border-radius: 50%;
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   transition: all 0.2s ease;
 }
 
 .icon-btn:hover {
-  background: #f0f0f0;
+  transform: scale(1.05);
 }
 
+/* --- THE MAGIC DESKTOP GRID --- */
 .detail-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
 }
 
-/* Hero Card */
+@media (min-width: 900px) {
+  .detail-content {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: stretch; /* Makes the bottom two cards equal height */
+  }
+
+  /* Make Hero Card span across the entire top row */
+  .hero-card {
+    grid-column: span 2;
+  }
+}
+
+/* --- Hero Card --- */
 .hero-card {
-  border-radius: 20px;
-  padding: 30px;
+  border-radius: 30px;
+  padding: 40px 50px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 40px;
   color: white;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 .bg-orange { background-color: #F7931E; }
@@ -63,81 +77,94 @@
 
 .hero-icon-wrapper {
   background: rgba(255, 255, 255, 0.2);
-  width: 80px;
-  height: 80px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.hero-icon-wrapper svg {
+  width: 50px;
+  height: 50px;
+}
+
 .hero-text h3 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 500;
+  margin: 0 0 10px 0;
+  font-size: 1.4rem;
+  font-weight: 600;
   opacity: 0.9;
 }
 
 .hero-value {
-  font-size: 3rem;
+  font-size: 4.5rem;
   font-weight: 800;
-  margin: 5px 0;
+  margin: 0;
   line-height: 1;
 }
 
 .hero-value span {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 600;
   opacity: 0.8;
+  margin-left: 10px;
 }
 
 .hero-text p {
-  margin: 0;
-  font-size: 0.95rem;
-  opacity: 0.8;
+  margin: 15px 0 0 0;
+  font-size: 1.2rem;
+  opacity: 0.9;
 }
 
-/* Progress Card */
+/* --- Progress & Other Cards --- */
 .progress-card {
-  padding: 25px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: white;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
 }
 
 .card-header h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: #333;
   display: flex;
   align-items: center;
+  font-weight: 700;
 }
 
-.mr-2 { margin-right: 8px; }
+.mr-2 { margin-right: 10px; }
 
 .goal-percentage {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: #666;
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: #333;
 }
 
 .progress-track {
   width: 100%;
-  height: 12px;
+  height: 20px;
   background-color: #f0f0f0;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
 }
 
 .progress-fill {
   height: 100%;
-  border-radius: 10px;
-  transition: width 1s ease-in-out;
+  border-radius: 12px;
+  transition: width 1.5s ease-in-out;
 }
 
 .fill-orange { background-color: #F7931E; }
@@ -145,27 +172,30 @@
 
 .progress-subtitle {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #666;
 }
 
-/* History List */
+/* --- History List (For Sleep Page) --- */
 .history-card {
-  padding: 25px;
+  padding: 40px;
+  background: white;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
 .history-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .history-item:last-child {
@@ -174,34 +204,36 @@
 }
 
 .history-date {
-  font-weight: 500;
-  color: #444;
-  width: 100px;
+  font-weight: 600;
+  color: #555;
+  width: 120px;
+  font-size: 1.1rem;
 }
 
 .history-value-wrapper {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
   flex: 1;
   justify-content: flex-end;
 }
 
 .history-value {
-  font-weight: bold;
+  font-weight: 800;
   color: #333;
-  width: 60px;
+  width: 70px;
   text-align: right;
+  font-size: 1.1rem;
 }
 
 .mini-bar-track {
-  width: 100px;
-  height: 8px;
+  width: 120px;
+  height: 10px;
   background-color: #f0f0f0;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 .mini-bar-fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 5px;
 }
