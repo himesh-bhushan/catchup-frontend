@@ -21,6 +21,8 @@ import BloodPressure from './pages/Features/BloodPressure';
 import HeartRate from './pages/Features/HeartRate';
 import HealthScore from './pages/Health Score/HealthScore';
 import Awards from './pages/Awards/Awards';
+import Sleep from './pages/Sleep/Sleep';
+import Water from './pages/Water/Water';
 
 import './App.css'; 
 import PanicButton from './components/PanicButton';
@@ -64,10 +66,12 @@ function App() {
         <Route path="/chatbot" element={<ProtectedRoute><Chatbox /></ProtectedRoute>} />
         <Route path="/activity" element={<ProtectedRoute><Activity /></ProtectedRoute>} />
         <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
-        <Route path="/health-score" element={<HealthScore />} />
+        <Route path="/health-score" element={<ProtectedRoute><HealthScore /></ProtectedRoute>} />
         <Route path="/blood-pressure" element={<ProtectedRoute><BloodPressure /></ProtectedRoute>} />
         <Route path="/heart-rate" element={<ProtectedRoute><HeartRate /></ProtectedRoute>} />
-        <Route path="/awards" element={<Awards />} />
+        <Route path="/awards" element={<ProtectedRoute><Awards /></ProtectedRoute>} />
+        <Route path="/sleep" element={<ProtectedRoute><Sleep /></ProtectedRoute>} />
+        <Route path="/water" element={<ProtectedRoute><Water /></ProtectedRoute>} />
       </Routes>
     </div>
     // ❌ REMOVED CLOSING </Router> TAG HERE
