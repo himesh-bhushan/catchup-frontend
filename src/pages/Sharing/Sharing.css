@@ -310,7 +310,7 @@
 /* The layout strictly forces exactly 2 columns and stretches height */
 .awards-weekly-row {
     display: grid;
-    grid-template-columns: 1.4fr 1fr; /* Stretches the weekly performance slightly wider */
+    grid-template-columns: 1.8fr 1fr; /* Stretches the weekly performance slightly wider */
     gap: 20px;
     align-items: stretch; /* Cards will be identical in height */
 }
