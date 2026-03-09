@@ -168,6 +168,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 18px;
+    width: 100%;
 }
 
 .dash-card-header h3 { margin: 0; font-size: 1.2rem; font-weight: 900; color: #222; }
@@ -179,37 +180,45 @@
     gap: 20px;
 }
 
-/* Activity Ring Styling */
-.activity-body {
+/* Activity Ring Vertically & Horizontally Centered */
+.activity-card-centered {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 30px;
+    flex-direction: column;
 }
 
-.dash-ring-wrapper-large {
+.activity-body-centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+}
+
+.dash-ring-wrapper-huge {
     position: relative;
-    width: 140px; height: 140px;
+    width: 180px; height: 180px;
+    margin: 15px 0 35px 0; /* Space above and below ring */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 }
 
-/* Fix SVG absolute positioning to wrap correctly */
-.dash-ring-wrapper-large svg { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.dash-ring-wrapper-huge svg { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotate(-90deg); }
 .dash-bg-ring { fill: none; stroke: #EAEAEA; stroke-width: 16; }
 .dash-meter-ring { 
     fill: none; stroke: #E64A45; stroke-width: 16; stroke-linecap: butt; 
     transition: stroke-dasharray 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
 }
 
-/* Center items within ring properly */
-.dash-ring-inner-yellow {
+.dash-ring-inner-centered {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 90px;
-    height: 90px;
-    background-color: #FFFBEB; 
+    width: 130px;
+    height: 130px;
+    background-color: transparent; 
     border-radius: 50%;
     display: flex;
     flex-direction: column;
@@ -218,21 +227,30 @@
     z-index: 2;
 }
 
-.inner-avatar { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 2px; object-fit: cover; }
-.inner-emoji { font-size: 1.8rem; margin-bottom: 2px; }
-.inner-percent { font-size: 1.2rem; font-weight: 900; color: #111; }
+.inner-percent-large { font-size: 2.5rem; font-weight: 900; color: #111; line-height: 1;}
+.inner-label-small { font-size: 0.9rem; font-weight: 700; color: #888; text-transform: uppercase; margin-top: 4px; }
 
-.dash-stats-list {
+/* 3 Stat Boxes Below the Ring */
+.dash-stats-row {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    flex: 1;
+    justify-content: space-between;
+    gap: 15px;
+    width: 100%;
 }
 
-.dash-stat-item { display: flex; flex-direction: column; gap: 2px; }
-.stat-lbl { font-size: 0.8rem; font-weight: 800; color: #333; text-transform: capitalize; }
-.stat-val { font-size: 1.4rem; font-weight: 900; color: #222; display: flex; align-items: baseline; gap: 4px; }
-.stat-val small { font-size: 0.8rem; font-weight: 700; color: #888; text-transform: uppercase; }
+.stat-box {
+    background: #F8F9FA;
+    padding: 15px 10px;
+    border-radius: 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-box-val { font-size: 1.4rem; font-weight: 900; color: #111; line-height: 1; }
+.stat-box-lbl { font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase; margin-top: 6px; }
 
 /* Health Score Card Styling */
 .hs-body {
@@ -304,96 +322,78 @@
 .dark-text span { color: #555; }
 .dark-text strong { color: #111; }
 
-
 /* --- BOTTOM ROW: AWARDS & WEEKLY PERFORMANCE --- */
 .awards-weekly-row {
     display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
-/* SINGLE AWARD ITEM STYLING */
-.dash-awards-card {
-    padding: 25px 30px; 
-    display: flex;
-    flex-direction: column;
-}
-
-.dash-awards-single {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 0 20px 0;
-    width: 100%;
-}
-
-.dash-award-single-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* SINGLE AWARD ITEM STYLING (Based on provided code) */
+.award-badge-status {
+    width: 180px; 
+    height: auto; 
+    object-fit: contain; 
     transition: all 0.3s ease;
 }
 
-/* Style when Image URL is provided */
-.dash-award-single-item img {
-    width: 170px; 
-    height: 170px;
-    object-fit: contain;
+.award-badge-status.earned-color {
+    filter: drop-shadow(0 10px 25px rgba(222, 75, 78, 0.25));
 }
 
-/* Style for emoji placeholder when greyed out */
-.placeholder-award {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: #F9F9F9;
-    border: 4px dashed #DDD;
+.award-badge-status.not-earned-gray {
+    filter: grayscale(100%) opacity(0.5);
+}
+
+.award-share-btn:hover {
+    transform: scale(1.05) !important;
+}
+
+/* --- WEEKLY PERFORMANCE BARS --- */
+.weekly-chart-card {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    color: #AAA;
+    flex-direction: column;
 }
 
-.dash-award-single-item.locked { 
-    opacity: 0.4; 
-    filter: grayscale(100%); 
-}
-
-.dash-award-single-item.earned {
-    filter: drop-shadow(0 8px 20px rgba(230, 74, 69, 0.15));
-}
-
-.dash-award-single-item.earned:hover {
-    transform: scale(1.05) translateY(-5px);
-}
-
-
-/* --- WEEKLY 7-DAY MINI RINGS --- */
-.weekly-rings-container {
+.weekly-bar-chart {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding-top: 10px;
+    align-items: flex-end;
+    height: 160px;
+    padding-top: 20px;
+    flex: 1;
 }
 
-.mini-ring-col {
+.bar-col {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
 }
 
-.mini-ring-col span { font-size: 0.8rem; font-weight: 800; color: #111; }
-
-.mini-ring-wrapper { position: relative; width: 50px; height: 50px; }
-.mini-ring-wrapper svg { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotate(-90deg); }
-.dash-bg-ring-mini { fill: none; stroke: #F3F3F3; stroke-width: 6; }
-.dash-meter-ring-mini { 
-    fill: none; stroke: #E64A45; stroke-width: 6; stroke-linecap: round; 
-    transition: stroke-dasharray 1s ease; 
+.bar-track {
+    width: 14px;
+    height: 110px;
+    background: #F0F0F0;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
 }
 
+.bar-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #E64A45;
+    border-radius: 10px;
+    transition: height 1s ease-out;
+}
+
+.bar-day-lbl {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #888;
+}
 
 /* --- FIND FRIENDS SECTION --- */
 .theme-container {
@@ -458,5 +458,5 @@
     .sharing-page-container { padding: 20px; }
     .lb-podium { gap: 30px; }
     .activity-main-row, .awards-weekly-row { grid-template-columns: 1fr; }
-    .activity-body, .hs-body { flex-direction: column; text-align: center; }
+    .hs-body { flex-direction: column; text-align: center; }
 }

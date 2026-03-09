@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, 
-  FiUserPlus, FiCheck, FiTrash2, FiAward, FiHeart, FiMoon, FiActivity, FiZap, FiChevronRight, FiDroplet
+  FiUserPlus, FiCheck, FiTrash2, FiHeart, FiMoon, FiActivity, FiDroplet, FiChevronRight, FiShare2 
 } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
@@ -11,20 +11,9 @@ import DashboardNav from '../../components/DashboardNav';
 import avatar1 from '../../assets/avatar1.png';
 import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
+import awards from '../../assets/award.png'; // Make sure you have this image in your assets folder
 
 import './Sharing.css';
-
-// Master list of awards to display in the UI (matches dashboard)
-const ALL_AWARDS = [
-  { id: 'award_1', name: '7 Day Streak', fallbackIcon: '🔥' },
-  { id: 'award_2', name: 'Goal Crusher', fallbackIcon: '🏆' },
-  { id: 'award_3', name: 'Hydration Pro', fallbackIcon: '💧' },
-  { id: 'award_4', name: 'Sleep Master', fallbackIcon: '💤' },
-  { id: 'award_5', name: 'Step Champion', fallbackIcon: '👟' },
-  { id: 'award_6', name: 'Early Riser', fallbackIcon: '🌅' },
-  { id: 'award_7', name: 'Weekend Warrior', fallbackIcon: '🚴' },
-  { id: 'award_8', name: 'Perfect Month', fallbackIcon: '⭐' }
-];
 
 const Sharing = () => {
   const [isSearching, setIsSearching] = useState(false);
@@ -124,7 +113,7 @@ const Sharing = () => {
       d.setDate(d.getDate() - i);
       days.push({
         dateStr: d.toISOString().split('T')[0],
-        dayName: d.toLocaleDateString('en-US', { weekday: 'short' })[0]
+        dayName: d.toLocaleDateString('en-US', { weekday: 'short' })
       });
     }
     return days;
@@ -153,7 +142,7 @@ const Sharing = () => {
       const goal = profile?.calorie_goal > 0 ? profile.calorie_goal : 500;
       const movePct = ((activity?.calories || 0) / goal) * 100;
 
-      // Process Weekly Data for 7 mini rings
+      // Process Weekly Data for Bar Chart
       const last7Days = getLast7Days();
       const processedWeekly = last7Days.map(day => {
         const log = (weeklyLogs || []).find(l => l.date === day.dateStr);
@@ -198,6 +187,10 @@ const Sharing = () => {
     fetchFriends();
   };
 
+  const handleShare = () => {
+    alert("Award Shared!");
+  };
+
   // --- SEARCH EFFECT ---
   useEffect(() => {
     const search = async () => {
@@ -210,6 +203,8 @@ const Sharing = () => {
     return () => clearTimeout(delaySearch);
   }, [searchTerm]);
 
+  const isAwardEarned = friendStats?.awards?.length > 0;
+
   return (
     <div className="dashboard-wrapper sharing-page-bg">
       <DashboardNav />
@@ -217,7 +212,7 @@ const Sharing = () => {
         <div className="sharing-page-container">
 
           {viewingFriend ? (
-            /* --- 1. FRIEND DETAIL DASHBOARD (MATCHING DASHBOARD UI) --- */
+            /* --- 1. FRIEND DETAIL DASHBOARD --- */
             <div className="friend-detail-dashboard">
               <header className="detail-header-new">
                 <button className="back-circle-btn" onClick={() => setViewingFriend(null)}>
@@ -242,14 +237,14 @@ const Sharing = () => {
                   {/* --- TOP ROW: ACTIVITY RING & HEALTH SCORE --- */}
                   <div className="activity-main-row">
                     
-                    {/* Activity Ring */}
-                    <div className="glass-card dash-style-card">
+                    {/* Activity Ring (Vertically and Horizontally Centered) */}
+                    <div className="glass-card dash-style-card activity-card-centered">
                       <div className="dash-card-header">
-                        <h3>Activity Ring</h3>
+                        <h3>Daily Activity</h3>
                         <FiChevronRight color="#E64A45" />
                       </div>
-                      <div className="dash-card-body activity-body">
-                        <div className="dash-ring-wrapper-large">
+                      <div className="dash-card-body activity-body-centered">
+                        <div className="dash-ring-wrapper-huge">
                           <svg viewBox="0 0 100 100">
                             <circle className="dash-bg-ring" cx="50" cy="50" r="38" />
                             <circle 
@@ -258,27 +253,23 @@ const Sharing = () => {
                               style={{ strokeDasharray: `${(friendStats?.movePercent * 2.38)}, 238` }}
                             />
                           </svg>
-                          <div className="dash-ring-inner-yellow">
-                            {viewingFriend.avatar_url ? (
-                              <img src={viewingFriend.avatar_url} alt="user" className="inner-avatar" />
-                            ) : (
-                              <span className="inner-emoji">🍅</span>
-                            )}
-                            <span className="inner-percent">{Math.round(friendStats?.movePercent)}%</span>
+                          <div className="dash-ring-inner-centered">
+                            <span className="inner-percent-large">{Math.round(friendStats?.movePercent)}%</span>
+                            <span className="inner-label-small">of goal</span>
                           </div>
                         </div>
-                        <div className="dash-stats-list">
-                          <div className="dash-stat-item">
-                            <span className="stat-lbl">Move</span>
-                            <span className="stat-val">{friendStats?.activity?.calories || 0}/500 <small>KCAL</small></span>
+                        <div className="dash-stats-row">
+                          <div className="stat-box">
+                            <span className="stat-box-val">{friendStats?.healthScore || 0}</span>
+                            <span className="stat-box-lbl">VITALITY</span>
                           </div>
-                          <div className="dash-stat-item">
-                            <span className="stat-lbl">Steps</span>
-                            <span className="stat-val">{friendStats?.activity?.steps || 0}</span>
+                          <div className="stat-box">
+                            <span className="stat-box-val">{friendStats?.activity?.calories || 0}</span>
+                            <span className="stat-box-lbl">KCAL</span>
                           </div>
-                          <div className="dash-stat-item">
-                            <span className="stat-lbl">Distance</span>
-                            <span className="stat-val">{((friendStats?.activity?.steps || 0) * 0.0008).toFixed(2)} <small>KM</small></span>
+                          <div className="stat-box">
+                            <span className="stat-box-val">{friendStats?.activity?.steps || 0}</span>
+                            <span className="stat-box-lbl">STEPS</span>
                           </div>
                         </div>
                       </div>
@@ -325,60 +316,59 @@ const Sharing = () => {
                     </div>
                   </div>
 
-                  {/* --- BOTTOM ROW: AWARDS & WEEKLY PERFORMANCE --- */}
+                  {/* --- BOTTOM ROW: WEEKLY PERFORMANCE & SINGLE AWARD --- */}
                   <div className="awards-weekly-row">
                     
-                    {/* DASHBOARD STYLE AWARDS (Moved from bottom) */}
-                    <div className="glass-card dash-awards-card STACKED-AWARDS-COL">
-                      <div className="dash-card-header">
-                        <h3>Awards</h3>
-                        <FiChevronRight color="#E64A45" />
-                      </div>
-                      <div className="dash-awards-grid">
-                        {ALL_AWARDS.map((stdAward) => {
-                          const earnedMatch = friendStats?.awards?.find(a => 
-                            a.award_name?.toLowerCase() === stdAward.name.toLowerCase() || 
-                            a.award_id === stdAward.id
-                          );
-                          const isEarned = !!earnedMatch;
-                          const iconToShow = earnedMatch?.icon_url || stdAward.fallbackIcon;
-
-                          return (
-                            <div key={stdAward.id} className={`dash-award-badge ${isEarned ? 'earned' : 'locked'}`}>
-                              <div className="badge-inner-small">
-                                {typeof iconToShow === 'string' && iconToShow.startsWith('http') ? (
-                                  <img src={iconToShow} alt={stdAward.name} />
-                                ) : (
-                                  <span className="badge-emoji-small">{iconToShow}</span>
-                                )}
-                              </div>
-                              <span className="badge-label-small">{stdAward.name}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Weekly Performance */}
+                    {/* Weekly Performance Bar Chart */}
                     <div className="glass-card weekly-chart-card">
                       <div className="dash-card-header"><h3>Weekly Performance</h3></div>
-                      <div className="weekly-rings-container">
+                      <div className="weekly-bar-chart">
                         {friendWeeklyData.map((day, i) => (
-                          <div key={i} className="mini-ring-col">
-                            <div className="mini-ring-wrapper">
-                              <svg viewBox="0 0 50 50">
-                                <circle className="dash-bg-ring-mini" cx="25" cy="25" r="20" />
-                                <circle 
-                                  className={`dash-meter-ring-mini ${day.percent >= 100 ? 'goal-reached' : ''}`} 
-                                  cx="25" cy="25" r="20" 
-                                  style={{ strokeDasharray: `${(day.percent * 1.25)}, 125` }}
-                                />
-                              </svg>
+                          <div key={i} className="bar-col">
+                            <div className="bar-track">
+                              <div className="bar-fill" style={{ height: `${day.percent}%` }}></div>
                             </div>
-                            <span>{day.dayName}</span>
+                            <span className="bar-day-lbl">{day.dayName}</span>
                           </div>
                         ))}
                       </div>
+                    </div>
+
+                    {/* Dashboard Provided Award Code Snippet */}
+                    <div className="glass-card awards-card" style={{ display: 'flex', flexDirection: 'column' }}>
+                        <div className="dash-card-header">
+                            <h3>Awards</h3>
+                            <FiChevronRight className="card-arrow" color="#E64A45" />
+                        </div>
+                        <div className="awards-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, padding: '20px 0' }}>
+                            <img 
+                                src={awards} 
+                                alt="Award Badge" 
+                                className={`award-badge-status ${isAwardEarned ? 'earned-color' : 'not-earned-gray'}`} 
+                            />
+                            
+                            {isAwardEarned && (
+                                <button 
+                                    onClick={handleShare}
+                                    style={{
+                                        marginTop: '25px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        background: '#DE4B4E',
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '10px 24px',
+                                        borderRadius: '20px',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 4px 10px rgba(222, 75, 78, 0.3)',
+                                        transition: 'transform 0.2s'
+                                    }}>
+                                    <FiShare2 size={16} /> Share
+                                </button>
+                            )}
+                        </div>
                     </div>
                   </div>
 
@@ -456,9 +446,11 @@ const Sharing = () => {
                     <h3 className="theme-heading">Find Friends</h3>
                     <FiX size={24} onClick={() => { if(myFriends.length > 1) setShowLeaderboard(true); setIsSearching(false); }} style={{cursor:'pointer'}} />
                   </div>
+
                   <div className="search-input-wrapper">
                     <input className="theme-search-input" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                   </div>
+
                   {incomingRequests.length > 0 && (
                     <div className="request-group">
                       <h4 className="section-label">Pending Invitations</h4>
