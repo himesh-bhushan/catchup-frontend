@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, 
-  FiUserPlus, FiCheck, FiTrash2, FiAward, FiHeart, FiMoon, FiActivity, FiZap, FiChevronRight 
+  FiUserPlus, FiCheck, FiTrash2, FiAward, FiHeart, FiMoon, FiActivity, FiZap, FiChevronRight, FiDroplet
 } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
