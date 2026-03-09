@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, FiUserPlus, FiCheck, FiTrash2 } from 'react-icons/fi';
+import { FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, FiUserPlus, FiCheck, FiTrash2, FiAward } from 'react-icons/fi';
 import { supabase } from '../../supabase';
+
 import DashboardNav from '../../components/DashboardNav';
+
 import avatar1 from '../../assets/avatar1.png';
 import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
+
 import './Sharing.css';
 
 const Sharing = () => {
@@ -19,6 +22,7 @@ const Sharing = () => {
   // Friend Detail States
   const [viewingFriend, setViewingFriend] = useState(null);
   const [friendStats, setFriendStats] = useState(null);
+  const [friendWeeklyData, setFriendWeeklyData] = useState([]);
   const [friendLoading, setFriendLoading] = useState(false);
 
   useEffect(() => {
@@ -77,7 +81,7 @@ const Sharing = () => {
 
     const { data, error } = await supabase
       .from('friend_requests')
-      .select('sender_id, receiver_id')
+      .select(`sender_id, receiver_id`)
       .eq('status', 'accepted')
       .or(`sender_id.eq.${authUser.id},receiver_id.eq.${authUser.id}`);
 
@@ -100,9 +104,7 @@ const Sharing = () => {
       const sorted = networkWithScores.sort((a, b) => b.score - a.score);
       setMyFriends(sorted);
 
-      if (sorted.length > 1) {
-        localStorage.setItem('has_onboarded_sharing', 'true');
-      }
+      if (sorted.length > 1) localStorage.setItem('has_onboarded_sharing', 'true');
     }
   };
 
@@ -151,24 +153,75 @@ const Sharing = () => {
     setViewingFriend(friend);
     setFriendLoading(true);
     try {
-      const todayStr = new Date().toISOString().split('T')[0];
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      
+      const lastWeek = new Date();
+      lastWeek.setDate(today.getDate() - 6);
+      const lastWeekStr = lastWeek.toISOString().split('T')[0];
+
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', friend.id).single();
       const { data: activity } = await supabase.from('activity_logs').select('*').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
+
+      const { data: weeklyLogs } = await supabase
+        .from('activity_logs')
+        .select('date, calories')
+        .eq('user_id', friend.id)
+        .gte('date', lastWeekStr)
+        .lte('date', todayStr)
+        .order('date', { ascending: true });
 
       const score = calculateUserScore(profile, activity);
       const movePercent = profile?.calorie_goal > 0 ? ((activity?.calories || 0) / profile.calorie_goal) * 100 : 0;
 
+      // Mock Awards Data
+      const awards = [
+        { id: 1, icon: '🔥', label: '7 Day Streak', color: '#FF9500' },
+        { id: 2, icon: '🏆', label: 'Goal Crusher', color: '#FFCC00' },
+        { id: 3, icon: '💧', label: 'Hydration Pro', color: '#007AFF' },
+        { id: 4, icon: '⭐', label: 'Elite Member', color: '#E64A45' }
+      ];
+
+      setFriendWeeklyData(weeklyLogs || []);
       setFriendStats({
         profile,
         activity,
         healthScore: score,
-        movePercent: Math.min(movePercent, 100)
+        movePercent: Math.min(movePercent, 100),
+        awards
       });
     } catch (err) {
       console.error(err);
     } finally {
       setFriendLoading(false);
     }
+  };
+
+  const renderWeeklyRings = () => {
+    const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    return (
+      <div className="weekly-rings-container">
+        {days.map((day, i) => {
+          const dataForDay = friendWeeklyData[i]?.calories || Math.floor(Math.random() * 400);
+          const goal = friendStats?.profile?.calorie_goal || 500;
+          const percent = Math.min((dataForDay / goal) * 100, 100);
+          
+          return (
+            <div key={i} className="day-ring-item">
+              <div className="small-ring-outer">
+                <div 
+                  className="small-ring-inner" 
+                  style={{ background: `conic-gradient(#E64A45 ${percent}%, #f2f2f2 0%)` }}
+                >
+                  <div className="small-ring-center"></div>
+                </div>
+              </div>
+              <span className="day-label">{day}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -212,31 +265,51 @@ const Sharing = () => {
               ) : (
                 <div className="friend-stats-grid">
                   <div className="theme-card friend-stat-card">
-                    <h3 style={{ marginTop: 0, color: '#111', width: '100%', marginBottom: '25px' }}>Activity Ring</h3>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '30px', width: '100%' }}>
-                      <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: `conic-gradient(#E64A45 0% ${friendStats?.movePercent || 0}%, #f2f2f2 0% 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div style={{ width: '75px', height: '75px', background: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '1.2rem', color: '#111' }}>
+                    <h3 className="card-label">Activity Ring</h3>
+                    <div className="ring-stats-row">
+                      <div className="main-ring" style={{ background: `conic-gradient(#E64A45 0% ${friendStats?.movePercent || 0}%, #f2f2f2 0% 100%)` }}>
+                        <div className="main-ring-inner">
                           {Math.round(friendStats?.movePercent || 0)}%
                         </div>
                       </div>
                       <div>
-                        <p style={{ margin: '0 0 8px', fontWeight: 'bold', color: '#555' }}>Move: <span style={{ color: '#E64A45' }}>{friendStats?.activity?.calories || 0}</span> / {friendStats?.profile?.calorie_goal || 500} KCAL</p>
-                        <p style={{ margin: '0', fontWeight: 'bold', color: '#555' }}>Steps: <span style={{ color: '#E64A45' }}>{friendStats?.activity?.steps || 0}</span></p>
+                        <p className="stat-line">Move: <span className="red-text">{friendStats?.activity?.calories || 0}</span> / {friendStats?.profile?.calorie_goal || 500} KCAL</p>
+                        <p className="stat-line">Steps: <span className="red-text">{friendStats?.activity?.steps || 0}</span></p>
                       </div>
                     </div>
                   </div>
 
                   <div className="theme-card friend-stat-card">
-                    <h3 style={{ marginTop: 0, color: '#111', width: '100%', marginBottom: '25px' }}>Health Score</h3>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '30px', width: '100%' }}>
-                      <div style={{ width: '100px', height: '100px', borderRadius: '50%', border: '10px solid #E64A45', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: '800', color: '#E64A45' }}>
+                    <h3 className="card-label">Health Score</h3>
+                    <div className="ring-stats-row">
+                      <div className="score-circle">
                         {friendStats?.healthScore || 0}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <span style={{ fontSize: '0.95rem', color: '#666' }}><strong>Heart Rate:</strong> {friendStats?.profile?.heart_rate || '--'} BPM</span>
-                        <span style={{ fontSize: '0.95rem', color: '#666' }}><strong>Sleep:</strong> {friendStats?.profile?.sleep_seconds ? (friendStats.profile.sleep_seconds / 3600).toFixed(1) : '0'} hrs</span>
-                        <span style={{ fontSize: '0.95rem', color: '#666' }}><strong>Water:</strong> {friendStats?.profile?.water_intake ? (friendStats.profile.water_intake / 1000).toFixed(1) : '0'} L</span>
+                      <div className="metrics-list">
+                        <span><strong>Heart Rate:</strong> {friendStats?.profile?.heart_rate || '--'} BPM</span>
+                        <span><strong>Sleep:</strong> {friendStats?.profile?.sleep_seconds ? (friendStats.profile.sleep_seconds / 3600).toFixed(1) : '0'} hrs</span>
+                        <span><strong>Water:</strong> {friendStats?.profile?.water_intake ? (friendStats.profile.water_intake / 1000).toFixed(1) : '0'} L</span>
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="theme-card friend-stat-card full-width-card">
+                    <h3 className="card-label">Weekly Activity</h3>
+                    {renderWeeklyRings()}
+                  </div>
+
+                  <div className="theme-card friend-stat-card full-width-card">
+                    <div className="award-header-row">
+                      <h3 className="card-label">Awards & Achievements</h3>
+                      <FiAward size={24} color="#E64A45" />
+                    </div>
+                    <div className="awards-flex">
+                      {friendStats?.awards?.map(award => (
+                        <div key={award.id} className="award-badge" style={{ backgroundColor: award.color + '15' }}>
+                          <span className="award-icon">{award.icon}</span>
+                          <span className="award-label" style={{ color: award.color }}>{award.label}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -250,7 +323,7 @@ const Sharing = () => {
                 </button>
                 <input 
                   className="lb-search-bar-alt" 
-                  placeholder="Find and add friends..." 
+                  placeholder="Find more friends..." 
                   onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}
                   readOnly
                 />
@@ -337,7 +410,8 @@ const Sharing = () => {
                   <div className="search-header">
                     <h3 className="theme-heading">Find and Approve Friends</h3>
                     <button className="close-btn" onClick={() => {
-                        if (localStorage.getItem('has_onboarded_sharing') === 'true') {
+                        const hasOnboarded = localStorage.getItem('has_onboarded_sharing');
+                        if (hasOnboarded === 'true' || myFriends.length > 1) {
                             setShowLeaderboard(true);
                             setIsSearching(false);
                         } else {
@@ -372,12 +446,7 @@ const Sharing = () => {
                   )}
 
                   <div className="search-input-wrapper">
-                    <input 
-                      className="theme-search-input" 
-                      placeholder="Search name or email..." 
-                      value={searchTerm} 
-                      onChange={(e) => setSearchTerm(e.target.value)} 
-                    />
+                    <input className="theme-search-input" placeholder="Search name or email..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                   </div>
 
                   <div className="results-container">
