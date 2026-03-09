@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiPlus, FiMoon } from 'react-icons/fi';
 import { supabase } from '../../supabase';
@@ -9,7 +9,7 @@ import './Sleep.css';
 const Sleep = () => {
   const navigate = useNavigate();
   
-  // --- NEW: Date & Range States ---
+  // Date & Range States
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [range, setRange] = useState('Week'); 
   
@@ -20,6 +20,9 @@ const Sleep = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [newHours, setNewHours] = useState('');
   const [loading, setLoading] = useState(true);
+
+  // --- NEW: Reference for the date picker ---
+  const dateInputRef = useRef(null);
 
   const fetchSleepData = useCallback(async () => {
     setLoading(true);
@@ -38,7 +41,7 @@ const Sleep = () => {
         setSelectedLog({ hours: log ? (log.hours ? parseFloat(log.hours) : parseFloat((log.seconds / 3600).toFixed(1))) : 0 });
       }
 
-      // 2. FETCH HISTORY FOR GRAPH (Ending on selected date)
+      // 2. FETCH HISTORY FOR GRAPH
       let limit = 7;
       if (range === 'Month') limit = 30;
       if (range === 'Year') limit = 365;
@@ -48,12 +51,11 @@ const Sleep = () => {
         .from('sleep_logs')
         .select('hours, seconds, date')
         .eq('user_id', user.id)
-        .lte('date', selectedDate) // Only show data up to the date picked
+        .lte('date', selectedDate) 
         .order('date', { ascending: false })
         .limit(limit);
 
       if (!historyError && history && history.length > 0) {
-        // Reverse so chronological order is left-to-right on graph
         const formattedHistory = history.reverse().map(log => ({
             ...log,
             hours: log.hours ? parseFloat(log.hours) : parseFloat((log.seconds / 3600).toFixed(1))
@@ -84,7 +86,6 @@ const Sleep = () => {
     const hoursValue = parseFloat(newHours);
     const secondsValue = Math.round(hoursValue * 3600);
 
-    // Save to the SPECIFIC date chosen on the calendar
     const { error: logError } = await supabase
       .from('sleep_logs')
       .upsert({
@@ -94,7 +95,6 @@ const Sleep = () => {
         seconds: secondsValue
       }, { onConflict: 'user_id,date' });
 
-    // Only update the Dashboard (profiles table) if they are editing "Today"
     if (selectedDate === new Date().toISOString().split('T')[0]) {
         await supabase.from('profiles').update({ sleep_seconds: secondsValue }).eq('id', user.id);
     }
@@ -102,7 +102,18 @@ const Sleep = () => {
     if (!logError) {
       setIsAdding(false);
       setNewHours('');
-      fetchSleepData(); // Refresh UI
+      fetchSleepData(); 
+    }
+  };
+
+  const handleCalendarClick = () => {
+    if (dateInputRef.current) {
+        try {
+            // This forces the native browser calendar popup to open
+            dateInputRef.current.showPicker();
+        } catch (e) {
+            dateInputRef.current.focus();
+        }
     }
   };
 
@@ -148,15 +159,26 @@ const Sleep = () => {
                ))}
             </div>
 
-            {/* --- THE MAGIC INVISIBLE CALENDAR BUTTON --- */}
-            <div style={{ position: 'relative', display: 'inline-block' }}>
-                <button className="calendar-btn"><FiCalendar /></button>
+            {/* --- FIXED CALENDAR BUTTON --- */}
+            <div style={{ position: 'relative' }}>
+                <button className="calendar-btn" onClick={handleCalendarClick}>
+                  <FiCalendar />
+                </button>
                 <input 
+                    ref={dateInputRef}
                     type="date" 
                     value={selectedDate}
                     max={new Date().toISOString().split('T')[0]}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                    style={{ 
+                      position: 'absolute', 
+                      top: '100%', 
+                      right: 0, 
+                      opacity: 0, 
+                      pointerEvents: 'none', /* Prevents input from intercepting button clicks */
+                      width: '40px',
+                      height: '40px'
+                    }}
                 />
             </div>
           </div>

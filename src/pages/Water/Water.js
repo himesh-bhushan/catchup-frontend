@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiPlus, FiDroplet } from 'react-icons/fi';
 import { supabase } from '../../supabase';
@@ -20,6 +20,9 @@ const Water = () => {
   const [newWater, setNewWater] = useState('');
   const [loading, setLoading] = useState(true);
 
+  // --- NEW: Reference for the date picker ---
+  const dateInputRef = useRef(null);
+
   const fetchWaterData = useCallback(async () => {
     setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
@@ -28,7 +31,6 @@ const Water = () => {
     try {
       const isToday = selectedDate === new Date().toISOString().split('T')[0];
 
-      // 1. FETCH READING FOR SELECTED DATE
       if (isToday) {
         const { data: profile } = await supabase.from('profiles').select('water_intake').eq('id', user.id).single();
         setSelectedLog({ liters: profile?.water_intake ? parseFloat((profile.water_intake / 1000).toFixed(1)) : 0 });
@@ -37,7 +39,6 @@ const Water = () => {
         setSelectedLog({ liters: log?.water_ml ? parseFloat((log.water_ml / 1000).toFixed(1)) : 0 });
       }
 
-      // 2. FETCH HISTORY FOR GRAPH
       let limit = 7;
       if (range === 'Month') limit = 30;
       if (range === 'Year') limit = 365;
@@ -101,6 +102,16 @@ const Water = () => {
     }
   };
 
+  const handleCalendarClick = () => {
+    if (dateInputRef.current) {
+        try {
+            dateInputRef.current.showPicker();
+        } catch (e) {
+            dateInputRef.current.focus();
+        }
+    }
+  };
+
   const renderChart = () => {
     const width = 1000; const height = 250; const padding = 50; 
     if (logs.length < 1) return (<div className="no-data-container"><FiDroplet size={40} color="#ccc" /><p>No water history found for this period.</p></div>);
@@ -143,14 +154,26 @@ const Water = () => {
                ))}
             </div>
 
-            <div style={{ position: 'relative', display: 'inline-block' }}>
-                <button className="calendar-btn"><FiCalendar /></button>
+            {/* --- FIXED CALENDAR BUTTON --- */}
+            <div style={{ position: 'relative' }}>
+                <button className="calendar-btn" onClick={handleCalendarClick}>
+                  <FiCalendar />
+                </button>
                 <input 
+                    ref={dateInputRef}
                     type="date" 
                     value={selectedDate}
                     max={new Date().toISOString().split('T')[0]}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                    style={{ 
+                      position: 'absolute', 
+                      top: '100%', 
+                      right: 0, 
+                      opacity: 0, 
+                      pointerEvents: 'none',
+                      width: '40px',
+                      height: '40px'
+                    }}
                 />
             </div>
           </div>
