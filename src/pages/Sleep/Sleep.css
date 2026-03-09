@@ -1,239 +1,111 @@
-/* Remove hardcoded background so it uses your beautiful peach theme! */
-.detail-page-bg {
-  background-color: transparent;
+/* --- Overrides dashboard background specifically for Sleep page --- */
+.dashboard-wrapper.sleep-page-wrapper-bg,
+.sleep-page-wrapper-bg .dashboard-content {
+    background: #FFFFFF !important; 
+    background-color: #FFFFFF !important;
+    min-height: 100vh;
 }
 
-.detail-page-container {
-  max-width: 1200px; /* Stretches the container to full desktop width */
+.sleep-page-container {
   width: 100%;
+  max-width: 1200px;
+  min-height: 100vh; 
+  background-color: #fff;
+  padding: 30px 40px; 
+  font-family: 'Poppins', sans-serif;
   margin: 0 auto;
-  padding: 30px;
-}
-
-.detail-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
-}
-
-.detail-header h2 {
-  font-size: 2rem;
-  color: var(--text-primary, #333);
-  font-weight: 800;
-  margin: 0;
-}
-
-.icon-btn {
-  background: white;
-  border: none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
-}
-
-.icon-btn:hover {
-  transform: scale(1.05);
-}
-
-/* --- THE MAGIC DESKTOP GRID --- */
-.detail-content {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 30px;
-}
-
-@media (min-width: 900px) {
-  .detail-content {
-    grid-template-columns: repeat(2, 1fr);
-    align-items: stretch; /* Makes the bottom two cards equal height */
-  }
-
-  /* Make Hero Card span across the entire top row */
-  .hero-card {
-    grid-column: span 2;
-  }
-}
-
-/* --- Hero Card --- */
-.hero-card {
-  border-radius: 30px;
-  padding: 40px 50px;
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  color: white;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-.bg-orange { background-color: #F7931E; }
-.bg-blue { background-color: #4A90E2; }
-
-.hero-icon-wrapper {
-  background: rgba(255, 255, 255, 0.2);
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-icon-wrapper svg {
-  width: 50px;
-  height: 50px;
-}
-
-.hero-text h3 {
-  margin: 0 0 10px 0;
-  font-size: 1.4rem;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
-.hero-value {
-  font-size: 4.5rem;
-  font-weight: 800;
-  margin: 0;
-  line-height: 1;
-}
-
-.hero-value span {
-  font-size: 1.5rem;
-  font-weight: 600;
-  opacity: 0.8;
-  margin-left: 10px;
-}
-
-.hero-text p {
-  margin: 15px 0 0 0;
-  font-size: 1.2rem;
-  opacity: 0.9;
-}
-
-/* --- Progress & Other Cards --- */
-.progress-card {
-  padding: 40px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  background: white;
-  border-radius: 30px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.card-header h3 {
-  margin: 0;
-  font-size: 1.4rem;
-  color: #333;
+/* --- HEADER --- */
+.sleep-header {
   display: flex;
   align-items: center;
-  font-weight: 700;
-}
-
-.mr-2 { margin-right: 10px; }
-
-.goal-percentage {
-  font-weight: 800;
-  font-size: 1.6rem;
-  color: #333;
-}
-
-.progress-track {
-  width: 100%;
-  height: 20px;
-  background-color: #f0f0f0;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 25px;
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: 12px;
-  transition: width 1.5s ease-in-out;
-}
-
-.fill-orange { background-color: #F7931E; }
-.fill-blue { background-color: #4A90E2; }
-
-.progress-subtitle {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #666;
-}
-
-/* --- History List (For Sleep Page) --- */
-.history-card {
-  padding: 40px;
-  background: white;
-  border-radius: 30px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-}
-
-.history-list {
-  display: flex;
-  flex-direction: column;
+  justify-content: space-between; 
+  margin-bottom: 20px;
   gap: 20px;
+  flex-shrink: 0;
 }
 
-.history-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #f0f0f0;
+.sleep-back-btn {
+  background: none; border: none; font-size: 24px; cursor: pointer; color: #000;
+  display: flex; align-items: center; justify-content: center; padding: 0; width: 40px;
 }
 
-.history-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+/* SLEEP THEME (ORANGE) */
+.range-pills {
+  background-color: #FFF3E0; padding: 5px; border-radius: 30px;
+  display: flex; gap: 5px; flex: 1; justify-content: center; max-width: 600px; margin: 0 auto; 
 }
 
-.history-date {
-  font-weight: 600;
-  color: #555;
-  width: 120px;
-  font-size: 1.1rem;
+.pill {
+  border: none; background: transparent; padding: 8px 15px; border-radius: 25px;
+  font-size: 13px; font-weight: 600; color: #555; cursor: pointer; transition: 0.2s ease;
+  flex: 1; white-space: nowrap;
 }
 
-.history-value-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex: 1;
-  justify-content: flex-end;
+.pill.active {
+  background-color: #fff; color: #000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #FFE0B2; 
 }
 
-.history-value {
-  font-weight: 800;
-  color: #333;
-  width: 70px;
-  text-align: right;
-  font-size: 1.1rem;
+.calendar-btn {
+  width: 40px; height: 40px; border-radius: 50%; border: 1px solid #000; background: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; color: #000;
 }
 
-.mini-bar-track {
-  width: 120px;
-  height: 10px;
-  background-color: #f0f0f0;
-  border-radius: 5px;
+/* --- Stats Header --- */
+.stats-block { margin-bottom: 15px; flex-shrink: 0; }
+.stats-block h2 { font-size: 28px; font-weight: 500; color: #333; margin: 0; }
+.highlight-orange { color: #F7931E; font-weight: 700; }
+.date-range-sub { color: #999; font-size: 14px; margin-top: 5px; }
+
+/* --- Chart Area --- */
+.chart-container {
+  background: #F9F9F9; border-radius: 20px; margin-bottom: 20px;
+  flex: 1; min-height: 0; position: relative;
+  display: flex; align-items: center; justify-content: center;
 }
 
-.mini-bar-fill {
-  height: 100%;
-  border-radius: 5px;
+.sleep-chart-svg { width: 100%; height: 100%; overflow: visible; }
+
+.no-data-container {
+  height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #bbb; font-size: 18px; gap: 10px;
+}
+
+/* --- Bottom: Today --- */
+.today-reading-block { margin-top: 10px; flex-shrink: 0; padding-bottom: 10px; }
+
+.today-header { display: flex; align-items: center; justify-content: space-between; }
+.today-reading-block h3 { font-size: 24px; font-weight: 600; margin: 0; color: #333; }
+.today-reading-block h1 { font-size: 36px; margin: 10px 0 5px 0; display: flex; align-items: center; gap: 10px; }
+
+.unit { font-size: 20px; color: #F7931E; font-weight: 700; }
+.date-sub { color: #bbb; font-size: 14px; }
+
+/* --- Add Form --- */
+.add-reading-btn {
+  border: none; background: #f0f0f0; width: 35px; height: 35px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px;
+}
+
+.add-form { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.add-form input {
+  width: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 12px; 
+  font-size: 18px; text-align: center; font-weight: 700;
+}
+.add-form button {
+  padding: 10px 20px; background: #F7931E; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 14px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .sleep-page-container { padding: 20px; max-width: 100%; height: auto; overflow: auto; }
+}
+
+@media (max-width: 768px) {
+  .sleep-page-container { padding: 15px; }
+  .sleep-header { flex-wrap: wrap; }
+  .range-pills { min-width: 100%; margin-top: 10px; order: 3; }
+  .calendar-btn { margin-left: auto; }
 }
