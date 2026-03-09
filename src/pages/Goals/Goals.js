@@ -12,10 +12,10 @@ import './Goals.css';
 import tomatoGym from '../../assets/tomato-health.png';
 
 const DEFAULT_GOALS = {
-  steps_current: 0, steps_target: 10000,
-  sleep_current: 0, sleep_target: 8,
-  exercise_current: 0, exercise_target: 1, 
-  water_current: 0, water_target: 3
+  steps_current: 0, steps_target: 5000,
+  sleep_current: 0, sleep_target: 7,
+  move_current: 0, move_target: 500, // Replaced exercise with move (calories)
+  water_current: 0, water_target: 2
 };
 
 const Goals = () => {
@@ -25,7 +25,7 @@ const Goals = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [goals, setGoals] = useState(DEFAULT_GOALS);
 
-  // --- 1. Fetch Data ---
+  // --- 1. Fetch Real Data (Synced with Dashboard) ---
   useEffect(() => {
     let mounted = true;
     const fetchGoals = async () => {
@@ -34,29 +34,41 @@ const Goals = () => {
       if (!user) return;
 
       try {
-        const { data, error } = await supabase
-          .from('daily_goals')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('date', date)
-          .single();
+        const isToday = date === new Date().toISOString().split('T')[0];
 
-        if (error && error.code !== 'PGRST116') throw error; 
+        // Fetch Profile Data (for targets and today's quick stats)
+        const { data: profile } = await supabase.from('profiles').select('calorie_goal, sleep_seconds, water_intake').eq('id', user.id).single();
+        
+        // Fetch Activity Logs (Steps & Move Ring)
+        const { data: activity } = await supabase.from('activity_logs').select('steps, calories').eq('user_id', user.id).eq('date', date).maybeSingle();
+        
+        // Fetch Sleep Logs
+        let sleepHrs = 0;
+        if (isToday && profile?.sleep_seconds) sleepHrs = profile.sleep_seconds / 3600;
+        else {
+            const { data: sleepLog } = await supabase.from('sleep_logs').select('hours, seconds').eq('user_id', user.id).eq('date', date).maybeSingle();
+            if (sleepLog) sleepHrs = sleepLog.hours ? sleepLog.hours : (sleepLog.seconds / 3600);
+        }
 
-        if (data) {
-          if (mounted) setGoals(data);
-        } else {
-          const { error: insertError } = await supabase
-            .from('daily_goals')
-            .insert({
-               user_id: user.id,
-               date: date,
-               steps_current: 0,
-               steps_target: 10000
+        // Fetch Water Logs
+        let waterL = 0;
+        if (isToday && profile?.water_intake) waterL = profile.water_intake / 1000;
+        else {
+            const { data: waterLog } = await supabase.from('water_logs').select('water_ml').eq('user_id', user.id).eq('date', date).maybeSingle();
+            if (waterLog) waterL = waterLog.water_ml / 1000;
+        }
+
+        if (mounted) {
+            setGoals({
+                steps_current: activity?.steps || 0,
+                steps_target: 5000, // Matching dashboard target
+                move_current: activity?.calories || 0,
+                move_target: profile?.calorie_goal || 500, // Matching dashboard target
+                sleep_current: parseFloat(sleepHrs.toFixed(1)),
+                sleep_target: 7, // Matching dashboard target
+                water_current: parseFloat(waterL.toFixed(1)),
+                water_target: 2 // Matching dashboard target
             });
-          if (!insertError && mounted) {
-             setGoals({ ...DEFAULT_GOALS }); 
-          }
         }
       } catch (err) {
         console.error("Error fetching goals:", err);
@@ -68,24 +80,39 @@ const Goals = () => {
     return () => { mounted = false; };
   }, [date]);
 
-  // --- 2. Update Data ---
+  // --- 2. Update Real Data ---
   const handleSave = async () => {
     const { data: { user } } = await supabase.auth.getUser();
+    const isToday = date === new Date().toISOString().split('T')[0];
+    
     try {
-      const { error } = await supabase
-        .from('daily_goals')
-        .update({
-          steps_current: goals.steps_current, steps_target: goals.steps_target,
-          sleep_current: goals.sleep_current, sleep_target: goals.sleep_target,
-          exercise_current: goals.exercise_current, exercise_target: goals.exercise_target,
-          water_current: goals.water_current, water_target: goals.water_target,
-        })
-        .eq('user_id', user.id)
-        .eq('date', date);
+      // Save Activity (Steps & Move Ring)
+      await supabase.from('activity_logs').upsert({
+          user_id: user.id, date: date, steps: goals.steps_current, calories: goals.move_current
+      }, { onConflict: 'user_id,date' });
 
-      if (error) throw error;
+      // Save Sleep
+      await supabase.from('sleep_logs').upsert({
+          user_id: user.id, date: date, hours: goals.sleep_current, seconds: Math.round(goals.sleep_current * 3600)
+      }, { onConflict: 'user_id,date' });
+
+      // Save Water
+      await supabase.from('water_logs').upsert({
+          user_id: user.id, date: date, water_ml: Math.round(goals.water_current * 1000)
+      }, { onConflict: 'user_id,date' });
+
+      // If updating today's data, also push it to the main profile to immediately update the Dashboard preview
+      if (isToday) {
+          await supabase.from('profiles').update({
+              sleep_seconds: Math.round(goals.sleep_current * 3600),
+              water_intake: Math.round(goals.water_current * 1000),
+              calorie_goal: goals.move_target // Allows user to adjust their move goal ring!
+          }).eq('id', user.id);
+      }
+
       setIsEditing(false);
     } catch (error) {
+      console.error(error);
       alert("Error saving goals");
     }
   };
@@ -100,7 +127,7 @@ const Goals = () => {
     let count = 0;
     if (goals.steps_current >= goals.steps_target) count++;
     if (goals.sleep_current >= goals.sleep_target) count++;
-    if (goals.exercise_current >= goals.exercise_target) count++;
+    if (goals.move_current >= goals.move_target) count++;
     if (goals.water_current >= goals.water_target) count++;
     return count;
   };
@@ -108,8 +135,8 @@ const Goals = () => {
   const goalData = [
     { id: 'steps', title: 'Meet step count', currentKey: 'steps_current', targetKey: 'steps_target', unit: 'steps', icon: <FiActivity /> },
     { id: 'sleep', title: 'Sleep duration', currentKey: 'sleep_current', targetKey: 'sleep_target', unit: 'hours', icon: <FiMoon /> },
-    { id: 'exercise', title: 'Workout session', currentKey: 'exercise_current', targetKey: 'exercise_target', unit: 'hour', icon: <FiTarget /> },
-    { id: 'water', title: 'Water intake', currentKey: 'water_current', targetKey: 'water_target', unit: 'litre', icon: <FiDroplet /> }
+    { id: 'move', title: 'Complete Move Ring', currentKey: 'move_current', targetKey: 'move_target', unit: 'kcal', icon: <FiTarget /> },
+    { id: 'water', title: 'Water intake', currentKey: 'water_current', targetKey: 'water_target', unit: 'Liters', icon: <FiDroplet /> }
   ];
 
   const inProgressGoals = goalData.filter(g => goals[g.currentKey] < goals[g.targetKey]);
@@ -136,9 +163,10 @@ const Goals = () => {
           <div className="progress-text-overlay">
             {isEditing ? (
                 <div className="edit-inputs" onClick={(e) => e.stopPropagation()}>
-                  <input type="number" name={item.currentKey} value={current} onChange={handleChange} />
+                  <input type="number" name={item.currentKey} value={current} onChange={handleChange} style={{width: '60px'}} />
                   <span>/</span>
-                  <input type="number" name={item.targetKey} value={target} onChange={handleChange} />
+                  {/* Lock targets for universal static goals, except Move Ring which is dynamic */}
+                  <input type="number" name={item.targetKey} value={target} onChange={handleChange} disabled={item.id !== 'move'} style={{width: '60px', opacity: item.id !== 'move' ? 0.7 : 1}} />
                 </div>
             ) : (
                 <span>{current} / {target} {item.unit}</span>
@@ -161,7 +189,6 @@ const Goals = () => {
   }
 
   return (
-    // ✅ Reused Dashboard Wrappers to hold the Nav Bar
     <div className="dashboard-wrapper goals-page-bg">
       <DashboardNav />
       <div className="dashboard-content">
@@ -171,10 +198,21 @@ const Goals = () => {
           <div className="goals-header-new">
              <div className="header-left">
                  <button onClick={() => navigate('/dashboard')} className="icon-btn"><FiArrowLeft size={24} /></button>
-                 <h2>Today, {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</h2>
-                 <div className="date-picker-wrapper">
-                     <FiCalendar size={20} />
-                     <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="hidden-date-input"/>
+                 <h2>{date === new Date().toISOString().split('T')[0] ? 'Today' : new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short'})}</h2>
+                 
+                 {/* Fixed invisible native calendar picker */}
+                 <div className="date-picker-wrapper" style={{position: 'relative'}}>
+                     <button className="icon-btn" onClick={() => document.getElementById('goalsDatePicker').showPicker()} style={{width: 40, height: 40, border: 'none', background: 'transparent', cursor: 'pointer'}}>
+                        <FiCalendar size={20} />
+                     </button>
+                     <input 
+                        id="goalsDatePicker"
+                        type="date" 
+                        value={date} 
+                        max={new Date().toISOString().split('T')[0]}
+                        onChange={(e) => setDate(e.target.value)} 
+                        style={{position: 'absolute', top: 0, left: 0, opacity: 0, pointerEvents: 'none'}}
+                     />
                  </div>
              </div>
              <button className="icon-btn edit-toggle" onClick={() => isEditing ? handleSave() : setIsEditing(true)}>
