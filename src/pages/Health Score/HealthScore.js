@@ -13,18 +13,22 @@ const HealthScore = () => {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
   
-  // State for real data
+  // State for real data and individual score contributions
   const [stats, setStats] = useState({
     heartRate: 0,
     sleepSeconds: 0,
     calories: 0,
     water: 0,
-    score: 0
+    score: 0,
+    hrContrib: 0,
+    sleepContrib: 0,
+    calContrib: 0,
+    waterContrib: 0
   });
 
   // SVG Donut Chart Configuration
   const radius = 35;
-  const circumference = 2 * Math.PI * radius;
+  const circumference = 2 * Math.PI * radius; // ~219.91
 
   const fetchHealthData = useCallback(async () => {
     setLoading(true);
@@ -52,21 +56,68 @@ const HealthScore = () => {
       const water = profile?.water_intake || 0;
       const cals = activity?.calories || 0;
 
-      // 3. Simple Health Score Logic (Example: Weighted average out of 100)
-      // You can adjust these targets as needed
-      const sleepScore = Math.min((sleep / (8 * 3600)) * 25, 25); // Target 8 hrs
-      const waterScore = Math.min((water / 2.5) * 25, 25);        // Target 2.5L
-      const activityScore = Math.min((cals / 500) * 25, 25);      // Target 500 kcal
-      const hrScore = heart > 60 && heart < 100 ? 25 : 15;        // Simple HR check
+      // ==========================================
+      // 🩺 STEP 1 & 2: CONVERT METRICS TO SCORES (0-100)
+      // ==========================================
       
-      const totalScore = Math.round(sleepScore + waterScore + activityScore + hrScore);
+      // Heart Rate Score
+      let hrScore = 0;
+      if (heart > 0) {
+        if (heart >= 60 && heart <= 80) {
+          hrScore = 100;
+        } else if (heart > 80 && heart <= 100) {
+          hrScore = Math.max(0, 100 - (heart - 80) * 2);
+        } else if (heart > 100) {
+          hrScore = Math.max(0, 60 - (heart - 100) * 3);
+        } else if (heart < 60) {
+          hrScore = Math.max(0, 100 - (60 - heart) * 2); // Handles bradycardia penalty
+        }
+      }
+
+      // Sleep Score
+      let sleepScore = 0;
+      const sleepHrs = sleep / 3600;
+      if (sleepHrs > 0) {
+        if (sleepHrs >= 7 && sleepHrs <= 9) {
+          sleepScore = 100;
+        } else {
+          sleepScore = Math.max(0, 100 - Math.abs(sleepHrs - 8) * 15);
+        }
+      }
+
+      // Calories Score
+      let calScore = 0;
+      if (cals > 0) {
+        calScore = Math.min(100, (cals / 500) * 100);
+      }
+
+      // Water Score
+      let waterScore = 0;
+      if (water > 0) {
+        const waterLiters = water / 1000; // Convert ml to L
+        waterScore = Math.min(100, (waterLiters / 2.5) * 100);
+      }
+
+      // ==========================================
+      // ⚖️ STEP 3: ASSIGN WEIGHTS
+      // ==========================================
+      const hrContrib = hrScore * 0.35;
+      const sleepContrib = sleepScore * 0.25;
+      const calContrib = calScore * 0.25;
+      const waterContrib = waterScore * 0.15;
+      
+      const totalScore = Math.round(hrContrib + sleepContrib + calContrib + waterContrib);
 
       setStats({
         heartRate: heart,
         sleepSeconds: sleep,
         calories: cals,
         water: water,
-        score: totalScore || 0
+        score: totalScore,
+        hrContrib,
+        sleepContrib,
+        calContrib,
+        waterContrib
       });
 
     } catch (err) {
@@ -79,6 +130,21 @@ const HealthScore = () => {
   useEffect(() => {
     fetchHealthData();
   }, [fetchHealthData]);
+
+  // ==========================================
+  // 🎨 RING SVG CALCULATIONS
+  // Calculate stroke-dasharray lengths for proportional sizes
+  // ==========================================
+  const hrLen = (stats.hrContrib / 100) * circumference;
+  const sleepLen = (stats.sleepContrib / 100) * circumference;
+  const calLen = (stats.calContrib / 100) * circumference;
+  const waterLen = (stats.waterContrib / 100) * circumference;
+
+  // Offsets so the segments stack seamlessly behind one another
+  const hrOffset = 0;
+  const sleepOffset = hrLen;
+  const calOffset = hrLen + sleepLen;
+  const waterOffset = hrLen + sleepLen + calLen;
 
   return (
     <div className="dashboard-wrapper hs-page-bg">
@@ -109,50 +175,76 @@ const HealthScore = () => {
             <div className="hs-left-col">
               <div className="hs-donut-container">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" className="hs-donut-svg">
-                  {/* Background Track */}
+                  {/* Background Track (Empty grey circle) */}
                   <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#f0f0f0" strokeWidth="8" />
                   
-                  {/* Dynamic Progress Segment */}
-                  <circle cx="50" cy="50" r={radius} 
-                    fill="transparent" 
-                    stroke="#FF3B30" 
-                    strokeWidth="8"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={circumference - (stats.score / 100) * circumference}
-                    strokeLinecap="round"
-                    transform="rotate(-90 50 50)"
-                  />
+                  {/* Segment 1: RED (Heart Rate - 35% Max) */}
+                  {stats.hrContrib > 0 && (
+                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#EF473A" strokeWidth="8"
+                      strokeDasharray={`${hrLen} ${circumference}`} 
+                      strokeDashoffset={-hrOffset} 
+                      transform="rotate(-90 50 50)" 
+                    />
+                  )}
+
+                  {/* Segment 2: ORANGE (Sleep - 25% Max) */}
+                  {stats.sleepContrib > 0 && (
+                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#F7931E" strokeWidth="8"
+                      strokeDasharray={`${sleepLen} ${circumference}`} 
+                      strokeDashoffset={-sleepOffset} 
+                      transform="rotate(-90 50 50)" 
+                    />
+                  )}
+
+                  {/* Segment 3: YELLOW (Calories - 25% Max) */}
+                  {stats.calContrib > 0 && (
+                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#FDE08B" strokeWidth="8"
+                      strokeDasharray={`${calLen} ${circumference}`} 
+                      strokeDashoffset={-calOffset} 
+                      transform="rotate(-90 50 50)" 
+                    />
+                  )}
+
+                  {/* Segment 4: BLUE (Water - 15% Max) */}
+                  {stats.waterContrib > 0 && (
+                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#4A90E2" strokeWidth="8"
+                      strokeDasharray={`${waterLen} ${circumference}`} 
+                      strokeDashoffset={-waterOffset} 
+                      transform="rotate(-90 50 50)" 
+                    />
+                  )}
                 </svg>
                 <div className="hs-donut-text">{loading ? "..." : `${stats.score}%`}</div>
               </div>
 
+              {/* Legend matching colors */}
               <div className="hs-legend-grid">
                 <div className="hs-legend-item">
-                  <div className="hs-legend-bar bg-red"></div>
+                  <div className="hs-legend-bar bg-red" style={{ backgroundColor: '#EF473A' }}></div>
                   <div className="hs-legend-text">
                     <span className="hs-legend-title">Heart Rate</span>
-                    <span className="hs-legend-desc">{stats.heartRate > 0 ? "Steady as Sauce" : "Waiting for data"}</span>
+                    <span className="hs-legend-desc">{stats.heartRate >= 60 && stats.heartRate <= 80 ? "Steady as Sauce" : "Needs Attention"}</span>
                   </div>
                 </div>
                 <div className="hs-legend-item">
-                  <div className="hs-legend-bar bg-yellow"></div>
-                  <div className="hs-legend-text">
-                    <span className="hs-legend-title">Calories Burned</span>
-                    <span className="hs-legend-desc">Simmering</span>
-                  </div>
-                </div>
-                <div className="hs-legend-item">
-                  <div className="hs-legend-bar bg-orange"></div>
+                  <div className="hs-legend-bar bg-orange" style={{ backgroundColor: '#F7931E' }}></div>
                   <div className="hs-legend-text">
                     <span className="hs-legend-title">Sleep Hours</span>
-                    <span className="hs-legend-desc">Snooze approved</span>
+                    <span className="hs-legend-desc">{stats.sleepSeconds >= 25200 ? "Snooze approved" : "Catch up on rest"}</span>
                   </div>
                 </div>
                 <div className="hs-legend-item">
-                  <div className="hs-legend-bar bg-pink"></div>
+                  <div className="hs-legend-bar bg-yellow" style={{ backgroundColor: '#FDE08B' }}></div>
+                  <div className="hs-legend-text">
+                    <span className="hs-legend-title">Calories Burned</span>
+                    <span className="hs-legend-desc">{stats.calories >= 300 ? "Simmering" : "Low Activity"}</span>
+                  </div>
+                </div>
+                <div className="hs-legend-item">
+                  <div className="hs-legend-bar bg-blue" style={{ backgroundColor: '#4A90E2' }}></div>
                   <div className="hs-legend-text">
                     <span className="hs-legend-title">Water Intake</span>
-                    <span className="hs-legend-desc">Hydrated</span>
+                    <span className="hs-legend-desc">{stats.water >= 2000 ? "Hydrated" : "Slightly Low"}</span>
                   </div>
                 </div>
               </div>
@@ -160,43 +252,39 @@ const HealthScore = () => {
 
             {/* RIGHT COLUMN: Metric Pills */}
             <div className="hs-right-col">
-              <div className="hs-big-pill pill-red" onClick={() => navigate('/heart-rate')}>
-                <div className="hs-icon-circle"><FiHeart size={24} color="#000" /></div>
+              {/* Heart Rate */}
+              <div className="hs-big-pill pill-red" onClick={() => navigate('/heart-rate')} style={{ backgroundColor: '#EF473A', color: 'white' }}>
+                <div className="hs-icon-circle" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}><FiHeart size={24} color="#FFF" /></div>
                 <div className="hs-pill-text">
-                  <span className="hs-pill-label">Heart Rate</span>
-                  <span className="hs-pill-value">{stats.heartRate || '--'} <strong>BPM</strong></span>
+                  <span className="hs-pill-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Heart Rate</span>
+                  <span className="hs-pill-value">{stats.heartRate || '--'} <strong style={{ fontWeight: 'normal' }}>BPM</strong></span>
                 </div>
               </div>
 
-              <div className="hs-big-pill pill-orange" onClick={() => navigate('/sleep')}>
-                <div className="hs-icon-circle"><FiMoon size={24} color="#000" /></div>
+              {/* Sleep Hours */}
+              <div className="hs-big-pill pill-orange" onClick={() => navigate('/sleep')} style={{ backgroundColor: '#F7931E', color: 'white' }}>
+                <div className="hs-icon-circle" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}><FiMoon size={24} color="#FFF" /></div>
                 <div className="hs-pill-text">
-                  <span className="hs-pill-label">Sleep Hours</span>
-                  <span className="hs-pill-value">
-                    {stats.sleepSeconds > 0 
-                      ? (stats.sleepSeconds / 3600).toFixed(1) 
-                      : '0.0'} 
-                    <strong> hours</strong>
-                  </span>
+                  <span className="hs-pill-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Sleep Hours</span>
+                  <span className="hs-pill-value">{(stats.sleepSeconds / 3600).toFixed(1)} <strong style={{ fontWeight: 'normal' }}>HOURS</strong></span>
                 </div>
               </div>
 
-              <div className="hs-big-pill pill-yellow" onClick={() => navigate('/activity')}>
-                <div className="hs-icon-circle"><FiActivity size={24} color="#000" /></div>
-                <div className="hs-pill-text text-black">
-                  <span className="hs-pill-label">Calories Burned</span>
-                  <span className="hs-pill-value">{stats.calories || '0'} <strong>KCAL</strong></span>
+              {/* Calories Burned */}
+              <div className="hs-big-pill pill-yellow" onClick={() => navigate('/activity')} style={{ backgroundColor: '#FDE08B', color: '#333' }}>
+                <div className="hs-icon-circle" style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}><FiActivity size={24} color="#333" /></div>
+                <div className="hs-pill-text">
+                  <span className="hs-pill-label" style={{ color: '#555' }}>Calories Burned</span>
+                  <span className="hs-pill-value">{stats.calories || '0'} <strong style={{ fontWeight: 'normal' }}>KCAL</strong></span>
                 </div>
               </div>
 
-              <div className="hs-big-pill pill-blue" onClick={() => navigate('/water')}>
-                <div className="hs-icon-circle"><FiDroplet size={24} color="#000" /></div>
+              {/* Water Intake */}
+              <div className="hs-big-pill pill-blue" onClick={() => navigate('/water')} style={{ backgroundColor: '#4A90E2', color: 'white' }}>
+                <div className="hs-icon-circle" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}><FiDroplet size={24} color="#FFF" /></div>
                 <div className="hs-pill-text">
-                  <span className="hs-pill-label">Water Intake</span>
-                  <span className="hs-pill-value">
-                    {stats.water ? (stats.water / 1000).toFixed(1) : '0.0'} 
-                    <strong> L</strong>
-                  </span>
+                  <span className="hs-pill-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Water Intake</span>
+                  <span className="hs-pill-value">{stats.water ? (stats.water / 1000).toFixed(1) : '0.0'} <strong style={{ fontWeight: 'normal' }}>L</strong></span>
                 </div>
               </div>
             </div>
