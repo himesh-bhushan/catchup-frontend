@@ -11,7 +11,7 @@ import DashboardNav from '../../components/DashboardNav';
 import avatar1 from '../../assets/avatar1.png';
 import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
-import awards from '../../assets/award.png'; // Make sure you have this image in your assets folder
+import awards from '../../assets/awards.png'; // Make sure you have this image in your assets folder
 
 import './Sharing.css';
 
