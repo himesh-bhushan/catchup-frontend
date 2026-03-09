@@ -13,15 +13,18 @@ import './Sharing.css';
 const Sharing = () => {
 
   const [isSearching, setIsSearching] = useState(false);
-  // Default to false, logic in useEffect will determine if we flip this to true
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
 
+  // --- NEW: Friend Detail States ---
+  const [viewingFriend, setViewingFriend] = useState(null);
+  const [friendStats, setFriendStats] = useState(null);
+  const [friendLoading, setFriendLoading] = useState(false);
+
   useEffect(() => {
-    // Check if user has completed onboarding before
     const hasOnboarded = localStorage.getItem('has_onboarded_sharing');
     if (hasOnboarded === 'true') {
         setShowLeaderboard(true);
@@ -52,29 +55,41 @@ const Sharing = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // 1. FETCH CURRENT USER (To add to leaderboard)
+    const { data: currentUser } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name, email, avatar_url, score')
+      .eq('id', user.id)
+      .single();
+
+    // 2. FETCH FRIENDS (Including their score)
     const { data, error } = await supabase
       .from('friend_requests')
       .select(`
         id,
         sender_id,
         receiver_id,
-        sender:profiles!friend_requests_sender_id_fkey (id, first_name, last_name, email, avatar_url),
-        receiver:profiles!friend_requests_receiver_id_fkey (id, first_name, last_name, email, avatar_url)
+        sender:profiles!friend_requests_sender_id_fkey (id, first_name, last_name, email, avatar_url, score),
+        receiver:profiles!friend_requests_receiver_id_fkey (id, first_name, last_name, email, avatar_url, score)
       `)
       .eq('status', 'accepted')
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
 
     if (!error && data) {
-      const friendsList = data.map(rel =>
+      let friendsList = data.map(rel =>
         rel.sender_id === user.id ? rel.receiver : rel.sender
       );
       
-      // Sort friends by score if available, otherwise fallback
+      // 3. ADD USER TO LIST & SORT
+      if (currentUser) {
+          currentUser.isMe = true; 
+          friendsList.push(currentUser);
+      }
+      
       const sortedFriends = friendsList.sort((a, b) => (b.score || 0) - (a.score || 0));
       setMyFriends(sortedFriends);
       
-      // Optimization: If they already have friends, they shouldn't see onboarding
-      if (friendsList.length > 0) {
+      if (friendsList.length > 1) { // Greater than 1 because the user themselves is 1
           localStorage.setItem('has_onboarded_sharing', 'true');
           setShowLeaderboard(true);
       }
@@ -112,7 +127,6 @@ const Sharing = () => {
     if (error) {
         alert("Request already exists.");
     } else {
-        // Once they interact with the social features, consider onboarding complete
         localStorage.setItem('has_onboarded_sharing', 'true');
         alert("Request sent!");
     }
@@ -135,6 +149,51 @@ const Sharing = () => {
     }
   };
 
+  // --- NEW: FETCH FRIEND DATA ---
+  const handleViewFriend = async (friend) => {
+    setViewingFriend(friend);
+    setFriendLoading(true);
+    try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const { data: profile } = await supabase.from('profiles').select('calorie_goal, heart_rate, sleep_seconds, water_intake').eq('id', friend.id).single();
+        const { data: activity } = await supabase.from('activity_logs').select('calories, steps').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
+
+        // Health Score Math
+        let hrScore = 0, sleepScore = 0, calScore = 0, waterScore = 0;
+        const heart = profile?.heart_rate || 0;
+        if (heart > 0) {
+            if (heart >= 60 && heart <= 80) hrScore = 100;
+            else if (heart > 80 && heart <= 100) hrScore = Math.max(0, 100 - (heart - 80) * 2);
+            else if (heart > 100) hrScore = Math.max(0, 60 - (heart - 100) * 3);
+            else if (heart < 60) hrScore = Math.max(0, 100 - (60 - heart) * 2);
+        }
+        const sleepHrs = (profile?.sleep_seconds || 0) / 3600;
+        if (sleepHrs > 0) {
+            if (sleepHrs >= 7 && sleepHrs <= 9) sleepScore = 100;
+            else sleepScore = Math.max(0, 100 - Math.abs(sleepHrs - 8) * 15);
+        }
+        const cals = activity?.calories || 0;
+        const goal = profile?.calorie_goal || 500;
+        if (cals > 0) calScore = Math.min(100, (cals / goal) * 100);
+        
+        const waterLiters = (profile?.water_intake || 0) / 1000;
+        if (waterLiters > 0) waterScore = Math.min(100, (waterLiters / 2.5) * 100);
+
+        const totalScore = Math.round(hrScore * 0.35 + sleepScore * 0.25 + calScore * 0.25 + waterScore * 0.15);
+
+        setFriendStats({
+            profile,
+            activity,
+            healthScore: totalScore,
+            movePercent: Math.min((cals / goal) * 100, 100)
+        });
+    } catch(err) {
+        console.error(err);
+    } finally {
+        setFriendLoading(false);
+    }
+  };
+
   return (
     <div className="dashboard-wrapper sharing-page-bg">
 
@@ -144,7 +203,63 @@ const Sharing = () => {
 
         <div className="sharing-page-container">
 
-          {showLeaderboard ? (
+          {viewingFriend ? (
+            /* --- FRIEND DETAILS VIEW --- */
+            <div className="friend-detail-wrapper">
+                <div className="lb-header">
+                    <button className="lb-transparent-btn" onClick={() => setViewingFriend(null)}>
+                        <FiArrowLeft size={28} />
+                    </button>
+                    <h2 style={{ margin: 0, color: '#111', fontSize: '1.8rem' }}>
+                        @{viewingFriend.first_name?.toLowerCase()} {viewingFriend.isMe ? '(You)' : ''}
+                    </h2>
+                </div>
+
+                {friendLoading ? (
+                    <div style={{ textAlign: 'center', color: '#888', marginTop: '50px' }}>Loading progress...</div>
+                ) : (
+                    <div className="friend-stats-grid">
+                        
+                        {/* Move Ring Card */}
+                        <div className="theme-card friend-stat-card">
+                            <h3 style={{ marginTop: 0, color: '#111', width: '100%', marginBottom: '25px' }}>Activity Ring</h3>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '30px', width: '100%' }}>
+                                <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: `conic-gradient(#E64A45 0% ${friendStats?.movePercent || 0}%, #f2f2f2 0% 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div style={{ width: '75px', height: '75px', background: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '1.2rem', color: '#111' }}>
+                                        {Math.round(friendStats?.movePercent || 0)}%
+                                    </div>
+                                </div>
+                                <div>
+                                    <p style={{ margin: '0 0 8px', fontWeight: 'bold', color: '#555' }}>
+                                        Move: <span style={{ color: '#E64A45', fontSize: '1.2rem' }}>{friendStats?.activity?.calories || 0}</span> / {friendStats?.profile?.calorie_goal || 500} KCAL
+                                    </p>
+                                    <p style={{ margin: '0', fontWeight: 'bold', color: '#555' }}>
+                                        Steps: <span style={{ color: '#E64A45', fontSize: '1.2rem' }}>{friendStats?.activity?.steps || 0}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Health Score Card */}
+                        <div className="theme-card friend-stat-card">
+                            <h3 style={{ marginTop: 0, color: '#111', width: '100%', marginBottom: '25px' }}>Health Score</h3>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '30px', width: '100%' }}>
+                                <div style={{ width: '100px', height: '100px', borderRadius: '50%', border: '10px solid #E64A45', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: '800', color: '#E64A45' }}>
+                                    {friendStats?.healthScore || 0}
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <span style={{ fontSize: '0.95rem', color: '#666' }}><strong>Heart Rate:</strong> {friendStats?.profile?.heart_rate || '--'} BPM</span>
+                                    <span style={{ fontSize: '0.95rem', color: '#666' }}><strong>Sleep:</strong> {friendStats?.profile?.sleep_seconds ? (friendStats.profile.sleep_seconds / 3600).toFixed(1) : '0.0'} hrs</span>
+                                    <span style={{ fontSize: '0.95rem', color: '#666' }}><strong>Water:</strong> {friendStats?.profile?.water_intake ? (friendStats.profile.water_intake / 1000).toFixed(1) : '0.0'} L</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                )}
+            </div>
+
+          ) : showLeaderboard ? (
             /* --- LEADERBOARD VIEW --- */
             <div className="leaderboard-wrapper">
               
@@ -160,39 +275,39 @@ const Sharing = () => {
               
               <div className="lb-podium">
                 {/* 2nd Place */}
-                <div className="podium-col second-place">
+                <div className="podium-col second-place" onClick={() => myFriends[1] && handleViewFriend(myFriends[1])} style={{ cursor: myFriends[1] ? 'pointer' : 'default' }}>
                     <span className="podium-rank">2ND</span>
                     <div className="podium-avatar">
                       {myFriends[1]?.avatar_url ? <img src={myFriends[1].avatar_url} alt="" /> : (myFriends[1] ? <FiUser size={40} color="#E64A45" /> : null)}
                     </div>
                     <span className="podium-score">{myFriends[1]?.score || 0}</span>
-                    <span className="podium-name">{myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase() || 'user'}` : ''}</span>
+                    <span className="podium-name">{myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase() || 'user'} ${myFriends[1].isMe ? '(You)' : ''}` : ''}</span>
                 </div>
                 
                 {/* 1st Place */}
-                <div className="podium-col first-place">
+                <div className="podium-col first-place" onClick={() => myFriends[0] && handleViewFriend(myFriends[0])} style={{ cursor: myFriends[0] ? 'pointer' : 'default' }}>
                     <span className="podium-crown">👑</span>
                     <div className="podium-avatar first-avatar">
                       {myFriends[0]?.avatar_url ? <img src={myFriends[0].avatar_url} alt="" /> : (myFriends[0] ? <FiUser size={50} color="#E64A45" /> : null)}
                     </div>
                     <span className="podium-score first-score">{myFriends[0]?.score || 0}</span>
-                    <span className="podium-name">{myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase() || 'user'}` : ''}</span>
+                    <span className="podium-name">{myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase() || 'user'} ${myFriends[0].isMe ? '(You)' : ''}` : ''}</span>
                 </div>
                 
                 {/* 3rd Place */}
-                <div className="podium-col third-place">
+                <div className="podium-col third-place" onClick={() => myFriends[2] && handleViewFriend(myFriends[2])} style={{ cursor: myFriends[2] ? 'pointer' : 'default' }}>
                     <span className="podium-rank">3RD</span>
                     <div className="podium-avatar">
                       {myFriends[2]?.avatar_url ? <img src={myFriends[2].avatar_url} alt="" /> : (myFriends[2] ? <FiUser size={40} color="#E64A45" /> : null)}
                     </div>
                     <span className="podium-score">{myFriends[2]?.score || 0}</span>
-                    <span className="podium-name">{myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase() || 'user'}` : ''}</span>
+                    <span className="podium-name">{myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase() || 'user'} ${myFriends[2].isMe ? '(You)' : ''}` : ''}</span>
                 </div>
               </div>
 
               <div className="lb-list-alt">
                 {myFriends.slice(3).map((friend, index) => (
-                  <div key={friend.id || index} className="lb-list-card">
+                  <div key={friend.id || index} className="lb-list-card" onClick={() => handleViewFriend(friend)} style={{ cursor: 'pointer' }}>
                     <div className="lb-card-left">
                       <div className="lb-card-rank">
                         {index + 4}TH<br/>
@@ -201,7 +316,7 @@ const Sharing = () => {
                       <div className="lb-card-avatar">
                          {friend.avatar_url ? <img src={friend.avatar_url} alt="" /> : <FiUser size={30} color="#E64A45" />}
                       </div>
-                      <span className="lb-card-name">@{friend.first_name?.toLowerCase() || 'user'}</span>
+                      <span className="lb-card-name">@{friend.first_name?.toLowerCase() || 'user'} {friend.isMe && '(You)'}</span>
                     </div>
                     <span className="lb-card-score">{friend.score || 0}</span>
                   </div>
@@ -271,8 +386,7 @@ const Sharing = () => {
                     <h3 className="theme-heading">Find and Approve Friends</h3>
 
                     <button className="close-btn" onClick={() => {
-                        // If they have friends, closing search should go back to leaderboard
-                        if (myFriends.length > 0) {
+                        if (myFriends.length > 1) { // 1 is just the user
                             setShowLeaderboard(true);
                             setIsSearching(false);
                         } else {
@@ -356,7 +470,7 @@ const Sharing = () => {
 
                   {/* CURRENT FRIENDS */}
                   <div className="friends-list-group">
-                    <h4 className="section-label">Your Friends ({myFriends.length})</h4>
+                    <h4 className="section-label">Your Network ({myFriends.length})</h4>
                     <div className="friends-grid">
                       {myFriends.map((friend) => (
                         <div key={friend.id} className="theme-card">
@@ -369,11 +483,11 @@ const Sharing = () => {
                               )}
                             </div>
                             <div className="text-group">
-                              <p className="name-bold">{friend.first_name} {friend.last_name}</p>
+                              <p className="name-bold">{friend.first_name} {friend.last_name} {friend.isMe && '(You)'}</p>
                               <span className="badge-online">Connected</span>
                             </div>
                           </div>
-                          <button className="theme-btn-outline" onClick={() => setShowLeaderboard(true)}>View Progress</button>
+                          <button className="theme-btn-outline" onClick={() => { setIsSearching(false); handleViewFriend(friend); }}>View Progress</button>
                         </div>
                       ))}
                     </div>

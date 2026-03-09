@@ -618,3 +618,39 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+
+/* --- FRIEND PROGRESS DETAILS VIEW --- */
+.friend-detail-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.friend-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.friend-stat-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 35px 30px;
+    border-radius: 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+
+/* Hover effects to show interactivity on podium/list cards */
+.podium-col:hover, .lb-list-card:hover {
+    transform: scale(1.03);
+    transition: transform 0.2s ease;
+}
+
+@media (max-width: 768px) {
+    .friend-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
