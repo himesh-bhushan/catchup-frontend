@@ -111,6 +111,7 @@ const Sharing = () => {
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
+      // Ensure we only get the single initial letter for mobile/dashboard consistency
       days.push({
         dateStr: d.toISOString().split('T')[0],
         dayName: d.toLocaleDateString('en-US', { weekday: 'short' })[0]
@@ -324,7 +325,7 @@ const Sharing = () => {
                   <div className="awards-weekly-row">
                     
                     {/* Weekly Performance Rings */}
-                    <div className="glass-card weekly-chart-card">
+                    <div className="glass-card sharing-weekly-card">
                       <div className="dash-card-header"><h3>Weekly Performance</h3></div>
                       <div className="weekly-rings-container">
                         {friendWeeklyData.map((day, i) => (
@@ -346,7 +347,7 @@ const Sharing = () => {
                     </div>
 
                     {/* Single Award Card */}
-                    <div className="glass-card awards-card">
+                    <div className="glass-card sharing-awards-card">
                         <div className="dash-card-header">
                             <h3>Awards</h3>
                             <FiChevronRight className="card-arrow" color="#E64A45" />

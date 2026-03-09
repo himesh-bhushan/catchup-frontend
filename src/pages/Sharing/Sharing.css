@@ -18,7 +18,7 @@
 .lb-header {
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: space-between; /* Space out evenly to keep Add Friend on right */
     position: relative; 
     gap: 15px;
     margin-bottom: 30px;
@@ -39,10 +39,9 @@
 }
 
 .lb-transparent-btn:hover { transform: scale(1.15); }
-.lb-header .lb-transparent-btn:first-child { position: absolute; left: 0; }
 
 .lb-search-bar-alt {
-    width: 100%;
+    flex: 1; /* Takes middle space evenly */
     max-width: 700px;
     padding: 18px 24px;
     border-radius: 16px;
@@ -51,6 +50,7 @@
     font-size: 1.1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     outline: none;
+    margin: 0 auto;
 }
 
 /* --- LEADERBOARD PODIUM --- */
@@ -132,7 +132,7 @@
 .profile-image-ring {
     width: 85px; height: 85px;
     background: #E64A45;
-    border-radius: 50%; /* Reverted to pure circle from squircle */
+    border-radius: 50%; /* Force pure circle */
     overflow: hidden;
     display: flex; align-items: center; justify-content: center;
 }
@@ -180,14 +180,13 @@
     gap: 20px;
 }
 
-/* Activity Ring Styling (Side-by-side view exactly like reference) */
+/* Activity Ring Styling (Side-by-side view like the dashboard) */
 .activity-body-side {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 30px;
-    padding-top: 15px;
 }
 
 .dash-ring-wrapper-large {
@@ -306,22 +305,23 @@
 .dark-text span { color: #555; }
 .dark-text strong { color: #111; }
 
+
 /* --- BOTTOM ROW: WEEKLY RINGS & AWARDS --- */
-/* Forcing this row to behave correctly with grid settings */
+/* The layout strictly forces exactly 2 columns and stretches height */
 .awards-weekly-row {
     display: grid;
-    grid-template-columns: 1.4fr 1fr; /* Stretches the weekly performance */
-    grid-template-rows: 1fr; /* Forces components to be in a single inline row */
+    grid-template-columns: 1.4fr 1fr; /* Stretches the weekly performance slightly wider */
     gap: 20px;
-    align-items: stretch; /* Cards will be equal height */
+    align-items: stretch; /* Cards will be identical in height */
 }
 
 /* --- WEEKLY 7-DAY MINI RINGS --- */
-.weekly-chart-card {
+.sharing-weekly-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    margin: 0;
+    height: auto;
+    margin: 0 !important; /* Overrides global CSS forcing grid rows */
+    grid-area: auto !important;
 }
 
 .weekly-rings-container {
@@ -330,6 +330,8 @@
     align-items: center;
     padding: 10px 10px 20px 10px;
     flex: 1; 
+    width: 100%; /* Ensures it stretches to fit the card */
+    box-sizing: border-box;
 }
 
 .mini-ring-col {
@@ -350,11 +352,12 @@
 }
 
 /* --- SINGLE AWARD CARD --- */
-.awards-card {
+.sharing-awards-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    margin: 0;
+    height: auto;
+    margin: 0 !important; /* Overrides any global Dashboard.css positioning */
+    grid-area: auto !important; /* Prevents global grid collision */
 }
 
 .awards-content {
@@ -363,7 +366,7 @@
     align-items: center;
     justify-content: center;
     flex: 1;
-    padding: 10px 0;
+    padding: 10px 0 20px 0;
 }
 
 .award-badge-status {
@@ -400,6 +403,7 @@
 .award-share-btn:hover {
     transform: scale(1.05);
 }
+
 
 /* --- FIND FRIENDS SECTION --- */
 .theme-container {
