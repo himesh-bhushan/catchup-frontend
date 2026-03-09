@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, 
-  FiUserPlus, FiCheck, FiTrash2, FiHeart, FiMoon, FiActivity, FiDroplet, FiChevronRight 
+  FiUserPlus, FiCheck, FiTrash2, FiAward, FiHeart, FiMoon, FiActivity, FiZap, FiChevronRight 
 } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
@@ -14,14 +14,16 @@ import avatar3 from '../../assets/avatar3.png';
 
 import './Sharing.css';
 
-// Master list of awards to display in the UI
+// Master list of awards to display in the UI (matches dashboard)
 const ALL_AWARDS = [
-  { id: 'award_1', name: 'Monthly Mover', fallbackIcon: '🏃' },
-  { id: 'award_2', name: '7 Day Streak', fallbackIcon: '🔥' },
-  { id: 'award_3', name: 'Goal Crusher', fallbackIcon: '🏆' },
-  { id: 'award_4', name: 'Hydration Pro', fallbackIcon: '💧' },
-  { id: 'award_5', name: 'Sleep Master', fallbackIcon: '💤' },
-  { id: 'award_6', name: 'Step Champion', fallbackIcon: '👟' }
+  { id: 'award_1', name: '7 Day Streak', fallbackIcon: '🔥' },
+  { id: 'award_2', name: 'Goal Crusher', fallbackIcon: '🏆' },
+  { id: 'award_3', name: 'Hydration Pro', fallbackIcon: '💧' },
+  { id: 'award_4', name: 'Sleep Master', fallbackIcon: '💤' },
+  { id: 'award_5', name: 'Step Champion', fallbackIcon: '👟' },
+  { id: 'award_6', name: 'Early Riser', fallbackIcon: '🌅' },
+  { id: 'award_7', name: 'Weekend Warrior', fallbackIcon: '🚴' },
+  { id: 'award_8', name: 'Perfect Month', fallbackIcon: '⭐' }
 ];
 
 const Sharing = () => {
@@ -237,7 +239,7 @@ const Sharing = () => {
               ) : (
                 <div className="dashboard-grid-layout">
                   
-                  {/* --- ACTIVITY RING & HEALTH SCORE ROW --- */}
+                  {/* --- TOP ROW: ACTIVITY RING & HEALTH SCORE --- */}
                   <div className="activity-main-row">
                     
                     {/* Activity Ring */}
@@ -290,51 +292,74 @@ const Sharing = () => {
                       </div>
                       <div className="dash-card-body hs-body">
                         <div className="dash-ring-wrapper-medium">
+                          {/* 4-Color Segmented Ring */}
                           <svg viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="35" stroke="#D3504A" strokeWidth="16" fill="none" strokeDasharray="75 220" strokeDashoffset="0" />
                             <circle cx="50" cy="50" r="35" stroke="#E29E3A" strokeWidth="16" fill="none" strokeDasharray="60 220" strokeDashoffset="-75" />
                             <circle cx="50" cy="50" r="35" stroke="#F6E27F" strokeWidth="16" fill="none" strokeDasharray="15 220" strokeDashoffset="-135" />
                             <circle cx="50" cy="50" r="35" stroke="#5C83D6" strokeWidth="16" fill="none" strokeDasharray="70 220" strokeDashoffset="-150" />
                           </svg>
-                          <div className="dash-ring-inner">
+                          <div className="dash-ring-inner HS-INNER-CIRCLE">
                             <span className="hs-center-val">{friendStats?.healthScore || 0}</span>
                           </div>
                         </div>
                         <div className="hs-pills-list">
-                          <div className="hs-pill bg-red">
-                            <div className="pill-icon-wrapper"><FiHeart className="icon-red" /></div>
-                            <div className="pill-text"><span>Heart Rate</span><strong>{friendStats?.profile?.heart_rate || '--'} <small>BPM</small></strong></div>
+                          <div className="hs-pill bg-red hs-thinner-pill">
+                            <div className="pill-icon-wrapper-small HS-SMALL-ICON-BOX"><FiHeart className="icon-red hs-icon-scale" /></div>
+                            <div className="pill-text hs-smaller-text"><span>Heart Rate</span><strong>{friendStats?.profile?.heart_rate || '--'} <small>BPM</small></strong></div>
                           </div>
-                          <div className="hs-pill bg-orange">
-                            <div className="pill-icon-wrapper"><FiMoon className="icon-orange" /></div>
-                            <div className="pill-text"><span>Sleep Hours</span><strong>{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <small>HOURS</small></strong></div>
+                          <div className="hs-pill bg-orange hs-thinner-pill">
+                            <div className="pill-icon-wrapper-small HS-SMALL-ICON-BOX"><FiMoon className="icon-orange hs-icon-scale" /></div>
+                            <div className="pill-text hs-smaller-text"><span>Sleep Hours</span><strong>{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <small>HOURS</small></strong></div>
                           </div>
-                          <div className="hs-pill bg-yellow">
-                            <div className="pill-icon-wrapper"><FiActivity className="icon-dark" /></div>
-                            <div className="pill-text dark-text"><span>Calories Burned</span><strong>{friendStats?.activity?.calories || 0} <small>KCAL</small></strong></div>
+                          <div className="hs-pill bg-yellow hs-thinner-pill">
+                            <div className="pill-icon-wrapper-small HS-SMALL-ICON-BOX"><FiActivity className="icon-dark hs-icon-scale" /></div>
+                            <div className="pill-text dark-text hs-smaller-text"><span>Calories Burned</span><strong>{friendStats?.activity?.calories || 0} <small>KCAL</small></strong></div>
                           </div>
-                          <div className="hs-pill bg-blue">
-                            <div className="pill-icon-wrapper"><FiDroplet className="icon-blue" /></div>
-                            <div className="pill-text"><span>Water Intake</span><strong>{(friendStats?.profile?.water_intake / 1000).toFixed(1) || '0'} <small>L</small></strong></div>
+                          <div className="hs-pill bg-blue hs-thinner-pill">
+                            <div className="pill-icon-wrapper-small HS-SMALL-ICON-BOX"><FiDroplet className="icon-blue hs-icon-scale" /></div>
+                            <div className="pill-text hs-smaller-text"><span>Water Intake</span><strong>{(friendStats?.profile?.water_intake / 1000).toFixed(1) || '0'} <small>L</small></strong></div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* --- VITALS & WEEKLY ROW --- */}
-                  <div className="vitals-weekly-row">
-                    <div className="vitals-col">
-                      <div className="glass-card dash-vital-card">
-                        <div className="dash-card-header"><h3>Heart Rate</h3><FiChevronRight color="#E64A45" /></div>
-                        <div className="vital-big-val">{friendStats?.profile?.heart_rate || '--'} <span>BPM</span></div>
+                  {/* --- BOTTOM ROW: AWARDS & WEEKLY PERFORMANCE --- */}
+                  <div className="awards-weekly-row">
+                    
+                    {/* DASHBOARD STYLE AWARDS (Moved from bottom) */}
+                    <div className="glass-card dash-awards-card STACKED-AWARDS-COL">
+                      <div className="dash-card-header">
+                        <h3>Awards</h3>
+                        <FiChevronRight color="#E64A45" />
                       </div>
-                      <div className="glass-card dash-vital-card">
-                        <div className="dash-card-header"><h3>Sleep</h3><FiChevronRight color="#E64A45" /></div>
-                        <div className="vital-big-val">{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <span>hrs</span></div>
+                      <div className="dash-awards-grid">
+                        {ALL_AWARDS.map((stdAward) => {
+                          const earnedMatch = friendStats?.awards?.find(a => 
+                            a.award_name?.toLowerCase() === stdAward.name.toLowerCase() || 
+                            a.award_id === stdAward.id
+                          );
+                          const isEarned = !!earnedMatch;
+                          const iconToShow = earnedMatch?.icon_url || stdAward.fallbackIcon;
+
+                          return (
+                            <div key={stdAward.id} className={`dash-award-badge ${isEarned ? 'earned' : 'locked'}`}>
+                              <div className="badge-inner-small">
+                                {typeof iconToShow === 'string' && iconToShow.startsWith('http') ? (
+                                  <img src={iconToShow} alt={stdAward.name} />
+                                ) : (
+                                  <span className="badge-emoji-small">{iconToShow}</span>
+                                )}
+                              </div>
+                              <span className="badge-label-small">{stdAward.name}</span>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
 
+                    {/* Weekly Performance */}
                     <div className="glass-card weekly-chart-card">
                       <div className="dash-card-header"><h3>Weekly Performance</h3></div>
                       <div className="weekly-rings-container">
@@ -354,37 +379,6 @@ const Sharing = () => {
                           </div>
                         ))}
                       </div>
-                    </div>
-                  </div>
-
-                  {/* --- DASHBOARD STYLE AWARDS --- */}
-                  <div className="glass-card dash-awards-card">
-                    <div className="dash-card-header">
-                      <h3>Awards</h3>
-                      <FiChevronRight color="#E64A45" />
-                    </div>
-                    <div className="dash-awards-grid">
-                      {ALL_AWARDS.map((stdAward) => {
-                        const earnedMatch = friendStats?.awards?.find(a => 
-                          a.award_name?.toLowerCase() === stdAward.name.toLowerCase() || 
-                          a.award_id === stdAward.id
-                        );
-                        const isEarned = !!earnedMatch;
-                        const iconToShow = earnedMatch?.icon_url || stdAward.fallbackIcon;
-
-                        return (
-                          <div key={stdAward.id} className={`dash-award-badge ${isEarned ? 'earned' : 'locked'}`}>
-                            <div className="badge-inner">
-                              {typeof iconToShow === 'string' && iconToShow.startsWith('http') ? (
-                                <img src={iconToShow} alt={stdAward.name} />
-                              ) : (
-                                <span className="badge-emoji">{iconToShow}</span>
-                              )}
-                            </div>
-                            <span className="badge-label">{stdAward.name}</span>
-                          </div>
-                        );
-                      })}
                     </div>
                   </div>
 
@@ -462,11 +456,9 @@ const Sharing = () => {
                     <h3 className="theme-heading">Find Friends</h3>
                     <FiX size={24} onClick={() => { if(myFriends.length > 1) setShowLeaderboard(true); setIsSearching(false); }} style={{cursor:'pointer'}} />
                   </div>
-
                   <div className="search-input-wrapper">
                     <input className="theme-search-input" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                   </div>
-
                   {incomingRequests.length > 0 && (
                     <div className="request-group">
                       <h4 className="section-label">Pending Invitations</h4>

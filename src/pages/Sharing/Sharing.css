@@ -107,7 +107,7 @@
 /* --- FRIEND DETAIL HEADER --- */
 .friend-detail-dashboard {
     width: 100%;
-    max-width: 950px; /* Reduced scale so tiles aren't too big */
+    max-width: 950px; 
     margin: 0 auto;
     animation: fadeIn 0.4s ease-out;
 }
@@ -158,7 +158,7 @@
 .glass-card {
     background: #FFFFFF;
     border-radius: 20px;
-    padding: 22px 25px; /* Smaller padding */
+    padding: 22px 25px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.03);
     border: 1px solid #f0f0f0;
 }
@@ -167,12 +167,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 18px; /* Tighter margin */
+    margin-bottom: 18px;
 }
 
 .dash-card-header h3 { margin: 0; font-size: 1.2rem; font-weight: 900; color: #222; }
 
-/* --- ACTIVITY RING & HEALTH SCORE ROW --- */
+/* --- TOP ROW: ACTIVITY RING & HEALTH SCORE --- */
 .activity-main-row {
     display: grid;
     grid-template-columns: 1fr 1.1fr; 
@@ -185,13 +185,12 @@
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    gap: 30px; /* Reduced gap */
+    gap: 30px;
 }
 
 .dash-ring-wrapper-large {
     position: relative;
-    width: 140px; /* Scaled down */
-    height: 140px;
+    width: 140px; height: 140px;
     flex-shrink: 0;
 }
 
@@ -206,7 +205,7 @@
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 90px; /* Scaled down */
+    width: 90px;
     height: 90px;
     background-color: #FFFBEB; 
     border-radius: 50%;
@@ -237,19 +236,19 @@
 .hs-body {
     display: flex;
     align-items: center;
-    gap: 25px; /* Reduced gap */
+    gap: 25px;
 }
 
 .dash-ring-wrapper-medium {
     position: relative;
-    width: 120px; /* Scaled down */
+    width: 120px;
     height: 120px;
     flex-shrink: 0;
 }
 
 .dash-ring-wrapper-medium svg { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotate(-90deg); }
 
-/* Absolute positioning ensures text is perfectly inside the ring */
+/* Center circle absolute positioning */
 .dash-ring-wrapper-medium .dash-ring-inner {
     position: absolute;
     top: 50%; left: 50%;
@@ -265,7 +264,7 @@
 .hs-pills-list {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Scaled down */
+    gap: 10px;
     flex: 1;
 }
 
@@ -273,13 +272,13 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 12px; /* Thinner pills */
+    padding: 8px 12px;
     border-radius: 12px;
     width: 100%;
     box-sizing: border-box;
 }
 
-.pill-icon-wrapper {
+.pill-icon-wrapper-small {
     width: 28px; height: 28px;
     background: #FFFFFF;
     border-radius: 50%;
@@ -304,21 +303,21 @@
 .dark-text span { color: #555; }
 .dark-text strong { color: #111; }
 
-/* --- VITALS & WEEKLY ROW --- */
-.vitals-weekly-row {
+/* --- BOTTOM ROW: AWARDS & WEEKLY PERFORMANCE --- */
+.awards-weekly-row {
     display: grid;
     grid-template-columns: 0.8fr 1.2fr;
     gap: 20px;
 }
 
-.vitals-col {
+.awards-col {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
 .dash-vital-card {
-    padding: 20px 25px; /* Scaled down */
+    padding: 20px 25px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -355,7 +354,9 @@
     transition: stroke-dasharray 1s ease; 
 }
 
-/* --- AWARDS DASHBOARD STYLE --- */
+/* --- AWARDS STACKED COLUMN STYLE --- */
+.dash-awards-card { padding: 35px; }
+
 .dash-awards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -369,8 +370,9 @@
     justify-content: center;
 }
 
-.badge-inner {
-    width: 100px; height: 100px; /* Scaled down */
+.badge-inner-small {
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -381,10 +383,10 @@
     transition: all 0.3s ease;
 }
 
-.badge-inner img { width: 55px; height: 55px; object-fit: contain; }
-.badge-emoji { font-size: 2.5rem; }
+.badge-inner-small img { width: 55px; height: 55px; object-fit: contain; }
+.badge-emoji-small { font-size: 2.5rem; }
 
-.badge-label {
+.badge-label-small {
     font-size: 0.7rem;
     font-weight: 900;
     color: #444;
@@ -395,12 +397,12 @@
 
 /* Award Status Logic */
 .dash-award-badge.locked { opacity: 0.4; filter: grayscale(100%); }
-.dash-award-badge.earned .badge-inner {
+.dash-award-badge.earned .badge-inner-small {
     background: #FFF;
     border: 3px solid #E64A45;
     box-shadow: 0 6px 15px rgba(230, 74, 69, 0.15);
 }
-.dash-award-badge.earned:hover .badge-inner {
+.dash-award-badge.earned:hover .badge-inner-small {
     transform: translateY(-5px) scale(1.05);
 }
 
@@ -466,6 +468,6 @@
 @media (max-width: 1024px) {
     .sharing-page-container { padding: 20px; }
     .lb-podium { gap: 30px; }
-    .activity-main-row, .vitals-weekly-row { grid-template-columns: 1fr; }
+    .activity-main-row, .awards-weekly-row { grid-template-columns: 1fr; }
     .activity-body, .hs-body { flex-direction: column; text-align: center; }
 }
