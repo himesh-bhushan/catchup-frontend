@@ -22,8 +22,8 @@ const Awards = () => {
   
   const [milestoneAwards, setMilestoneAwards] = useState([
     { id: 1, title: '5 days workout-streak', image: awardsBadge, earned: false },
-    { id: 2, title: 'Rank #1 in LeaderBoard for 5 times', image: awardsBadge2, earned: false }, // Placeholder for future DB
-    { id: 3, title: 'Invite 5 friends', image: awardsBadge3, earned: false }, // Placeholder for future DB
+    { id: 2, title: 'Rank #1 in LeaderBoard for 5 times', image: awardsBadge2, earned: false }, 
+    { id: 3, title: 'Invite 5 friends', image: awardsBadge3, earned: false }, 
   ]);
 
   // --- DATA FETCHING & LOGIC ---
@@ -33,9 +33,16 @@ const Awards = () => {
     if (!user) return;
 
     try {
-      // 1. Get user's calorie goal
-      const { data: profile } = await supabase.from('profiles').select('calorie_goal').eq('id', user.id).single();
+      // 1. Get user's profile data (Includes new columns for leaderboard & friends)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('calorie_goal, times_rank_one, friends_invited')
+        .eq('id', user.id)
+        .single();
+        
       const goal = profile?.calorie_goal || 500;
+      const rankOneCount = profile?.times_rank_one || 0;
+      const friendsCount = profile?.friends_invited || 0;
 
       // 2. Setup Date Variables
       const today = new Date();
@@ -56,7 +63,6 @@ const Awards = () => {
       const newMonthlyData = monthNames.map(name => ({ name, earned: false }));
       const monthlyMetDays = new Array(12).fill(0);
       const uniqueDays = new Set();
-      let maxStreak = 0;
 
       if (logs) {
         // Process logs into months and count valid goal days
@@ -68,7 +74,7 @@ const Awards = () => {
           }
         });
 
-        // Evaluate Months
+        // Evaluate Months for the 12-month Grid
         for (let i = 0; i < 12; i++) {
           const daysInMonth = new Date(currentYear, i + 1, 0).getDate();
           if (i < currentMonthIndex) {
@@ -85,35 +91,39 @@ const Awards = () => {
             newMonthlyData[i].earned = false;
           }
         }
-
-        // Calculate 5-Day Workout Streak for Milestones
-        const sortedMetDates = Array.from(uniqueDays).sort();
-        let currentStreak = 0;
-        for (let i = 0; i < sortedMetDates.length; i++) {
-          if (i === 0) { currentStreak = 1; maxStreak = 1; continue; }
-          
-          const prevDate = new Date(sortedMetDates[i-1]);
-          const currDate = new Date(sortedMetDates[i]);
-          const diffTime = Math.abs(currDate - prevDate);
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          
-          if (diffDays === 1) {
-            currentStreak++;
-            maxStreak = Math.max(maxStreak, currentStreak);
-          } else {
-            currentStreak = 1;
-          }
-        }
       }
 
       setMonthlyData(newMonthlyData);
 
-      // Update Milestone 1 with actual streak data
-      setMilestoneAwards(prev => {
-        const newAwards = [...prev];
-        newAwards[0].earned = maxStreak >= 5;
-        return newAwards;
+      // 4. Calculate 5-Day Workout Streak for Milestones
+      const sortedMetDates = Array.from(uniqueDays).sort();
+      let maxStreak = 0;
+      let currentStreak = 0;
+      let previousDate = null;
+
+      sortedMetDates.forEach(dateStr => {
+         const currDate = new Date(dateStr);
+         if (!previousDate) {
+             currentStreak = 1;
+         } else {
+             const diffTime = Math.abs(currDate - previousDate);
+             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+             if (diffDays === 1) {
+                 currentStreak++;
+             } else {
+                 currentStreak = 1;
+             }
+         }
+         maxStreak = Math.max(maxStreak, currentStreak);
+         previousDate = currDate;
       });
+
+      // 5. Update Milestone Awards State
+      setMilestoneAwards([
+        { id: 1, title: '5 days workout-streak', image: awardsBadge, earned: maxStreak >= 5 },
+        { id: 2, title: 'Rank #1 in LeaderBoard for 5 times', image: awardsBadge2, earned: rankOneCount >= 5 },
+        { id: 3, title: 'Invite 5 friends', image: awardsBadge3, earned: friendsCount >= 5 },
+      ]);
 
     } catch (err) {
       console.error("Error fetching awards data:", err);
@@ -127,13 +137,25 @@ const Awards = () => {
   }, [fetchAwardsData]);
 
   // --- NATIVE SOCIAL SHARING ---
-  const handleShare = async () => {
+  const handleMainShare = async () => {
     const shareData = {
       title: 'Monthly Mover Award!',
       text: `I just unlocked the '${currentMonthName} Mover' badge on CatchUp for completing my activity ring every single day! 🍅💪 Catch up with me!`,
       url: 'https://catchup.page',
     };
+    triggerShare(shareData);
+  };
 
+  const handleMilestoneShare = async (awardTitle) => {
+    const shareData = {
+      title: 'New Milestone Unlocked!',
+      text: `I just unlocked the '${awardTitle}' badge on CatchUp! 🏆 Come join me and let's get healthy together!`,
+      url: 'https://catchup.page',
+    };
+    triggerShare(shareData);
+  };
+
+  const triggerShare = async (shareData) => {
     try {
       if (navigator.share) {
         await navigator.share(shareData);
@@ -145,7 +167,7 @@ const Awards = () => {
     } catch (err) {
       console.error('Error sharing:', err);
     }
-  };
+  }
 
   return (
     <div className="dashboard-wrapper awards-page-bg">
@@ -189,26 +211,15 @@ const Awards = () => {
                       <div className="ac-progress-fill" style={{ width: `${progressPercentage}%` }}></div>
                     </div>
 
-                    {/* NEW: Dynamic Share Button */}
+                    {/* Main Share Button */}
                     {isCurrentMonthEarned && (
                       <button 
-                        onClick={handleShare}
+                        onClick={handleMainShare}
                         style={{
-                          marginTop: '20px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '8px',
-                          background: '#DE4B4E',
-                          color: 'white',
-                          border: 'none',
-                          padding: '10px 20px',
-                          borderRadius: '20px',
-                          fontWeight: 'bold',
-                          cursor: 'pointer',
-                          width: '100%',
-                          boxShadow: '0 4px 10px rgba(222, 75, 78, 0.3)',
-                          transition: 'transform 0.2s ease'
+                          marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          gap: '8px', background: '#DE4B4E', color: 'white', border: 'none', padding: '10px 20px',
+                          borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer', width: '100%',
+                          boxShadow: '0 4px 10px rgba(222, 75, 78, 0.3)', transition: 'transform 0.2s ease'
                         }}
                         onMouseOver={(e) => e.target.style.transform = 'scale(1.02)'}
                         onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
@@ -227,6 +238,7 @@ const Awards = () => {
                             src={awardsBadge} 
                             alt={month.name} 
                             className={month.earned ? 'badge-earned' : 'badge-unearned'} 
+                            style={!month.earned ? { filter: 'grayscale(100%) opacity(0.3)' } : {}}
                           />
                           <span>{month.name}</span>
                         </div>
@@ -239,16 +251,33 @@ const Awards = () => {
               {/* Milestone Awards Section */}
               <div className="milestone-awards-container">
                 {milestoneAwards.map((award) => (
-                  <div key={award.id} className="milestone-item">
+                  <div 
+                    key={award.id} 
+                    className="milestone-item"
+                    onClick={() => award.earned && handleMilestoneShare(award.title)}
+                    style={award.earned ? { cursor: 'pointer', transition: 'transform 0.2s' } : { opacity: 0.7 }}
+                    title={award.earned ? "Click to share this award!" : "Keep going to unlock this!"}
+                    onMouseOver={(e) => { if(award.earned) e.currentTarget.style.transform = 'scale(1.05)'; }}
+                    onMouseOut={(e) => { if(award.earned) e.currentTarget.style.transform = 'scale(1)'; }}
+                  >
                     <img 
                       src={award.image} 
                       alt={award.title} 
                       className={award.earned ? 'badge-earned' : 'badge-unearned'} 
+                      style={!award.earned ? { filter: 'grayscale(100%) opacity(0.5)' } : {}}
                     />
                     <span>{award.title}</span>
+                    
+                    {/* Tiny Share Hint for Earned Awards */}
+                    {award.earned && (
+                      <span style={{ fontSize: '0.8rem', color: '#DE4B4E', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '5px' }}>
+                        <FiShare2 size={12} /> Share
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
+
             </>
           )}
 
