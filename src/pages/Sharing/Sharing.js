@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, 
-  FiUserPlus, FiCheck, FiTrash2, FiAward, FiHeart, FiMoon, FiActivity, FiZap 
+  FiUserPlus, FiCheck, FiTrash2, FiAward, FiHeart, FiMoon, FiActivity, FiDroplet 
 } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
@@ -13,6 +13,18 @@ import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
 
 import './Sharing.css';
+
+// Master list of awards to display in the UI (matches dashboard)
+const ALL_AWARDS = [
+  { id: 'award_1', name: '7 Day Streak', fallbackIcon: '🔥' },
+  { id: 'award_2', name: 'Goal Crusher', fallbackIcon: '🏆' },
+  { id: 'award_3', name: 'Hydration Pro', fallbackIcon: '💧' },
+  { id: 'award_4', name: 'Sleep Master', fallbackIcon: '💤' },
+  { id: 'award_5', name: 'Step Champion', fallbackIcon: '👟' },
+  { id: 'award_6', name: 'Early Riser', fallbackIcon: '🌅' },
+  { id: 'award_7', name: 'Weekend Warrior', fallbackIcon: '🚴' },
+  { id: 'award_8', name: 'Perfect Month', fallbackIcon: '⭐' }
+];
 
 const Sharing = () => {
   const [isSearching, setIsSearching] = useState(false);
@@ -105,6 +117,19 @@ const Sharing = () => {
     }
   };
 
+  const getLast7Days = () => {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      days.push({
+        dateStr: d.toISOString().split('T')[0],
+        dayName: d.toLocaleDateString('en-US', { weekday: 'short' })[0]
+      });
+    }
+    return days;
+  };
+
   const handleViewFriend = async (friend) => {
     setViewingFriend(friend);
     setFriendLoading(true);
@@ -125,9 +150,19 @@ const Sharing = () => {
         .order('date', { ascending: true });
 
       const score = calculateUserScore(profile, activity);
-      const movePct = profile?.calorie_goal > 0 ? ((activity?.calories || 0) / profile.calorie_goal) * 100 : 0;
+      const goal = profile?.calorie_goal > 0 ? profile.calorie_goal : 500;
+      const movePct = ((activity?.calories || 0) / goal) * 100;
 
-      setFriendWeeklyData(weeklyLogs || []);
+      // Process Weekly Data into 7-day ring format
+      const last7Days = getLast7Days();
+      const processedWeekly = last7Days.map(day => {
+        const log = (weeklyLogs || []).find(l => l.date === day.dateStr);
+        const cal = log?.calories || 0;
+        const pct = Math.min((cal / goal) * 100, 100);
+        return { dayName: day.dayName, percent: pct };
+      });
+
+      setFriendWeeklyData(processedWeekly);
       setFriendStats({
         profile,
         activity,
@@ -193,7 +228,7 @@ const Sharing = () => {
                     {viewingFriend.avatar_url ? <img src={viewingFriend.avatar_url} alt="" /> : <FiUser />}
                   </div>
                   <div className="profile-text">
-                    <h1>{viewingFriend.first_name} {viewingFriend.last_name}</h1>
+                    <h1 className="black-name-title">{viewingFriend.first_name} {viewingFriend.last_name}</h1>
                     <span className="health-score-pill">Health Score: {friendStats?.healthScore}</span>
                   </div>
                 </div>
@@ -203,6 +238,7 @@ const Sharing = () => {
                 <div className="lb-placeholder-text">Syncing Health Data...</div>
               ) : (
                 <div className="dashboard-grid-layout">
+                  {/* VITALS ROW */}
                   <div className="vitals-row">
                     <div className="glass-card vital-card">
                       <div className="vital-icon hr"><FiHeart /></div>
@@ -220,6 +256,7 @@ const Sharing = () => {
                     </div>
                   </div>
 
+                  {/* ACTIVITY & HEALTH SCORE ROW */}
                   <div className="activity-main-row">
                     <div className="glass-card activity-ring-card">
                       <h3>Daily Activity</h3>
@@ -227,7 +264,7 @@ const Sharing = () => {
                         <svg viewBox="0 0 100 100">
                           <circle className="bg" cx="50" cy="50" r="42" />
                           <circle 
-                            className={`meter ${friendStats?.movePercent >= 100 ? 'goal-reached' : ''}`} 
+                            className={`meter activity-meter ${friendStats?.movePercent >= 100 ? 'goal-reached' : ''}`} 
                             cx="50" cy="50" r="42" 
                             style={{ strokeDasharray: `${(friendStats?.movePercent * 2.64)}, 264` }}
                           />
@@ -243,42 +280,84 @@ const Sharing = () => {
                       </div>
                     </div>
 
-                    <div className="glass-card award-section">
-                      <div className="section-header">
-                        <h3>Earned Awards</h3>
-                        <FiAward color="#E64A45" />
-                      </div>
-                      <div className="awards-scroll">
-                        {friendStats?.awards?.length > 0 ? (
-                          friendStats.awards.map((a, i) => (
-                            <div key={i} className="award-item">
-                              <img src={a.icon_url} alt="" className="earned-award-img" />
-                              <span className="award-name">{a.award_name}</span>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="no-awards-text">No awards earned yet.</p>
-                        )}
+                    <div className="glass-card health-score-card">
+                      <h3>Health Score</h3>
+                      <div className="hs-layout">
+                        <div className="ring-wrapper-medium hs-ring">
+                          <svg viewBox="0 0 100 100">
+                            <circle className="bg" cx="50" cy="50" r="38" />
+                            <circle 
+                              className="meter hs-meter" 
+                              cx="50" cy="50" r="38" 
+                              style={{ strokeDasharray: `${(friendStats?.healthScore * 2.38)}, 238` }}
+                            />
+                          </svg>
+                          <div className="ring-content hs-content">
+                            <span className="percent">{friendStats?.healthScore || 0}</span>
+                          </div>
+                        </div>
+                        <div className="hs-metrics-list">
+                          <div className="hs-metric-item"><FiHeart color="#ef4444" /> <span>Heart</span></div>
+                          <div className="hs-metric-item"><FiMoon color="#d97706" /> <span>Recovery</span></div>
+                          <div className="hs-metric-item"><FiActivity color="#E64A45" /> <span>Activity</span></div>
+                          <div className="hs-metric-item"><FiDroplet color="#3b82f6" /> <span>Hydration</span></div>
+                        </div>
                       </div>
                     </div>
                   </div>
 
+                  {/* WEEKLY PERFORMANCE (7 RINGS) */}
                   <div className="glass-card weekly-chart-card">
                     <h3>Weekly Performance</h3>
-                    <div className="weekly-bar-chart">
-                      {['M','T','W','T','F','S','S'].map((day, i) => {
-                        const height = Math.random() * 70 + 20; // Mock data for bar visualization
-                        return (
-                          <div key={i} className="bar-wrapper">
-                            <div className="bar-bg">
-                              <div className={`bar-fill ${height > 85 ? 'goal-reached' : ''}`} style={{ height: `${height}%` }}></div>
-                            </div>
-                            <span>{day}</span>
+                    <div className="weekly-rings-container">
+                      {friendWeeklyData.map((day, i) => (
+                        <div key={i} className="mini-ring-col">
+                          <div className="mini-ring-wrapper">
+                            <svg viewBox="0 0 50 50">
+                              <circle className="bg" cx="25" cy="25" r="20" />
+                              <circle 
+                                className={`meter mini-meter ${day.percent >= 100 ? 'goal-reached' : ''}`} 
+                                cx="25" cy="25" r="20" 
+                                style={{ strokeDasharray: `${(day.percent * 1.25)}, 125` }}
+                              />
+                            </svg>
                           </div>
-                        )
+                          <span>{day.dayName}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* AWARDS SECTION (ALL AWARDS WITH GREYED OUT LOGIC) */}
+                  <div className="glass-card full-width-awards">
+                    <div className="section-header">
+                      <h3>Earned Awards</h3>
+                      <FiAward color="#E64A45" size={20} />
+                    </div>
+                    <div className="awards-grid-full">
+                      {ALL_AWARDS.map((stdAward) => {
+                        // Check if the friend actually earned this award
+                        const earnedMatch = friendStats?.awards?.find(a => 
+                          a.award_name?.toLowerCase() === stdAward.name.toLowerCase() || 
+                          a.award_id === stdAward.id
+                        );
+                        const isEarned = !!earnedMatch;
+                        const iconToShow = earnedMatch?.icon_url || stdAward.fallbackIcon;
+
+                        return (
+                          <div key={stdAward.id} className={`award-item ${isEarned ? 'earned' : 'locked'}`}>
+                            {typeof iconToShow === 'string' && iconToShow.startsWith('http') ? (
+                              <img src={iconToShow} alt={stdAward.name} className="earned-award-img" />
+                            ) : (
+                              <div className="emoji-award">{iconToShow}</div>
+                            )}
+                            <span className="award-name">{stdAward.name}</span>
+                          </div>
+                        );
                       })}
                     </div>
                   </div>
+
                 </div>
               )}
             </div>
@@ -348,10 +427,17 @@ const Sharing = () => {
                   <button className="share-cta-btn" onClick={() => setIsSearching(true)}>Get Started</button>
                 </>
               ) : (
-                <div className="inline-search-section theme-container">
+                <div className="theme-container">
                   <div className="search-header">
                     <h3 className="theme-heading">Find Friends</h3>
                     <FiX size={24} onClick={() => { if(myFriends.length > 1) setShowLeaderboard(true); setIsSearching(false); }} style={{cursor:'pointer'}} />
+                  </div>
+
+                  <div className="search-input-wrapper">
+                    <input className="theme-search-input" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                    <button className="search-row-add-btn">
+                        <FiUserPlus />
+                    </button>
                   </div>
 
                   {incomingRequests.length > 0 && (
@@ -368,14 +454,12 @@ const Sharing = () => {
                           </div>
                           <div className="action-btns-row">
                             <button className="icon-btn approve" onClick={() => updateRequestStatus(req.id, 'accepted')}><FiCheck /> Approve</button>
-                            <button className="icon-btn decline" onClick={() => updateRequestStatus(req.id, 'declined')}><FiTrash2 /></button>
+                            <button className="icon-btn-delete" onClick={() => updateRequestStatus(req.id, 'declined')}><FiTrash2 /></button>
                           </div>
                         </div>
                       ))}
                     </div>
                   )}
-
-                  <input className="theme-search-input" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
 
                   <div className="results-container">
                     {searchResults.map(u => (
