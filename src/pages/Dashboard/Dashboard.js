@@ -341,12 +341,11 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* ALIGNED 3-COLUMN TRIO ROW USING ORIGINAL 'sync-card' CLASS AS WRAPPER */}
-                    {/* By keeping 'sync-card' but removing 'card', it inherits the CSS grid stretch perfectly without adding a white box around all three */}
-                    <div className="sync-card" style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
+                    {/* ALIGNED 3-COLUMN TRIO ROW USING FLEXBOX FOR EXACT 50% ALIGNMENT */}
+                    <div className="sync-card" style={{ display: 'flex', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
                         
-                        {/* Actual Sync Tile */}
-                        <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                        {/* Actual Sync Tile - Exactly 50% width minus half the gap to align with the tile below */}
+                        <div className="card" style={{ flex: '0 0 calc(50% - 10px)', margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                                 <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing') || 'Syncing'}</h3>
@@ -356,8 +355,8 @@ const Dashboard = () => {
                             </p>
                         </div>
 
-                        {/* Actual Water Tile */}
-                        <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                        {/* Actual Water Tile - Shares the remaining space equally */}
+                        <div className="card" onClick={() => navigate('/water')} style={{ flex: '1', margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
                                 <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
@@ -367,8 +366,8 @@ const Dashboard = () => {
                             </div>
                         </div>
 
-                        {/* Actual Sleep Tile */}
-                        <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                        {/* Actual Sleep Tile - Shares the remaining space equally */}
+                        <div className="card" onClick={() => navigate('/sleep')} style={{ flex: '1', margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
                                 <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
