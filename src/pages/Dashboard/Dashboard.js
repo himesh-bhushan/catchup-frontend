@@ -341,30 +341,36 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* NEW: 3-Column Trio Row for Sync, Sleep, and Water */}
-                    <div className="trio-row-wrapper" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '20px' }}>
+                    {/* PERFECTLY ALIGNED 3-COLUMN TRIO ROW */}
+                    <div className="trio-row-wrapper" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
                         
-                        <div className="card sync-card" style={{ margin: 0 }}>
-                            <div className="sync-header">
-                                <div className="sync-dot green"></div>
-                                <h3>{t('Syncing') || 'Syncing'}</h3>
+                        <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing') || 'Syncing'}</h3>
                             </div>
-                            <p>
-                                Synced with Health Tracker {lastSyncedAgo ? lastSyncedAgo : 'just now'}
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary, #666)' }}>
+                                Synced {lastSyncedAgo ? lastSyncedAgo : 'just now'}
                             </p>
                         </div>
 
-                        <div className="card bp-card" onClick={() => navigate('/sleep')} style={{ margin: 0, cursor: 'pointer' }}>
-                            <div className="card-header"><h3>{t('Sleep')}</h3><FiChevronRight className="card-arrow" /></div>
-                            <div className="tile-value">
-                                {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <span>hrs</span>
+                        <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
+                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
+                            </div>
+                            <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
+                                {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>L</span>
                             </div>
                         </div>
 
-                        <div className="card bp-card" onClick={() => navigate('/water')} style={{ margin: 0, cursor: 'pointer' }}>
-                            <div className="card-header"><h3>{t('Water')}</h3><FiChevronRight className="card-arrow" /></div>
-                            <div className="tile-value">
-                                {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <span>L</span>
+                        <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
+                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
+                            </div>
+                            <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
+                                {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>hrs</span>
                             </div>
                         </div>
 
