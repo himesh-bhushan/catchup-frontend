@@ -240,7 +240,7 @@ const Sharing = () => {
                   {/* --- ACTIVITY RING & HEALTH SCORE ROW --- */}
                   <div className="activity-main-row">
                     
-                    {/* Activity Ring (Exact Dashboard Look) */}
+                    {/* Activity Ring */}
                     <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
                         <h3>Activity Ring</h3>
@@ -282,7 +282,7 @@ const Sharing = () => {
                       </div>
                     </div>
 
-                    {/* Health Score (Exact Dashboard Look) */}
+                    {/* Health Score */}
                     <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
                         <h3>Health Score</h3>
@@ -290,9 +290,7 @@ const Sharing = () => {
                       </div>
                       <div className="dash-card-body hs-body">
                         <div className="dash-ring-wrapper-medium">
-                          {/* 4-Color Segmented Ring */}
                           <svg viewBox="0 0 100 100">
-                            {/* Circumference = 2 * PI * 35 ≈ 220 */}
                             <circle cx="50" cy="50" r="35" stroke="#D3504A" strokeWidth="16" fill="none" strokeDasharray="75 220" strokeDashoffset="0" />
                             <circle cx="50" cy="50" r="35" stroke="#E29E3A" strokeWidth="16" fill="none" strokeDasharray="60 220" strokeDashoffset="-75" />
                             <circle cx="50" cy="50" r="35" stroke="#F6E27F" strokeWidth="16" fill="none" strokeDasharray="15 220" strokeDashoffset="-135" />
@@ -464,9 +462,11 @@ const Sharing = () => {
                     <h3 className="theme-heading">Find Friends</h3>
                     <FiX size={24} onClick={() => { if(myFriends.length > 1) setShowLeaderboard(true); setIsSearching(false); }} style={{cursor:'pointer'}} />
                   </div>
+
                   <div className="search-input-wrapper">
                     <input className="theme-search-input" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                   </div>
+
                   {incomingRequests.length > 0 && (
                     <div className="request-group">
                       <h4 className="section-label">Pending Invitations</h4>
