@@ -5,7 +5,7 @@ import DashboardNav from '../../components/DashboardNav';
 import { 
   FiChevronRight, FiUser, FiHeart, FiActivity, FiMoon, 
   FiDroplet, FiWatch, FiRefreshCw, FiArrowLeft, FiNavigation, 
-  FiBluetooth, FiExternalLink, FiShare2 
+  FiBluetooth, FiExternalLink, FiShare2 /* 🟢 ADDED: Share Icon */
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
@@ -136,9 +136,9 @@ const Dashboard = () => {
     window.open(`https://www.google.com/maps/search/?api=1&query=${searchQuery}`, '_blank');
   };
 
-  // --- NATIVE SOCIAL SHARING ---
+  // 🟢 ADDED: NATIVE SOCIAL SHARING FUNCTION
   const handleShare = async (e) => {
-    e.stopPropagation(); // Stops the card click from navigating away
+    e.stopPropagation(); // Prevents the card click from navigating away
     const shareData = {
       title: 'Monthly Mover Award!',
       text: `I just unlocked the 'Monthly Mover' badge on CatchUp for completing my activity ring every single day! 🍅💪 Catch up with me!`,
@@ -149,7 +149,7 @@ const Dashboard = () => {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
-        // Fallback for desktop browsers without Web Share API
+        // Fallback for browsers that don't support native sharing
         navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
         alert("Award text copied to clipboard! Paste it on social media to share.");
       }
@@ -178,7 +178,6 @@ const Dashboard = () => {
                 .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at, heart_rate, sleep_seconds, water_intake, blood_pressure')
                 .eq('id', session.user.id).single();
             
-            let goal = 500;
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
                 if (profile.avatar_url) {
@@ -200,48 +199,18 @@ const Dashboard = () => {
                     water_intake: profile.water_intake || 0,
                     blood_pressure: profile.blood_pressure || "--/--"
                 });
-                goal = profile.calorie_goal || 500;
             }
 
-            const today = new Date();
-            const todayStr = today.toISOString().split('T')[0];
+            const todayStr = new Date().toISOString().split('T')[0];
+            const { data: todayLog } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
             
-            // 🟢 AWARDS LOGIC: Check entire month
-            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-            const daysPassed = today.getDate(); 
+            const goal = profile?.calorie_goal || 500;
+            const cals = todayLog?.calories || 0;
+            const dailyGoalMet = goal > 0 && cals >= goal;
+            setIsAwardEarned(dailyGoalMet);
 
-            const { data: monthLogs } = await supabase
-              .from('activity_logs')
-              .select('date, calories, steps, distance')
-              .eq('user_id', session.user.id)
-              .gte('date', firstDayOfMonth);
-
-            let daysMetGoal = 0;
-            let todayLogData = null;
-
-            if (monthLogs) {
-                const uniqueDays = new Set();
-                monthLogs.forEach(log => {
-                    // Grab today's specific log for the activity ring
-                    if (log.date === todayStr) todayLogData = log;
-                    
-                    // Count how many unique days they hit the goal
-                    if (log.calories >= goal && !uniqueDays.has(log.date)) {
-                        uniqueDays.add(log.date);
-                        daysMetGoal++;
-                    }
-                });
-            }
-
-            // Award is earned if they met the goal for every day of the month so far!
-            setIsAwardEarned(daysMetGoal >= daysPassed);
-
-            const cals = todayLogData?.calories || 0;
             setActivityData({
-                calories: cals, 
-                steps: todayLogData?.steps || 0, 
-                distance: todayLogData?.distance || 0, 
-                goal: goal,
+                calories: cals, steps: todayLog?.steps || 0, distance: todayLog?.distance || 0, goal: goal,
                 percentage: goal > 0 ? Math.min((cals / goal) * 100, 100) : 0
             });
 
@@ -547,6 +516,8 @@ const Dashboard = () => {
                     
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" /></div>
+                        
+                        {/* 🟢 ADDED: Updated Awards Content to include the Share button conditionally */}
                         <div className="awards-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <img 
                                 src={awards} 
