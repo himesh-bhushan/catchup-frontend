@@ -160,18 +160,27 @@ const Goals = () => {
             <div className="progress-bar-fill" style={{ width: `${pct}%` }}></div>
           </div>
           
-          <div className="progress-text-overlay">
-            {isEditing ? (
-                <div className="edit-inputs" onClick={(e) => e.stopPropagation()}>
-                  <input type="number" name={item.currentKey} value={current} onChange={handleChange} style={{width: '60px'}} />
-                  <span>/</span>
-                  {/* Lock targets for universal static goals, except Move Ring which is dynamic */}
-                  <input type="number" name={item.targetKey} value={target} onChange={handleChange} disabled={item.id !== 'move'} style={{width: '60px', opacity: item.id !== 'move' ? 0.7 : 1}} />
-                </div>
-            ) : (
-                <span>{current} / {target} {item.unit}</span>
-            )}
-          </div>
+          {isEditing ? (
+              <div className="progress-text-overlay" style={{ zIndex: 10, pointerEvents: 'auto' }}>
+                  <div className="edit-inputs" onClick={(e) => e.stopPropagation()}>
+                    <input type="number" name={item.currentKey} value={current} onChange={handleChange} style={{width: '60px'}} />
+                    <span>/</span>
+                    <input type="number" name={item.targetKey} value={target} onChange={handleChange} disabled={item.id !== 'move'} style={{width: '60px', opacity: item.id !== 'move' ? 0.7 : 1}} />
+                  </div>
+              </div>
+          ) : (
+              <>
+                  {/* Bottom Text: Black (Shows over the empty white bar) */}
+                  <div className="progress-text-overlay text-black">
+                      <span>{current} / {target} {item.unit}</span>
+                  </div>
+                  
+                  {/* Top Text: Pure White (Clipped perfectly to match the colored bar's width!) */}
+                  <div className="progress-text-overlay text-white" style={{ clipPath: `inset(0 ${100 - pct}% 0 0)` }}>
+                      <span>{current} / {target} {item.unit}</span>
+                  </div>
+              </>
+          )}
         </div>
       </div>
     );

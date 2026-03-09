@@ -220,6 +220,7 @@
 }
 
 /* Text floating perfectly in the center of the bar */
+/* Text floating perfectly in the center of the bar */
 .progress-text-overlay {
     position: absolute;
     top: 0;
@@ -231,9 +232,21 @@
     justify-content: center;
     font-size: 0.85rem;
     font-weight: 700;
-    color: #FFFFFF !important; /* Forces text to be white */
-    text-shadow: 0px 1px 4px rgba(0,0,0,0.3); /* Adds a soft shadow so white text is readable on the white empty bar */
     pointer-events: none;
+}
+
+/* Black text for the empty background */
+.progress-text-overlay.text-black span {
+    color: #333333 !important;
+    text-shadow: none !important;
+    mix-blend-mode: normal !important;
+}
+
+/* Pure white text for the filled background */
+.progress-text-overlay.text-white span {
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+    mix-blend-mode: normal !important;
 }
 
 /* Fix the progress bar text color to be purely white */
