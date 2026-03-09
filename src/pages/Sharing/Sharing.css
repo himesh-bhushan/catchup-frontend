@@ -2,65 +2,78 @@
 .dashboard-wrapper.sharing-page-bg {
     background-color: #F8DBCA;
     min-height: 100vh;
+    display: flex;
 }
 
+/* Stretches the container to full width */
 .sharing-page-container {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 80px;
+    padding: 40px 60px;
+    margin: 0; /* Remove auto centering to allow full stretch */
+    box-sizing: border-box;
 }
 
-/* --- LEADERBOARD HEADER FIXES --- */
+/* --- LEADERBOARD HEADER --- */
 .lb-header {
     display: flex;
     align-items: center;
-    justify-content: center; /* Center the search bar */
+    justify-content: space-between; /* Pushes back button and add button to the edges */
     gap: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 60px;
     width: 100%;
 }
 
+/* Just the icons, no box/background */
 .lb-transparent-btn {
-    background: white; /* Give them a subtle background to match dashboard style */
-    border: none;
-    color: #111;
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
+    background: transparent !important;
+    border: none !important;
+    color: #111 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    flex-shrink: 0;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .lb-transparent-btn:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
+    opacity: 0.7;
 }
 
+/* Search bar remains prominent but fits the stretched layout */
 .lb-search-bar-alt {
     flex: 1;
-    max-width: 600px;
-    padding: 16px 24px;
+    max-width: 800px; /* Increased width */
+    padding: 18px 24px;
     border-radius: 16px;
     border: none;
     background: #FFF;
-    font-size: 1.05rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     cursor: pointer;
     color: #444;
 }
 
-/* --- PODIUM FIXES --- */
+/* --- LEADERBOARD PODIUM --- */
+.leaderboard-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
 .lb-podium {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 50px;
-    margin-bottom: 60px;
+    gap: 60px; /* Increased gap for stretched look */
+    margin-bottom: 80px;
+    width: 100%;
 }
 
 .podium-col {
@@ -68,25 +81,26 @@
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease;
 }
 
 .podium-avatar {
-    width: 100px; 
-    height: 100px;
+    width: 110px; 
+    height: 110px;
     background: #FFF;
     border-radius: 50%;
     margin-bottom: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     display: flex; 
     align-items: center; 
     justify-content: center;
     overflow: hidden;
+    border: 4px solid #fff;
 }
 
 .first-avatar { 
-    width: 130px; 
-    height: 130px; 
+    width: 145px; 
+    height: 145px; 
     border: 5px solid #E64A45; 
 }
 
@@ -99,120 +113,27 @@
 .podium-score {
     color: #E64A45;
     font-weight: 900;
-    font-size: 1.8rem;
+    font-size: 2rem;
+    line-height: 1;
 }
 
-/* --- FIND FRIENDS SECTION (REDUCED GAPS) --- */
-.inline-search-section.theme-container {
-    background-color: #FFF !important;
-    border: none;
-    width: 100%;
-    max-width: 850px;
-    margin: 0 auto;
-    padding: 30px 40px; /* Reduced vertical padding */
-    border-radius: 32px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-}
+.first-score { font-size: 2.5rem; }
 
-.search-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px; /* Reduced gap */
-}
-
-.theme-heading {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #111;
-}
-
-.theme-search-input {
-    width: 100%;
-    padding: 16px 24px;
-    border-radius: 18px;
-    border: 1px solid #f0f0f0;
-    background: #F9F9F9;
+.podium-name {
+    color: #555;
     font-size: 1.1rem;
-    outline: none;
-    margin-bottom: 20px; /* Reduced gap */
+    font-weight: 600;
+    margin-top: 8px;
 }
 
-.section-label {
-    font-size: 0.8rem;
-    font-weight: 900;
-    color: #E64A45;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 15px; /* Reduced gap */
-    display: block;
-}
-
-/* Network Card Fixes */
-.theme-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #ffffff;
-    padding: 15px 25px; /* Reduced internal padding */
-    border-radius: 24px;
-    margin-bottom: 12px; /* Tighter gap between cards */
-    border: 1px solid #f2f2f2;
-}
-
-.user-info-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.theme-avatar-sm {
-    width: 60px;
-    height: 60px;
-    border-radius: 18px;
-    object-fit: cover;
-    background: #FDE6D8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.name-bold {
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: #111;
-}
-
-/* --- BUTTON STYLES --- */
-.theme-btn-outline {
-    background: transparent;
-    color: #E64A45;
-    border: 2px solid #E64A45;
-    padding: 8px 24px;
-    border-radius: 14px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.icon-btn-delete {
-    background: #FFF0F0;
-    border: none;
-    color: #E64A45;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-/* --- LEADERBOARD LIST --- */
+/* --- LEADERBOARD LIST (SCROLLED SECTION) --- */
 .lb-list-alt {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
+    width: 100%;
+    max-width: 900px; /* List width */
 }
 
 .lb-list-card {
@@ -221,14 +142,50 @@
     align-items: center;
     background: #D4664C;
     width: 100%;
-    max-width: 750px;
-    padding: 18px 30px;
+    padding: 22px 40px;
     border-radius: 20px;
     color: #FFF;
+    transition: transform 0.2s;
+}
+
+/* --- FIND FRIENDS SECTION --- */
+.inline-search-section.theme-container {
+    background-color: #FFF !important;
+    border: none;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 32px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.theme-search-input {
+    width: 100%;
+    padding: 20px 28px;
+    border-radius: 18px;
+    border: 1px solid #f2f2f2;
+    background: #F8F9FA;
+    font-size: 1.2rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+/* Avatar fix in list results */
+.theme-avatar-sm {
+    width: 65px;
+    height: 65px;
+    border-radius: 18px;
+    object-fit: cover;
 }
 
 /* --- UTILS --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+    .sharing-page-container { padding: 20px; }
+    .lb-podium { gap: 30px; }
 }
