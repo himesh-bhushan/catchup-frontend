@@ -236,9 +236,11 @@
     pointer-events: none;
 }
 
+/* Fix the progress bar text color to be purely white */
 .progress-text-overlay span {
-    color: white;
-    mix-blend-mode: difference;
+    color: #FFFFFF !important;
+    mix-blend-mode: normal !important; /* This stops the weird color inversion! */
+    text-shadow: 0px 1px 4px rgba(0,0,0,0.5) !important; /* Adds a shadow so it's readable over the white background */
 }
 
 /* Editing Inputs */
