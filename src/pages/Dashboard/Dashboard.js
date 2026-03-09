@@ -5,7 +5,7 @@ import DashboardNav from '../../components/DashboardNav';
 import { 
   FiChevronRight, FiUser, FiHeart, FiActivity, FiMoon, 
   FiDroplet, FiWatch, FiRefreshCw, FiArrowLeft, FiNavigation, 
-  FiBluetooth, FiExternalLink 
+  FiBluetooth, FiExternalLink, FiShare2 
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
@@ -572,8 +572,7 @@ const Dashboard = () => {
                                         fontWeight: 'bold',
                                         cursor: 'pointer',
                                         boxShadow: '0 4px 10px rgba(222, 75, 78, 0.3)'
-                                    }}
-                                >
+                                    }}>
                                     <FiShare2 size={16} /> Share
                                 </button>
                             )}
