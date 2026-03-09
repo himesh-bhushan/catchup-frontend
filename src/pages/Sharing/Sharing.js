@@ -51,14 +51,14 @@ const Sharing = () => {
   };
 
   const fetchFriends = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) return;
 
-    // 1. Fetch current user profile
+    // 1. Fetch current user profile (safely, no 'score' column)
     const { data: currentUser } = await supabase
       .from('profiles')
       .select('id, first_name, last_name, email, avatar_url')
-      .eq('id', user.id)
+      .eq('id', authUser.id)
       .single();
 
     // 2. Fetch accepted friends
@@ -72,20 +72,29 @@ const Sharing = () => {
         receiver:profiles!friend_requests_receiver_id_fkey (id, first_name, last_name, email, avatar_url)
       `)
       .eq('status', 'accepted')
-      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
+      .or(`sender_id.eq.${authUser.id},receiver_id.eq.${authUser.id}`);
 
     if (!error && data) {
-      let friendsList = data.map(rel =>
-        rel.sender_id === user.id ? rel.receiver : rel.sender
-      ).filter(f => f !== null);
+      // 🟢 FIX DUPLICATION: Use a Map to ensure unique IDs
+      const uniqueFriendsMap = new Map();
+
+      data.forEach(rel => {
+        const friend = rel.sender_id === authUser.id ? rel.receiver : rel.sender;
+        // Only add if it's a valid profile and NOT the current user
+        if (friend && friend.id !== authUser.id) {
+          uniqueFriendsMap.set(friend.id, friend);
+        }
+      });
+
+      let friendsList = Array.from(uniqueFriendsMap.values());
       
-      // 3. Add current user to the list for Leaderboard
+      // 3. Add current user to the list for the Leaderboard view
       if (currentUser) {
         currentUser.isMe = true; 
         friendsList.push(currentUser);
       }
       
-      // Sort by score (Assume score property exists on object or default to 0)
+      // Sort by score (defaults to 0 if null)
       const sortedFriends = friendsList.sort((a, b) => (b.score || 0) - (a.score || 0));
       setMyFriends(sortedFriends);
       
@@ -125,7 +134,6 @@ const Sharing = () => {
       setSentRequests(prev => [...prev, receiverId]);
     } else {
       setSentRequests(prev => [...prev, receiverId]);
-      alert("Request sent!");
     }
   };
 
@@ -154,7 +162,7 @@ const Sharing = () => {
       const { data: profile } = await supabase.from('profiles').select('calorie_goal, heart_rate, sleep_seconds, water_intake').eq('id', friend.id).single();
       const { data: activity } = await supabase.from('activity_logs').select('calories, steps').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
 
-      // Health Score Logic
+      // Health Score Calculation Logic
       let hrScore = 0, sleepScore = 0, calScore = 0, waterScore = 0;
       const heart = profile?.heart_rate || 0;
       if (heart > 0) {
@@ -395,6 +403,7 @@ const Sharing = () => {
                   </div>
 
                   <div className="friends-list-group">
+                    {/* Filter out 'isMe' for the "Network" list so you don't show up as your own friend */}
                     <h4 className="section-label">Your Network ({myFriends.filter(f => !f.isMe).length})</h4>
                     <div className="friends-grid">
                       {myFriends.filter(f => !f.isMe).map((friend) => (
