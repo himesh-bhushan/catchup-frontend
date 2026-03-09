@@ -54,14 +54,12 @@ const Sharing = () => {
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (!authUser) return;
 
-    // 1. Fetch current user profile (safely, no 'score' column)
     const { data: currentUser } = await supabase
       .from('profiles')
       .select('id, first_name, last_name, email, avatar_url')
       .eq('id', authUser.id)
       .single();
 
-    // 2. Fetch accepted friends
     const { data, error } = await supabase
       .from('friend_requests')
       .select(`
@@ -75,12 +73,10 @@ const Sharing = () => {
       .or(`sender_id.eq.${authUser.id},receiver_id.eq.${authUser.id}`);
 
     if (!error && data) {
-      // 🟢 FIX DUPLICATION: Use a Map to ensure unique IDs
       const uniqueFriendsMap = new Map();
 
       data.forEach(rel => {
         const friend = rel.sender_id === authUser.id ? rel.receiver : rel.sender;
-        // Only add if it's a valid profile and NOT the current user
         if (friend && friend.id !== authUser.id) {
           uniqueFriendsMap.set(friend.id, friend);
         }
@@ -88,13 +84,11 @@ const Sharing = () => {
 
       let friendsList = Array.from(uniqueFriendsMap.values());
       
-      // 3. Add current user to the list for the Leaderboard view
       if (currentUser) {
         currentUser.isMe = true; 
         friendsList.push(currentUser);
       }
       
-      // Sort by score (defaults to 0 if null)
       const sortedFriends = friendsList.sort((a, b) => (b.score || 0) - (a.score || 0));
       setMyFriends(sortedFriends);
       
@@ -103,25 +97,6 @@ const Sharing = () => {
       }
     }
   };
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      if (searchTerm.trim().length < 2) {
-        setSearchResults([]);
-        return;
-      }
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, first_name, last_name, email, avatar_url')
-        .or(`email.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`)
-        .limit(5);
-
-      if (!error && data) setSearchResults(data);
-    };
-
-    const delaySearch = setTimeout(fetchUsers, 300);
-    return () => clearTimeout(delaySearch);
-  }, [searchTerm]);
 
   const handleSendRequest = async (receiverId) => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -154,6 +129,23 @@ const Sharing = () => {
     }
   };
 
+  // 🟢 NEW: Remove Friend Function
+  const handleRemoveFriend = async (friendId) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!window.confirm("Are you sure you want to remove this friend?")) return;
+
+    const { error } = await supabase
+      .from('friend_requests')
+      .delete()
+      .or(`and(sender_id.eq.${user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${user.id})`);
+
+    if (!error) {
+      fetchFriends(); // Refresh the list
+    } else {
+      console.error("Error removing friend:", error);
+    }
+  };
+
   const handleViewFriend = async (friend) => {
     setViewingFriend(friend);
     setFriendLoading(true);
@@ -162,7 +154,6 @@ const Sharing = () => {
       const { data: profile } = await supabase.from('profiles').select('calorie_goal, heart_rate, sleep_seconds, water_intake').eq('id', friend.id).single();
       const { data: activity } = await supabase.from('activity_logs').select('calories, steps').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
 
-      // Health Score Calculation Logic
       let hrScore = 0, sleepScore = 0, calScore = 0, waterScore = 0;
       const heart = profile?.heart_rate || 0;
       if (heart > 0) {
@@ -194,6 +185,25 @@ const Sharing = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (searchTerm.trim().length < 2) {
+        setSearchResults([]);
+        return;
+      }
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, email, avatar_url')
+        .or(`email.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`)
+        .limit(5);
+
+      if (!error && data) setSearchResults(data);
+    };
+
+    const delaySearch = setTimeout(fetchUsers, 300);
+    return () => clearTimeout(delaySearch);
+  }, [searchTerm]);
+
   return (
     <div className="dashboard-wrapper sharing-page-bg">
       <DashboardNav />
@@ -201,7 +211,6 @@ const Sharing = () => {
         <div className="sharing-page-container">
 
           {viewingFriend ? (
-            /* --- FRIEND DETAILS VIEW --- */
             <div className="friend-detail-wrapper">
               <div className="lb-header">
                 <button className="lb-transparent-btn" onClick={() => setViewingFriend(null)}>
@@ -248,7 +257,6 @@ const Sharing = () => {
               )}
             </div>
           ) : showLeaderboard ? (
-            /* --- LEADERBOARD VIEW --- */
             <div className="leaderboard-wrapper">
               <div className="lb-header">
                 <button className="lb-transparent-btn" onClick={() => { setIsSearching(true); setShowLeaderboard(false); }}>
@@ -305,7 +313,6 @@ const Sharing = () => {
               </div>
             </div>
           ) : (
-            /* --- ONBOARDING VIEW --- */
             <div className="sharing-onboarding-wrapper">
               {!isSearching ? (
                 <>
@@ -335,7 +342,6 @@ const Sharing = () => {
                   <button className="share-cta-btn" onClick={() => setIsSearching(true)}>Share with Someone</button>
                 </>
               ) : (
-                /* --- SEARCH & APPROVAL VIEW --- */
                 <div className="inline-search-section theme-container">
                   <div className="search-header">
                     <h3 className="theme-heading">Find and Approve Friends</h3>
@@ -403,7 +409,6 @@ const Sharing = () => {
                   </div>
 
                   <div className="friends-list-group">
-                    {/* Filter out 'isMe' for the "Network" list so you don't show up as your own friend */}
                     <h4 className="section-label">Your Network ({myFriends.filter(f => !f.isMe).length})</h4>
                     <div className="friends-grid">
                       {myFriends.filter(f => !f.isMe).map((friend) => (
@@ -417,7 +422,13 @@ const Sharing = () => {
                               <span className="badge-online">Connected</span>
                             </div>
                           </div>
-                          <button className="theme-btn-outline" onClick={() => { setIsSearching(false); handleViewFriend(friend); }}>View Progress</button>
+                          <div className="action-btns-row" style={{ marginTop: '10px' }}>
+                            <button className="theme-btn-outline" onClick={() => { setIsSearching(false); handleViewFriend(friend); }}>View Progress</button>
+                            {/* 🟢 DELETE FRIEND BUTTON */}
+                            <button className="icon-btn-delete" onClick={() => handleRemoveFriend(friend.id)}>
+                                <FiTrash2 />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
