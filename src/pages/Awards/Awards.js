@@ -1,72 +1,136 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiShare2, FiAward } from 'react-icons/fi';
+import { FiArrowLeft, FiShare2 } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 import DashboardNav from '../../components/DashboardNav';
-
-// Images
-import awardsImg from '../../assets/awards.png'; 
 import './Awards.css';
+
+// Import all your award images
+import awardsBadge from '../../assets/awards.png';
+import awardsBadge2 from '../../assets/awards2.png';
+import awardsBadge3 from '../../assets/awards3.png';
 
 const Awards = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [daysMet, setDaysMet] = useState(0);
-  const [daysPassed, setDaysPassed] = useState(0);
-  const [isUnlocked, setIsUnlocked] = useState(false);
 
-  const fetchAwardData = useCallback(async () => {
+  // --- STATES ---
+  const [loading, setLoading] = useState(true);
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [currentMonthName, setCurrentMonthName] = useState('');
+  const [progressPercentage, setProgressPercentage] = useState(0);
+  const [isCurrentMonthEarned, setIsCurrentMonthEarned] = useState(false);
+  
+  const [milestoneAwards, setMilestoneAwards] = useState([
+    { id: 1, title: '5 days workout-streak', image: awardsBadge, earned: false },
+    { id: 2, title: 'Rank #1 in LeaderBoard for 5 times', image: awardsBadge2, earned: false }, // Placeholder for future DB
+    { id: 3, title: 'Invite 5 friends', image: awardsBadge3, earned: false }, // Placeholder for future DB
+  ]);
+
+  // --- DATA FETCHING & LOGIC ---
+  const fetchAwardsData = useCallback(async () => {
     setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     try {
-      // 1. Get Goal
+      // 1. Get user's calorie goal
       const { data: profile } = await supabase.from('profiles').select('calorie_goal').eq('id', user.id).single();
       const goal = profile?.calorie_goal || 500;
 
-      // 2. Determine Monthly Progress
+      // 2. Setup Date Variables
       const today = new Date();
-      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-      const currentDaysPassed = today.getDate(); 
-      setDaysPassed(currentDaysPassed);
+      const currentYear = today.getFullYear();
+      const currentMonthIndex = today.getMonth(); // 0-11
+      const currentDay = today.getDate();
+      
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      setCurrentMonthName(monthNames[currentMonthIndex]);
 
-      const { data: monthLogs } = await supabase
+      // 3. Fetch Activity Logs for the ENTIRE current year
+      const { data: logs } = await supabase
         .from('activity_logs')
         .select('date, calories')
         .eq('user_id', user.id)
-        .gte('date', firstDayOfMonth);
+        .gte('date', `${currentYear}-01-01`); // Everything from Jan 1st
 
-      let achievedDays = 0;
-      if (monthLogs) {
-        const uniqueDays = new Set();
-        monthLogs.forEach(log => {
-            if (log.calories >= goal && !uniqueDays.has(log.date)) {
-                uniqueDays.add(log.date);
-                achievedDays++;
-            }
+      const newMonthlyData = monthNames.map(name => ({ name, earned: false }));
+      const monthlyMetDays = new Array(12).fill(0);
+      const uniqueDays = new Set();
+      let maxStreak = 0;
+
+      if (logs) {
+        // Process logs into months and count valid goal days
+        logs.forEach(log => {
+          if (log.calories >= goal && !uniqueDays.has(log.date)) {
+            uniqueDays.add(log.date);
+            const month = parseInt(log.date.split('-')[1], 10) - 1; // Extract month safely
+            monthlyMetDays[month]++;
+          }
         });
+
+        // Evaluate Months
+        for (let i = 0; i < 12; i++) {
+          const daysInMonth = new Date(currentYear, i + 1, 0).getDate();
+          if (i < currentMonthIndex) {
+             // Past months: Must have hit goal every day of that month
+            newMonthlyData[i].earned = monthlyMetDays[i] >= daysInMonth;
+          } else if (i === currentMonthIndex) {
+            // Current month: Must have hit goal every day up to TODAY
+            const isEarned = monthlyMetDays[i] >= currentDay;
+            newMonthlyData[i].earned = isEarned;
+            setIsCurrentMonthEarned(isEarned);
+            setProgressPercentage(Math.min((monthlyMetDays[i] / currentDay) * 100, 100));
+          } else {
+            // Future months
+            newMonthlyData[i].earned = false;
+          }
+        }
+
+        // Calculate 5-Day Workout Streak for Milestones
+        const sortedMetDates = Array.from(uniqueDays).sort();
+        let currentStreak = 0;
+        for (let i = 0; i < sortedMetDates.length; i++) {
+          if (i === 0) { currentStreak = 1; maxStreak = 1; continue; }
+          
+          const prevDate = new Date(sortedMetDates[i-1]);
+          const currDate = new Date(sortedMetDates[i]);
+          const diffTime = Math.abs(currDate - prevDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          
+          if (diffDays === 1) {
+            currentStreak++;
+            maxStreak = Math.max(maxStreak, currentStreak);
+          } else {
+            currentStreak = 1;
+          }
+        }
       }
 
-      setDaysMet(achievedDays);
-      setIsUnlocked(achievedDays >= currentDaysPassed); // Awarded if hit goal every day so far this month
+      setMonthlyData(newMonthlyData);
+
+      // Update Milestone 1 with actual streak data
+      setMilestoneAwards(prev => {
+        const newAwards = [...prev];
+        newAwards[0].earned = maxStreak >= 5;
+        return newAwards;
+      });
 
     } catch (err) {
-      console.error("Error fetching award data:", err);
+      console.error("Error fetching awards data:", err);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchAwardData();
-  }, [fetchAwardData]);
+    fetchAwardsData();
+  }, [fetchAwardsData]);
 
-  // NATIVE SOCIAL SHARING
+  // --- NATIVE SOCIAL SHARING ---
   const handleShare = async () => {
     const shareData = {
       title: 'Monthly Mover Award!',
-      text: `I just unlocked the 'Monthly Mover' badge on CatchUp for completing my activity ring every single day! 🍅💪 Catch up with me!`,
+      text: `I just unlocked the '${currentMonthName} Mover' badge on CatchUp for completing my activity ring every single day! 🍅💪 Catch up with me!`,
       url: 'https://catchup.page',
     };
 
@@ -74,7 +138,7 @@ const Awards = () => {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
-        // Fallback for desktop browsers without Web Share API
+        // Fallback for browsers that don't support native sharing
         navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
         alert("Award text copied to clipboard! Paste it on social media to share.");
       }
@@ -83,79 +147,111 @@ const Awards = () => {
     }
   };
 
-  const progressPercentage = Math.min((daysMet / (daysPassed || 1)) * 100, 100);
-
   return (
-    <div className="dashboard-wrapper detail-page-bg">
+    <div className="dashboard-wrapper awards-page-bg">
       <DashboardNav />
       <div className="dashboard-content">
+        
         <div className="awards-page-container">
           
-          <div className="detail-header">
+          {/* Page Header */}
+          <div className="awards-header-top">
             <button onClick={() => navigate('/dashboard')} className="icon-btn">
-              <FiArrowLeft size={24} />
+              <FiArrowLeft size={28} />
             </button>
-            <h2>My Awards</h2>
-            <div style={{ width: 50 }}></div>
+            <h2>Awards</h2>
           </div>
 
           {loading ? (
-            <div className="loading-state">Checking your progress...</div>
+             <div style={{ textAlign: 'center', padding: '50px', color: '#888' }}>Calculating achievements...</div>
           ) : (
-            <div className="awards-content">
-              
-              {/* THE BADGE CARD */}
-              <div className={`award-hero-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
-                <div className="award-badge-wrapper">
-                    <img 
-                        src={awardsImg} 
-                        alt="Monthly Mover Award" 
-                        className={`big-award-image ${isUnlocked ? '' : 'grayscale'}`} 
-                    />
-                </div>
-                <div className="award-info">
-                    <h1>Monthly Mover</h1>
-                    <p>Complete your Activity Ring every day of the month.</p>
+            <>
+              {/* Main Achievements Card */}
+              <div className="achievements-card">
+                <div className="ac-card-body">
+                  
+                  {/* Left Column: Title + Current Challenge */}
+                  <div className="ac-left-col">
+                    <h3 className="ac-card-title">Monthly Achievements</h3>
                     
-                    <div className="award-status-pill">
-                        {isUnlocked ? (
-                            <><FiAward /> Award Unlocked</>
-                        ) : (
-                            "Locked"
-                        )}
+                    <div className="ac-main-badge-wrapper">
+                      <img 
+                        src={awardsBadge} 
+                        alt="Monthly Mover" 
+                        className={`ac-main-badge ${isCurrentMonthEarned ? '' : 'grayscale'}`} 
+                        style={!isCurrentMonthEarned ? { filter: 'grayscale(100%) opacity(0.5)' } : {}}
+                      />
                     </div>
+                    
+                    <h4 className="ac-challenge-title">{currentMonthName} Challenge</h4>
+                    
+                    <div className="ac-progress-bar">
+                      <div className="ac-progress-fill" style={{ width: `${progressPercentage}%` }}></div>
+                    </div>
+
+                    {/* NEW: Dynamic Share Button */}
+                    {isCurrentMonthEarned && (
+                      <button 
+                        onClick={handleShare}
+                        style={{
+                          marginTop: '20px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          background: '#DE4B4E',
+                          color: 'white',
+                          border: 'none',
+                          padding: '10px 20px',
+                          borderRadius: '20px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          width: '100%',
+                          boxShadow: '0 4px 10px rgba(222, 75, 78, 0.3)',
+                          transition: 'transform 0.2s ease'
+                        }}
+                        onMouseOver={(e) => e.target.style.transform = 'scale(1.02)'}
+                        onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                      >
+                        <FiShare2 size={18} /> Share Award
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Right Column: 12-Month Grid */}
+                  <div className="ac-right-col">
+                    <div className="ac-grid">
+                      {monthlyData.map((month) => (
+                        <div key={month.name} className="ac-grid-item">
+                          <img 
+                            src={awardsBadge} 
+                            alt={month.name} 
+                            className={month.earned ? 'badge-earned' : 'badge-unearned'} 
+                          />
+                          <span>{month.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* PROGRESS SECTION */}
-              <div className="card progress-card">
-                <div className="card-header">
-                  <h3>Monthly Progress</h3>
-                  <span className="goal-percentage">{daysMet} / {daysPassed} Days</span>
-                </div>
-                <div className="progress-track">
-                  <div 
-                    className="progress-fill fill-red" 
-                    style={{ width: `${progressPercentage}%`, backgroundColor: '#DE4B4E' }}
-                  ></div>
-                </div>
-                <p className="progress-subtitle">
-                  {isUnlocked 
-                    ? "Incredible job! You've crushed your goals every single day this month." 
-                    : `You've hit your goal ${daysMet} days out of the ${daysPassed} days this month.`}
-                </p>
+              {/* Milestone Awards Section */}
+              <div className="milestone-awards-container">
+                {milestoneAwards.map((award) => (
+                  <div key={award.id} className="milestone-item">
+                    <img 
+                      src={award.image} 
+                      alt={award.title} 
+                      className={award.earned ? 'badge-earned' : 'badge-unearned'} 
+                    />
+                    <span>{award.title}</span>
+                  </div>
+                ))}
               </div>
-
-              {/* SHARE BUTTON */}
-              {isUnlocked && (
-                  <button className="share-award-btn" onClick={handleShare}>
-                      <FiShare2 size={20} />
-                      Share to Social Media
-                  </button>
-              )}
-
-            </div>
+            </>
           )}
+
         </div>
       </div>
     </div>
