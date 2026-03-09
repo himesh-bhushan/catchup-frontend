@@ -675,3 +675,210 @@
         gap: 20px;
     }
 }
+
+/* --- FRIEND DASHBOARD LAYOUT --- */
+.friend-detail-dashboard {
+    width: 100%;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.detail-header-new {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.back-circle-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.back-circle-btn:hover { transform: translateX(-5px); }
+
+.header-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-image-ring {
+    width: 70px;
+    height: 70px;
+    background: #E64A45;
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.profile-image-ring img { width: 100%; height: 100%; object-fit: cover; }
+
+.profile-text h1 { margin: 0; font-size: 1.8rem; color: #111; }
+
+.health-score-pill {
+    display: inline-block;
+    background: #FFF0EF;
+    color: #E64A45;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+/* Dashboard Grid */
+.dashboard-grid-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.vitals-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.vital-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.vital-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.vital-icon.hr { background: #fee2e2; color: #ef4444; }
+.vital-icon.sleep { background: #fef3c7; color: #d97706; }
+
+.vital-info label { display: block; color: #888; font-size: 0.8rem; font-weight: 600; margin-bottom: 2px; }
+.vital-info p { font-size: 1.6rem; font-weight: 800; margin: 0; }
+.vital-info p span { font-size: 0.85rem; color: #BBB; font-weight: 500; }
+
+/* Activity & Awards Section */
+.activity-main-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 25px;
+}
+
+.ring-wrapper-large {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 20px auto;
+}
+
+.ring-wrapper-large svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+.ring-wrapper-large circle { fill: none; stroke-width: 8; stroke-linecap: round; }
+.ring-wrapper-large circle.bg { stroke: #F3F3F3; }
+.ring-wrapper-large circle.meter {
+    stroke: #E64A45;
+    transition: stroke-dasharray 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.goal-reached {
+    stroke: #FF3B30 !important;
+    filter: drop-shadow(0 0 8px rgba(230, 74, 69, 0.4));
+    animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+.ring-content {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.ring-content .percent { font-size: 2.2rem; font-weight: 900; display: block; }
+.ring-content .label { font-size: 0.8rem; color: #999; font-weight: 600; text-transform: uppercase; }
+
+.ring-stats-footer {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 20px;
+    border-top: 1px solid #f5f5f5;
+}
+
+.footer-item { text-align: center; }
+.footer-item label { display: block; font-size: 0.7rem; color: #BBB; font-weight: 700; text-transform: uppercase; }
+.footer-item strong { font-size: 1.1rem; color: #111; }
+
+/* Awards Grid */
+.awards-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.award-tile-mini {
+    background: #fdfdfd;
+    border: 1px solid #f0f0f0;
+    border-radius: 20px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s;
+}
+
+.award-tile-mini:hover { transform: translateY(-3px); border-color: #E64A45; }
+.award-tile-mini img { width: 40px; height: 40px; object-fit: contain; }
+.award-tile-mini span { font-size: 0.65rem; font-weight: 800; color: #444; text-align: center; text-transform: uppercase; }
+
+/* Weekly Progress Bar Chart */
+.bar-chart-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 120px;
+    padding-top: 10px;
+}
+
+.chart-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.bar-track {
+    width: 14px;
+    height: 90px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(180deg, #FF6B6B 0%, #E64A45 100%);
+    border-radius: 10px;
+    transition: height 1s ease-out;
+}
+
+.chart-column span { font-size: 0.75rem; font-weight: 700; color: #BBB; }

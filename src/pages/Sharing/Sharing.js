@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, 
-  FiUserPlus, FiCheck, FiTrash2, FiAward 
+  FiUserPlus, FiCheck, FiTrash2, FiAward, FiHeart, FiMoon, FiActivity, FiZap 
 } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
 import DashboardNav from '../../components/DashboardNav';
 
-// Placeholder avatars
+// Asset Imports
 import avatar1 from '../../assets/avatar1.png';
 import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
@@ -38,8 +38,7 @@ const Sharing = () => {
     fetchFriends();
   }, []);
 
-  // --- DATA CALCULATIONS ---
-
+  // --- SCORE CALCULATION LOGIC ---
   const calculateUserScore = (profile, activity) => {
     let hrScore = 0, sleepScore = 0, calScore = 0, waterScore = 0;
     
@@ -62,8 +61,7 @@ const Sharing = () => {
     return Math.round(hrScore * 0.35 + sleepScore * 0.25 + calScore * 0.25 + waterScore * 0.15);
   };
 
-  // --- SUPABASE FETCHERS ---
-
+  // --- DATABASE FETCHING ---
   const fetchIncomingRequests = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
@@ -80,13 +78,13 @@ const Sharing = () => {
     if (!authUser) return;
     const todayStr = new Date().toISOString().split('T')[0];
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('friend_requests')
-      .select(`sender_id, receiver_id`)
+      .select('sender_id, receiver_id')
       .eq('status', 'accepted')
       .or(`sender_id.eq.${authUser.id},receiver_id.eq.${authUser.id}`);
 
-    if (data) {
+    if (!error && data) {
       const friendIds = data.map(rel => rel.sender_id === authUser.id ? rel.receiver_id : rel.sender_id);
       const allIds = [...new Set([authUser.id, ...friendIds])];
 
@@ -103,6 +101,7 @@ const Sharing = () => {
       });
 
       setMyFriends(networkWithScores.sort((a, b) => b.score - a.score));
+      if (networkWithScores.length > 1) localStorage.setItem('has_onboarded_sharing', 'true');
     }
   };
 
@@ -115,7 +114,6 @@ const Sharing = () => {
       lastWeek.setDate(lastWeek.getDate() - 6);
       const lastWeekStr = lastWeek.toISOString().split('T')[0];
 
-      // Fetch Profile, Daily Activity, and Real Earned Awards
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', friend.id).single();
       const { data: activity } = await supabase.from('activity_logs').select('*').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
       const { data: earnedAwards } = await supabase.from('user_awards').select('*').eq('user_id', friend.id);
@@ -127,10 +125,16 @@ const Sharing = () => {
         .order('date', { ascending: true });
 
       const score = calculateUserScore(profile, activity);
-      const movePercent = profile?.calorie_goal > 0 ? ((activity?.calories || 0) / profile.calorie_goal) * 100 : 0;
+      const movePct = profile?.calorie_goal > 0 ? ((activity?.calories || 0) / profile.calorie_goal) * 100 : 0;
 
       setFriendWeeklyData(weeklyLogs || []);
-      setFriendStats({ profile, activity, healthScore: score, movePercent: Math.min(movePercent, 100), awards: earnedAwards || [] });
+      setFriendStats({
+        profile,
+        activity,
+        healthScore: score,
+        movePercent: Math.min(movePct, 100),
+        awards: earnedAwards || []
+      });
     } catch (err) {
       console.error(err);
     } finally {
@@ -138,12 +142,11 @@ const Sharing = () => {
     }
   };
 
-  // --- ACTIONS ---
-
-  const handleSendRequest = async (id) => {
+  // --- UI ACTIONS ---
+  const handleSendRequest = async (receiverId) => {
     const { data: { user } } = await supabase.auth.getUser();
-    await supabase.from('friend_requests').insert([{ sender_id: user.id, receiver_id: id, status: 'pending' }]);
-    setSentRequests([...sentRequests, id]);
+    await supabase.from('friend_requests').insert([{ sender_id: user.id, receiver_id: receiverId, status: 'pending' }]);
+    setSentRequests(prev => [...prev, receiverId]);
   };
 
   const updateRequestStatus = async (id, status) => {
@@ -152,15 +155,24 @@ const Sharing = () => {
     fetchFriends();
   };
 
+  const handleRemoveFriend = async (friendId) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!window.confirm("Remove this friend and stop data sharing?")) return;
+    await supabase.from('friend_requests').delete()
+      .or(`and(sender_id.eq.${user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${user.id})`);
+    fetchFriends();
+  };
+
   // --- SEARCH EFFECT ---
   useEffect(() => {
     const search = async () => {
-      if (searchTerm.length < 2) return setSearchResults([]);
-      const { data } = await supabase.from('profiles').select('id, first_name, last_name, avatar_url').ilike('first_name', `%${searchTerm}%`).limit(5);
+      if (searchTerm.trim().length < 2) { setSearchResults([]); return; }
+      const { data } = await supabase.from('profiles').select('id, first_name, last_name, avatar_url')
+        .or(`first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`).limit(5);
       if (data) setSearchResults(data);
     };
-    const delay = setTimeout(search, 300);
-    return () => clearTimeout(delay);
+    const delaySearch = setTimeout(search, 300);
+    return () => clearTimeout(delaySearch);
   }, [searchTerm]);
 
   return (
@@ -170,37 +182,64 @@ const Sharing = () => {
         <div className="sharing-page-container">
 
           {viewingFriend ? (
-            <div className="friend-detail-wrapper">
-              <div className="detail-nav">
-                <button className="back-btn" onClick={() => setViewingFriend(null)}>
-                  <FiArrowLeft size={24} /> Back to Leaderboard
+            /* --- 1. FRIEND DETAIL DASHBOARD --- */
+            <div className="friend-detail-dashboard">
+              <header className="detail-header-new">
+                <button className="back-circle-btn" onClick={() => setViewingFriend(null)}>
+                  <FiArrowLeft size={24} />
                 </button>
-              </div>
+                <div className="header-user-profile">
+                  <div className="profile-image-ring">
+                    {viewingFriend.avatar_url ? <img src={viewingFriend.avatar_url} alt="" /> : <FiUser />}
+                  </div>
+                  <div className="profile-text">
+                    <h1>{viewingFriend.first_name} {viewingFriend.last_name}</h1>
+                    <span className="health-score-pill">Health Score: {friendStats?.healthScore}</span>
+                  </div>
+                </div>
+              </header>
 
               {friendLoading ? (
-                <div className="lb-placeholder-text">Syncing Friend Data...</div>
+                <div className="lb-placeholder-text">Syncing Health Data...</div>
               ) : (
-                <div className="detail-layout">
-                  {/* LEFT COLUMN */}
-                  <div className="detail-column">
-                    <div className="profile-hero-card">
-                      <div className="hero-avatar">
-                        {viewingFriend.avatar_url ? <img src={viewingFriend.avatar_url} alt="" /> : <FiUser size={40} />}
-                      </div>
-                      <div className="hero-info">
-                        <h1>{viewingFriend.first_name} {viewingFriend.last_name}</h1>
-                        <div className="hero-badge">Health Score: {friendStats?.healthScore}</div>
+                <div className="dashboard-grid-layout">
+                  <div className="vitals-row">
+                    <div className="glass-card vital-card">
+                      <div className="vital-icon hr"><FiHeart /></div>
+                      <div className="vital-info">
+                        <label>Heart Rate</label>
+                        <p>{friendStats?.profile?.heart_rate || '--'} <span>BPM</span></p>
                       </div>
                     </div>
-
-                    <div className="stats-grid-2col">
-                      <div className="glass-card stat-mini">
-                        <span className="label">Heart Rate</span>
-                        <span className="value">{friendStats?.profile?.heart_rate || '--'} <small>BPM</small></span>
+                    <div className="glass-card vital-card">
+                      <div className="vital-icon sleep"><FiMoon /></div>
+                      <div className="vital-info">
+                        <label>Sleep</label>
+                        <p>{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <span>HRS</span></p>
                       </div>
-                      <div className="glass-card stat-mini">
-                        <span className="label">Sleep</span>
-                        <span className="value">{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1)} <small>HRS</small></span>
+                    </div>
+                  </div>
+
+                  <div className="activity-main-row">
+                    <div className="glass-card activity-ring-card">
+                      <h3>Daily Activity</h3>
+                      <div className="ring-wrapper-large">
+                        <svg viewBox="0 0 100 100">
+                          <circle className="bg" cx="50" cy="50" r="42" />
+                          <circle 
+                            className={`meter ${friendStats?.movePercent >= 100 ? 'goal-reached' : ''}`} 
+                            cx="50" cy="50" r="42" 
+                            style={{ strokeDasharray: `${(friendStats?.movePercent * 2.64)}, 264` }}
+                          />
+                        </svg>
+                        <div className="ring-content">
+                          <span className="percent">{Math.round(friendStats?.movePercent)}%</span>
+                          <span className="label">of goal</span>
+                        </div>
+                      </div>
+                      <div className="ring-stats-footer">
+                        <div className="footer-item"><label>Move</label><strong>{friendStats?.activity?.calories || 0} kcal</strong></div>
+                        <div className="footer-item"><label>Steps</label><strong>{friendStats?.activity?.steps || 0}</strong></div>
                       </div>
                     </div>
 
@@ -210,90 +249,74 @@ const Sharing = () => {
                         <FiAward color="#E64A45" />
                       </div>
                       <div className="awards-scroll">
-                        {friendStats?.awards.length > 0 ? friendStats.awards.map((a, i) => (
-                          <div key={i} className="award-item">
-                            <img src={a.icon_url} alt="" className="earned-award-img" />
-                            <span className="award-name">{a.award_name}</span>
-                          </div>
-                        )) : <p className="no-awards-text">No awards earned yet.</p>}
+                        {friendStats?.awards?.length > 0 ? (
+                          friendStats.awards.map((a, i) => (
+                            <div key={i} className="award-item">
+                              <img src={a.icon_url} alt="" className="earned-award-img" />
+                              <span className="award-name">{a.award_name}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="no-awards-text">No awards earned yet.</p>
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  {/* RIGHT COLUMN */}
-                  <div className="detail-column">
-                    <div className="glass-card ring-focus-card">
-                      <h3>Daily Activity</h3>
-                      <div className="ring-container-large">
-                        <svg viewBox="0 0 100 100" className="svg-ring">
-                          <circle className="ring-bg" cx="50" cy="50" r="40" />
-                          <circle 
-                            className={`ring-progress ${friendStats?.movePercent >= 100 ? 'goal-reached' : ''}`} 
-                            cx="50" cy="50" r="40" 
-                            style={{ strokeDasharray: `${(friendStats?.movePercent * 2.51)}, 251.2` }} 
-                          />
-                        </svg>
-                        <div className="ring-inner-text">
-                          <span className="percent">{Math.round(friendStats?.movePercent)}%</span>
-                          <span className="sub">of goal</span>
-                        </div>
-                      </div>
-                      <div className="ring-footer-stats">
-                        <div className="f-stat">
-                          <span className="f-label">Calories</span>
-                          <span className="f-val">{friendStats?.activity?.calories || 0}</span>
-                        </div>
-                        <div className="f-stat">
-                          <span className="f-label">Steps</span>
-                          <span className="f-val">{friendStats?.activity?.steps || 0}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="glass-card">
-                      <h3>Weekly Progress</h3>
-                      <div className="weekly-bar-chart">
-                        {['M','T','W','T','F','S','S'].map((day, i) => {
-                          const height = Math.random() * 80 + 20; // Simulated
-                          return (
-                            <div key={i} className="bar-wrapper">
-                              <div className="bar-bg">
-                                <div className={`bar-fill ${height >= 90 ? 'goal-reached' : ''}`} style={{ height: `${height}%` }}></div>
-                              </div>
-                              <span>{day}</span>
+                  <div className="glass-card weekly-chart-card">
+                    <h3>Weekly Performance</h3>
+                    <div className="weekly-bar-chart">
+                      {['M','T','W','T','F','S','S'].map((day, i) => {
+                        const height = Math.random() * 70 + 20; // Mock data for bar visualization
+                        return (
+                          <div key={i} className="bar-wrapper">
+                            <div className="bar-bg">
+                              <div className={`bar-fill ${height > 85 ? 'goal-reached' : ''}`} style={{ height: `${height}%` }}></div>
                             </div>
-                          )
-                        })}
-                      </div>
+                            <span>{day}</span>
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 </div>
               )}
             </div>
           ) : showLeaderboard ? (
-            /* LEADERBOARD VIEW */
+            /* --- 2. LEADERBOARD VIEW --- */
             <div className="leaderboard-wrapper">
-               <div className="lb-header">
-                <button className="lb-transparent-btn" onClick={() => setShowLeaderboard(false)}><FiArrowLeft size={28} /></button>
-                <div className="lb-search-bar-alt" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>Find more friends...</div>
-                <button className="lb-transparent-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}><FiUserPlus size={28} /></button>
+              <div className="lb-header">
+                <button className="lb-transparent-btn" onClick={() => setShowLeaderboard(false)}>
+                  <FiArrowLeft size={28} />
+                </button>
+                <div className="lb-search-bar-alt" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
+                  Find and add friends...
+                </div>
+                <button className="lb-transparent-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
+                  <FiUserPlus size={28} />
+                </button>
               </div>
-
+              
               <div className="lb-podium">
                 <div className="podium-col second-place" onClick={() => myFriends[1] && handleViewFriend(myFriends[1])}>
                     <span className="podium-rank">2ND</span>
-                    <div className="podium-avatar">{myFriends[1]?.avatar_url ? <img src={myFriends[1].avatar_url} alt="" /> : <FiUser size={40} />}</div>
+                    <div className="podium-avatar">{myFriends[1]?.avatar_url ? <img src={myFriends[1].avatar_url} alt="" /> : <FiUser size={40} color="#E64A45" />}</div>
                     <span className="podium-score">{myFriends[1]?.score || 0}</span>
+                    <span className="podium-name">{myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase()}${myFriends[1].isMe ? ' (You)' : ''}` : ''}</span>
                 </div>
+                
                 <div className="podium-col first-place" onClick={() => myFriends[0] && handleViewFriend(myFriends[0])}>
                     <span className="podium-crown">👑</span>
-                    <div className="podium-avatar first-avatar">{myFriends[0]?.avatar_url ? <img src={myFriends[0].avatar_url} alt="" /> : <FiUser size={50} />}</div>
+                    <div className="podium-avatar first-avatar">{myFriends[0]?.avatar_url ? <img src={myFriends[0].avatar_url} alt="" /> : <FiUser size={50} color="#E64A45" />}</div>
                     <span className="podium-score first-score">{myFriends[0]?.score || 0}</span>
+                    <span className="podium-name">{myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase()}${myFriends[0].isMe ? ' (You)' : ''}` : ''}</span>
                 </div>
+                
                 <div className="podium-col third-place" onClick={() => myFriends[2] && handleViewFriend(myFriends[2])}>
                     <span className="podium-rank">3RD</span>
-                    <div className="podium-avatar">{myFriends[2]?.avatar_url ? <img src={myFriends[2].avatar_url} alt="" /> : <FiUser size={40} />}</div>
+                    <div className="podium-avatar">{myFriends[2]?.avatar_url ? <img src={myFriends[2].avatar_url} alt="" /> : <FiUser size={40} color="#E64A45" />}</div>
                     <span className="podium-score">{myFriends[2]?.score || 0}</span>
+                    <span className="podium-name">{myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase()}${myFriends[2].isMe ? ' (You)' : ''}` : ''}</span>
                 </div>
               </div>
 
@@ -302,8 +325,8 @@ const Sharing = () => {
                   <div key={f.id} className="lb-list-card" onClick={() => handleViewFriend(f)}>
                     <div className="lb-card-left">
                       <div className="lb-card-rank">{i + 4}TH</div>
-                      <div className="lb-card-avatar">{f.avatar_url ? <img src={f.avatar_url} alt="" /> : <FiUser />}</div>
-                      <span>@{f.first_name?.toLowerCase()}</span>
+                      <div className="lb-card-avatar">{f.avatar_url ? <img src={f.avatar_url} alt="" /> : <FiUser size={24} />}</div>
+                      <span className="lb-card-name">@{f.first_name?.toLowerCase()} {f.isMe && '(You)'}</span>
                     </div>
                     <span className="lb-card-score">{f.score}</span>
                   </div>
@@ -311,9 +334,9 @@ const Sharing = () => {
               </div>
             </div>
           ) : (
-            /* ONBOARDING VIEW */
+            /* --- 3. ONBOARDING / SEARCH VIEW --- */
             <div className="sharing-onboarding-wrapper">
-               {!isSearching ? (
+              {!isSearching ? (
                 <>
                   <div className="avatar-group">
                     <img src={avatar1} className="sharing-avatar side-avatar" alt="" />
@@ -325,12 +348,35 @@ const Sharing = () => {
                   <button className="share-cta-btn" onClick={() => setIsSearching(true)}>Get Started</button>
                 </>
               ) : (
-                <div className="inline-search-section">
+                <div className="inline-search-section theme-container">
                   <div className="search-header">
-                    <h2>Find Friends</h2>
-                    <FiX size={24} onClick={() => setIsSearching(false)} style={{ cursor: 'pointer' }} />
+                    <h3 className="theme-heading">Find Friends</h3>
+                    <FiX size={24} onClick={() => { if(myFriends.length > 1) setShowLeaderboard(true); setIsSearching(false); }} style={{cursor:'pointer'}} />
                   </div>
-                  <input className="theme-search-input" placeholder="Search name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+
+                  {incomingRequests.length > 0 && (
+                    <div className="request-group">
+                      <h4 className="section-label">Pending Invitations</h4>
+                      {incomingRequests.map((req) => (
+                        <div key={req.id} className="theme-card highlight-card">
+                          <div className="user-info-row">
+                            <div className="avatar-wrapper">{req.profiles?.avatar_url ? <img src={req.profiles.avatar_url} className="theme-avatar-sm" alt="" /> : <FiUser />}</div>
+                            <div className="text-group">
+                              <p className="name-bold">{req.profiles?.first_name} {req.profiles?.last_name}</p>
+                              <p className="subtext-red">Wants to share progress</p>
+                            </div>
+                          </div>
+                          <div className="action-btns-row">
+                            <button className="icon-btn approve" onClick={() => updateRequestStatus(req.id, 'accepted')}><FiCheck /> Approve</button>
+                            <button className="icon-btn decline" onClick={() => updateRequestStatus(req.id, 'declined')}><FiTrash2 /></button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <input className="theme-search-input" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+
                   <div className="results-container">
                     {searchResults.map(u => (
                       <div key={u.id} className="theme-card">
@@ -338,11 +384,32 @@ const Sharing = () => {
                           {u.avatar_url ? <img src={u.avatar_url} className="theme-avatar-sm" alt="" /> : <FiUser />}
                           <p className="name-bold">{u.first_name} {u.last_name}</p>
                         </div>
-                        <button className="theme-btn-sm" onClick={() => handleSendRequest(u.id)} disabled={sentRequests.includes(u.id)}>
-                          {sentRequests.includes(u.id) ? 'Sent' : 'Invite'}
+                        <button className={`theme-btn-sm ${sentRequests.includes(u.id) ? 'requested' : ''}`} onClick={() => handleSendRequest(u.id)} disabled={sentRequests.includes(u.id)}>
+                          {sentRequests.includes(u.id) ? 'Requested' : 'Invite'}
                         </button>
                       </div>
                     ))}
+                  </div>
+
+                  <div className="friends-list-group">
+                    <h4 className="section-label">Your Network</h4>
+                    <div className="friends-grid">
+                      {myFriends.filter(f => !f.isMe).map((friend) => (
+                        <div key={friend.id} className="theme-card">
+                          <div className="user-info-row">
+                            {friend.avatar_url ? <img src={friend.avatar_url} className="theme-avatar-sm" alt="" /> : <FiUser />}
+                            <div className="text-group">
+                              <p className="name-bold">{friend.first_name}</p>
+                              <span className="badge-online">Score: {friend.score}</span>
+                            </div>
+                          </div>
+                          <div className="action-btns-row">
+                            <button className="theme-btn-outline" onClick={() => { setIsSearching(false); handleViewFriend(friend); }}>View</button>
+                            <button className="icon-btn-delete" onClick={() => handleRemoveFriend(friend.id)}><FiTrash2 /></button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
