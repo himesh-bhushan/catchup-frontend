@@ -180,7 +180,7 @@
     gap: 20px;
 }
 
-/* --- ACTIVITY RING (VERTICALLY CENTERED) --- */
+/* Activity Ring Vertically & Horizontally Centered */
 .activity-card-centered {
     display: flex;
     flex-direction: column;
@@ -190,15 +190,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* Space out the ring and stats perfectly */
     flex: 1;
     width: 100%;
 }
 
 .dash-ring-wrapper-huge {
     position: relative;
-    width: 160px; height: 160px;
-    margin: 15px auto 30px auto; 
+    width: 180px; height: 180px;
+    margin: 10px auto 25px auto; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -206,9 +206,9 @@
 }
 
 .dash-ring-wrapper-huge svg { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotate(-90deg); }
-.dash-bg-ring { fill: none; stroke: #EAEAEA; stroke-width: 16; }
+.dash-bg-ring { fill: none; stroke: #F3F3F3; stroke-width: 16; }
 .dash-meter-ring { 
-    fill: none; stroke: #E64A45; stroke-width: 16; stroke-linecap: butt; 
+    fill: none; stroke: #E64A45; stroke-width: 16; stroke-linecap: round; 
     transition: stroke-dasharray 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
 }
 
@@ -318,7 +318,8 @@
 .dark-text span { color: #555; }
 .dark-text strong { color: #111; }
 
-/* --- BOTTOM ROW: WEEKLY PERFORMANCE & AWARD --- */
+
+/* --- BOTTOM ROW: WEEKLY RINGS & AWARDS --- */
 .awards-weekly-row {
     display: grid;
     grid-template-columns: 1.5fr 1fr; /* Stretches the weekly performance */
@@ -376,7 +377,6 @@
 .award-badge-status.not-earned-gray {
     filter: grayscale(100%) opacity(0.5);
 }
-
 
 /* --- FIND FRIENDS SECTION --- */
 .theme-container {

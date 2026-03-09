@@ -11,7 +11,7 @@ import DashboardNav from '../../components/DashboardNav';
 import avatar1 from '../../assets/avatar1.png';
 import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
-import awards from '../../assets/awards.png'; // Ensure this exists
+import awards from '../../assets/awards.png'; // Make sure this path is correct in your project
 
 import './Sharing.css';
 
@@ -111,6 +111,7 @@ const Sharing = () => {
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
+      // Get 3-letter abbreviation (e.g., "Mon", "Tue")
       days.push({
         dateStr: d.toISOString().split('T')[0],
         dayName: d.toLocaleDateString('en-US', { weekday: 'short' })
@@ -142,7 +143,7 @@ const Sharing = () => {
       const goal = profile?.calorie_goal > 0 ? profile.calorie_goal : 500;
       const movePct = ((activity?.calories || 0) / goal) * 100;
 
-      // Process Weekly Data for 7 mini rings
+      // Process Weekly Data for Mini Rings
       const last7Days = getLast7Days();
       const processedWeekly = last7Days.map(day => {
         const log = (weeklyLogs || []).find(l => l.date === day.dateStr);
@@ -237,7 +238,7 @@ const Sharing = () => {
                   {/* --- TOP ROW: ACTIVITY RING & HEALTH SCORE --- */}
                   <div className="activity-main-row">
                     
-                    {/* Activity Ring (Centered Style) */}
+                    {/* Centered Daily Activity Ring */}
                     <div className="glass-card dash-style-card activity-card-centered">
                       <div className="dash-card-header">
                         <h3>Daily Activity</h3>
@@ -316,7 +317,7 @@ const Sharing = () => {
                     </div>
                   </div>
 
-                  {/* --- BOTTOM ROW: WEEKLY PERFORMANCE & AWARD --- */}
+                  {/* --- BOTTOM ROW: WEEKLY RINGS & AWARDS --- */}
                   <div className="awards-weekly-row">
                     
                     {/* Weekly Performance Rings */}
@@ -377,6 +378,7 @@ const Sharing = () => {
                             )}
                         </div>
                     </div>
+
                   </div>
 
                 </div>
@@ -392,9 +394,8 @@ const Sharing = () => {
                 <div className="lb-search-bar-alt" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
                   Find and add friends...
                 </div>
-                <button className="lb-transparent-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
-                  <FiUserPlus size={28} />
-                </button>
+                {/* Empty div for spacing to keep search bar centered */}
+                <div style={{ width: '28px' }}></div> 
               </div>
               
               <div className="lb-podium">
