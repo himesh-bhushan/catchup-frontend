@@ -343,7 +343,7 @@ const Dashboard = () => {
 
                     {/* ALIGNED 3-COLUMN TRIO ROW USING ORIGINAL 'sync-card' CLASS AS WRAPPER */}
                     {/* By keeping 'sync-card' but removing 'card', it inherits the CSS grid stretch perfectly without adding a white box around all three */}
-                    <div className="sync-card" style={{ display: 'grid', gridTemplateColumns: '2fr 0.9fr 0.9fr', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
+                    <div className="sync-card" style={{ display: 'grid', gridTemplateColumns: '1.95fr 0.925fr 0.925fr', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
                         
                         {/* Actual Sync Tile */}
                         <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
