@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, FiUserPlus, FiCheck, FiTrash2, FiAward } from 'react-icons/fi';
+import { 
+  FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, 
+  FiUserPlus, FiCheck, FiTrash2, FiAward, FiHeart, FiActivity 
+} from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
 import DashboardNav from '../../components/DashboardNav';
 
+// Placeholder avatars
 import avatar1 from '../../assets/avatar1.png';
 import avatar2 from '../../assets/avatar2.png';
 import avatar3 from '../../assets/avatar3.png';
@@ -33,6 +37,8 @@ const Sharing = () => {
     fetchIncomingRequests();
     fetchFriends();
   }, []);
+
+  // --- DATA FETCHING ---
 
   const fetchIncomingRequests = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -108,15 +114,15 @@ const Sharing = () => {
     }
   };
 
+  // --- ACTIONS ---
+
   const handleSendRequest = async (receiverId) => {
     const { data: { user } } = await supabase.auth.getUser();
     const { error } = await supabase
       .from('friend_requests')
       .insert([{ sender_id: user.id, receiver_id: receiverId, status: 'pending' }]);
 
-    if (error) {
-      alert("Request already exists.");
-    }
+    if (error) alert("Request already exists.");
     setSentRequests(prev => [...prev, receiverId]);
   };
 
@@ -139,13 +145,11 @@ const Sharing = () => {
 
   const handleRemoveFriend = async (friendId) => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!window.confirm("Are you sure you want to remove this friend?")) return;
-
+    if (!window.confirm("Are you sure?")) return;
     const { error } = await supabase
       .from('friend_requests')
       .delete()
       .or(`and(sender_id.eq.${user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${user.id})`);
-
     if (!error) fetchFriends();
   };
 
@@ -155,26 +159,22 @@ const Sharing = () => {
     try {
       const today = new Date();
       const todayStr = today.toISOString().split('T')[0];
-      
       const lastWeek = new Date();
       lastWeek.setDate(today.getDate() - 6);
       const lastWeekStr = lastWeek.toISOString().split('T')[0];
 
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', friend.id).single();
       const { data: activity } = await supabase.from('activity_logs').select('*').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
-
       const { data: weeklyLogs } = await supabase
         .from('activity_logs')
         .select('date, calories')
         .eq('user_id', friend.id)
         .gte('date', lastWeekStr)
-        .lte('date', todayStr)
         .order('date', { ascending: true });
 
       const score = calculateUserScore(profile, activity);
       const movePercent = profile?.calorie_goal > 0 ? ((activity?.calories || 0) / profile.calorie_goal) * 100 : 0;
 
-      // Mock Awards Data
       const awards = [
         { id: 1, icon: '🔥', label: '7 Day Streak', color: '#FF9500' },
         { id: 2, icon: '🏆', label: 'Goal Crusher', color: '#FFCC00' },
@@ -183,13 +183,7 @@ const Sharing = () => {
       ];
 
       setFriendWeeklyData(weeklyLogs || []);
-      setFriendStats({
-        profile,
-        activity,
-        healthScore: score,
-        movePercent: Math.min(movePercent, 100),
-        awards
-      });
+      setFriendStats({ profile, activity, healthScore: score, movePercent: Math.min(movePercent, 100), awards });
     } catch (err) {
       console.error(err);
     } finally {
@@ -197,48 +191,20 @@ const Sharing = () => {
     }
   };
 
-  const renderWeeklyRings = () => {
-    const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-    return (
-      <div className="weekly-rings-container">
-        {days.map((day, i) => {
-          const dataForDay = friendWeeklyData[i]?.calories || Math.floor(Math.random() * 400);
-          const goal = friendStats?.profile?.calorie_goal || 500;
-          const percent = Math.min((dataForDay / goal) * 100, 100);
-          
-          return (
-            <div key={i} className="day-ring-item">
-              <div className="small-ring-outer">
-                <div 
-                  className="small-ring-inner" 
-                  style={{ background: `conic-gradient(#E64A45 ${percent}%, #f2f2f2 0%)` }}
-                >
-                  <div className="small-ring-center"></div>
-                </div>
-              </div>
-              <span className="day-label">{day}</span>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
+  // --- SEARCH EFFECT ---
   useEffect(() => {
     const fetchUsers = async () => {
       if (searchTerm.trim().length < 2) {
         setSearchResults([]);
         return;
       }
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, email, avatar_url')
         .or(`email.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`)
         .limit(5);
-
-      if (!error && data) setSearchResults(data);
+      if (data) setSearchResults(data);
     };
-
     const delaySearch = setTimeout(fetchUsers, 300);
     return () => clearTimeout(delaySearch);
   }, [searchTerm]);
@@ -249,253 +215,240 @@ const Sharing = () => {
       <div className="dashboard-content">
         <div className="sharing-page-container">
 
+          {/* VIEW 1: FRIEND DETAIL VIEW */}
           {viewingFriend ? (
             <div className="friend-detail-wrapper">
-              <div className="lb-header">
-                <button className="lb-transparent-btn" onClick={() => setViewingFriend(null)}>
-                  <FiArrowLeft size={28} />
+              <div className="detail-nav">
+                <button className="back-btn" onClick={() => setViewingFriend(null)}>
+                  <FiArrowLeft size={24} /> Back to Leaderboard
                 </button>
-                <h2 style={{ margin: 0, color: '#111', fontSize: '1.8rem' }}>
-                  @{viewingFriend.first_name?.toLowerCase()} {viewingFriend.isMe ? '(You)' : ''}
-                </h2>
               </div>
 
               {friendLoading ? (
-                <div className="lb-placeholder-text">Loading progress...</div>
+                <div className="lb-placeholder-text">Syncing data...</div>
               ) : (
-                <div className="friend-stats-grid">
-                  <div className="theme-card friend-stat-card">
-                    <h3 className="card-label">Activity Ring</h3>
-                    <div className="ring-stats-row">
-                      <div className="main-ring" style={{ background: `conic-gradient(#E64A45 0% ${friendStats?.movePercent || 0}%, #f2f2f2 0% 100%)` }}>
-                        <div className="main-ring-inner">
-                          {Math.round(friendStats?.movePercent || 0)}%
+                <div className="detail-layout">
+                  {/* Left Column */}
+                  <div className="detail-column">
+                    <div className="profile-hero-card">
+                      <div className="hero-avatar">
+                        {viewingFriend.avatar_url ? (
+                          <img src={viewingFriend.avatar_url} alt="" />
+                        ) : (
+                          <FiUser size={40} />
+                        )}
+                      </div>
+                      <div className="hero-info">
+                        <h1>{viewingFriend.first_name} {viewingFriend.last_name}</h1>
+                        <p>@{viewingFriend.first_name?.toLowerCase()}</p>
+                        <div className="hero-badge">Health Score: {friendStats?.healthScore}</div>
+                      </div>
+                    </div>
+
+                    <div className="stats-grid-2col">
+                      <div className="glass-card stat-mini">
+                        <span className="label">Heart Rate</span>
+                        <span className="value">
+                          {friendStats?.profile?.heart_rate || '--'} <small>BPM</small>
+                        </span>
+                      </div>
+                      <div className="glass-card stat-mini">
+                        <span className="label">Sleep</span>
+                        <span className="value">
+                          {(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <small>HRS</small>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="glass-card award-section">
+                      <div className="section-header">
+                        <h3>Awards & Achievements</h3>
+                        <FiAward color="#E64A45" />
+                      </div>
+                      <div className="awards-scroll">
+                        {friendStats?.awards?.map(award => (
+                          <div key={award.id} className="award-item">
+                            <span className="award-icon">{award.icon}</span>
+                            <span className="award-name">{award.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column */}
+                  <div className="detail-column">
+                    <div className="glass-card ring-focus-card">
+                      <h3>Daily Activity</h3>
+                      <div className="ring-container-large">
+                        <svg viewBox="0 0 100 100" className="svg-ring">
+                          <circle className="ring-bg" cx="50" cy="50" r="40" />
+                          <circle 
+                            className="ring-progress" 
+                            cx="50" cy="50" r="40" 
+                            style={{ 
+                              strokeDasharray: `${(friendStats?.movePercent * 2.51)}, 251.2` 
+                            }} 
+                          />
+                        </svg>
+                        <div className="ring-inner-text">
+                          <span className="percent">{Math.round(friendStats?.movePercent)}%</span>
+                          <span className="sub">of goal</span>
                         </div>
                       </div>
-                      <div>
-                        <p className="stat-line">Move: <span className="red-text">{friendStats?.activity?.calories || 0}</span> / {friendStats?.profile?.calorie_goal || 500} KCAL</p>
-                        <p className="stat-line">Steps: <span className="red-text">{friendStats?.activity?.steps || 0}</span></p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="theme-card friend-stat-card">
-                    <h3 className="card-label">Health Score</h3>
-                    <div className="ring-stats-row">
-                      <div className="score-circle">
-                        {friendStats?.healthScore || 0}
-                      </div>
-                      <div className="metrics-list">
-                        <span><strong>Heart Rate:</strong> {friendStats?.profile?.heart_rate || '--'} BPM</span>
-                        <span><strong>Sleep:</strong> {friendStats?.profile?.sleep_seconds ? (friendStats.profile.sleep_seconds / 3600).toFixed(1) : '0'} hrs</span>
-                        <span><strong>Water:</strong> {friendStats?.profile?.water_intake ? (friendStats.profile.water_intake / 1000).toFixed(1) : '0'} L</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="theme-card friend-stat-card full-width-card">
-                    <h3 className="card-label">Weekly Activity</h3>
-                    {renderWeeklyRings()}
-                  </div>
-
-                  <div className="theme-card friend-stat-card full-width-card">
-                    <div className="award-header-row">
-                      <h3 className="card-label">Awards & Achievements</h3>
-                      <FiAward size={24} color="#E64A45" />
-                    </div>
-                    <div className="awards-flex">
-                      {friendStats?.awards?.map(award => (
-                        <div key={award.id} className="award-badge" style={{ backgroundColor: award.color + '15' }}>
-                          <span className="award-icon">{award.icon}</span>
-                          <span className="award-label" style={{ color: award.color }}>{award.label}</span>
+                      <div className="ring-footer-stats">
+                        <div className="f-stat">
+                          <span className="f-label">Calories</span>
+                          <span className="f-val">{friendStats?.activity?.calories || 0}</span>
                         </div>
-                      ))}
+                        <div className="divider" />
+                        <div className="f-stat">
+                          <span className="f-label">Steps</span>
+                          <span className="f-val">{friendStats?.activity?.steps || 0}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="glass-card">
+                      <h3>Weekly Progress</h3>
+                      <div className="weekly-bar-chart">
+                        {['M','T','W','T','F','S','S'].map((day, i) => {
+                          const height = Math.random() * 60 + 20; // Simulated for demo
+                          return (
+                            <div key={i} className="bar-wrapper">
+                              <div className="bar-bg">
+                                <div className="bar-fill" style={{ height: `${height}%` }}></div>
+                              </div>
+                              <span>{day}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
             </div>
           ) : showLeaderboard ? (
+            /* VIEW 2: LEADERBOARD */
             <div className="leaderboard-wrapper">
               <div className="lb-header">
-                <button className="lb-transparent-btn" onClick={() => { setIsSearching(false); setShowLeaderboard(false); }}>
+                <button className="lb-transparent-btn" onClick={() => setShowLeaderboard(false)}>
                   <FiArrowLeft size={28} />
                 </button>
-                <input 
-                  className="lb-search-bar-alt" 
-                  placeholder="Find more friends..." 
-                  onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}
-                  readOnly
-                />
+                <div className="lb-search-bar-alt" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
+                  Find more friends...
+                </div>
                 <button className="lb-transparent-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
                   <FiUserPlus size={28} />
                 </button>
               </div>
               
               <div className="lb-podium">
+                {/* 2nd Place */}
                 <div className="podium-col second-place" onClick={() => myFriends[1] && handleViewFriend(myFriends[1])}>
                     <span className="podium-rank">2ND</span>
                     <div className="podium-avatar">
                       {myFriends[1]?.avatar_url ? <img src={myFriends[1].avatar_url} alt="" /> : (myFriends[1] ? <FiUser size={40} color="#E64A45" /> : null)}
                     </div>
                     <span className="podium-score">{myFriends[1]?.score || 0}</span>
-                    <span className="podium-name">{myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase()}${myFriends[1].isMe ? ' (You)' : ''}` : ''}</span>
+                    <span className="podium-name">{myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase()}` : ''}</span>
                 </div>
                 
+                {/* 1st Place */}
                 <div className="podium-col first-place" onClick={() => myFriends[0] && handleViewFriend(myFriends[0])}>
                     <span className="podium-crown">👑</span>
                     <div className="podium-avatar first-avatar">
                       {myFriends[0]?.avatar_url ? <img src={myFriends[0].avatar_url} alt="" /> : (myFriends[0] ? <FiUser size={50} color="#E64A45" /> : null)}
                     </div>
                     <span className="podium-score first-score">{myFriends[0]?.score || 0}</span>
-                    <span className="podium-name">{myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase()}${myFriends[0].isMe ? ' (You)' : ''}` : ''}</span>
+                    <span className="podium-name">{myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase()}` : ''}</span>
                 </div>
                 
+                {/* 3rd Place */}
                 <div className="podium-col third-place" onClick={() => myFriends[2] && handleViewFriend(myFriends[2])}>
                     <span className="podium-rank">3RD</span>
                     <div className="podium-avatar">
                       {myFriends[2]?.avatar_url ? <img src={myFriends[2].avatar_url} alt="" /> : (myFriends[2] ? <FiUser size={40} color="#E64A45" /> : null)}
                     </div>
                     <span className="podium-score">{myFriends[2]?.score || 0}</span>
-                    <span className="podium-name">{myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase()}${myFriends[2].isMe ? ' (You)' : ''}` : ''}</span>
+                    <span className="podium-name">{myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase()}` : ''}</span>
                 </div>
               </div>
 
               <div className="lb-list-alt">
                 {myFriends.slice(3).map((friend, index) => (
-                  <div key={friend.id || index} className="lb-list-card" onClick={() => handleViewFriend(friend)}>
+                  <div key={friend.id} className="lb-list-card" onClick={() => handleViewFriend(friend)}>
                     <div className="lb-card-left">
-                      <div className="lb-card-rank">{index + 4}TH<br/><span className="rank-up-arrow">▲</span></div>
+                      <div className="lb-card-rank">{index + 4}TH</div>
                       <div className="lb-card-avatar">
-                         {friend.avatar_url ? <img src={friend.avatar_url} alt="" /> : <FiUser size={30} color="#E64A45" />}
+                         {friend.avatar_url ? <img src={friend.avatar_url} alt="" /> : <FiUser size={24} />}
                       </div>
-                      <span className="lb-card-name">@{friend.first_name?.toLowerCase()} {friend.isMe && '(You)'}</span>
+                      <span className="lb-card-name">@{friend.first_name?.toLowerCase()}</span>
                     </div>
-                    <span className="lb-card-score">{friend.score || 0}</span>
+                    <span className="lb-card-score">{friend.score}</span>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
+            /* VIEW 3: ONBOARDING / SEARCH */
             <div className="sharing-onboarding-wrapper">
               {!isSearching ? (
                 <>
                   <div className="avatar-group">
-                    <img src={avatar1} className="sharing-avatar side-avatar" alt="Avatar 1" />
-                    <img src={avatar2} className="sharing-avatar middle-avatar" alt="Avatar 2" />
-                    <img src={avatar3} className="sharing-avatar side-avatar" alt="Avatar 3" />
+                    <img src={avatar1} className="sharing-avatar side-avatar" alt="" />
+                    <img src={avatar2} className="sharing-avatar middle-avatar" alt="" />
+                    <img src={avatar3} className="sharing-avatar side-avatar" alt="" />
                   </div>
                   <h1 className="sharing-title">Health Sharing</h1>
-                  <p className="sharing-subtitle">Invite your friends to join the fun and start sharing. The more you participate, the higher you climb.</p>
+                  <p className="sharing-subtitle">Stay motivated by sharing your progress with friends.</p>
                   <div className="sharing-features-grid">
                     <div className="feature-item">
-                      <FiCheckCircle size={36} color="#E64A45" />
+                      <FiCheckCircle size={32} color="#E64A45" />
                       <div className="feature-text-block">
                         <h3>Stay in charge</h3>
-                        <p>Keep friends and family up to date by securely sharing your health data summary.</p>
-                      </div>
-                    </div>
-                    <div className="feature-item">
-                      <FiLock size={36} color="#E64A45" />
-                      <div className="feature-text-block">
-                        <h3>Private and Secure</h3>
-                        <p>Only a summary is shared. All data is encrypted and you can stop sharing anytime.</p>
+                        <p>Share only your health summary, never your private details.</p>
                       </div>
                     </div>
                   </div>
-                  <button className="share-cta-btn" onClick={() => setIsSearching(true)}>Share with Someone</button>
+                  <button className="share-cta-btn" onClick={() => setIsSearching(true)}>Get Started</button>
                 </>
               ) : (
-                <div className="inline-search-section theme-container">
+                <div className="inline-search-section">
                   <div className="search-header">
-                    <h3 className="theme-heading">Find and Approve Friends</h3>
-                    <button className="close-btn" onClick={() => {
-                        const hasOnboarded = localStorage.getItem('has_onboarded_sharing');
-                        if (hasOnboarded === 'true' || myFriends.length > 1) {
-                            setShowLeaderboard(true);
-                            setIsSearching(false);
-                        } else {
-                            setIsSearching(false);
-                        }
-                    }}>
-                      <FiX size={24} />
-                    </button>
+                    <h2>Find Friends</h2>
+                    <FiX size={24} onClick={() => setIsSearching(false)} style={{ cursor: 'pointer' }} />
                   </div>
-
-                  {incomingRequests.length > 0 && (
-                    <div className="request-group">
-                      <h4 className="section-label">Pending Invitations</h4>
-                      {incomingRequests.map((req) => (
-                        <div key={req.id} className="theme-card highlight-card">
-                          <div className="user-info-row">
-                            <div className="avatar-wrapper">
-                              {req.profiles?.avatar_url ? <img src={req.profiles.avatar_url} className="theme-avatar-sm" alt="" /> : <div className="theme-avatar-sm"><FiUser /></div>}
-                            </div>
-                            <div className="text-group">
-                              <p className="name-bold">{req.profiles?.first_name} {req.profiles?.last_name}</p>
-                              <p className="subtext-red">Wants to share progress</p>
-                            </div>
-                          </div>
-                          <div className="action-btns-row">
-                            <button className="icon-btn approve" onClick={() => updateRequestStatus(req.id, 'accepted')}><FiCheck /> Approve</button>
-                            <button className="icon-btn decline" onClick={() => updateRequestStatus(req.id, 'declined')}><FiTrash2 /></button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="search-input-wrapper">
-                    <input className="theme-search-input" placeholder="Search name or email..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-                  </div>
+                  
+                  <input 
+                    className="theme-search-input" 
+                    placeholder="Search by name or email..." 
+                    value={searchTerm} 
+                    onChange={(e) => setSearchTerm(e.target.value)} 
+                  />
 
                   <div className="results-container">
-                    {searchResults.length > 0 && <h4 className="section-label">Search Results</h4>}
                     {searchResults.map(u => (
-                      <div key={u.id} className="theme-card">
+                      <div key={u.id} className="theme-card search-result-card">
                         <div className="user-info-row">
                           <div className="avatar-wrapper">
-                            {u.avatar_url ? <img src={u.avatar_url} className="theme-avatar-sm" alt="" /> : <div className="theme-avatar-sm"><FiUser /></div>}
+                            {u.avatar_url ? <img src={u.avatar_url} className="theme-avatar-sm" alt="" /> : <FiUser />}
                           </div>
-                          <div className="text-group">
+                          <div>
                             <p className="name-bold">{u.first_name} {u.last_name}</p>
                             <p className="subtext-gray">{u.email}</p>
                           </div>
                         </div>
                         <button 
-                          className={`theme-btn-sm ${sentRequests.includes(u.id) ? 'requested' : ''}`}
+                          className="theme-btn-sm"
                           onClick={() => handleSendRequest(u.id)}
                           disabled={sentRequests.includes(u.id)}
                         >
-                          {sentRequests.includes(u.id) ? 'Requested' : 'Invite'}
+                          {sentRequests.includes(u.id) ? 'Sent' : 'Invite'}
                         </button>
                       </div>
                     ))}
-                  </div>
-
-                  <div className="friends-list-group">
-                    <h4 className="section-label">Your Network ({myFriends.filter(f => !f.isMe).length})</h4>
-                    <div className="friends-grid">
-                      {myFriends.filter(f => !f.isMe).map((friend) => (
-                        <div key={friend.id} className="theme-card">
-                          <div className="user-info-row">
-                            <div className="avatar-wrapper">
-                              {friend.avatar_url ? <img src={friend.avatar_url} className="theme-avatar-sm" alt="" /> : <div className="theme-avatar-sm"><FiUser /></div>}
-                            </div>
-                            <div className="text-group">
-                              <p className="name-bold">{friend.first_name} {friend.last_name}</p>
-                              <span className="badge-online">Health Score: {friend.score}</span>
-                            </div>
-                          </div>
-                          <div className="action-btns-row" style={{ marginTop: '10px' }}>
-                            <button className="theme-btn-outline" onClick={() => { setIsSearching(false); handleViewFriend(friend); }}>View Progress</button>
-                            <button className="icon-btn-delete" onClick={() => handleRemoveFriend(friend.id)}>
-                                <FiTrash2 />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
               )}
