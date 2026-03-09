@@ -53,6 +53,159 @@
     outline: none;
 }
 
+/* --- FRIEND DASHBOARD DETAIL VIEW (FIXED) --- */
+.friend-detail-dashboard {
+    width: 100%;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.detail-header-new {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.back-circle-btn {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: white; border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.header-user-profile { display: flex; align-items: center; gap: 20px; }
+
+.profile-image-ring {
+    width: 80px; height: 80px;
+    background: #E64A45;
+    border-radius: 24px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+}
+
+.profile-image-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.health-score-pill {
+    display: inline-block;
+    background: #FFF0EF;
+    color: #E64A45;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    margin-top: 5px;
+}
+
+.dashboard-grid-layout { display: flex; flex-direction: column; gap: 25px; }
+
+.glass-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+}
+
+.vitals-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.vital-card { display: flex; align-items: center; gap: 20px; }
+.vital-icon {
+    width: 55px; height: 55px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+}
+.vital-icon.hr { background: #fee2e2; color: #ef4444; }
+.vital-icon.sleep { background: #fef3c7; color: #d97706; }
+
+.vital-info label { display: block; color: #888; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+.vital-info p { font-size: 1.6rem; font-weight: 800; margin: 0; }
+
+.activity-main-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 25px;
+}
+
+/* SVG ACTIVITY RING */
+.ring-wrapper-large {
+    position: relative;
+    width: 180px; height: 180px;
+    margin: 20px auto;
+}
+
+.ring-wrapper-large svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+.ring-wrapper-large circle { fill: none; stroke-width: 9; stroke-linecap: round; }
+.ring-wrapper-large circle.bg { stroke: #F3F3F3; }
+.ring-wrapper-large circle.meter {
+    stroke: #E64A45;
+    transition: stroke-dasharray 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.goal-reached {
+    stroke: #FF3B30 !important;
+    filter: drop-shadow(0 0 10px rgba(230, 74, 69, 0.5));
+    animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+.ring-content {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.ring-content .percent { font-size: 2.4rem; font-weight: 900; display: block; color: #111; }
+.ring-content .label { font-size: 0.8rem; color: #999; font-weight: 700; text-transform: uppercase; }
+
+.ring-stats-footer {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 20px;
+    border-top: 1px solid #f5f5f5;
+}
+
+/* WEEKLY BARS */
+.weekly-bar-chart {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 140px;
+    padding-top: 10px;
+}
+
+.bar-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
+.bar-bg { width: 14px; height: 100px; background: #F0F0F0; border-radius: 10px; position: relative; }
+.bar-fill {
+    position: absolute;
+    bottom: 0; width: 100%;
+    background: linear-gradient(180deg, #FF6B6B 0%, #E64A45 100%);
+    border-radius: 10px;
+    transition: height 1.2s ease-out;
+}
+
+/* AWARDS SECTION */
+.awards-scroll {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+    gap: 15px;
+}
+
+.award-item {
+    background: #FFFFFF;
+    border: 1.5px solid #F9EFEA;
+    border-radius: 20px;
+    padding: 12px 8px;
+    display: flex; flex-direction: column; align-items: center;
+    transition: all 0.3s ease;
+}
+
+.earned-award-img { width: 45px; height: 45px; object-fit: contain; }
+
 /* --- FIND FRIENDS SECTION (FIXED LAYOUT) --- */
 .theme-container {
     background-color: #FFF !important;
@@ -83,7 +236,7 @@
 .search-input-wrapper {
     display: flex;
     align-items: center;
-    gap: 15px; /* Space between input and button */
+    gap: 15px;
     margin-bottom: 35px;
 }
 
@@ -165,6 +318,7 @@
     border-radius: 16px;
     object-fit: cover;
     background: #FDE6D8;
+    display: block; /* Ensure image respects the box */
 }
 
 .name-bold {
@@ -239,6 +393,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block; /* Fixes tiny white line below images */
 }
 
 .podium-score {
@@ -248,10 +403,55 @@
     line-height: 1;
 }
 
+/* --- LEADERBOARD LIST ITEMS --- */
+.lb-list-alt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.lb-list-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #D4664C;
+    width: 100%;
+    max-width: 700px;
+    padding: 18px 30px;
+    border-radius: 16px;
+    color: #FFF;
+    margin: 0 auto 15px;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.lb-list-card:hover { transform: scale(1.02); }
+.lb-card-left { display: flex; align-items: center; gap: 20px; }
+.lb-card-rank { font-weight: 800; text-align: center; }
+.lb-card-avatar { width: 50px; height: 50px; background: #FFF; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.lb-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.lb-card-score { font-weight: 800; font-size: 1.5rem; }
+
+/* --- ONBOARDING UI --- */
+.sharing-onboarding-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.avatar-group { display: flex; justify-content: center; margin-bottom: 40px; }
+.sharing-avatar { border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.08); object-fit: cover; }
+.side-avatar { width: 140px; height: 140px; }
+.middle-avatar { width: 170px; height: 170px; margin: 0 -30px; z-index: 2; border: 5px solid #F8DBCA; }
+.sharing-title { font-size: 3.2rem; font-weight: 800; color: #111; margin: 0; }
+.sharing-subtitle { max-width: 650px; font-size: 1.15rem; color: #444; text-align: center; margin: 20px 0 60px; line-height: 1.6; }
+.share-cta-btn { background-color: #E64A45; color: white; border: none; border-radius: 20px; padding: 15px 30px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+
 /* --- UTILS --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow { 
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 59, 48, 0.4)); } 
+    50% { filter: drop-shadow(0 0 18px rgba(255, 59, 48, 0.7)); } 
 }
 
 @media (max-width: 1024px) {
