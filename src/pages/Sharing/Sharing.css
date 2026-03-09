@@ -21,7 +21,7 @@
     justify-content: center; 
     position: relative; 
     gap: 15px;
-    margin-bottom: 60px;
+    margin-bottom: 30px; /* Reduced gap below the search bar */
     width: 100%;
 }
 
@@ -109,9 +109,10 @@
 .podium-rank { font-weight: 800; color: #111; font-size: 1.1rem; margin-bottom: 15px; }
 
 .podium-crown {
-    font-size: 3.2rem; 
-    margin-bottom: 12px; 
+    font-size: 2.4rem; /* Reduced size to look proportional */
+    margin-bottom: -12px; /* Negative margin to pull it neatly over the avatar border */
     z-index: 10;
+    position: relative;
 }
 
 .podium-score {
@@ -175,7 +176,7 @@
 .profile-image-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .black-name-title {
-    color: #000000 !important; /* Force black name */
+    color: #000000 !important;
     margin: 0; 
     font-size: 2rem; 
     font-weight: 900;
@@ -244,7 +245,7 @@
 
 .bg { stroke: #F3F3F3; }
 .activity-meter { stroke: #E64A45; transition: stroke-dasharray 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-.hs-meter { stroke: #5856D6; transition: stroke-dasharray 1.5s ease; } /* Purple for health score */
+.hs-meter { stroke: #5856D6; transition: stroke-dasharray 1.5s ease; }
 
 .goal-reached {
     stroke: #FF3B30 !important;
@@ -322,7 +323,7 @@
 .mini-ring-wrapper circle { fill: none; stroke-width: 6; stroke-linecap: round; }
 .mini-meter { stroke: #E64A45; transition: stroke-dasharray 1s ease; }
 
-/* AWARDS SECTION (GREYED OUT LOGIC) */
+/* AWARDS SECTION */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -525,36 +526,6 @@
     cursor: pointer;
     font-size: 1.1rem;
 }
-
-/* --- LEADERBOARD LIST ITEMS --- */
-.lb-list-alt {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
-
-.lb-list-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #D4664C;
-    width: 100%;
-    max-width: 700px;
-    padding: 18px 30px;
-    border-radius: 16px;
-    color: #FFF;
-    margin: 0 auto 15px;
-    transition: transform 0.2s;
-    cursor: pointer;
-}
-
-.lb-list-card:hover { transform: scale(1.02); }
-.lb-card-left { display: flex; align-items: center; gap: 20px; }
-.lb-card-rank { font-weight: 800; text-align: center; }
-.lb-card-avatar { width: 50px; height: 50px; background: #FFF; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.lb-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.lb-card-score { font-weight: 800; font-size: 1.5rem; }
 
 /* --- ONBOARDING UI --- */
 .sharing-onboarding-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
