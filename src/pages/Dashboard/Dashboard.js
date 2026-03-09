@@ -37,7 +37,6 @@ const Dashboard = () => {
     calories: 0, steps: 0, distance: 0, goal: 500, percentage: 0
   });
 
-  // ✅ UPDATED: Added water and blood pressure to initial state
   const [otherStats, setOtherStats] = useState({
     heart_rate: 0, 
     sleep: 0,
@@ -47,7 +46,6 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(true);
   const [isDeviceConnected, setIsDeviceConnected] = useState(localStorage.getItem('deviceConnected') === 'true');
-  const [connecting, setConnecting] = useState(false); 
   const [showConnectMenu, setShowConnectMenu] = useState(false);
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
@@ -172,10 +170,9 @@ const Dashboard = () => {
                     setLastSyncedAgo(calculateTimeAgo(profile.last_synced_at));
                 }
 
-                // ✅ NECESSARY CHANGE: Ensure sleep_seconds is stored correctly
                 setOtherStats({
                     heart_rate: profile.heart_rate || 0,
-                    sleep: profile.sleep_seconds || 0, // Keep in seconds here, convert in UI
+                    sleep: profile.sleep_seconds || 0, 
                     water_intake: profile.water_intake || 0,
                     blood_pressure: profile.blood_pressure || "--/--"
                 });
@@ -286,7 +283,6 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* Syncing TILE */}
                     <div className="card sync-card">
                         <div className="sync-header">
                             <div className="sync-dot green"></div>
@@ -297,7 +293,6 @@ const Dashboard = () => {
                         </p>
                     </div>
 
-                    {/* Goals Completed */}
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('Goals Completed')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="goals-progress-bar">
@@ -335,7 +330,7 @@ const Dashboard = () => {
                         <div className="tile-value">{otherStats.heart_rate} <span>BPM</span></div>
                     </div>
 
-                    {/* Health Score */}
+                    {/* Health Score Section */}
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
                         <div className="card-header score-header-nudged">
                             <h3>{t('Health Score') || "Health Score"}</h3>
@@ -347,12 +342,7 @@ const Dashboard = () => {
                                 <div 
                                     className="score-ring"
                                     style={{
-                                        background: `conic-gradient(
-                                            #EF473A 0% 30%,   
-                                            #F7931E 30% 55%,  
-                                            #FDE08B 55% 80%,  
-                                            #4A90E2 80% 100%  
-                                        )`
+                                        background: `conic-gradient(#EF473A 0% 30%, #F7931E 30% 55%, #FDE08B 55% 80%, #4A90E2 80% 100%)`
                                     }}
                                 >
                                     <div className="score-inner">
@@ -369,19 +359,20 @@ const Dashboard = () => {
                                         <span className="metric-value">{otherStats.heart_rate} <strong>BPM</strong></span>
                                     </div>
                                 </div>
-                                {/* ✅ NECESSARY CHANGE: Correct sleep calculation displayed here */}
+                                
+                                {/* FIX: Correct Sleep Hours Calculation */}
                                 <div className="metric-pill pill-orange" onClick={() => navigate('/sleep')}>
                                     <div className="metric-icon-circle"><FiMoon color="#F7931E" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Sleep Hours</span>
-                                        <span className="hs-pill-value">
-                                            {stats.sleepSeconds > 0 
-                                                ? (stats.sleepSeconds / 3600).toFixed(1) 
-                                                : '0.0'} 
-                                            <strong> hours</strong>
+                                        <span className="metric-value">
+                                            {otherStats.sleep > 0 
+                                                ? (otherStats.sleep / 3600).toFixed(1) 
+                                                : '0.0'} <strong>hours</strong>
                                         </span>
                                     </div>
                                 </div>
+
                                 <div className="metric-pill pill-yellow">
                                     <div className="metric-icon-circle"><FiActivity color="#333" /></div>
                                     <div className="metric-text-group">
@@ -389,13 +380,16 @@ const Dashboard = () => {
                                         <span className="metric-value">{activityData.calories} <strong>KCAL</strong></span>
                                     </div>
                                 </div>
-                                <div className="metric-pill pill-blue">
+
+                                {/* FIX: Correct Water Intake (ml to L) Calculation */}
+                                <div className="metric-pill pill-blue" onClick={() => navigate('/water')}>
                                     <div className="metric-icon-circle"><FiDroplet color="#4A90E2" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Water Intake</span>
-                                        <span className="hs-pill-value">
-                                            {stats.water ? (stats.water / 1000).toFixed(1) : '0.0'} 
-                                            <strong> L</strong>
+                                        <span className="metric-value">
+                                            {otherStats.water_intake > 0 
+                                                ? (otherStats.water_intake / 1000).toFixed(1) 
+                                                : '0.0'} <strong>L</strong>
                                         </span>
                                     </div>
                                 </div>
@@ -415,6 +409,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
+                {/* Recommendations */}
                 <div className="recommendations-section">
                     <h3>{t('recommendations') || "Recommendations"}</h3>
                     <div className="recommendations-carousel">
@@ -427,6 +422,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
+                {/* Nearby Care */}
                 <div className="recommendations-section">
                     <div className="section-header-row">
                         <h3>{t('nearby_care') || "Find Nearby Care"}</h3>
