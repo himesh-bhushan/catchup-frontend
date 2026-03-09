@@ -210,7 +210,7 @@ const HealthScore = () => {
                     fontWeight: 'bold',
                     color: '#DE4B4E'
                 }}>
-                  {loading ? "..." : `${stats.score}%`}
+                  {loading ? "..." : `${stats.score}`}
                 </div>
               </div>
 
