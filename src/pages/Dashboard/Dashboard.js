@@ -341,10 +341,11 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* PERFECTLY ALIGNED 3-COLUMN TRIO ROW (Sync -> Water -> Sleep) */}
-                    {/* Changed gridTemplateColumns to 2fr 1fr 1fr to make Sync exactly double the width */}
-                    <div className="trio-row-wrapper" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '20px', width: '100%' }}>
+                    {/* ALIGNED 3-COLUMN TRIO ROW USING ORIGINAL 'sync-card' CLASS AS WRAPPER */}
+                    {/* By keeping 'sync-card' but removing 'card', it inherits the CSS grid stretch perfectly without adding a white box around all three */}
+                    <div className="sync-card" style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
                         
+                        {/* Actual Sync Tile */}
                         <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
                             <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                                 <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
@@ -355,6 +356,7 @@ const Dashboard = () => {
                             </p>
                         </div>
 
+                        {/* Actual Water Tile */}
                         <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
@@ -365,6 +367,7 @@ const Dashboard = () => {
                             </div>
                         </div>
 
+                        {/* Actual Sleep Tile */}
                         <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
