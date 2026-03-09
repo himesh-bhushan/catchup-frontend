@@ -50,51 +50,68 @@ const Sharing = () => {
     if (!error) setIncomingRequests(data);
   };
 
+  // 🟢 Helper to calculate Health Score for any user
+  const calculateUserScore = (profile, activity) => {
+    let hrScore = 0, sleepScore = 0, calScore = 0, waterScore = 0;
+    
+    const heart = profile?.heart_rate || 0;
+    if (heart > 0) {
+      if (heart >= 60 && heart <= 80) hrScore = 100;
+      else hrScore = Math.max(0, 100 - Math.abs(heart - 70) * 2);
+    }
+
+    const sleepHrs = (profile?.sleep_seconds || 0) / 3600;
+    if (sleepHrs > 0) sleepScore = Math.max(0, 100 - Math.abs(sleepHrs - 8) * 15);
+    
+    const cals = activity?.calories || 0;
+    const goal = profile?.calorie_goal || 500;
+    calScore = Math.min(100, (cals / goal) * 100);
+    
+    const waterLiters = (profile?.water_intake || 0) / 1000;
+    waterScore = Math.min(100, (waterLiters / 2.5) * 100);
+
+    return Math.round(hrScore * 0.35 + sleepScore * 0.25 + calScore * 0.25 + waterScore * 0.15);
+  };
+
   const fetchFriends = async () => {
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (!authUser) return;
 
-    const { data: currentUser } = await supabase
-      .from('profiles')
-      .select('id, first_name, last_name, email, avatar_url')
-      .eq('id', authUser.id)
-      .single();
+    const todayStr = new Date().toISOString().split('T')[0];
 
+    // 1. Fetch current user and their friends IDs
     const { data, error } = await supabase
       .from('friend_requests')
       .select(`
-        id,
         sender_id,
-        receiver_id,
-        sender:profiles!friend_requests_sender_id_fkey (id, first_name, last_name, email, avatar_url),
-        receiver:profiles!friend_requests_receiver_id_fkey (id, first_name, last_name, email, avatar_url)
+        receiver_id
       `)
       .eq('status', 'accepted')
       .or(`sender_id.eq.${authUser.id},receiver_id.eq.${authUser.id}`);
 
-    if (!error && data) {
-      const uniqueFriendsMap = new Map();
+    if (!error) {
+      const friendIds = data.map(rel => rel.sender_id === authUser.id ? rel.receiver_id : rel.sender_id);
+      const allIds = [...new Set([authUser.id, ...friendIds])];
 
-      data.forEach(rel => {
-        const friend = rel.sender_id === authUser.id ? rel.receiver : rel.sender;
-        if (friend && friend.id !== authUser.id) {
-          uniqueFriendsMap.set(friend.id, friend);
-        }
+      // 2. Fetch Profiles and Activity for ALL network members at once
+      const { data: profiles } = await supabase.from('profiles').select('*').in('id', allIds);
+      const { data: activities } = await supabase.from('activity_logs').select('*').in('user_id', allIds).eq('date', todayStr);
+
+      // 3. Map everything into one list with calculated scores
+      const networkWithScores = profiles.map(profile => {
+        const activity = activities?.find(a => a.user_id === profile.id);
+        return {
+          ...profile,
+          isMe: profile.id === authUser.id,
+          score: calculateUserScore(profile, activity)
+        };
       });
 
-      let friendsList = Array.from(uniqueFriendsMap.values());
-      
-      if (currentUser) {
-        currentUser.isMe = true; 
-        friendsList.push(currentUser);
-      }
-      
-      const sortedFriends = friendsList.sort((a, b) => (b.score || 0) - (a.score || 0));
-      setMyFriends(sortedFriends);
-      
-      if (friendsList.length > 1) {
-        localStorage.setItem('has_onboarded_sharing', 'true');
-      }
+      // Sort by high score
+      const sorted = networkWithScores.sort((a, b) => b.score - a.score);
+      setMyFriends(sorted);
+
+      if (sorted.length > 1) localStorage.setItem('has_onboarded_sharing', 'true');
     }
   };
 
@@ -119,7 +136,7 @@ const Sharing = () => {
       .eq('id', requestId);
 
     if (!error) {
-      setIncomingRequests(incomingRequests.filter(req => req.id !== requestId));
+      setIncomingRequests(prev => prev.filter(req => req.id !== requestId));
       fetchFriends();
       if (newStatus === 'accepted') {
         localStorage.setItem('has_onboarded_sharing', 'true');
@@ -129,7 +146,6 @@ const Sharing = () => {
     }
   };
 
-  // 🟢 NEW: Remove Friend Function
   const handleRemoveFriend = async (friendId) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!window.confirm("Are you sure you want to remove this friend?")) return;
@@ -139,11 +155,7 @@ const Sharing = () => {
       .delete()
       .or(`and(sender_id.eq.${user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${user.id})`);
 
-    if (!error) {
-      fetchFriends(); // Refresh the list
-    } else {
-      console.error("Error removing friend:", error);
-    }
+    if (!error) fetchFriends();
   };
 
   const handleViewFriend = async (friend) => {
@@ -151,32 +163,17 @@ const Sharing = () => {
     setFriendLoading(true);
     try {
       const todayStr = new Date().toISOString().split('T')[0];
-      const { data: profile } = await supabase.from('profiles').select('calorie_goal, heart_rate, sleep_seconds, water_intake').eq('id', friend.id).single();
-      const { data: activity } = await supabase.from('activity_logs').select('calories, steps').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
+      const { data: profile } = await supabase.from('profiles').select('*').eq('id', friend.id).single();
+      const { data: activity } = await supabase.from('activity_logs').select('*').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
 
-      let hrScore = 0, sleepScore = 0, calScore = 0, waterScore = 0;
-      const heart = profile?.heart_rate || 0;
-      if (heart > 0) {
-        if (heart >= 60 && heart <= 80) hrScore = 100;
-        else hrScore = Math.max(0, 100 - Math.abs(heart - 70) * 2);
-      }
-      const sleepHrs = (profile?.sleep_seconds || 0) / 3600;
-      if (sleepHrs > 0) sleepScore = Math.max(0, 100 - Math.abs(sleepHrs - 8) * 15);
-      
-      const cals = activity?.calories || 0;
-      const goal = profile?.calorie_goal || 500;
-      calScore = Math.min(100, (cals / goal) * 100);
-      
-      const waterLiters = (profile?.water_intake || 0) / 1000;
-      waterScore = Math.min(100, (waterLiters / 2.5) * 100);
-
-      const totalScore = Math.round(hrScore * 0.35 + sleepScore * 0.25 + calScore * 0.25 + waterScore * 0.15);
+      const score = calculateUserScore(profile, activity);
+      const movePercent = profile?.calorie_goal > 0 ? ((activity?.calories || 0) / profile.calorie_goal) * 100 : 0;
 
       setFriendStats({
         profile,
         activity,
-        healthScore: totalScore,
-        movePercent: Math.min((cals / goal) * 100, 100)
+        healthScore: score,
+        movePercent: Math.min(movePercent, 100)
       });
     } catch (err) {
       console.error(err);
@@ -269,6 +266,7 @@ const Sharing = () => {
               </div>
               
               <div className="lb-podium">
+                {/* 2nd Place */}
                 <div className="podium-col second-place" onClick={() => myFriends[1] && handleViewFriend(myFriends[1])}>
                     <span className="podium-rank">2ND</span>
                     <div className="podium-avatar">
@@ -278,6 +276,7 @@ const Sharing = () => {
                     <span className="podium-name">{myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase()}${myFriends[1].isMe ? ' (You)' : ''}` : ''}</span>
                 </div>
                 
+                {/* 1st Place */}
                 <div className="podium-col first-place" onClick={() => myFriends[0] && handleViewFriend(myFriends[0])}>
                     <span className="podium-crown">👑</span>
                     <div className="podium-avatar first-avatar">
@@ -287,6 +286,7 @@ const Sharing = () => {
                     <span className="podium-name">{myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase()}${myFriends[0].isMe ? ' (You)' : ''}` : ''}</span>
                 </div>
                 
+                {/* 3rd Place */}
                 <div className="podium-col third-place" onClick={() => myFriends[2] && handleViewFriend(myFriends[2])}>
                     <span className="podium-rank">3RD</span>
                     <div className="podium-avatar">
@@ -419,12 +419,11 @@ const Sharing = () => {
                             </div>
                             <div className="text-group">
                               <p className="name-bold">{friend.first_name} {friend.last_name}</p>
-                              <span className="badge-online">Connected</span>
+                              <span className="badge-online">Health Score: {friend.score}</span>
                             </div>
                           </div>
                           <div className="action-btns-row" style={{ marginTop: '10px' }}>
                             <button className="theme-btn-outline" onClick={() => { setIsSearching(false); handleViewFriend(friend); }}>View Progress</button>
-                            {/* 🟢 DELETE FRIEND BUTTON */}
                             <button className="icon-btn-delete" onClick={() => handleRemoveFriend(friend.id)}>
                                 <FiTrash2 />
                             </button>
