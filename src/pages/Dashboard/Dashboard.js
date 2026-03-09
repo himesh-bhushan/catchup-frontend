@@ -210,7 +210,7 @@ const Dashboard = () => {
             const cals = todayLog?.calories || 0;
 
               // --- NEW: GOALS CALCULATION ---
-            const stepGoalMet = (todayLogData?.steps || 0) >= 5000;
+            const stepGoalMet = (todayLog?.steps || 0) >= 5000;
             const moveGoalMet = cals >= goal; // Activity Ring completed
             const sleepGoalMet = profile?.sleep_seconds >= (7 * 3600); // 7 hours
             const waterGoalMet = profile?.water_intake >= 2000; // 2 Liters (2000ml)
