@@ -1,149 +1,203 @@
-/* --- GLOBAL WRAPPER --- */
+/* --- GLOBAL WRAPPER & STRETCH --- */
 .dashboard-wrapper.sharing-page-bg {
     background-color: #F8DBCA;
     min-height: 100vh;
     display: flex;
 }
 
-/* Stretches the container to full width */
 .sharing-page-container {
     width: 100%;
     padding: 40px 60px;
     margin: 0;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
-/* --- HEADER ICONS (NO BOXES) --- */
+/* --- HEADER NAVIGATION (CLEAN ICONS) --- */
+.lb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 80px;
+    width: 100%;
+}
+
 .lb-transparent-btn {
     background: transparent !important;
     border: none !important;
     color: #111 !important;
     box-shadow: none !important;
     padding: 0 !important;
-    width: auto !important;
-    height: auto !important;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
 .lb-transparent-btn:hover {
-    transform: scale(1.1);
-    opacity: 0.7;
+    transform: scale(1.15);
 }
 
-/* --- LEADERBOARD HEADER --- */
-.lb-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 60px;
-    width: 100%;
-}
-
+/* Search bar width logic */
 .lb-search-bar-alt {
     flex: 1;
-    max-width: 800px;
+    max-width: 700px;
     padding: 18px 24px;
     border-radius: 16px;
     border: none;
     background: #FFF;
     font-size: 1.1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    cursor: pointer;
+    outline: none;
 }
 
-/* --- FIND FRIENDS SECTION (FIXED & POLISHED) --- */
-.theme-container {
-    background-color: #FFF !important;
-    border: none;
+/* --- PODIUM FIX (CENTERED & SCALED) --- */
+.leaderboard-wrapper {
     width: 100%;
-    max-width: 900px; /* Stretched width */
-    margin: 20px auto;
-    padding: 40px;
-    border-radius: 32px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     animation: fadeIn 0.4s ease-out;
 }
 
-.search-header {
+.lb-podium {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 60px;
+    margin-bottom: 60px;
+    width: 100%;
 }
 
-.theme-heading {
-    font-size: 1.8rem;
+.podium-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Fixes the "weird" image cropping */
+.podium-avatar {
+    width: 110px; 
+    height: 110px;
+    background: #FFF;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    overflow: hidden; /* Clips the image to the circle */
+    border: 4px solid #fff;
+    position: relative;
+}
+
+.first-avatar { 
+    width: 140px; 
+    height: 140px; 
+    border: 5px solid #E64A45; 
+}
+
+/* Ensures the user image fills the circle perfectly */
+.podium-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.podium-rank {
     font-weight: 800;
     color: #111;
-    margin: 0;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.podium-crown {
+    font-size: 2.2rem;
+    margin-bottom: -15px;
+    z-index: 10;
+}
+
+.podium-score {
+    color: #E64A45;
+    font-weight: 900;
+    font-size: 2.2rem; /* Larger font for visibility */
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.first-score { font-size: 2.8rem; }
+
+.podium-name {
+    color: #555;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+/* --- FIND FRIENDS LIST (MATCHING DASHBOARD) --- */
+.theme-container {
+    background-color: #FFF !important;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 30px 40px;
+    border-radius: 32px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+}
+
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
 .theme-search-input {
-    width: 100%;
-    padding: 20px 28px;
-    border-radius: 20px;
+    flex: 1;
+    padding: 18px 25px;
+    border-radius: 18px;
     border: 1px solid #f2f2f2;
     background: #F8F9FA;
     font-size: 1.1rem;
     outline: none;
-    margin-bottom: 40px;
-    transition: all 0.2s ease;
 }
 
-.theme-search-input:focus {
-    background: #fff;
-    border-color: #E64A45;
-    box-shadow: 0 0 0 4px rgba(230, 74, 69, 0.05);
-}
-
-.section-label {
-    font-size: 0.85rem;
-    font-weight: 900;
-    color: #E64A45;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 25px;
-    display: block;
-}
-
-/* --- FRIEND ROW CARD --- */
-.theme-card {
-    display: flex;
-    justify-content: space-between; /* Pushes content to sides */
-    align-items: center;
-    background: #ffffff;
-    padding: 20px 30px;
-    border-radius: 24px;
-    margin-bottom: 15px;
-    border: 1px solid #f5f5f5;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.theme-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
-}
-
-.user-info-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.theme-avatar-sm {
-    width: 65px;
-    height: 65px;
-    border-radius: 18px; /* Squircle style */
-    object-fit: cover;
-    background: #FDE6D8;
+.search-row-add-btn {
+    background: #E64A45;
+    color: white;
+    border: none;
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+/* Friend Row Card */
+.theme-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 18px 25px;
+    border-radius: 22px;
+    margin-bottom: 12px;
+    border: 1px solid #f5f5f5;
+}
+
+.theme-avatar-sm {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    object-fit: cover;
+    background: #FDE6D8;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
@@ -151,86 +205,9 @@
     font-size: 1.2rem;
     font-weight: 800;
     color: #111;
-    margin: 0 0 4px 0;
 }
 
-.badge-online {
-    color: #888;
-    font-size: 0.95rem;
-    font-weight: 600;
-}
-
-/* --- BUTTONS --- */
-.action-btns-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.theme-btn-outline {
-    background: transparent;
-    color: #E64A45;
-    border: 2px solid #E64A45;
-    padding: 10px 30px;
-    border-radius: 14px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.theme-btn-outline:hover {
-    background: #E64A45;
-    color: white;
-}
-
-.icon-btn-delete {
-    background: #FFF0F0;
-    border: none;
-    color: #E64A45;
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.2s;
-}
-
-.icon-btn-delete:hover {
-    background: #E64A45;
-    color: white;
-}
-
-/* --- LEADERBOARD PODIUM --- */
-.lb-podium {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 60px;
-    margin-bottom: 80px;
-}
-
-.podium-avatar {
-    width: 110px; height: 110px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    overflow: hidden;
-    background: white;
-}
-
-.first-avatar { width: 145px; height: 145px; border: 5px solid #E64A45; }
-
-.podium-score {
-    color: #E64A45;
-    font-weight: 900;
-    font-size: 2rem;
-}
-
-/* --- UTILS --- */
+/* --- ANIMATIONS & UTILS --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -239,4 +216,6 @@
 @media (max-width: 1024px) {
     .sharing-page-container { padding: 20px; }
     .lb-podium { gap: 30px; }
+    .podium-avatar { width: 90px; height: 90px; }
+    .first-avatar { width: 115px; height: 115px; }
 }
