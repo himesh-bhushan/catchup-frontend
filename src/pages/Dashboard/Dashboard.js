@@ -335,12 +335,6 @@ const Dashboard = () => {
                         <div className="tile-value">{otherStats.heart_rate} <span>BPM</span></div>
                     </div>
 
-                    {/* ✅ NECESSARY CHANGE: Added dedicated Sleep Tile (Optional but helpful for visibility) */}
-                    <div className="card sleep-card" onClick={() => navigate('/sleep')}>
-                        <div className="card-header"><h3>{t('Sleep')}</h3><FiChevronRight className="card-arrow" /></div>
-                        <div className="tile-value">{(otherStats.sleep / 3600).toFixed(1)} <span>hrs</span></div>
-                    </div>
-
                     {/* Health Score */}
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
                         <div className="card-header score-header-nudged">
