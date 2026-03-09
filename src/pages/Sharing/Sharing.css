@@ -1,6 +1,6 @@
-/* --- GLOBAL WRAPPER & REFINED CONTAINER --- */
+/* --- GLOBAL WRAPPER & STRETCH --- */
 .dashboard-wrapper.sharing-page-bg {
-    background-color: #F8DBCA; /* Original background */
+    background-color: #F8DBCA;
     min-height: 100vh;
     display: flex;
 }
@@ -12,13 +12,9 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    /* Soften global box shadows */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border-radius: 20px;
-    transition: box-shadow 0.3s ease-in-out;
 }
 
-/* --- HEADER NAVIGATION (CLEANER LOOK) --- */
+/* --- HEADER NAVIGATION --- */
 .lb-header {
     display: flex;
     align-items: center;
@@ -39,18 +35,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
-.lb-transparent-btn:hover {
-    transform: scale(1.1);
-    opacity: 0.8;
-}
-
-.lb-header .lb-transparent-btn:first-child {
-    position: absolute;
-    left: 0;
-}
+.lb-transparent-btn:hover { transform: scale(1.15); }
+.lb-header .lb-transparent-btn:first-child { position: absolute; left: 0; }
 
 .lb-search-bar-alt {
     width: 100%;
@@ -60,18 +49,11 @@
     border: none;
     background: #FFF;
     font-size: 1.1rem;
-    color: #444;
-    /* Softer, more refined shadow */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     outline: none;
-    transition: box-shadow 0.3s ease-in-out;
 }
 
-.lb-search-bar-alt:focus {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-/* --- LEADERBOARD PODIUM (MATCHING THE DASHBOARD THEME) --- */
+/* --- LEADERBOARD PODIUM --- */
 .leaderboard-wrapper {
     width: 100%;
     display: flex;
@@ -95,7 +77,7 @@
     align-items: center;
     justify-content: flex-end;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
 }
 
 .podium-col:hover { transform: translateY(-5px); }
@@ -104,22 +86,15 @@
     width: 110px; height: 110px;
     background: #FFF; border-radius: 50%;
     margin-bottom: 0;
-    /* Deep, rich shadow for 3D effect */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     display: flex; align-items: center; justify-content: center;
     overflow: hidden; border: 4px solid #fff; position: relative;
-    transition: border-color 0.3s ease;
 }
 
 .first-avatar { width: 140px; height: 140px; border: 5px solid #E64A45; }
 .podium-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .podium-rank { font-weight: 800; color: #111; font-size: 1.1rem; margin-bottom: 15px; }
 .podium-crown { font-size: 2.4rem; margin-bottom: -12px; z-index: 10; position: relative; }
-
-/* Add pulsating border effect for goal reaching on first place */
-.first-place:hover .podium-avatar {
-    animation: pulseBorder 2.5s infinite ease-in-out;
-}
 
 .podium-score {
     display: block; width: 100%; text-align: center;
@@ -129,7 +104,7 @@
 .first-score { font-size: 2.8rem; }
 .podium-name { display: block; width: 100%; text-align: center; color: #555; font-size: 1.05rem; font-weight: 600; margin: 0; }
 
-/* --- FRIEND DASHBOARD DETAIL HEADER --- */
+/* --- FRIEND DETAIL HEADER --- */
 .friend-detail-dashboard {
     width: 100%;
     max-width: 1150px;
@@ -141,7 +116,7 @@
     display: flex;
     align-items: center;
     gap: 30px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .back-circle-btn {
@@ -149,12 +124,8 @@
     border-radius: 50%;
     background: white; border: none;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
-
-.back-circle-btn:hover { transform: scale(1.1); opacity: 0.8; }
 
 .header-user-profile { display: flex; align-items: center; gap: 20px; }
 
@@ -168,33 +139,28 @@
 
 .profile-image-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.black-name-title { color: #000000 !important; margin: 0; font-size: 2.2rem; font-weight: 900; }
+.black-name-title { color: #000000 !important; margin: 0; font-size: 2rem; font-weight: 900; }
 
 .health-score-pill {
     display: inline-block;
     background: #FFF0EF;
     color: #E64A45;
-    padding: 6px 18px;
+    padding: 5px 15px;
     border-radius: 20px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 800;
     margin-top: 5px;
 }
 
-/* --- DASHBOARD GRID & GLASS CARDS WITH BETTER LOOK --- */
-.dashboard-grid-layout { display: flex; flex-direction: column; gap: 30px; }
+/* --- DASHBOARD GRID & GLASS CARDS --- */
+.dashboard-grid-layout { display: flex; flex-direction: column; gap: 25px; }
 
 .glass-card {
     background: #FFFFFF;
-    border-radius: 28px;
-    padding: 35px;
-    box-shadow: 0 4px 25px rgba(0,0,0,0.05);
-    border: 1px solid #f2f2f2;
-    transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
-}
-
-.glass-card:hover {
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    border-radius: 24px;
+    padding: 30px 35px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
 }
 
 .dash-card-header {
@@ -204,13 +170,131 @@
     margin-bottom: 25px;
 }
 
-.dash-card-header h3 { margin: 0; font-size: 1.4rem; font-weight: 900; color: #111; }
+.dash-card-header h3 { margin: 0; font-size: 1.4rem; font-weight: 900; color: #222; }
+
+/* --- ACTIVITY RING & HEALTH SCORE ROW --- */
+.activity-main-row {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr; /* Slightly wider for health score pills */
+    gap: 25px;
+}
+
+/* Activity Ring Styling (Exact Reference Match) */
+.activity-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 40px;
+}
+
+.dash-ring-wrapper-large {
+    position: relative;
+    width: 170px; height: 170px;
+    flex-shrink: 0;
+}
+
+.dash-ring-wrapper-large svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+.dash-bg-ring { fill: none; stroke: #EAEAEA; stroke-width: 18; }
+.dash-meter-ring { 
+    fill: none; stroke: #E64A45; stroke-width: 18; stroke-linecap: butt; /* Flat edges */
+    transition: stroke-dasharray 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
+}
+
+.dash-ring-inner-yellow {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110px;
+    height: 110px;
+    background-color: #FFFBEB; /* Matches the pale yellow center */
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.inner-avatar { width: 50px; height: 50px; border-radius: 50%; margin-bottom: 2px; object-fit: cover; }
+.inner-emoji { font-size: 2.2rem; margin-bottom: 2px; }
+.inner-percent { font-size: 1.3rem; font-weight: 900; color: #111; }
+
+.dash-stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Tighter layout */
+    flex: 1;
+}
+
+.dash-stat-item { display: flex; flex-direction: column; gap: 2px; }
+.stat-lbl { font-size: 1.1rem; font-weight: 800; color: #333; text-transform: capitalize; }
+.stat-val { font-size: 1.6rem; font-weight: 900; color: #222; display: flex; align-items: baseline; gap: 5px; }
+.stat-val small { font-size: 0.9rem; font-weight: 700; color: #888; text-transform: uppercase; }
+
+/* Health Score Card Styling (Exact Reference Match) */
+.hs-body {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.dash-ring-wrapper-medium {
+    position: relative;
+    width: 150px; height: 150px;
+    flex-shrink: 0;
+}
+
+.dash-ring-wrapper-medium svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+.hs-center-val { font-size: 2.8rem; font-weight: 800; color: #D3504A; }
+
+.hs-pills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.hs-pill {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+    border-radius: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Pill specific icons and colors */
+.pill-icon-wrapper {
+    width: 36px; height: 36px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+
+.icon-red { color: #D3504A; font-size: 1.2rem; }
+.icon-orange { color: #E29E3A; font-size: 1.2rem; }
+.icon-dark { color: #333333; font-size: 1.2rem; }
+.icon-blue { color: #5C83D6; font-size: 1.2rem; }
+
+.pill-text { display: flex; flex-direction: column; }
+.pill-text span { font-size: 0.8rem; font-weight: 600; opacity: 0.9; margin-bottom: 2px; text-transform: capitalize; }
+.pill-text strong { font-size: 1.15rem; font-weight: 800; display: flex; align-items: baseline; gap: 4px; }
+.pill-text strong small { font-size: 0.75rem; font-weight: 700; opacity: 0.9; }
+
+.bg-red { background: #D3504A; color: #FFF; }
+.bg-orange { background: #E29E3A; color: #FFF; }
+.bg-yellow { background: #F6E27F; color: #333; }
+.bg-blue { background: #5C83D6; color: #FFF; }
+.dark-text span { color: #555; }
+.dark-text strong { color: #111; }
 
 /* --- VITALS & WEEKLY ROW --- */
 .vitals-weekly-row {
     display: grid;
     grid-template-columns: 0.8fr 1.2fr;
-    gap: 30px;
+    gap: 25px;
 }
 
 .vitals-col {
@@ -228,110 +312,9 @@
 }
 
 .dash-vital-card .dash-card-header { margin-bottom: 10px; }
-.dash-vital-card h3 { font-size: 1.15rem; color: #333; }
-.vital-big-val { font-size: 3.2rem; font-weight: 900; color: #000; line-height: 1; }
-.vital-big-val span { font-size: 1.05rem; color: #888; text-transform: uppercase; font-weight: 700; margin-left: 5px; }
-
-/* --- MOVE RING (DASHBOARD-LIKE RINGS) --- */
-.activity-main-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-}
-
-.dash-style-card {
-    padding: 30px 35px;
-}
-
-.activity-body {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 40px;
-}
-
-.dash-ring-wrapper-large {
-    position: relative;
-    width: 170px; height: 170px;
-    flex-shrink: 0;
-}
-
-.dash-ring-wrapper-large svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-.dash-bg-ring { fill: none; stroke: #F3F3F3; stroke-width: 18; }
-/* Refine rings with soft pulsate border effect */
-.dash-meter-ring { 
-    fill: none; stroke: #E64A45; stroke-width: 18; stroke-linecap: round; 
-    transition: stroke-dasharray 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.dash-ring-inner {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.inner-avatar { width: 50px; height: 50px; border-radius: 50%; margin-bottom: 5px; object-fit: cover; }
-.inner-emoji { font-size: 2.5rem; margin-bottom: 5px; }
-.inner-percent { font-size: 1.4rem; font-weight: 900; color: #111; }
-
-.dash-stats-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    flex: 1;
-}
-
-.dash-stat-item { display: flex; flex-direction: column; }
-.stat-lbl { font-size: 0.85rem; font-weight: 800; color: #000; margin-bottom: 5px; text-transform: uppercase; }
-.stat-val { font-size: 1.7rem; font-weight: 900; color: #111; }
-.stat-val small { font-size: 0.95rem; color: #888; font-weight: 700; margin-left: 4px; }
-
-/* HEALTH SCORE CARD (PILLS WITH SOFTER LOOK) */
-.hs-body {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-.dash-ring-wrapper-medium {
-    position: relative;
-    width: 140px; height: 140px;
-    flex-shrink: 0;
-}
-
-.dash-ring-wrapper-medium svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-.hs-center-val { font-size: 3rem; font-weight: 900; color: #E64A45; }
-
-.hs-pills-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex: 1;
-}
-
-.hs-pill {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 18px;
-    border-radius: 16px;
-    width: 100%;
-}
-
-.bg-red { background: #E64A45; color: #FFF; }
-.bg-orange { background: #F5A623; color: #FFF; }
-.bg-blue { background: #4A90E2; color: #FFF; }
-.bg-light { background: #FFF9F0; border: 1px solid #f2f2f2; color: #111; }
-.text-orange { color: #F5A623; }
-
-.pill-icon { font-size: 1.6rem; }
-.pill-text { display: flex; flex-direction: column; }
-.pill-text span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; margin-bottom: 2px; }
-.dark-text span { color: #555; }
-.pill-text strong { font-size: 1.15rem; font-weight: 800; }
+.dash-vital-card h3 { font-size: 1.15rem; color: #111; font-weight: 800; }
+.vital-big-val { font-size: 3.2rem; font-weight: 900; color: #111; line-height: 1; display: flex; align-items: baseline; gap: 8px;}
+.vital-big-val span { font-size: 1.05rem; color: #888; text-transform: uppercase; font-weight: 700; }
 
 /* --- WEEKLY 7-DAY MINI RINGS --- */
 .weekly-rings-container {
@@ -358,12 +341,11 @@
     transition: stroke-dasharray 1s ease; 
 }
 
-/* --- AWARDS DASHBOARD STYLE WITH DASHED LOCK LOOK --- */
+/* --- AWARDS DASHBOARD STYLE --- */
 .dash-awards-card { padding: 35px; }
 
 .dash-awards-grid {
     display: grid;
-    /* Flexible grid to handle column width with scaling */
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     gap: 25px;
 }
@@ -384,7 +366,7 @@
     background: #F9F9F9;
     border: 3px dashed #DDD;
     margin-bottom: 12px;
-    transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .badge-inner img { width: 65px; height: 65px; object-fit: contain; }
@@ -393,28 +375,24 @@
 .badge-label {
     font-size: 0.78rem;
     font-weight: 900;
-    color: #333;
+    color: #444;
     text-transform: uppercase;
     text-align: center;
     line-height: 1.3;
 }
 
 /* Award Status Logic */
-.dash-award-badge.locked { 
-    opacity: 0.45; filter: grayscale(100%); 
-}
+.dash-award-badge.locked { opacity: 0.4; filter: grayscale(100%); }
 .dash-award-badge.earned .badge-inner {
     background: #FFF;
     border: 3px solid #E64A45;
-    /* Deep rich shadow specifically for earned items */
     box-shadow: 0 8px 25px rgba(230, 74, 69, 0.15);
 }
-
 .dash-award-badge.earned:hover .badge-inner {
     transform: translateY(-5px) scale(1.05);
 }
 
-/* --- FIND FRIENDS SECTION (REFRESHED LOOK & RED ADD BUTTON REMOVAL) --- */
+/* --- FIND FRIENDS SECTION --- */
 .theme-container {
     background-color: #FFF !important;
     width: 100%;
@@ -422,35 +400,20 @@
     margin: 0 auto;
     padding: 35px 45px;
     border-radius: 32px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); /* Softer shadow for this view */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
     animation: fadeIn 0.4s ease-out;
 }
 
 .search-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-.theme-heading { font-size: 1.9rem; font-weight: 900; color: #111; margin: 0; }
+.theme-heading { font-size: 1.8rem; font-weight: 800; color: #111; margin: 0; }
 
 .search-input-wrapper { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; }
-
-.theme-search-input { 
-    flex: 1; 
-    padding: 18px 25px; 
-    border-radius: 18px; 
-    border: 1px solid #f2f2f2; 
-    background: #F8F9FA; 
-    font-size: 1.15rem; 
-    outline: none; 
-    transition: background-color 0.2s ease, border-color 0.2s ease; 
-}
+.theme-search-input { flex: 1; padding: 18px 25px; border-radius: 18px; border: 1px solid #f2f2f2; background: #F8F9FA; font-size: 1.1rem; outline: none; transition: all 0.2s ease; }
 .theme-search-input:focus { background: #fff; border-color: #E64A45; }
-
-/* REMOVE RED ADD BUTTON NEXT TO SEARCH BAR */
-.search-row-add-btn {
-    display: none !important; /* Forces removal without JS change */
-}
 
 .section-label { font-size: 0.85rem; font-weight: 900; color: #E64A45; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; display: block; }
 
-.theme-card { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 20px 28px; border-radius: 22px; margin-bottom: 12px; border: 1px solid #f5f5f5; transition: transform 0.2s; }
+.theme-card { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 18px 25px; border-radius: 22px; margin-bottom: 12px; border: 1px solid #f5f5f5; transition: transform 0.2s; }
 .theme-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
 
 .user-info-row { display: flex; align-items: center; gap: 20px; }
@@ -458,14 +421,13 @@
 .name-bold { font-size: 1.2rem; font-weight: 800; color: #111; margin: 0; }
 
 .action-btns-row { display: flex; align-items: center; gap: 12px; }
-.theme-btn-outline { background: transparent; color: #E64A45; border: 2px solid #E64A45; padding: 10px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease; }
+.theme-btn-outline { background: transparent; color: #E64A45; border: 2px solid #E64A45; padding: 9px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 .theme-btn-outline:hover { background: #E64A45; color: white; }
-.icon-btn-delete { background: #FFF0F0; border: none; color: #E64A45; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; transition: background-color 0.2s ease; }
-.icon-btn-delete:hover { background: #E64A45; color: white; }
+.icon-btn-delete { background: #FFF0F0; border: none; color: #E64A45; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; }
 
-/* --- LEADERBOARD LIST ITEMS (SOFTENED) --- */
+/* --- LEADERBOARD LIST ITEMS --- */
 .lb-list-alt { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-.lb-list-card { display: flex; justify-content: space-between; align-items: center; background: #D4664C; width: 100%; max-width: 700px; padding: 18px 30px; border-radius: 16px; color: #FFF; margin: 0 auto 15px; transition: transform 0.2s; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.lb-list-card { display: flex; justify-content: space-between; align-items: center; background: #D4664C; width: 100%; max-width: 700px; padding: 18px 30px; border-radius: 16px; color: #FFF; margin: 0 auto 15px; transition: transform 0.2s; cursor: pointer; }
 .lb-list-card:hover { transform: scale(1.02); }
 .lb-card-left { display: flex; align-items: center; gap: 20px; }
 .lb-card-rank { font-weight: 800; text-align: center; }
@@ -473,7 +435,7 @@
 .lb-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .lb-card-score { font-weight: 800; font-size: 1.5rem; }
 
-/* --- ONBOARDING UI (CLEANER LOOK) --- */
+/* --- ONBOARDING UI --- */
 .sharing-onboarding-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .avatar-group { display: flex; justify-content: center; margin-bottom: 40px; }
 .sharing-avatar { border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.08); object-fit: cover; }
@@ -481,18 +443,13 @@
 .middle-avatar { width: 170px; height: 170px; margin: 0 -30px; z-index: 2; border: 5px solid #F8DBCA; }
 .sharing-title { font-size: 3.2rem; font-weight: 800; color: #111; margin: 0; }
 .sharing-subtitle { max-width: 650px; font-size: 1.15rem; color: #444; text-align: center; margin: 20px 0 60px; line-height: 1.6; }
-.share-cta-btn { background-color: #E64A45; color: white; border: none; border-radius: 20px; padding: 15px 30px; font-weight: 700; cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; }
-.share-cta-btn:hover { background: #d53c38; transform: translateY(-2px); }
-.theme-btn-sm { background-color: #E64A45; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 700; cursor: pointer; transition: background-color 0.2s ease; }
-.theme-btn-sm:hover { background: #d53c38; }
+.share-cta-btn { background-color: #E64A45; color: white; border: none; border-radius: 20px; padding: 15px 30px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.theme-btn-sm { background-color: #E64A45; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
 .theme-btn-sm.requested { background: #F0F0F0; color: #888; cursor: not-allowed; }
-.icon-btn.approve { background: #E64A45; color: white; border: none; border-radius: 10px; padding: 8px 15px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background-color 0.2s ease; }
-.icon-btn.approve:hover { background: #d53c38; }
+.icon-btn.approve { background: #E64A45; color: white; border: none; border-radius: 10px; padding: 8px 15px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
-/* --- ANIMATIONS & UTILS --- */
+/* --- UTILS --- */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pulseGlow { 0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 59, 48, 0.4)); } 50% { filter: drop-shadow(0 0 18px rgba(255, 59, 48, 0.7)); } }
-@keyframes pulseBorder { 0%, 100% { border-color: rgba(230, 74, 69, 0.7); } 50% { border-color: rgba(230, 74, 69, 1); } }
 
 @media (max-width: 1024px) {
     .sharing-page-container { padding: 20px; }

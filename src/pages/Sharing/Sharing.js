@@ -240,7 +240,7 @@ const Sharing = () => {
                   {/* --- ACTIVITY RING & HEALTH SCORE ROW --- */}
                   <div className="activity-main-row">
                     
-                    {/* Activity Ring (Dashboard Style) */}
+                    {/* Activity Ring (Exact Dashboard Look) */}
                     <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
                         <h3>Activity Ring</h3>
@@ -251,12 +251,12 @@ const Sharing = () => {
                           <svg viewBox="0 0 100 100">
                             <circle className="dash-bg-ring" cx="50" cy="50" r="38" />
                             <circle 
-                              className={`dash-meter-ring ${friendStats?.movePercent >= 100 ? 'goal-reached' : ''}`} 
+                              className="dash-meter-ring" 
                               cx="50" cy="50" r="38" 
                               style={{ strokeDasharray: `${(friendStats?.movePercent * 2.38)}, 238` }}
                             />
                           </svg>
-                          <div className="dash-ring-inner">
+                          <div className="dash-ring-inner-yellow">
                             {viewingFriend.avatar_url ? (
                               <img src={viewingFriend.avatar_url} alt="user" className="inner-avatar" />
                             ) : (
@@ -274,11 +274,15 @@ const Sharing = () => {
                             <span className="stat-lbl">Steps</span>
                             <span className="stat-val">{friendStats?.activity?.steps || 0}</span>
                           </div>
+                          <div className="dash-stat-item">
+                            <span className="stat-lbl">Distance</span>
+                            <span className="stat-val">{((friendStats?.activity?.steps || 0) * 0.0008).toFixed(2)} <small>KM</small></span>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Health Score (Dashboard Style) */}
+                    {/* Health Score (Exact Dashboard Look) */}
                     <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
                         <h3>Health Score</h3>
@@ -286,11 +290,13 @@ const Sharing = () => {
                       </div>
                       <div className="dash-card-body hs-body">
                         <div className="dash-ring-wrapper-medium">
-                          {/* Segmented Ring specifically requested to look like dashboard */}
+                          {/* 4-Color Segmented Ring */}
                           <svg viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="35" stroke="#4A90E2" strokeWidth="16" fill="none" strokeDasharray="60 220" strokeDashoffset="0" />
-                            <circle cx="50" cy="50" r="35" stroke="#F5A623" strokeWidth="16" fill="none" strokeDasharray="60 220" strokeDashoffset="-65" />
-                            <circle cx="50" cy="50" r="35" stroke="#E64A45" strokeWidth="16" fill="none" strokeDasharray="85 220" strokeDashoffset="-130" />
+                            {/* Circumference = 2 * PI * 35 ≈ 220 */}
+                            <circle cx="50" cy="50" r="35" stroke="#D3504A" strokeWidth="16" fill="none" strokeDasharray="75 220" strokeDashoffset="0" />
+                            <circle cx="50" cy="50" r="35" stroke="#E29E3A" strokeWidth="16" fill="none" strokeDasharray="60 220" strokeDashoffset="-75" />
+                            <circle cx="50" cy="50" r="35" stroke="#F6E27F" strokeWidth="16" fill="none" strokeDasharray="15 220" strokeDashoffset="-135" />
+                            <circle cx="50" cy="50" r="35" stroke="#5C83D6" strokeWidth="16" fill="none" strokeDasharray="70 220" strokeDashoffset="-150" />
                           </svg>
                           <div className="dash-ring-inner">
                             <span className="hs-center-val">{friendStats?.healthScore || 0}</span>
@@ -298,20 +304,20 @@ const Sharing = () => {
                         </div>
                         <div className="hs-pills-list">
                           <div className="hs-pill bg-red">
-                            <FiHeart className="pill-icon" />
-                            <div className="pill-text"><span>Heart Rate</span><strong>{friendStats?.profile?.heart_rate || '--'} BPM</strong></div>
+                            <div className="pill-icon-wrapper"><FiHeart className="icon-red" /></div>
+                            <div className="pill-text"><span>Heart Rate</span><strong>{friendStats?.profile?.heart_rate || '--'} <small>BPM</small></strong></div>
                           </div>
                           <div className="hs-pill bg-orange">
-                            <FiMoon className="pill-icon" />
-                            <div className="pill-text"><span>Sleep Hours</span><strong>{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} HOURS</strong></div>
+                            <div className="pill-icon-wrapper"><FiMoon className="icon-orange" /></div>
+                            <div className="pill-text"><span>Sleep Hours</span><strong>{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <small>HOURS</small></strong></div>
                           </div>
-                          <div className="hs-pill bg-light">
-                            <FiActivity className="pill-icon text-orange" />
-                            <div className="pill-text dark-text"><span>Calories Burned</span><strong>{friendStats?.activity?.calories || 0} KCAL</strong></div>
+                          <div className="hs-pill bg-yellow">
+                            <div className="pill-icon-wrapper"><FiActivity className="icon-dark" /></div>
+                            <div className="pill-text dark-text"><span>Calories Burned</span><strong>{friendStats?.activity?.calories || 0} <small>KCAL</small></strong></div>
                           </div>
                           <div className="hs-pill bg-blue">
-                            <FiDroplet className="pill-icon" />
-                            <div className="pill-text"><span>Water Intake</span><strong>{(friendStats?.profile?.water_intake / 1000).toFixed(1) || '0'} L</strong></div>
+                            <div className="pill-icon-wrapper"><FiDroplet className="icon-blue" /></div>
+                            <div className="pill-text"><span>Water Intake</span><strong>{(friendStats?.profile?.water_intake / 1000).toFixed(1) || '0'} <small>L</small></strong></div>
                           </div>
                         </div>
                       </div>
@@ -460,9 +466,6 @@ const Sharing = () => {
                   </div>
                   <div className="search-input-wrapper">
                     <input className="theme-search-input" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-                    <button className="search-row-add-btn">
-                        <FiUserPlus />
-                    </button>
                   </div>
                   {incomingRequests.length > 0 && (
                     <div className="request-group">
