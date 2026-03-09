@@ -453,10 +453,32 @@ const Dashboard = () => {
 
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('Goals Completed')}</h3><FiChevronRight className="card-arrow" /></div>
-                        <div className="goals-progress-bar">
-                            {/* Dynamic progress bar width */}
-                            <div className="progress-fill" style={{width: `${(goalsData.completed / goalsData.total) * 100}%`}}></div>
-                            <img alt="Tomato" width="100%" src={tomato} className="progress-tomato"  />
+                        <div className="goals-progress-bar" style={{ position: 'relative' }}>
+                            {/* Dynamic progress bar width with tomato attached inside */}
+                            <div 
+                                className="progress-fill" 
+                                style={{
+                                    width: `${(goalsData.completed / goalsData.total) * 100}%`, 
+                                    position: 'relative', 
+                                    overflow: 'visible' /* Ensures the tomato isn't clipped by the bar */
+                                }}
+                            >
+                                <img 
+                                    alt="Tomato" 
+                                    src={tomato} 
+                                    className="progress-tomato" 
+                                    style={{
+                                        position: 'absolute',
+                                        right: '-16px', /* Pins the tomato exactly on the edge */
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        width: '32px', /* Fixed size instead of the buggy width="100%" */
+                                        height: 'auto',
+                                        zIndex: 10
+                                    }}  
+                                />
+                            </div>
+                            
                             {/* Dynamic fraction */}
                             <span className="progress-text">{goalsData.completed}/{goalsData.total}</span>
                         </div>
