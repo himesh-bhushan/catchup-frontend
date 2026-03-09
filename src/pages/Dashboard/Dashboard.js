@@ -134,7 +134,7 @@ const Dashboard = () => {
   const openGoogleMaps = (name, address) => {
     const searchQuery = encodeURIComponent(`${name} ${address}`);
     window.open(`https://www.google.com/maps/search/?api=1&query=${searchQuery}`, '_blank');
-};
+  };
 
   // --- RECOMMENDATIONS ---
   const recommendations = [
@@ -341,14 +341,33 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className="card sync-card">
-                        <div className="sync-header">
-                            <div className="sync-dot green"></div>
-                            <h3>{t('Syncing') || 'Syncing'}</h3>
+                    {/* NEW: 3-Column Trio Row for Sync, Sleep, and Water */}
+                    <div className="trio-row-wrapper" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '20px' }}>
+                        
+                        <div className="card sync-card" style={{ margin: 0 }}>
+                            <div className="sync-header">
+                                <div className="sync-dot green"></div>
+                                <h3>{t('Syncing') || 'Syncing'}</h3>
+                            </div>
+                            <p>
+                                Synced with Health Tracker {lastSyncedAgo ? lastSyncedAgo : 'just now'}
+                            </p>
                         </div>
-                        <p>
-                            Synced with Health Tracker {lastSyncedAgo ? lastSyncedAgo : 'just now'}
-                        </p>
+
+                        <div className="card bp-card" onClick={() => navigate('/sleep')} style={{ margin: 0, cursor: 'pointer' }}>
+                            <div className="card-header"><h3>{t('Sleep')}</h3><FiChevronRight className="card-arrow" /></div>
+                            <div className="tile-value">
+                                {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <span>hrs</span>
+                            </div>
+                        </div>
+
+                        <div className="card bp-card" onClick={() => navigate('/water')} style={{ margin: 0, cursor: 'pointer' }}>
+                            <div className="card-header"><h3>{t('Water')}</h3><FiChevronRight className="card-arrow" /></div>
+                            <div className="tile-value">
+                                {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <span>L</span>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
