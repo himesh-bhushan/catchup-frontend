@@ -442,7 +442,7 @@ const Dashboard = () => {
                                     alignItems: 'center',
                                     justifyContent: 'center'
                                 }}>
-                                    <span style={{ color: '#DE4B4E', fontWeight: 'bold', fontSize: '1.2rem' }}>{totalScore}%</span>
+                                    <span style={{ color: '#DE4B4E', fontWeight: 'bold', fontSize: '1.2rem' }}>{totalScore}</span>
                                 </div>
                             </div>
 
