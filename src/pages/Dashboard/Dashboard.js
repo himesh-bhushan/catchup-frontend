@@ -198,6 +198,63 @@ const Dashboard = () => {
 
   useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
 
+  // ==========================================
+  // 🩺 HEALTH SCORE CALCULATIONS (FOR DASHBOARD PREVIEW)
+  // ==========================================
+  const heart = otherStats.heart_rate || 0;
+  const sleep = otherStats.sleep || 0;
+  const cals = activityData.calories || 0;
+  const water = otherStats.water_intake || 0;
+
+  let hrScore = 0;
+  if (heart > 0) {
+    if (heart >= 60 && heart <= 80) hrScore = 100;
+    else if (heart > 80 && heart <= 100) hrScore = Math.max(0, 100 - (heart - 80) * 2);
+    else if (heart > 100) hrScore = Math.max(0, 60 - (heart - 100) * 3);
+    else if (heart < 60) hrScore = Math.max(0, 100 - (60 - heart) * 2);
+  }
+
+  let sleepScore = 0;
+  const sleepHrs = sleep / 3600;
+  if (sleepHrs > 0) {
+    if (sleepHrs >= 7 && sleepHrs <= 9) sleepScore = 100;
+    else sleepScore = Math.max(0, 100 - Math.abs(sleepHrs - 8) * 15);
+  }
+
+  let calScore = 0;
+  if (cals > 0) calScore = Math.min(100, (cals / 500) * 100);
+
+  let waterScore = 0;
+  if (water > 0) {
+    const waterLiters = water / 1000; 
+    waterScore = Math.min(100, (waterLiters / 2.5) * 100);
+  }
+
+  const hrContrib = hrScore * 0.35;
+  const sleepContrib = sleepScore * 0.25;
+  const calContrib = calScore * 0.25;
+  const waterContrib = waterScore * 0.15;
+  
+  const totalScore = Math.round(hrContrib + sleepContrib + calContrib + waterContrib);
+
+  // SVG Configuration
+  const radius = 35;
+  const circumference = 2 * Math.PI * radius;
+  const strokeWidth = 14;
+
+  const totalAchieved = hrContrib + sleepContrib + calContrib + waterContrib;
+  const safeTotal = totalAchieved > 0 ? totalAchieved : 1; 
+
+  const hrLen = (hrContrib / safeTotal) * circumference;
+  const sleepLen = (sleepContrib / safeTotal) * circumference;
+  const calLen = (calContrib / safeTotal) * circumference;
+  const waterLen = (waterContrib / safeTotal) * circumference;
+
+  const hrOffset = 0;
+  const sleepOffset = hrLen;
+  const calOffset = hrLen + sleepLen;
+  const waterOffset = hrLen + sleepLen + calLen;
+
   // --- RENDER ---
   return (
     <div className="dashboard-wrapper">
@@ -338,16 +395,34 @@ const Dashboard = () => {
                         </div>
                         
                         <div className="health-score-content">
-                            <div className="score-ring-wrapper">
-                                <div 
-                                    className="score-ring"
-                                    style={{
-                                        background: `conic-gradient(#EF473A 0% 30%, #F7931E 30% 55%, #FDE08B 55% 80%, #4A90E2 80% 100%)`
-                                    }}
-                                >
-                                    <div className="score-inner">
-                                        <span className="score-label-nudge">87%</span>
-                                    </div>
+                            <div className="score-ring-wrapper" style={{ position: 'relative' }}>
+                                <svg width="100%" height="100%" viewBox="0 0 100 100" style={{ overflow: 'visible' }}>
+                                  <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#f0f0f0" strokeWidth={strokeWidth} />
+                                  {hrContrib > 0 && (
+                                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#EF473A" strokeWidth={strokeWidth}
+                                      strokeDasharray={`${hrLen} ${circumference}`} strokeDashoffset={-hrOffset} transform="rotate(-90 50 50)" />
+                                  )}
+                                  {sleepContrib > 0 && (
+                                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#F7931E" strokeWidth={strokeWidth}
+                                      strokeDasharray={`${sleepLen} ${circumference}`} strokeDashoffset={-sleepOffset} transform="rotate(-90 50 50)" />
+                                  )}
+                                  {calContrib > 0 && (
+                                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#FDE08B" strokeWidth={strokeWidth}
+                                      strokeDasharray={`${calLen} ${circumference}`} strokeDashoffset={-calOffset} transform="rotate(-90 50 50)" />
+                                  )}
+                                  {waterContrib > 0 && (
+                                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#4A90E2" strokeWidth={strokeWidth}
+                                      strokeDasharray={`${waterLen} ${circumference}`} strokeDashoffset={-waterOffset} transform="rotate(-90 50 50)" />
+                                  )}
+                                </svg>
+                                <div style={{
+                                    position: 'absolute',
+                                    top: 0, left: 0, right: 0, bottom: 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}>
+                                    <span style={{ color: '#DE4B4E', fontWeight: 'bold', fontSize: '1.2rem' }}>{totalScore}%</span>
                                 </div>
                             </div>
 
@@ -360,7 +435,6 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                                 
-                                {/* FIX: Correct Sleep Hours Calculation */}
                                 <div className="metric-pill pill-orange" onClick={() => navigate('/sleep')}>
                                     <div className="metric-icon-circle"><FiMoon color="#F7931E" /></div>
                                     <div className="metric-text-group">
@@ -381,7 +455,6 @@ const Dashboard = () => {
                                     </div>
                                 </div>
 
-                                {/* FIX: Correct Water Intake (ml to L) Calculation */}
                                 <div className="metric-pill pill-blue" onClick={() => navigate('/water')}>
                                     <div className="metric-icon-circle"><FiDroplet color="#4A90E2" /></div>
                                     <div className="metric-text-group">
