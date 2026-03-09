@@ -23,6 +23,7 @@ const Sharing = () => {
   const [viewingFriend, setViewingFriend] = useState(null);
   const [friendStats, setFriendStats] = useState(null);
   const [friendLoading, setFriendLoading] = useState(false);
+  const [sentRequests, setSentRequests] = useState([]);
 
   useEffect(() => {
     const hasOnboarded = localStorage.getItem('has_onboarded_sharing');
@@ -117,7 +118,7 @@ const Sharing = () => {
 
   }, [searchTerm]);
 
-  const handleSendRequest = async (receiverId) => {
+ const handleSendRequest = async (receiverId) => {
     const { data: { user } } = await supabase.auth.getUser();
 
     const { error } = await supabase
@@ -126,9 +127,12 @@ const Sharing = () => {
 
     if (error) {
         alert("Request already exists.");
+        // Mark as requested even if it already existed to update UI
+        setSentRequests(prev => [...prev, receiverId]);
     } else {
         localStorage.setItem('has_onboarded_sharing', 'true');
-        alert("Request sent!");
+        // Add the user to the requested list to change the button text
+        setSentRequests(prev => [...prev, receiverId]);
     }
   };
 
@@ -458,11 +462,13 @@ const Sharing = () => {
                           </div>
                         </div>
 
+                        {/* 🟢 UPDATED: Dynamic Invite Button */}
                         <button
-                          className="theme-btn-sm"
+                          className={`theme-btn-sm ${sentRequests.includes(u.id) ? 'requested' : ''}`}
                           onClick={() => handleSendRequest(u.id)}
+                          disabled={sentRequests.includes(u.id)}
                         >
-                          Invite
+                          {sentRequests.includes(u.id) ? 'Requested' : 'Invite'}
                         </button>
                       </div>
                     ))}

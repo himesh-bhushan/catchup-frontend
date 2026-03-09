@@ -311,6 +311,21 @@
     margin-top: 3px;
 }
 
+/* Style for when the invite is already sent */
+.theme-btn-sm.requested {
+    background: #F0F0F0;
+    color: #888;
+    box-shadow: none;
+    cursor: not-allowed;
+    border: 1px solid #E0E0E0;
+}
+
+.theme-btn-sm.requested:hover {
+    background: #F0F0F0;
+    transform: none;
+    box-shadow: none;
+}
+
 /* --- LEADERBOARD PLACEHOLDER --- */
 .lb-placeholder-text {
     text-align: center;
