@@ -14,12 +14,13 @@
     flex-direction: column;
 }
 
-/* --- HEADER NAVIGATION --- */
+/* --- HEADER NAVIGATION (SEARCH BAR + ADD BUTTON CENTERED) --- */
 .lb-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    justify-content: center; /* Centers the search bar and add button cluster */
+    position: relative; /* Allows absolute positioning for the back button */
+    gap: 15px; /* Spacing directly between search bar and add friend button */
     margin-bottom: 60px;
     width: 100%;
 }
@@ -41,8 +42,14 @@
     transform: scale(1.15);
 }
 
+/* Pins the Back button to the far left corner */
+.lb-header .lb-transparent-btn:first-child {
+    position: absolute;
+    left: 0;
+}
+
 .lb-search-bar-alt {
-    flex: 1;
+    width: 100%;
     max-width: 700px;
     padding: 18px 24px;
     border-radius: 16px;
@@ -53,7 +60,98 @@
     outline: none;
 }
 
-/* --- FRIEND DASHBOARD DETAIL VIEW (FIXED) --- */
+/* --- LEADERBOARD PODIUM --- */
+.leaderboard-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.lb-podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 60px;
+    margin-bottom: 60px;
+    width: 100%;
+}
+
+.podium-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.podium-col:hover { transform: translateY(-5px); }
+
+.podium-avatar {
+    width: 110px; 
+    height: 110px;
+    background: #FFF;
+    border-radius: 50%;
+    margin-bottom: 0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    overflow: hidden;
+    border: 4px solid #fff;
+    position: relative;
+}
+
+.first-avatar { width: 140px; height: 140px; border: 5px solid #E64A45; }
+
+.podium-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.podium-rank {
+    font-weight: 800;
+    color: #111;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.podium-crown {
+    font-size: 2.2rem;
+    margin-bottom: -15px;
+    z-index: 10;
+}
+
+/* Forces Score and Username to stack cleanly vertically */
+.podium-score {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #E64A45;
+    font-weight: 900;
+    font-size: 2.2rem;
+    line-height: 1;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.first-score { font-size: 2.8rem; }
+
+.podium-name {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #555;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* --- FRIEND DASHBOARD DETAIL VIEW --- */
 .friend-detail-dashboard {
     width: 100%;
     animation: fadeIn 0.4s ease-out;
@@ -206,7 +304,7 @@
 
 .earned-award-img { width: 45px; height: 45px; object-fit: contain; }
 
-/* --- FIND FRIENDS SECTION (FIXED LAYOUT) --- */
+/* --- FIND FRIENDS SECTION --- */
 .theme-container {
     background-color: #FFF !important;
     width: 100%;
@@ -232,7 +330,6 @@
     margin: 0;
 }
 
-/* SEARCH BAR + ADD BUTTON ROW */
 .search-input-wrapper {
     display: flex;
     align-items: center;
@@ -241,7 +338,7 @@
 }
 
 .theme-search-input {
-    flex: 1; /* Takes up all available space */
+    flex: 1;
     padding: 18px 25px;
     border-radius: 18px;
     border: 1px solid #f2f2f2;
@@ -256,7 +353,6 @@
     border-color: #E64A45;
 }
 
-/* Plus button next to search bar */
 .search-row-add-btn {
     background: #E64A45;
     color: white;
@@ -278,7 +374,6 @@
     transform: translateY(-2px);
 }
 
-/* --- NETWORK LIST FIXES --- */
 .section-label {
     font-size: 0.8rem;
     font-weight: 900;
@@ -291,7 +386,7 @@
 
 .theme-card {
     display: flex;
-    justify-content: space-between; /* Keeps buttons on the right */
+    justify-content: space-between;
     align-items: center;
     background: #ffffff;
     padding: 18px 25px;
@@ -318,7 +413,7 @@
     border-radius: 16px;
     object-fit: cover;
     background: #FDE6D8;
-    display: block; /* Ensure image respects the box */
+    display: block; 
 }
 
 .name-bold {
@@ -363,46 +458,6 @@
     font-size: 1.1rem;
 }
 
-/* --- LEADERBOARD PODIUM FIX --- */
-.lb-podium {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 60px;
-    margin-bottom: 60px;
-    width: 100%;
-}
-
-.podium-avatar {
-    width: 110px; 
-    height: 110px;
-    background: #FFF;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    overflow: hidden;
-    border: 4px solid #fff;
-}
-
-.first-avatar { width: 140px; height: 140px; border: 5px solid #E64A45; }
-
-.podium-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block; /* Fixes tiny white line below images */
-}
-
-.podium-score {
-    color: #E64A45;
-    font-weight: 900;
-    font-size: 2.2rem;
-    line-height: 1;
-}
-
 /* --- LEADERBOARD LIST ITEMS --- */
 .lb-list-alt {
     display: flex;
@@ -442,6 +497,9 @@
 .sharing-title { font-size: 3.2rem; font-weight: 800; color: #111; margin: 0; }
 .sharing-subtitle { max-width: 650px; font-size: 1.15rem; color: #444; text-align: center; margin: 20px 0 60px; line-height: 1.6; }
 .share-cta-btn { background-color: #E64A45; color: white; border: none; border-radius: 20px; padding: 15px 30px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.theme-btn-sm { background-color: #E64A45; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.theme-btn-sm.requested { background: #F0F0F0; color: #888; cursor: not-allowed; }
+.icon-btn.approve { background: #E64A45; color: white; border: none; border-radius: 10px; padding: 8px 15px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
 /* --- UTILS --- */
 @keyframes fadeIn {
