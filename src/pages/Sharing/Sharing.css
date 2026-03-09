@@ -11,79 +11,17 @@
     padding: 40px 80px;
 }
 
-.sharing-onboarding-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.4s ease-out;
+/* --- GLASS CARDS (DASHBOARD CORE) --- */
+.glass-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.2s ease;
 }
 
-/* --- ONBOARDING AVATARS --- */
-.avatar-group {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 40px;
-}
-
-.sharing-avatar {
-    border-radius: 50%;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-    object-fit: cover;
-}
-
-.side-avatar { width: 140px; height: 140px; }
-.middle-avatar {
-    width: 170px;
-    height: 170px;
-    margin: 0 -30px;
-    z-index: 2;
-    border: 5px solid #F8DBCA;
-}
-
-/* --- TEXT CONTENT --- */
-.sharing-title {
-    font-size: 3.2rem;
-    font-weight: 800;
-    color: #111;
-    margin: 0;
-}
-
-.sharing-subtitle {
-    max-width: 650px;
-    font-size: 1.15rem;
-    color: #444;
-    text-align: center;
-    margin: 20px 0 60px;
-    line-height: 1.6;
-}
-
-/* --- SEARCH & THEMED CONTAINERS --- */
-.theme-container {
-    background-color: #FFFDFB !important;
-    border: 1px solid #FDE6D8;
-    width: 100%;
-    max-width: 800px;
-    padding: 35px;
-    border-radius: 28px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
-}
-
-.theme-search-input {
-    width: 100%;
-    padding: 18px 22px;
-    border-radius: 18px;
-    border: 1px solid #FDE6D8;
-    background: #fff;
-    font-size: 1.05rem;
-    outline: none;
-    margin: 10px 0 20px;
-    transition: border-color 0.2s;
-}
-
-.theme-search-input:focus { border-color: #E64A45; }
-
-/* --- LEADERBOARD PODIUM --- */
+/* --- LEADERBOARD & PODIUM --- */
 .leaderboard-wrapper {
     width: 100%;
     max-width: 1000px;
@@ -102,11 +40,11 @@
     flex: 1;
     padding: 16px 20px;
     border-radius: 12px;
-    border: none;
     background: #FFF;
     font-size: 1.05rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     cursor: pointer;
+    color: #888;
 }
 
 .lb-podium {
@@ -122,10 +60,7 @@
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    transition: transform 0.2s;
 }
-
-.podium-col:hover { transform: translateY(-5px); }
 
 .podium-avatar {
     width: 80px; height: 80px;
@@ -151,12 +86,9 @@
     border-radius: 16px;
     color: #FFF;
     margin: 0 auto 15px;
-    transition: transform 0.2s;
 }
 
-.lb-list-card:hover { transform: scale(1.02); }
-
-/* --- FRIEND DASHBOARD (FIXED DETAIL VIEW) --- */
+/* --- FRIEND DASHBOARD (FIXED GRID) --- */
 .friend-detail-dashboard {
     width: 100%;
     animation: fadeIn 0.4s ease-out;
@@ -165,49 +97,38 @@
 .detail-header-new {
     display: flex;
     align-items: center;
-    gap: 30px;
-    margin-bottom: 40px;
+    gap: 25px;
+    margin-bottom: 35px;
 }
 
 .back-circle-btn {
-    width: 50px; height: 50px;
+    width: 45px; height: 45px;
     border-radius: 50%;
     background: white; border: none;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .header-user-profile { display: flex; align-items: center; gap: 20px; }
-
 .profile-image-ring {
-    width: 80px; height: 80px;
-    background: #E64A45;
-    border-radius: 24px; /* Squircle */
+    width: 70px; height: 70px;
+    border-radius: 20px;
     overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    color: white;
+    background: #E64A45;
 }
 
 .profile-image-ring img { width: 100%; height: 100%; object-fit: cover; }
-.profile-text h1 { margin: 0; font-size: 1.8rem; color: #111; }
-
 .health-score-pill {
-    display: inline-block;
     background: #FFF0EF;
     color: #E64A45;
-    padding: 5px 15px;
+    padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 800;
-    margin-top: 5px;
 }
 
-/* --- DASHBOARD GRID --- */
-.dashboard-grid-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-}
+/* Dashboard Grid Logic */
+.dashboard-grid-layout { display: flex; flex-direction: column; gap: 25px; }
 
 .vitals-row {
     display: grid;
@@ -215,41 +136,27 @@
     gap: 25px;
 }
 
-.glass-card {
-    background: #FFFFFF;
-    border-radius: 24px;
-    padding: 25px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-    border: 1px solid #f0f0f0;
-}
-
-.vital-card { display: flex; align-items: center; gap: 20px; }
-
+.vital-card { display: flex; align-items: center; gap: 15px; }
 .vital-icon {
-    width: 55px; height: 55px;
-    border-radius: 16px;
+    width: 50px; height: 50px;
+    border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 }
-
 .vital-icon.hr { background: #fee2e2; color: #ef4444; }
 .vital-icon.sleep { background: #fef3c7; color: #d97706; }
 
-.vital-info label { display: block; color: #888; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-.vital-info p { font-size: 1.6rem; font-weight: 800; margin: 0; }
-.vital-info p span { font-size: 0.85rem; color: #BBB; font-weight: 600; }
-
-/* --- ACTIVITY RING (REFINED) --- */
 .activity-main-row {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
     gap: 25px;
 }
 
+/* --- ACTIVITY RING --- */
 .ring-wrapper-large {
     position: relative;
-    width: 180px; height: 180px;
-    margin: 20px auto;
+    width: 170px; height: 170px;
+    margin: 15px auto;
 }
 
 .ring-wrapper-large svg { transform: rotate(-90deg); width: 100%; height: 100%; }
@@ -262,7 +169,7 @@
 
 .goal-reached {
     stroke: #FF3B30 !important;
-    filter: drop-shadow(0 0 10px rgba(230, 74, 69, 0.5));
+    filter: drop-shadow(0 0 10px rgba(230, 74, 69, 0.4));
     animation: pulseGlow 2.5s infinite ease-in-out;
 }
 
@@ -273,40 +180,79 @@
     text-align: center;
 }
 
-.ring-content .percent { font-size: 2.4rem; font-weight: 900; display: block; color: #111; }
-.ring-content .label { font-size: 0.8rem; color: #999; font-weight: 700; text-transform: uppercase; }
+.ring-content .percent { font-size: 2.3rem; font-weight: 900; color: #111; }
 
-/* --- WEEKLY BARS (REFINED) --- */
+.ring-stats-footer {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 15px;
+    border-top: 1px solid #f5f5f5;
+}
+
+/* --- WEEKLY BARS --- */
 .weekly-bar-chart {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    height: 140px;
-    padding-top: 10px;
+    height: 130px;
 }
 
-.bar-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
-
-.bar-bg {
-    width: 14px; height: 100px;
-    background: #F0F0F0;
-    border-radius: 10px;
-    position: relative;
-}
-
+.bar-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+.bar-bg { width: 14px; height: 100px; background: #F0F0F0; border-radius: 10px; position: relative; }
 .bar-fill {
     position: absolute;
     bottom: 0; width: 100%;
     background: linear-gradient(180deg, #FF6B6B 0%, #E64A45 100%);
     border-radius: 10px;
-    transition: height 1.2s ease-out;
 }
 
-.bar-fill.goal-reached { box-shadow: 0 0 12px rgba(230, 74, 69, 0.3); }
+/* --- SEARCH & NETWORK FIX --- */
+.theme-container {
+    background: #FFF;
+    border-radius: 28px;
+    padding: 35px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+}
 
-/* --- AWARDS GRID --- */
-.award-section h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; }
+.theme-search-input {
+    width: 100%;
+    padding: 18px 22px;
+    border-radius: 18px;
+    border: 1px solid #FDE6D8;
+    background: #fff;
+    font-size: 1.05rem;
+    margin: 10px 0 25px;
+}
 
+.theme-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 20px;
+    border: 1px solid #f2f2f2;
+    margin-bottom: 15px;
+}
+
+/* Fixed search avatar size */
+.theme-avatar-sm {
+    width: 50px; height: 50px;
+    border-radius: 14px;
+    object-fit: cover;
+}
+
+.theme-btn-sm, .theme-btn-outline {
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.theme-btn-sm { background: #E64A45; color: white; border: none; }
+.theme-btn-outline { background: transparent; color: #E64A45; border: 2px solid #E64A45; }
+
+/* --- AWARDS --- */
 .awards-scroll {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
@@ -317,33 +263,18 @@
     background: #FFFFFF;
     border: 1.5px solid #F9EFEA;
     border-radius: 20px;
-    padding: 12px 8px;
-    display: flex; flex-direction: column; align-items: center;
-    transition: all 0.3s ease;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
 }
-
-.award-item:hover { transform: translateY(-5px); border-color: #E64A45; }
 
 .earned-award-img { width: 45px; height: 45px; object-fit: contain; }
 
-.award-name {
-    font-size: 0.6rem; font-weight: 900;
-    color: #444; text-align: center;
-    margin-top: 8px; text-transform: uppercase;
-}
-
-/* --- BUTTONS & ANIMATIONS --- */
-.share-cta-btn, .theme-btn-sm {
-    background: #E64A45;
-    color: white; border: none; font-weight: 700; cursor: pointer;
-}
-
+/* --- ANIMATIONS --- */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-@keyframes pulseGlow {
-    0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 59, 48, 0.4)); }
-    50% { filter: drop-shadow(0 0 18px rgba(255, 59, 48, 0.7)); }
-}
+@keyframes pulseGlow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
 @media (max-width: 768px) {
     .vitals-row, .activity-main-row { grid-template-columns: 1fr; }
