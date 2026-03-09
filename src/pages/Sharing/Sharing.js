@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, 
-  FiUserPlus, FiCheck, FiTrash2, FiAward, FiHeart, FiMoon, FiActivity, FiDroplet 
+  FiUserPlus, FiCheck, FiTrash2, FiHeart, FiMoon, FiActivity, FiDroplet, FiChevronRight 
 } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
@@ -14,16 +14,14 @@ import avatar3 from '../../assets/avatar3.png';
 
 import './Sharing.css';
 
-// Master list of awards to display in the UI (matches dashboard)
+// Master list of awards to display in the UI
 const ALL_AWARDS = [
-  { id: 'award_1', name: '7 Day Streak', fallbackIcon: '🔥' },
-  { id: 'award_2', name: 'Goal Crusher', fallbackIcon: '🏆' },
-  { id: 'award_3', name: 'Hydration Pro', fallbackIcon: '💧' },
-  { id: 'award_4', name: 'Sleep Master', fallbackIcon: '💤' },
-  { id: 'award_5', name: 'Step Champion', fallbackIcon: '👟' },
-  { id: 'award_6', name: 'Early Riser', fallbackIcon: '🌅' },
-  { id: 'award_7', name: 'Weekend Warrior', fallbackIcon: '🚴' },
-  { id: 'award_8', name: 'Perfect Month', fallbackIcon: '⭐' }
+  { id: 'award_1', name: 'Monthly Mover', fallbackIcon: '🏃' },
+  { id: 'award_2', name: '7 Day Streak', fallbackIcon: '🔥' },
+  { id: 'award_3', name: 'Goal Crusher', fallbackIcon: '🏆' },
+  { id: 'award_4', name: 'Hydration Pro', fallbackIcon: '💧' },
+  { id: 'award_5', name: 'Sleep Master', fallbackIcon: '💤' },
+  { id: 'award_6', name: 'Step Champion', fallbackIcon: '👟' }
 ];
 
 const Sharing = () => {
@@ -153,7 +151,7 @@ const Sharing = () => {
       const goal = profile?.calorie_goal > 0 ? profile.calorie_goal : 500;
       const movePct = ((activity?.calories || 0) / goal) * 100;
 
-      // Process Weekly Data into 7-day ring format
+      // Process Weekly Data for 7 mini rings
       const last7Days = getLast7Days();
       const processedWeekly = last7Days.map(day => {
         const log = (weeklyLogs || []).find(l => l.date === day.dateStr);
@@ -217,7 +215,7 @@ const Sharing = () => {
         <div className="sharing-page-container">
 
           {viewingFriend ? (
-            /* --- 1. FRIEND DETAIL DASHBOARD --- */
+            /* --- 1. FRIEND DETAIL DASHBOARD (MATCHING DASHBOARD UI) --- */
             <div className="friend-detail-dashboard">
               <header className="detail-header-new">
                 <button className="back-circle-btn" onClick={() => setViewingFriend(null)}>
@@ -238,105 +236,131 @@ const Sharing = () => {
                 <div className="lb-placeholder-text">Syncing Health Data...</div>
               ) : (
                 <div className="dashboard-grid-layout">
-                  {/* VITALS ROW */}
-                  <div className="vitals-row">
-                    <div className="glass-card vital-card">
-                      <div className="vital-icon hr"><FiHeart /></div>
-                      <div className="vital-info">
-                        <label>Heart Rate</label>
-                        <p>{friendStats?.profile?.heart_rate || '--'} <span>BPM</span></p>
-                      </div>
-                    </div>
-                    <div className="glass-card vital-card">
-                      <div className="vital-icon sleep"><FiMoon /></div>
-                      <div className="vital-info">
-                        <label>Sleep</label>
-                        <p>{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <span>HRS</span></p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ACTIVITY & HEALTH SCORE ROW */}
+                  
+                  {/* --- ACTIVITY RING & HEALTH SCORE ROW --- */}
                   <div className="activity-main-row">
-                    <div className="glass-card activity-ring-card">
-                      <h3>Daily Activity</h3>
-                      <div className="ring-wrapper-large">
-                        <svg viewBox="0 0 100 100">
-                          <circle className="bg" cx="50" cy="50" r="42" />
-                          <circle 
-                            className={`meter activity-meter ${friendStats?.movePercent >= 100 ? 'goal-reached' : ''}`} 
-                            cx="50" cy="50" r="42" 
-                            style={{ strokeDasharray: `${(friendStats?.movePercent * 2.64)}, 264` }}
-                          />
-                        </svg>
-                        <div className="ring-content">
-                          <span className="percent">{Math.round(friendStats?.movePercent)}%</span>
-                          <span className="label">of goal</span>
-                        </div>
+                    
+                    {/* Activity Ring (Dashboard Style) */}
+                    <div className="glass-card dash-style-card">
+                      <div className="dash-card-header">
+                        <h3>Activity Ring</h3>
+                        <FiChevronRight color="#E64A45" />
                       </div>
-                      <div className="ring-stats-footer">
-                        <div className="footer-item"><label>Move</label><strong>{friendStats?.activity?.calories || 0} kcal</strong></div>
-                        <div className="footer-item"><label>Steps</label><strong>{friendStats?.activity?.steps || 0}</strong></div>
-                      </div>
-                    </div>
-
-                    <div className="glass-card health-score-card">
-                      <h3>Health Score</h3>
-                      <div className="hs-layout">
-                        <div className="ring-wrapper-medium hs-ring">
+                      <div className="dash-card-body activity-body">
+                        <div className="dash-ring-wrapper-large">
                           <svg viewBox="0 0 100 100">
-                            <circle className="bg" cx="50" cy="50" r="38" />
+                            <circle className="dash-bg-ring" cx="50" cy="50" r="38" />
                             <circle 
-                              className="meter hs-meter" 
+                              className={`dash-meter-ring ${friendStats?.movePercent >= 100 ? 'goal-reached' : ''}`} 
                               cx="50" cy="50" r="38" 
-                              style={{ strokeDasharray: `${(friendStats?.healthScore * 2.38)}, 238` }}
+                              style={{ strokeDasharray: `${(friendStats?.movePercent * 2.38)}, 238` }}
                             />
                           </svg>
-                          <div className="ring-content hs-content">
-                            <span className="percent">{friendStats?.healthScore || 0}</span>
+                          <div className="dash-ring-inner">
+                            {viewingFriend.avatar_url ? (
+                              <img src={viewingFriend.avatar_url} alt="user" className="inner-avatar" />
+                            ) : (
+                              <span className="inner-emoji">🍅</span>
+                            )}
+                            <span className="inner-percent">{Math.round(friendStats?.movePercent)}%</span>
                           </div>
                         </div>
-                        <div className="hs-metrics-list">
-                          <div className="hs-metric-item"><FiHeart color="#ef4444" /> <span>Heart</span></div>
-                          <div className="hs-metric-item"><FiMoon color="#d97706" /> <span>Recovery</span></div>
-                          <div className="hs-metric-item"><FiActivity color="#E64A45" /> <span>Activity</span></div>
-                          <div className="hs-metric-item"><FiDroplet color="#3b82f6" /> <span>Hydration</span></div>
+                        <div className="dash-stats-list">
+                          <div className="dash-stat-item">
+                            <span className="stat-lbl">Move</span>
+                            <span className="stat-val">{friendStats?.activity?.calories || 0}/500 <small>KCAL</small></span>
+                          </div>
+                          <div className="dash-stat-item">
+                            <span className="stat-lbl">Steps</span>
+                            <span className="stat-val">{friendStats?.activity?.steps || 0}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Health Score (Dashboard Style) */}
+                    <div className="glass-card dash-style-card">
+                      <div className="dash-card-header">
+                        <h3>Health Score</h3>
+                        <FiChevronRight color="#E64A45" />
+                      </div>
+                      <div className="dash-card-body hs-body">
+                        <div className="dash-ring-wrapper-medium">
+                          {/* Segmented Ring specifically requested to look like dashboard */}
+                          <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="35" stroke="#4A90E2" strokeWidth="16" fill="none" strokeDasharray="60 220" strokeDashoffset="0" />
+                            <circle cx="50" cy="50" r="35" stroke="#F5A623" strokeWidth="16" fill="none" strokeDasharray="60 220" strokeDashoffset="-65" />
+                            <circle cx="50" cy="50" r="35" stroke="#E64A45" strokeWidth="16" fill="none" strokeDasharray="85 220" strokeDashoffset="-130" />
+                          </svg>
+                          <div className="dash-ring-inner">
+                            <span className="hs-center-val">{friendStats?.healthScore || 0}</span>
+                          </div>
+                        </div>
+                        <div className="hs-pills-list">
+                          <div className="hs-pill bg-red">
+                            <FiHeart className="pill-icon" />
+                            <div className="pill-text"><span>Heart Rate</span><strong>{friendStats?.profile?.heart_rate || '--'} BPM</strong></div>
+                          </div>
+                          <div className="hs-pill bg-orange">
+                            <FiMoon className="pill-icon" />
+                            <div className="pill-text"><span>Sleep Hours</span><strong>{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} HOURS</strong></div>
+                          </div>
+                          <div className="hs-pill bg-light">
+                            <FiActivity className="pill-icon text-orange" />
+                            <div className="pill-text dark-text"><span>Calories Burned</span><strong>{friendStats?.activity?.calories || 0} KCAL</strong></div>
+                          </div>
+                          <div className="hs-pill bg-blue">
+                            <FiDroplet className="pill-icon" />
+                            <div className="pill-text"><span>Water Intake</span><strong>{(friendStats?.profile?.water_intake / 1000).toFixed(1) || '0'} L</strong></div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* WEEKLY PERFORMANCE (7 RINGS) */}
-                  <div className="glass-card weekly-chart-card">
-                    <h3>Weekly Performance</h3>
-                    <div className="weekly-rings-container">
-                      {friendWeeklyData.map((day, i) => (
-                        <div key={i} className="mini-ring-col">
-                          <div className="mini-ring-wrapper">
-                            <svg viewBox="0 0 50 50">
-                              <circle className="bg" cx="25" cy="25" r="20" />
-                              <circle 
-                                className={`meter mini-meter ${day.percent >= 100 ? 'goal-reached' : ''}`} 
-                                cx="25" cy="25" r="20" 
-                                style={{ strokeDasharray: `${(day.percent * 1.25)}, 125` }}
-                              />
-                            </svg>
+                  {/* --- VITALS & WEEKLY ROW --- */}
+                  <div className="vitals-weekly-row">
+                    <div className="vitals-col">
+                      <div className="glass-card dash-vital-card">
+                        <div className="dash-card-header"><h3>Heart Rate</h3><FiChevronRight color="#E64A45" /></div>
+                        <div className="vital-big-val">{friendStats?.profile?.heart_rate || '--'} <span>BPM</span></div>
+                      </div>
+                      <div className="glass-card dash-vital-card">
+                        <div className="dash-card-header"><h3>Sleep</h3><FiChevronRight color="#E64A45" /></div>
+                        <div className="vital-big-val">{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <span>hrs</span></div>
+                      </div>
+                    </div>
+
+                    <div className="glass-card weekly-chart-card">
+                      <div className="dash-card-header"><h3>Weekly Performance</h3></div>
+                      <div className="weekly-rings-container">
+                        {friendWeeklyData.map((day, i) => (
+                          <div key={i} className="mini-ring-col">
+                            <div className="mini-ring-wrapper">
+                              <svg viewBox="0 0 50 50">
+                                <circle className="dash-bg-ring-mini" cx="25" cy="25" r="20" />
+                                <circle 
+                                  className={`dash-meter-ring-mini ${day.percent >= 100 ? 'goal-reached' : ''}`} 
+                                  cx="25" cy="25" r="20" 
+                                  style={{ strokeDasharray: `${(day.percent * 1.25)}, 125` }}
+                                />
+                              </svg>
+                            </div>
+                            <span>{day.dayName}</span>
                           </div>
-                          <span>{day.dayName}</span>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
 
-                  {/* AWARDS SECTION (ALL AWARDS WITH GREYED OUT LOGIC) */}
-                  <div className="glass-card full-width-awards">
-                    <div className="section-header">
-                      <h3>Earned Awards</h3>
-                      <FiAward color="#E64A45" size={20} />
+                  {/* --- DASHBOARD STYLE AWARDS --- */}
+                  <div className="glass-card dash-awards-card">
+                    <div className="dash-card-header">
+                      <h3>Awards</h3>
+                      <FiChevronRight color="#E64A45" />
                     </div>
-                    <div className="awards-grid-full">
+                    <div className="dash-awards-grid">
                       {ALL_AWARDS.map((stdAward) => {
-                        // Check if the friend actually earned this award
                         const earnedMatch = friendStats?.awards?.find(a => 
                           a.award_name?.toLowerCase() === stdAward.name.toLowerCase() || 
                           a.award_id === stdAward.id
@@ -345,13 +369,15 @@ const Sharing = () => {
                         const iconToShow = earnedMatch?.icon_url || stdAward.fallbackIcon;
 
                         return (
-                          <div key={stdAward.id} className={`award-item ${isEarned ? 'earned' : 'locked'}`}>
-                            {typeof iconToShow === 'string' && iconToShow.startsWith('http') ? (
-                              <img src={iconToShow} alt={stdAward.name} className="earned-award-img" />
-                            ) : (
-                              <div className="emoji-award">{iconToShow}</div>
-                            )}
-                            <span className="award-name">{stdAward.name}</span>
+                          <div key={stdAward.id} className={`dash-award-badge ${isEarned ? 'earned' : 'locked'}`}>
+                            <div className="badge-inner">
+                              {typeof iconToShow === 'string' && iconToShow.startsWith('http') ? (
+                                <img src={iconToShow} alt={stdAward.name} />
+                              ) : (
+                                <span className="badge-emoji">{iconToShow}</span>
+                              )}
+                            </div>
+                            <span className="badge-label">{stdAward.name}</span>
                           </div>
                         );
                       })}
@@ -432,14 +458,12 @@ const Sharing = () => {
                     <h3 className="theme-heading">Find Friends</h3>
                     <FiX size={24} onClick={() => { if(myFriends.length > 1) setShowLeaderboard(true); setIsSearching(false); }} style={{cursor:'pointer'}} />
                   </div>
-
                   <div className="search-input-wrapper">
                     <input className="theme-search-input" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                     <button className="search-row-add-btn">
                         <FiUserPlus />
                     </button>
                   </div>
-
                   {incomingRequests.length > 0 && (
                     <div className="request-group">
                       <h4 className="section-label">Pending Invitations</h4>
