@@ -500,162 +500,114 @@
 /* --- DETAIL VIEW --- */
 .friend-stats-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1.2fr;
     gap: 30px;
     margin-top: 20px;
 }
 
-.friend-stat-card {
-    padding: 35px;
+.glass-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 768px) {
-    .friend-stats-grid {
-        grid-template-columns: 1fr;
-    }
-    .lb-podium {
-        gap: 20px;
-    }
-}
-
-/* --- ENHANCED FRIEND DETAILS --- */
-.full-width-card {
-    grid-column: span 2;
-}
-
-.card-label {
-    margin: 0 0 20px 0;
-    color: #111;
-    font-size: 1.2rem;
-    width: 100%;
-}
-
-.ring-stats-row {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    width: 100%;
-}
-
-.main-ring {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.main-ring-inner {
-    width: 75px;
-    height: 75px;
-    background: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 1.2rem;
-}
-
-.stat-line {
-    margin: 0 0 8px;
-    font-weight: bold;
-    color: #555;
-}
-
-.red-text {
-    color: #E64A45;
-}
-
-.score-circle {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    border: 10px solid #E64A45;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: 800;
-    color: #E64A45;
-}
-
-.metrics-list {
+/* --- RING ACTIVITY UI --- */
+.ring-focus-card {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    text-align: center;
 }
 
-/* Weekly Activity Styles */
-.weekly-rings-container {
+.ring-container-large {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 10px 0 25px;
+}
+
+.svg-ring { transform: rotate(-90deg); width: 100%; height: 100%; }
+.ring-bg { fill: none; stroke: #f2f2f2; stroke-width: 8; }
+
+.ring-progress {
+    fill: none;
+    stroke: #E64A45;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dasharray 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ring-progress.goal-reached {
+    stroke: #FF2D55;
+    filter: drop-shadow(0 0 8px rgba(255, 45, 85, 0.6));
+    animation: pulseGlow 2s infinite ease-in-out;
+}
+
+.ring-inner-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+}
+
+.ring-inner-text .percent { font-size: 2.2rem; font-weight: 800; color: #111; }
+.ring-inner-text .sub { color: #888; font-size: 0.8rem; font-weight: 600; }
+
+.ring-footer-stats {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    padding-top: 20px;
+    border-top: 1px solid #f9f9f9;
+}
+
+.f-stat { display: flex; flex-direction: column; }
+.f-label { font-size: 0.75rem; color: #AAA; font-weight: 700; text-transform: uppercase; }
+.f-val { font-size: 1.2rem; font-weight: 800; color: #111; }
+
+/* --- WEEKLY BAR CHART --- */
+.weekly-bar-chart {
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    padding: 10px 0;
+    align-items: flex-end;
+    height: 150px;
+    padding-top: 10px;
 }
 
-.day-ring-item {
+.bar-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    font-weight: 700;
-    color: #888;
+    flex: 1;
 }
 
-.small-ring-outer {
-    width: 50px;
-    height: 50px;
+.bar-bg {
+    width: 12px;
+    height: 110px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
 }
 
-.small-ring-inner {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.bar-fill {
+    position: absolute;
+    bottom: 0; width: 100%;
+    background: #E64A45;
+    border-radius: 10px;
+    transition: height 1s ease-out;
 }
 
-.small-ring-center {
-    width: 36px;
-    height: 36px;
-    background: #fff;
-    border-radius: 50%;
+.bar-fill.goal-reached {
+    background: linear-gradient(to top, #E64A45, #FF5E5E);
+    box-shadow: 0 -4px 12px rgba(230, 74, 69, 0.4);
 }
 
-/* Awards Styles */
-.awards-flex {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.award-badge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px;
-    border-radius: 20px;
-    min-width: 100px;
-}
-
-.award-icon {
-    font-size: 2rem;
-    margin-bottom: 5px;
-}
-
-.award-label {
-    font-size: 0.8rem;
-    font-weight: 800;
-    text-align: center;
-}
+.bar-wrapper span { font-size: 0.75rem; font-weight: 700; color: #BBB; }
 
 /* --- UPDATED AWARDS SECTION --- */
 .award-section {
@@ -704,18 +656,22 @@
     text-transform: uppercase;
 }
 
-.no-awards-text {
-    grid-column: span 4;
-    text-align: center;
-    color: #BBB;
-    font-size: 0.9rem;
-    margin-top: 20px;
-    font-style: italic;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+    0% { filter: drop-shadow(0 0 4px rgba(255, 45, 85, 0.4)); }
+    50% { filter: drop-shadow(0 0 12px rgba(255, 45, 85, 0.8)); }
+    100% { filter: drop-shadow(0 0 4px rgba(255, 45, 85, 0.4)); }
 }
 
 @media (max-width: 768px) {
-    .full-width-card {
-        grid-column: span 1;
+    .friend-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .lb-podium {
+        gap: 20px;
     }
 }
-
