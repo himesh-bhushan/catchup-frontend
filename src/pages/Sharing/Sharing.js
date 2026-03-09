@@ -203,7 +203,6 @@ const Sharing = () => {
     return () => clearTimeout(delaySearch);
   }, [searchTerm]);
 
-  // Safely check if the user has any awards
   const isAwardEarned = friendStats?.awards && friendStats.awards.length > 0;
 
   return (
@@ -238,7 +237,7 @@ const Sharing = () => {
                   {/* --- TOP ROW: ACTIVITY RING & HEALTH SCORE --- */}
                   <div className="activity-main-row">
                     
-                    {/* Activity Ring (Dashboard Side-by-side Style) */}
+                    {/* Activity Ring (Dashboard Side-by-Side Style) */}
                     <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
                         <h3>Activity Ring</h3>
@@ -384,8 +383,10 @@ const Sharing = () => {
                 <div className="lb-search-bar-alt" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
                   Find and add friends...
                 </div>
-                {/* Empty div to preserve perfect flex center layout for the search bar */}
-                <div style={{ width: '28px' }}></div> 
+                {/* Restored Add Friend Button */}
+                <button className="lb-transparent-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
+                  <FiUserPlus size={28} />
+                </button>
               </div>
               
               <div className="lb-podium">
