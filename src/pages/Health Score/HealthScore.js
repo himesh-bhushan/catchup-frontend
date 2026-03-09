@@ -9,10 +9,10 @@ import './HealthScore.css';
 
 const HealthScore = () => {
   const navigate = useNavigate();
+  // State for the calendar picker (Defaults to today)
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
   
-  // State for real data and individual score contributions
   const [stats, setStats] = useState({
     heartRate: 0,
     sleepSeconds: 0,
@@ -25,10 +25,9 @@ const HealthScore = () => {
     waterContrib: 0
   });
 
-  // SVG Donut Chart Configuration
   const radius = 35;
-  const circumference = 2 * Math.PI * radius; // ~219.91
-  const strokeWidth = 14; // Made slightly thicker to look more like a pie-chart ring
+  const circumference = 2 * Math.PI * radius; 
+  const strokeWidth = 14; 
 
   const fetchHealthData = useCallback(async () => {
     setLoading(true);
@@ -36,25 +35,37 @@ const HealthScore = () => {
     if (!user) return;
 
     try {
-      // 1. Fetch Latest Profile Stats
+      // 1. Check if the selected date is Today
+      const isToday = date === new Date().toISOString().split('T')[0];
+
+      // 2. Fetch Profile (Only accurate for "Today" for HR and Water)
       const { data: profile } = await supabase
         .from('profiles')
-        .select('heart_rate, sleep_seconds, water_intake')
+        .select('heart_rate, water_intake')
         .eq('id', user.id)
         .single();
 
-      // 2. Fetch Today's Activity (Calories)
-      const { data: activity } = await supabase
+      // 3. Fetch Historical Activity Log (Calories) by Date
+      const { data: activityLog } = await supabase
         .from('activity_logs')
         .select('calories')
         .eq('user_id', user.id)
         .eq('date', date)
         .maybeSingle();
 
-      const heart = profile?.heart_rate || 0;
-      const sleep = profile?.sleep_seconds || 0;
-      const water = profile?.water_intake || 0;
-      const cals = activity?.calories || 0;
+      // 4. Fetch Historical Sleep Log by Date
+      const { data: sleepLog } = await supabase
+        .from('sleep_logs')
+        .select('seconds')
+        .eq('user_id', user.id)
+        .eq('date', date)
+        .maybeSingle();
+
+      // Assign data based on the date selected
+      const heart = isToday ? (profile?.heart_rate || 0) : 0; 
+      const water = isToday ? (profile?.water_intake || 0) : 0; 
+      const cals = activityLog?.calories || 0;
+      const sleep = sleepLog?.seconds || 0;
 
       // ==========================================
       // 🩺 STEP 1 & 2: CONVERT METRICS TO SCORES (0-100)
@@ -111,7 +122,7 @@ const HealthScore = () => {
     } finally {
       setLoading(false);
     }
-  }, [date]);
+  }, [date]); // Re-runs every time the 'date' changes!
 
   useEffect(() => {
     fetchHealthData();
@@ -119,18 +130,15 @@ const HealthScore = () => {
 
   // ==========================================
   // 🎨 RING SVG CALCULATIONS (NO EMPTY SPACE)
-  // Calculate the total combined score to use as the base (100% of the visual ring)
   // ==========================================
   const totalAchieved = stats.hrContrib + stats.sleepContrib + stats.calContrib + stats.waterContrib;
-  const safeTotal = totalAchieved > 0 ? totalAchieved : 1; // Prevent division by zero
+  const safeTotal = totalAchieved > 0 ? totalAchieved : 1; 
 
-  // Divide each contribution by the TOTAL achieved so they sum up to exactly 1 (100% of the circle)
   const hrLen = (stats.hrContrib / safeTotal) * circumference;
   const sleepLen = (stats.sleepContrib / safeTotal) * circumference;
   const calLen = (stats.calContrib / safeTotal) * circumference;
   const waterLen = (stats.waterContrib / safeTotal) * circumference;
 
-  // Offsets so the segments stack seamlessly
   const hrOffset = 0;
   const sleepOffset = hrLen;
   const calOffset = hrLen + sleepLen;
@@ -142,18 +150,23 @@ const HealthScore = () => {
       <div className="dashboard-content">
         
         <div className="hs-page-container">
-          {/* Header */}
+          {/* Header & Calendar */}
           <div className="hs-header">
             <button onClick={() => navigate('/dashboard')} className="icon-btn">
               <FiArrowLeft size={24} />
             </button>
-            <h2>Today, {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</h2>
+            <h2>
+              {date === new Date().toISOString().split('T')[0] ? "Today, " : ""}
+              {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </h2>
             <div className="date-picker-wrapper">
               <FiCalendar size={20} />
+              {/* This input drives the date state and updates the whole page automatically */}
               <input 
                 type="date" 
                 value={date} 
                 onChange={(e) => setDate(e.target.value)} 
+                max={new Date().toISOString().split('T')[0]} // Prevents picking future dates
                 className="hidden-date-input"
               />
             </div>
@@ -163,48 +176,42 @@ const HealthScore = () => {
             
             {/* LEFT COLUMN: Donut Chart & Legend */}
             <div className="hs-left-col">
-              <div className="hs-donut-container">
+              <div className="hs-donut-container" style={{ position: 'relative' }}>
                 <svg width="100%" height="100%" viewBox="0 0 100 100" className="hs-donut-svg">
-                  {/* Background Track (Only visible if the user has absolutely 0 data) */}
+                  {/* Background Track */}
                   <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#f0f0f0" strokeWidth={strokeWidth} />
                   
-                  {/* Segment 1: RED (Heart Rate) */}
                   {stats.hrContrib > 0 && (
                     <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#EF473A" strokeWidth={strokeWidth}
-                      strokeDasharray={`${hrLen} ${circumference}`} 
-                      strokeDashoffset={-hrOffset} 
-                      transform="rotate(-90 50 50)" 
-                    />
+                      strokeDasharray={`${hrLen} ${circumference}`} strokeDashoffset={-hrOffset} transform="rotate(-90 50 50)" />
                   )}
-
-                  {/* Segment 2: ORANGE (Sleep) */}
                   {stats.sleepContrib > 0 && (
                     <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#F7931E" strokeWidth={strokeWidth}
-                      strokeDasharray={`${sleepLen} ${circumference}`} 
-                      strokeDashoffset={-sleepOffset} 
-                      transform="rotate(-90 50 50)" 
-                    />
+                      strokeDasharray={`${sleepLen} ${circumference}`} strokeDashoffset={-sleepOffset} transform="rotate(-90 50 50)" />
                   )}
-
-                  {/* Segment 3: YELLOW (Calories) */}
                   {stats.calContrib > 0 && (
                     <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#FDE08B" strokeWidth={strokeWidth}
-                      strokeDasharray={`${calLen} ${circumference}`} 
-                      strokeDashoffset={-calOffset} 
-                      transform="rotate(-90 50 50)" 
-                    />
+                      strokeDasharray={`${calLen} ${circumference}`} strokeDashoffset={-calOffset} transform="rotate(-90 50 50)" />
                   )}
-
-                  {/* Segment 4: BLUE (Water) */}
                   {stats.waterContrib > 0 && (
                     <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#4A90E2" strokeWidth={strokeWidth}
-                      strokeDasharray={`${waterLen} ${circumference}`} 
-                      strokeDashoffset={-waterOffset} 
-                      transform="rotate(-90 50 50)" 
-                    />
+                      strokeDasharray={`${waterLen} ${circumference}`} strokeDashoffset={-waterOffset} transform="rotate(-90 50 50)" />
                   )}
                 </svg>
-                {/* ❌ Percentage text removed here to leave the center completely blank */}
+                
+                {/* Score Text properly centered */}
+                <div style={{
+                    position: 'absolute',
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '3rem',
+                    fontWeight: 'bold',
+                    color: '#DE4B4E'
+                }}>
+                  {loading ? "..." : `${stats.score}%`}
+                </div>
               </div>
 
               {/* Legend matching colors */}
