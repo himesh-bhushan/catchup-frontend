@@ -1,106 +1,161 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft } from 'react-icons/fi';
+import { FiArrowLeft, FiShare2, FiAward } from 'react-icons/fi';
+import { supabase } from '../../supabase';
 import DashboardNav from '../../components/DashboardNav';
-import './Awards.css';
 
-// Import all your award images
-import awardsBadge from '../../assets/awards.png';
-import awardsBadge2 from '../../assets/awards2.png';
-import awardsBadge3 from '../../assets/awards3.png';
+// Images
+import awardsImg from '../../assets/awards.png'; 
+import './Awards.css';
 
 const Awards = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [daysMet, setDaysMet] = useState(0);
+  const [daysPassed, setDaysPassed] = useState(0);
+  const [isUnlocked, setIsUnlocked] = useState(false);
 
-  // Data for the 12 months.
-  const monthlyData = [
-    { name: 'January', earned: true },
-    { name: 'February', earned: false },
-    { name: 'March', earned: true },
-    { name: 'April', earned: false },
-    { name: 'May', earned: true },
-    { name: 'June', earned: true },
-    { name: 'July', earned: false },
-    { name: 'August', earned: true },
-    { name: 'September', earned: true },
-    { name: 'October', earned: false },
-    { name: 'November', earned: false },
-    { name: 'December', earned: false },
-  ];
+  const fetchAwardData = useCallback(async () => {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
-  // Data for the bottom milestone awards using your new images!
-  const milestoneAwards = [
-    { id: 1, title: '5 days workout-streak', image: awardsBadge, earned: true },
-    { id: 2, title: 'Rank #1 in LeaderBoard for 5 times', image: awardsBadge2, earned: false },
-    { id: 3, title: 'Invite 5 friends', image: awardsBadge3, earned: true },
-  ];
+    try {
+      // 1. Get Goal
+      const { data: profile } = await supabase.from('profiles').select('calorie_goal').eq('id', user.id).single();
+      const goal = profile?.calorie_goal || 500;
+
+      // 2. Determine Monthly Progress
+      const today = new Date();
+      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+      const currentDaysPassed = today.getDate(); 
+      setDaysPassed(currentDaysPassed);
+
+      const { data: monthLogs } = await supabase
+        .from('activity_logs')
+        .select('date, calories')
+        .eq('user_id', user.id)
+        .gte('date', firstDayOfMonth);
+
+      let achievedDays = 0;
+      if (monthLogs) {
+        const uniqueDays = new Set();
+        monthLogs.forEach(log => {
+            if (log.calories >= goal && !uniqueDays.has(log.date)) {
+                uniqueDays.add(log.date);
+                achievedDays++;
+            }
+        });
+      }
+
+      setDaysMet(achievedDays);
+      setIsUnlocked(achievedDays >= currentDaysPassed); // Awarded if hit goal every day so far this month
+
+    } catch (err) {
+      console.error("Error fetching award data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAwardData();
+  }, [fetchAwardData]);
+
+  // NATIVE SOCIAL SHARING
+  const handleShare = async () => {
+    const shareData = {
+      title: 'Monthly Mover Award!',
+      text: `I just unlocked the 'Monthly Mover' badge on CatchUp for completing my activity ring every single day! 🍅💪 Catch up with me!`,
+      url: 'https://catchup.page',
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback for desktop browsers without Web Share API
+        navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        alert("Award text copied to clipboard! Paste it on social media to share.");
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+    }
+  };
+
+  const progressPercentage = Math.min((daysMet / (daysPassed || 1)) * 100, 100);
 
   return (
-    <div className="dashboard-wrapper awards-page-bg">
+    <div className="dashboard-wrapper detail-page-bg">
       <DashboardNav />
       <div className="dashboard-content">
-        
         <div className="awards-page-container">
           
-          {/* Page Header */}
-          <div className="awards-header-top">
+          <div className="detail-header">
             <button onClick={() => navigate('/dashboard')} className="icon-btn">
-              <FiArrowLeft size={28} />
+              <FiArrowLeft size={24} />
             </button>
-            <h2>Awards</h2>
+            <h2>My Awards</h2>
+            <div style={{ width: 50 }}></div>
           </div>
 
-          {/* Main Achievements Card */}
-          <div className="achievements-card">
-            <div className="ac-card-body">
+          {loading ? (
+            <div className="loading-state">Checking your progress...</div>
+          ) : (
+            <div className="awards-content">
               
-              {/* Left Column: Title + Current Challenge */}
-              <div className="ac-left-col">
-                <h3 className="ac-card-title">Monthly Achievements</h3>
-                
-                <div className="ac-main-badge-wrapper">
-                  <img src={awardsBadge} alt="Monthly Mover" className="ac-main-badge" />
+              {/* THE BADGE CARD */}
+              <div className={`award-hero-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
+                <div className="award-badge-wrapper">
+                    <img 
+                        src={awardsImg} 
+                        alt="Monthly Mover Award" 
+                        className={`big-award-image ${isUnlocked ? '' : 'grayscale'}`} 
+                    />
                 </div>
-                
-                <h4 className="ac-challenge-title">November Challenge</h4>
-                
-                <div className="ac-progress-bar">
-                  <div className="ac-progress-fill" style={{ width: '60%' }}></div>
-                </div>
-              </div>
-
-              {/* Right Column: 12-Month Grid */}
-              <div className="ac-right-col">
-                <div className="ac-grid">
-                  {monthlyData.map((month) => (
-                    <div key={month.name} className="ac-grid-item">
-                      <img 
-                        src={awardsBadge} 
-                        alt={month.name} 
-                        className={month.earned ? 'badge-earned' : 'badge-unearned'} 
-                      />
-                      <span>{month.name}</span>
+                <div className="award-info">
+                    <h1>Monthly Mover</h1>
+                    <p>Complete your Activity Ring every day of the month.</p>
+                    
+                    <div className="award-status-pill">
+                        {isUnlocked ? (
+                            <><FiAward /> Award Unlocked</>
+                        ) : (
+                            "Locked"
+                        )}
                     </div>
-                  ))}
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Milestone Awards Section */}
-          <div className="milestone-awards-container">
-            {milestoneAwards.map((award) => (
-              <div key={award.id} className="milestone-item">
-                <img 
-                  src={award.image} 
-                  alt={award.title} 
-                  className={award.earned ? 'badge-earned' : 'badge-unearned'} 
-                />
-                <span>{award.title}</span>
+              {/* PROGRESS SECTION */}
+              <div className="card progress-card">
+                <div className="card-header">
+                  <h3>Monthly Progress</h3>
+                  <span className="goal-percentage">{daysMet} / {daysPassed} Days</span>
+                </div>
+                <div className="progress-track">
+                  <div 
+                    className="progress-fill fill-red" 
+                    style={{ width: `${progressPercentage}%`, backgroundColor: '#DE4B4E' }}
+                  ></div>
+                </div>
+                <p className="progress-subtitle">
+                  {isUnlocked 
+                    ? "Incredible job! You've crushed your goals every single day this month." 
+                    : `You've hit your goal ${daysMet} days out of the ${daysPassed} days this month.`}
+                </p>
               </div>
-            ))}
-          </div>
 
+              {/* SHARE BUTTON */}
+              {isUnlocked && (
+                  <button className="share-award-btn" onClick={handleShare}>
+                      <FiShare2 size={20} />
+                      Share to Social Media
+                  </button>
+              )}
+
+            </div>
+          )}
         </div>
       </div>
     </div>

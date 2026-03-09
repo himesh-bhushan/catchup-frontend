@@ -5,7 +5,7 @@ import DashboardNav from '../../components/DashboardNav';
 import { 
   FiChevronRight, FiUser, FiHeart, FiActivity, FiMoon, 
   FiDroplet, FiWatch, FiRefreshCw, FiArrowLeft, FiNavigation, 
-  FiBluetooth, FiExternalLink 
+  FiBluetooth, FiExternalLink, FiShare2 
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
@@ -136,6 +136,28 @@ const Dashboard = () => {
     window.open(`https://www.google.com/maps/search/?api=1&query=${searchQuery}`, '_blank');
   };
 
+  // --- NATIVE SOCIAL SHARING ---
+  const handleShare = async (e) => {
+    e.stopPropagation(); // Stops the card click from navigating away
+    const shareData = {
+      title: 'Monthly Mover Award!',
+      text: `I just unlocked the 'Monthly Mover' badge on CatchUp for completing my activity ring every single day! 🍅💪 Catch up with me!`,
+      url: 'https://catchup.page',
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback for desktop browsers without Web Share API
+        navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        alert("Award text copied to clipboard! Paste it on social media to share.");
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+    }
+  };
+
   // --- RECOMMENDATIONS ---
   const recommendations = [
     { id: 1, title: t('rec_tomatoes') || "Health Benefits of Tomatoes", img: tomato, color: "#fff3e0" },
@@ -156,6 +178,7 @@ const Dashboard = () => {
                 .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at, heart_rate, sleep_seconds, water_intake, blood_pressure')
                 .eq('id', session.user.id).single();
             
+            let goal = 500;
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
                 if (profile.avatar_url) {
@@ -177,18 +200,48 @@ const Dashboard = () => {
                     water_intake: profile.water_intake || 0,
                     blood_pressure: profile.blood_pressure || "--/--"
                 });
+                goal = profile.calorie_goal || 500;
             }
 
-            const todayStr = new Date().toISOString().split('T')[0];
-            const { data: todayLog } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
             
-            const goal = profile?.calorie_goal || 500;
-            const cals = todayLog?.calories || 0;
-            const dailyGoalMet = goal > 0 && cals >= goal;
-            setIsAwardEarned(dailyGoalMet);
+            // 🟢 AWARDS LOGIC: Check entire month
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+            const daysPassed = today.getDate(); 
 
+            const { data: monthLogs } = await supabase
+              .from('activity_logs')
+              .select('date, calories, steps, distance')
+              .eq('user_id', session.user.id)
+              .gte('date', firstDayOfMonth);
+
+            let daysMetGoal = 0;
+            let todayLogData = null;
+
+            if (monthLogs) {
+                const uniqueDays = new Set();
+                monthLogs.forEach(log => {
+                    // Grab today's specific log for the activity ring
+                    if (log.date === todayStr) todayLogData = log;
+                    
+                    // Count how many unique days they hit the goal
+                    if (log.calories >= goal && !uniqueDays.has(log.date)) {
+                        uniqueDays.add(log.date);
+                        daysMetGoal++;
+                    }
+                });
+            }
+
+            // Award is earned if they met the goal for every day of the month so far!
+            setIsAwardEarned(daysMetGoal >= daysPassed);
+
+            const cals = todayLogData?.calories || 0;
             setActivityData({
-                calories: cals, steps: todayLog?.steps || 0, distance: todayLog?.distance || 0, goal: goal,
+                calories: cals, 
+                steps: todayLogData?.steps || 0, 
+                distance: todayLogData?.distance || 0, 
+                goal: goal,
                 percentage: goal > 0 ? Math.min((cals / goal) * 100, 100) : 0
             });
 
@@ -341,45 +394,6 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* ALIGNED 3-COLUMN TRIO ROW USING ORIGINAL 'sync-card' CLASS AS WRAPPER */}
-                    {/* By keeping 'sync-card' but removing 'card', it inherits the CSS grid stretch perfectly without adding a white box around all three */}
-                    <div className="sync-card" style={{ display: 'grid', gridTemplateColumns: '1.95fr 0.925fr 0.925fr', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
-                        
-                        {/* Actual Sync Tile */}
-                        <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                            <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                                <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
-                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing') || 'Syncing'}</h3>
-                            </div>
-                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary, #666)' }}>
-                                Synced {lastSyncedAgo ? lastSyncedAgo : 'just now'}
-                            </p>
-                        </div>
-
-                        {/* Actual Water Tile */}
-                        <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
-                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
-                            </div>
-                            <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
-                                {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>L</span>
-                            </div>
-                        </div>
-
-                        {/* Actual Sleep Tile */}
-                        <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
-                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
-                            </div>
-                            <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
-                                {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>hrs</span>
-                            </div>
-                        </div>
-
-                    </div>
-
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('Goals Completed')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="goals-progress-bar">
@@ -410,6 +424,37 @@ const Dashboard = () => {
                     <div className="card bp-card" onClick={() => navigate('/blood-pressure')}>
                         <div className="card-header"><h3>{t('Blood Pressure')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="tile-value">{otherStats.blood_pressure} <span>mmHg</span></div>
+                    </div>
+
+                    {/* ALIGNED 3-TILE ROW USING NATIVE CSS GRID SPAN */}
+                    <div className="card sync-card" style={{ gridColumn: 'span 2' }}>
+                        <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                            <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
+                            <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing') || 'Syncing'}</h3>
+                        </div>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary, #666)' }}>
+                            Synced {lastSyncedAgo ? lastSyncedAgo : 'just now'}
+                        </p>
+                    </div>
+
+                    <div className="card" onClick={() => navigate('/water')} style={{ gridColumn: 'span 1', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                            <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
+                            <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
+                        </div>
+                        <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
+                            {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>L</span>
+                        </div>
+                    </div>
+
+                    <div className="card" onClick={() => navigate('/sleep')} style={{ gridColumn: 'span 1', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                            <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
+                            <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
+                        </div>
+                        <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
+                            {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>hrs</span>
+                        </div>
                     </div>
 
                     <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
@@ -502,12 +547,33 @@ const Dashboard = () => {
                     
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" /></div>
-                        <div className="awards-content">
+                        <div className="awards-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <img 
                                 src={awards} 
                                 alt="Award Badge" 
                                 className={`award-badge-status ${isAwardEarned ? 'earned-color' : 'not-earned-gray'}`} 
                             />
+                            {isAwardEarned && (
+                                <button 
+                                    onClick={handleShare}
+                                    style={{
+                                        marginTop: '15px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        background: '#DE4B4E',
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '8px 16px',
+                                        borderRadius: '20px',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 4px 10px rgba(222, 75, 78, 0.3)'
+                                    }}
+                                >
+                                    <FiShare2 size={16} /> Share
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
