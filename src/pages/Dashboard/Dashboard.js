@@ -37,6 +37,8 @@ const Dashboard = () => {
     calories: 0, steps: 0, distance: 0, goal: 500, percentage: 0
   });
 
+  const [goalsData, setGoalsData] = useState({ completed: 0, total: 4, steps: false, move: false, sleep: false, water: false });
+
   const [otherStats, setOtherStats] = useState({
     heart_rate: 0, 
     sleep: 0,
@@ -206,6 +208,29 @@ const Dashboard = () => {
             
             const goal = profile?.calorie_goal || 500;
             const cals = todayLog?.calories || 0;
+
+              // --- NEW: GOALS CALCULATION ---
+            const stepGoalMet = (todayLogData?.steps || 0) >= 5000;
+            const moveGoalMet = cals >= goal; // Activity Ring completed
+            const sleepGoalMet = profile?.sleep_seconds >= (7 * 3600); // 7 hours
+            const waterGoalMet = profile?.water_intake >= 2000; // 2 Liters (2000ml)
+
+            let completedGoals = 0;
+            if (stepGoalMet) completedGoals++;
+            if (moveGoalMet) completedGoals++;
+            if (sleepGoalMet) completedGoals++;
+            if (waterGoalMet) completedGoals++;
+
+            setGoalsData({
+                completed: completedGoals,
+                total: 4,
+                steps: stepGoalMet,
+                move: moveGoalMet,
+                sleep: sleepGoalMet,
+                water: waterGoalMet
+            });
+            // -----------------------------
+
 
             // 🟢 NEW AWARDS LOGIC: Check entire month
             const today = new Date();
@@ -429,25 +454,36 @@ const Dashboard = () => {
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('Goals Completed')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="goals-progress-bar">
-                            <div className="progress-fill" style={{width: '75%'}}></div>
+                            {/* Dynamic progress bar width */}
+                            <div className="progress-fill" style={{width: `${(goalsData.completed / goalsData.total) * 100}%`}}></div>
                             <img alt="Tomato" width="100%" src={tomato} className="progress-tomato"  />
-                            <span className="progress-text">3/4</span>
+                            {/* Dynamic fraction */}
+                            <span className="progress-text">{goalsData.completed}/{goalsData.total}</span>
                         </div>
                         <div className="goals-detailed-grid">
                             <div className="goal-item-detailed">
-                                <div className="goal-item-header"><div className="goal-dot filled"></div> Daily Steps</div>
+                                <div className="goal-item-header">
+                                    {/* Green dot if completed, gray if not */}
+                                    <div className="goal-dot" style={{ backgroundColor: goalsData.steps ? '#4CAF50' : '#E0E0E0' }}></div> Daily Steps
+                                </div>
                                 <p>Walk 5,000 steps per day</p>
                             </div>
                             <div className="goal-item-detailed">
-                                <div className="goal-item-header"><div className="goal-dot filled"></div> Exercise</div>
-                                <p>1 hour per day</p>
+                                <div className="goal-item-header">
+                                    <div className="goal-dot" style={{ backgroundColor: goalsData.move ? '#4CAF50' : '#E0E0E0' }}></div> Move
+                                </div>
+                                <p>Hit daily calorie goal</p>
                             </div>
                             <div className="goal-item-detailed">
-                                <div className="goal-item-header"><div className="goal-dot filled"></div> Sleep</div>
+                                <div className="goal-item-header">
+                                    <div className="goal-dot" style={{ backgroundColor: goalsData.sleep ? '#4CAF50' : '#E0E0E0' }}></div> Sleep
+                                </div>
                                 <p>7 hours per day</p>
                             </div>
                             <div className="goal-item-detailed">
-                                <div className="goal-item-header"><div className="goal-dot filled"></div> Water</div>
+                                <div className="goal-item-header">
+                                    <div className="goal-dot" style={{ backgroundColor: goalsData.water ? '#4CAF50' : '#E0E0E0' }}></div> Water
+                                </div>
                                 <p>2 Liters</p>
                             </div>
                         </div>
