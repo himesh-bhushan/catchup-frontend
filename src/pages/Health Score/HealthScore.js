@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiHeart, FiMoon, FiActivity, FiDroplet } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 
-// ✅ Import Navigation Bar
 import DashboardNav from '../../components/DashboardNav';
 
 import './HealthScore.css';
@@ -29,6 +28,7 @@ const HealthScore = () => {
   // SVG Donut Chart Configuration
   const radius = 35;
   const circumference = 2 * Math.PI * radius; // ~219.91
+  const strokeWidth = 14; // Made slightly thicker to look more like a pie-chart ring
 
   const fetchHealthData = useCallback(async () => {
     setLoading(true);
@@ -60,41 +60,27 @@ const HealthScore = () => {
       // 🩺 STEP 1 & 2: CONVERT METRICS TO SCORES (0-100)
       // ==========================================
       
-      // Heart Rate Score
       let hrScore = 0;
       if (heart > 0) {
-        if (heart >= 60 && heart <= 80) {
-          hrScore = 100;
-        } else if (heart > 80 && heart <= 100) {
-          hrScore = Math.max(0, 100 - (heart - 80) * 2);
-        } else if (heart > 100) {
-          hrScore = Math.max(0, 60 - (heart - 100) * 3);
-        } else if (heart < 60) {
-          hrScore = Math.max(0, 100 - (60 - heart) * 2); // Handles bradycardia penalty
-        }
+        if (heart >= 60 && heart <= 80) hrScore = 100;
+        else if (heart > 80 && heart <= 100) hrScore = Math.max(0, 100 - (heart - 80) * 2);
+        else if (heart > 100) hrScore = Math.max(0, 60 - (heart - 100) * 3);
+        else if (heart < 60) hrScore = Math.max(0, 100 - (60 - heart) * 2);
       }
 
-      // Sleep Score
       let sleepScore = 0;
       const sleepHrs = sleep / 3600;
       if (sleepHrs > 0) {
-        if (sleepHrs >= 7 && sleepHrs <= 9) {
-          sleepScore = 100;
-        } else {
-          sleepScore = Math.max(0, 100 - Math.abs(sleepHrs - 8) * 15);
-        }
+        if (sleepHrs >= 7 && sleepHrs <= 9) sleepScore = 100;
+        else sleepScore = Math.max(0, 100 - Math.abs(sleepHrs - 8) * 15);
       }
 
-      // Calories Score
       let calScore = 0;
-      if (cals > 0) {
-        calScore = Math.min(100, (cals / 500) * 100);
-      }
+      if (cals > 0) calScore = Math.min(100, (cals / 500) * 100);
 
-      // Water Score
       let waterScore = 0;
       if (water > 0) {
-        const waterLiters = water / 1000; // Convert ml to L
+        const waterLiters = water / 1000; 
         waterScore = Math.min(100, (waterLiters / 2.5) * 100);
       }
 
@@ -132,15 +118,19 @@ const HealthScore = () => {
   }, [fetchHealthData]);
 
   // ==========================================
-  // 🎨 RING SVG CALCULATIONS
-  // Calculate stroke-dasharray lengths for proportional sizes
+  // 🎨 RING SVG CALCULATIONS (NO EMPTY SPACE)
+  // Calculate the total combined score to use as the base (100% of the visual ring)
   // ==========================================
-  const hrLen = (stats.hrContrib / 100) * circumference;
-  const sleepLen = (stats.sleepContrib / 100) * circumference;
-  const calLen = (stats.calContrib / 100) * circumference;
-  const waterLen = (stats.waterContrib / 100) * circumference;
+  const totalAchieved = stats.hrContrib + stats.sleepContrib + stats.calContrib + stats.waterContrib;
+  const safeTotal = totalAchieved > 0 ? totalAchieved : 1; // Prevent division by zero
 
-  // Offsets so the segments stack seamlessly behind one another
+  // Divide each contribution by the TOTAL achieved so they sum up to exactly 1 (100% of the circle)
+  const hrLen = (stats.hrContrib / safeTotal) * circumference;
+  const sleepLen = (stats.sleepContrib / safeTotal) * circumference;
+  const calLen = (stats.calContrib / safeTotal) * circumference;
+  const waterLen = (stats.waterContrib / safeTotal) * circumference;
+
+  // Offsets so the segments stack seamlessly
   const hrOffset = 0;
   const sleepOffset = hrLen;
   const calOffset = hrLen + sleepLen;
@@ -175,46 +165,46 @@ const HealthScore = () => {
             <div className="hs-left-col">
               <div className="hs-donut-container">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" className="hs-donut-svg">
-                  {/* Background Track (Empty grey circle) */}
-                  <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#f0f0f0" strokeWidth="8" />
+                  {/* Background Track (Only visible if the user has absolutely 0 data) */}
+                  <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#f0f0f0" strokeWidth={strokeWidth} />
                   
-                  {/* Segment 1: RED (Heart Rate - 35% Max) */}
+                  {/* Segment 1: RED (Heart Rate) */}
                   {stats.hrContrib > 0 && (
-                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#EF473A" strokeWidth="8"
+                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#EF473A" strokeWidth={strokeWidth}
                       strokeDasharray={`${hrLen} ${circumference}`} 
                       strokeDashoffset={-hrOffset} 
                       transform="rotate(-90 50 50)" 
                     />
                   )}
 
-                  {/* Segment 2: ORANGE (Sleep - 25% Max) */}
+                  {/* Segment 2: ORANGE (Sleep) */}
                   {stats.sleepContrib > 0 && (
-                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#F7931E" strokeWidth="8"
+                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#F7931E" strokeWidth={strokeWidth}
                       strokeDasharray={`${sleepLen} ${circumference}`} 
                       strokeDashoffset={-sleepOffset} 
                       transform="rotate(-90 50 50)" 
                     />
                   )}
 
-                  {/* Segment 3: YELLOW (Calories - 25% Max) */}
+                  {/* Segment 3: YELLOW (Calories) */}
                   {stats.calContrib > 0 && (
-                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#FDE08B" strokeWidth="8"
+                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#FDE08B" strokeWidth={strokeWidth}
                       strokeDasharray={`${calLen} ${circumference}`} 
                       strokeDashoffset={-calOffset} 
                       transform="rotate(-90 50 50)" 
                     />
                   )}
 
-                  {/* Segment 4: BLUE (Water - 15% Max) */}
+                  {/* Segment 4: BLUE (Water) */}
                   {stats.waterContrib > 0 && (
-                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#4A90E2" strokeWidth="8"
+                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#4A90E2" strokeWidth={strokeWidth}
                       strokeDasharray={`${waterLen} ${circumference}`} 
                       strokeDashoffset={-waterOffset} 
                       transform="rotate(-90 50 50)" 
                     />
                   )}
                 </svg>
-                <div className="hs-donut-text">{loading ? "..." : `${stats.score}%`}</div>
+                {/* ❌ Percentage text removed here to leave the center completely blank */}
               </div>
 
               {/* Legend matching colors */}
