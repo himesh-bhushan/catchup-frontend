@@ -341,6 +341,45 @@ const Dashboard = () => {
                         </div>
                     </div>
 
+                    {/* ALIGNED 3-COLUMN TRIO ROW USING ORIGINAL 'sync-card' CLASS AS WRAPPER */}
+                    {/* By keeping 'sync-card' but removing 'card', it inherits the CSS grid stretch perfectly without adding a white box around all three */}
+                    <div className="sync-card" style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
+                        
+                        {/* Actual Sync Tile */}
+                        <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                            <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                                <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing') || 'Syncing'}</h3>
+                            </div>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary, #666)' }}>
+                                Synced {lastSyncedAgo ? lastSyncedAgo : 'just now'}
+                            </p>
+                        </div>
+
+                        {/* Actual Water Tile */}
+                        <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
+                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
+                            </div>
+                            <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
+                                {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>L</span>
+                            </div>
+                        </div>
+
+                        {/* Actual Sleep Tile */}
+                        <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
+                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
+                            </div>
+                            <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
+                                {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>hrs</span>
+                            </div>
+                        </div>
+
+                    </div>
+
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('Goals Completed')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="goals-progress-bar">
@@ -371,39 +410,6 @@ const Dashboard = () => {
                     <div className="card bp-card" onClick={() => navigate('/blood-pressure')}>
                         <div className="card-header"><h3>{t('Blood Pressure')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="tile-value">{otherStats.blood_pressure} <span>mmHg</span></div>
-                    </div>
-
-                    {/* ALIGNED 3-TILE ROW WRAPPER - This spans the exact space of the Goals card */}
-                    <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '20px' }}>
-                        <div className="card sync-card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                                <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
-                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing') || 'Syncing'}</h3>
-                            </div>
-                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary, #666)' }}>
-                                Synced {lastSyncedAgo ? lastSyncedAgo : 'just now'}
-                            </p>
-                        </div>
-
-                        <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
-                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
-                            </div>
-                            <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
-                                {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>L</span>
-                            </div>
-                        </div>
-
-                        <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
-                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
-                            </div>
-                            <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
-                                {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>hrs</span>
-                            </div>
-                        </div>
                     </div>
 
                     <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
