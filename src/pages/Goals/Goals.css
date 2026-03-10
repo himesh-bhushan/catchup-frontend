@@ -284,18 +284,150 @@
         padding: 40px 40px;
     }
 }
-/* --- RESPONSIVE MOBILE FIX --- */
-@media screen and (max-width: 768px) {
-    /* Stacks cards on top of each other on tiny screens */
-    .goals-grid {
-        grid-template-columns: 1fr; 
+/* =========================================
+   📱 MOBILE GOALS PAGE RESPONSIVENESS
+   ========================================= */
+
+@media (max-width: 768px) {
+    
+    /* --- 1. Global Page Scroll & Spacing --- */
+    .dashboard-wrapper.goals-page-bg, 
+    .goals-page-bg .dashboard-content {
+        padding: 20px 20px 130px 20px !important; /* Bottom padding clears the nav bar */
+        min-height: 100dvh !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        display: block !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
     }
+    
+    .goals-page-container {
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    /* --- 2. Header (Date & Calendar) --- */
+    .goals-header-new {
+        margin-bottom: 25px !important;
+    }
+
+    .header-left h2 {
+        font-size: 1.4rem !important;
+        white-space: nowrap !important;
+    }
+
+    .date-picker-wrapper {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    /* --- 3. Green Hero Banner --- */
     .goals-hero-banner {
-        flex-direction: column;
-        text-align: center;
-        padding: 25px 20px;
-        gap: 20px;
+        padding: 25px 20px !important; /* Tighter padding for mobile */
+        margin-bottom: 30px !important;
+        border-radius: 20px !important;
+        display: flex !important;
+        flex-direction: row !important; /* Keeps text left, image right */
+        justify-content: space-between !important;
+        align-items: center !important;
+        min-height: 140px !important; /* Gives the image room to fit */
+        position: relative !important;
+        overflow: hidden !important;
     }
-    .hero-text h1 { font-size: 1.8rem; }
-    .hero-image { max-height: 100px; }
+
+    .hero-text {
+        max-width: 60% !important; /* Prevents text from hitting the image */
+        text-align: left !important;
+        z-index: 2 !important;
+    }
+
+    .hero-text p {
+        font-size: 1.1rem !important; /* "Every healthy choice counts." */
+        margin-bottom: 5px !important;
+        line-height: 1.2 !important;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem !important; /* "3/4 Goals" */
+        font-weight: 800 !important;
+    }
+
+    .hero-image {
+        position: absolute !important;
+        right: -10px !important; /* Tucks the tomato perfectly into the corner */
+        bottom: 0 !important; /* Anchors it to the bottom edge */
+        top: auto !important; /* Removes vertical centering */
+        transform: none !important; /* Removes translate */
+        max-height: 130px !important;
+        width: auto !important;
+        z-index: 1 !important;
+    }
+
+    /* --- 4. Section Titles (In Progress / Completed) --- */
+    .section-title {
+        font-size: 1.2rem !important;
+        font-weight: 800 !important;
+        margin-bottom: 15px !important;
+        color: #111 !important;
+    }
+
+    /* --- 5. Goal Cards Stack (Vertical Layout) --- */
+    .goals-grid {
+        display: flex !important;
+        flex-direction: column !important; /* Stacks cards in a single column */
+        gap: 15px !important; /* Space between each card */
+        width: 100% !important;
+    }
+
+    .new-goal-card {
+        padding: 20px !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04) !important;
+        gap: 20px !important; /* Space between the icon row and progress bar */
+    }
+
+    /* Colors exactly matching the screenshot */
+    .in-progress-card { background-color: #FCEAEA !important; } /* Soft Pink */
+    .completed-card { background-color: #FFF9C4 !important; }   /* Soft Yellow */
+
+    /* Card Header (Icon + Title) */
+    .card-top {
+        gap: 15px !important;
+    }
+
+    .card-icon {
+        width: 32px !important;
+        height: 32px !important;
+        background-color: white !important;
+        border-radius: 50% !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08) !important;
+        font-size: 1rem !important;
+    }
+
+    .card-top h4 {
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        color: #111 !important;
+    }
+
+    /* --- 6. Progress Bars Inside Cards --- */
+    .card-progress-wrapper {
+        height: 14px !important; /* Slimmer bar like the screenshot */
+        background-color: white !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+    }
+
+    .progress-bar-fill {
+        height: 100% !important;
+        border-radius: 10px !important;
+    }
+
+    /* The text inside the progress bar */
+    .progress-text-overlay {
+        font-size: 0.65rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+    }
 }
