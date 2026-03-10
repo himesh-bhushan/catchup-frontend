@@ -664,3 +664,153 @@
         padding: 40px 20px;
     }
 }
+
+/* =========================================
+   📱 MOBILE DASHBOARD RESPONSIVENESS (MASTER)
+   ========================================= */
+
+@media (max-width: 768px) {
+    
+    /* --- 1. GLOBAL WRAPPER & SCROLLING --- */
+    /* Locks the background and unlocks smooth scrolling inside the content area */
+    .dashboard-wrapper, 
+    .dashboard-wrapper.sharing-page-bg {
+        display: block !important;
+        height: 100dvh !important;
+        width: 100vw !important;
+        overflow: hidden !important; 
+    }
+
+    .dashboard-content {
+        height: 100% !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        /* 🌟 140px bottom padding clears the Nav Bar completely! */
+        padding: 20px 15px 140px 15px !important; 
+        box-sizing: border-box !important;
+        width: 100% !important;
+    }
+
+    /* --- 2. HEADER ALIGNMENT --- */
+    .mobile-header-top {
+        margin-bottom: 15px !important;
+    }
+    
+    .header-flex {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 5px !important;
+    }
+    
+    .desktop-title { display: none !important; }
+    .desktop-only-refresh { display: none !important; }
+    
+    .mobile-title {
+        display: block !important;
+        font-size: 1.8rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* --- 3. DASHBOARD GRID (STACK EVERYTHING) --- */
+    .dash-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        width: 100% !important;
+    }
+
+    /* Overrides the inline React styles to force the Sync/Water/Sleep row to stack */
+    .sync-card {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        width: 100% !important;
+    }
+
+    .card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        min-height: auto !important; 
+        margin: 0 !important;
+    }
+
+    /* --- 4. ACTIVITY RING TWEAKS --- */
+    .activity-content {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 20px !important;
+    }
+    
+    .activity-stats {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        text-align: center !important;
+    }
+
+    /* --- 5. HEALTH SCORE CARD --- */
+    .health-score-content {
+        display: flex !important;
+        flex-direction: row !important; /* Keeps ring and pills side-by-side */
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 15px !important;
+    }
+    
+    .score-ring-wrapper {
+        width: 120px !important; /* Scaled perfectly for phone screens */
+        height: 120px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .score-metrics-list {
+        flex: 1 !important;
+        width: auto !important;
+    }
+
+    /* --- 6. GOALS CARD --- */
+    .goals-detailed-grid {
+        display: flex !important;
+        flex-direction: column !important; /* Stacks the goals vertically */
+        gap: 12px !important;
+    }
+
+    /* --- 7. CAROUSELS (Horizontal Scrolling) --- */
+    .recommendations-carousel,
+    .clinics-grid-container {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        padding-bottom: 15px !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 15px !important;
+    }
+
+    /* Hides the ugly scrollbar while keeping functionality */
+    .recommendations-carousel::-webkit-scrollbar,
+    .clinics-grid-container::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .blog-card,
+    .clinic-tile {
+        min-width: 260px !important;
+        scroll-snap-align: start !important;
+    }
+
+    /* --- 8. BIG CONNECT CARD (Empty State) --- */
+    .big-tile-container {
+        min-height: 65vh !important;
+    }
+    
+    .big-connect-card {
+        padding: 40px 20px !important;
+        width: 90% !important;
+        margin: 0 auto !important;
+    }
+}
