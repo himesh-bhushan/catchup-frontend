@@ -32,10 +32,17 @@ const PanicButton = () => {
     return null;
   }
 
+  // Check if current route is the dashboard. 
+  // ⚠️ NOTE: Change '/dashboard' to whatever your actual dashboard URL path is!
+  const isDashboard = location.pathname === '/dashboard';
+
   return (
     <>
-      {/* GLOBAL PANIC BUTTON */}
-      <button className="global-panic-btn" onClick={() => setPanicMode(true)}>
+      {/* GLOBAL PANIC BUTTON - dynamically adds 'hide-on-mobile' if not on dashboard */}
+      <button 
+        className={`global-panic-btn ${!isDashboard ? 'hide-on-mobile' : ''}`} 
+        onClick={() => setPanicMode(true)}
+      >
         <img src={panicBtnImg} alt="Panic" /> 
       </button>
 

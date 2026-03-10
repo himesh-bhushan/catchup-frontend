@@ -135,4 +135,9 @@
         /* Ensures it absolutely stays on top of any other floating elements */
         z-index: 9999 !important; 
     }
+
+    /* ✅ Hides the button on all pages EXCEPT the dashboard on mobile */
+    .global-panic-btn.hide-on-mobile {
+        display: none !important;
+    }
 }
