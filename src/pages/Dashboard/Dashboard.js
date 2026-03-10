@@ -406,12 +406,11 @@ const Dashboard = () => {
                     
                     {/* Activity Ring */}
                     <div className="card activity-card" onClick={() => navigate('/activity')}>
-                        <div className="card-header"><h3>{t('Activity Ring')}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="card-header"><h3>{t('Activity Ring')}</h3></div>
                         <div className="activity-content">
                             <div className="ring-wrapper">
                                 <div className="activity-ring" style={{ background: `conic-gradient(#FF5252 0% ${activityData.percentage}%, #E0E0E0 0% 100%)` }}>
                                     <div className="inner-circle">
-                                        <img alt="Tomato" src={tomato} width="40" />
                                         <span>{Math.round(activityData.percentage)}%</span>
                                     </div>
                                 </div>
@@ -537,7 +536,6 @@ const Dashboard = () => {
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
                         <div className="card-header score-header-nudged">
                             <h3>{t('Health Score') || "Health Score"}</h3>
-                            <FiChevronRight className="card-arrow" />
                         </div>
                         
                         <div className="health-score-content">
@@ -617,7 +615,7 @@ const Dashboard = () => {
                     </div>
                     
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
-                        <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" /></div>
+                        <div className="card-header"><h3>{t('Awards')}</h3></div>
                         <div className="awards-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <img 
                                 src={awards} 
