@@ -555,7 +555,7 @@
 
 
 /* =========================================
-   📱 MOBILE SHARING / RANKING PAGE
+   📱 MOBILE SHARING / RANKING PAGE (MASTER)
    ========================================= */
 
 @media (max-width: 768px) {
@@ -623,9 +623,8 @@
         color: #E64A45 !important;
         margin-top: 10px !important;
     }
-    .first-score {
-        font-size: 1.8rem !important;
-    }
+    
+    .first-score { font-size: 1.8rem !important; }
 
     .podium-name {
         font-family: monospace !important;
@@ -698,11 +697,7 @@
         margin: 0 -25px !important;
     }
     
-    .side-avatar {
-        width: 100px !important;
-        height: 100px !important;
-    }
-    
+    .side-avatar { width: 100px !important; height: 100px !important; }
     .avatar-group { margin-bottom: 30px !important; }
 
     /* --- 5. "FIND FRIENDS" MODAL --- */
@@ -785,7 +780,7 @@
         font-size: 1.1rem !important;
     }
 
-    /* --- 6. FRIEND DETAIL PAGE (Progress & Cards) --- */
+    /* --- 6. FRIEND DETAIL PAGE --- */
     
     /* Ensure scrolling is unlocked and Nav Bar is cleared */
     .dashboard-wrapper.sharing-page-bg {
@@ -849,39 +844,44 @@
     
     .dash-card-header h3 { font-size: 1.1rem !important; }
 
-    /* Activity Ring Scaling */
+    /* --- Activity Ring Scaling (Side-by-Side) --- */
     .activity-body-side {
-        gap: 15px !important; 
+        display: flex !important;
+        flex-direction: row !important; /* 🌟 Forces ring on left, text on right */
+        align-items: center !important;
+        justify-content: flex-start !important;
+        text-align: left !important;
+        gap: 20px !important; 
     }
 
     .dash-ring-wrapper-large {
-        width: 120px !important; 
-        height: 120px !important;
-        margin: 0 auto !important; 
+        width: 105px !important; 
+        height: 105px !important;
+        margin: 0 !important; 
+        flex-shrink: 0 !important; 
     }
     
     .dash-ring-inner-yellow {
-        width: 80px !important; 
-        height: 80px !important;
+        width: 70px !important; 
+        height: 70px !important;
     }
     
-    .inner-percent { font-size: 1.4rem !important; }
-    .inner-avatar { width: 30px !important; height: 30px !important; }
-    .inner-emoji { font-size: 1.4rem !important; }
+    .inner-percent { font-size: 1.2rem !important; }
+    .inner-avatar { width: 26px !important; height: 26px !important; }
+    .inner-emoji { font-size: 1.2rem !important; margin-bottom: 0 !important;}
 
     .dash-stats-list {
-        gap: 10px !important;
-        align-items: center !important; 
+        gap: 8px !important;
+        align-items: flex-start !important; 
+        flex: 1 !important;
     }
     
-    .dash-stat-item { align-items: center !important; }
-    .stat-lbl { font-size: 0.9rem !important; color: #666 !important; }
-    .stat-val { font-size: 1.4rem !important; }
+    .dash-stat-item { align-items: flex-start !important; }
+    .stat-lbl { font-size: 0.85rem !important; color: #666 !important; }
+    .stat-val { font-size: 1.25rem !important; }
 
-    /* Health Score Scaling */
-    .hs-body {
-        gap: 20px !important;
-    }
+    /* --- Health Score Scaling --- */
+    .hs-body { gap: 20px !important; }
 
     .dash-ring-wrapper-medium {
         width: 130px !important; 
@@ -894,4 +894,26 @@
     .hs-pills-list { gap: 8px !important; }
     .hs-pill { padding: 8px 10px !important; }
     .pill-text strong { font-size: 0.85rem !important; }
+
+    /* --- Weekly Performance Scaling (Fit all 7 days) --- */
+    .weekly-rings-container {
+        padding: 5px 0 !important;
+        gap: 2px !important; 
+        justify-content: space-between !important;
+    }
+
+    .mini-ring-col { gap: 6px !important; }
+
+    .mini-ring-wrapper {
+        width: 28px !important; /* Shrunk so all 7 fit */
+        height: 28px !important;
+    }
+
+    /* Thins the ring lines slightly for small screens */
+    .dash-meter-ring-mini, 
+    .dash-bg-ring-mini {
+        stroke-width: 5 !important; 
+    }
+
+    .bar-day-lbl { font-size: 0.7rem !important; }
 }
