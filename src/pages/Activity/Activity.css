@@ -421,72 +421,72 @@
         width: 100% !important;
     }
 }
-
 /* =========================================
-   🎯 FINAL FIX: RING ROTATION & ARROW ALIGN
+   🎯 FINAL FIX: RING START & ARROW ALIGN
    ========================================= */
 
 @media (max-width: 768px) {
-    /* 1. Rotate ONLY the rings, not the container */
+    /* 1. Force the Rings (Large & Mini) to start at the TOP */
     .large-circular-chart, 
     .mini-circular-chart {
         transform: rotate(-90deg) !important;
         transform-origin: center !important;
+        display: block !important;
         overflow: visible !important;
     }
 
-    /* 2. Fix the Red Arrow Cap */
-    /* This makes it a perfect circle at the top of the ring */
+    /* 2. Lock the Arrow Overlay to the Top Dead Center */
+    .large-ring-container {
+        position: relative !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
     .ring-arrow-overlay {
         position: absolute !important;
+        /* Position exactly at the top of the container */
         top: 0 !important;
         left: 50% !important;
-        /* translate(-50%, -50%) centers the circle exactly ON the ring line */
-        transform: translate(-50%, -50%) !important; 
+        /* translate(-50%, -50%) centers the cap circle ON the ring line */
+        transform: translate(-50%, -50%) !important;
         
-        width: 30px !important; 
-        height: 30px !important;
-        background-color: #D93025 !important; /* Matches your red theme */
+        /* Shape the cap as a perfect circle */
+        width: 32px !important; 
+        height: 32px !important;
+        background-color: #D93025 !important; 
         border-radius: 50% !important;
+        border: 3px solid #FFFFFF !important; /* Adds the clean white border */
         
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         z-index: 10 !important;
         margin: 0 !important;
-        padding: 0 !important;
-        border: 2px solid #fff !important; /* Adds a clean border like the mockup */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
     }
 
-    /* Points the arrow icon inside to the RIGHT */
+    /* 3. Point the Arrow Icon inside to the RIGHT (Forward) */
     .ring-arrow-overlay svg, 
     .ring-arrow-overlay i {
-        font-size: 16px !important;
         color: white !important;
-        transform: rotate(0deg) !important; /* Keeps it pointing forward */
+        font-size: 16px !important;
+        /* Parent is rotated -90 in the chart, but we want the icon to look natural */
+        transform: rotate(0deg) !important; 
     }
 
-    /* 3. Fix the "Move" text overlap seen in your screenshot */
+    /* 4. Spacing Fix for "Move" Text */
+    /* Adds space below the ring so the KCAL stats don't overlap the Nav Bar */
     .main-ring-section {
-        margin-top: 20px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
+        margin-bottom: 40px !important;
     }
 
     .large-ring-container {
-        width: 260px !important;
-        height: 260px !important;
-        margin-bottom: 20px !important; /* Adds space so KCAL text isn't cut off */
+        margin-bottom: 30px !important;
     }
 
-    .stat-block h3 {
-        text-align: left !important;
-        margin-left: 5px !important;
-    }
-
-    /* 4. Fix Weekly Ring starting points */
-    .mini-circular-chart {
-        transform: rotate(-90deg) !important;
+    /* 5. Weekly Rings Alignment */
+    .mini-ring-wrapper {
+        position: relative !important;
     }
 }
