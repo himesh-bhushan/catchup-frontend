@@ -541,3 +541,126 @@
 .apple-health-download-btn:active {
     transform: translateY(0);
 }
+
+
+
+/* =========================================
+   📱 MOBILE RESPONSIVENESS (Max Width: 768px)
+   ========================================= */
+
+@media (max-width: 768px) {
+    /* 1. Global Wrapper: Enable scrolling & stack navigation */
+    .dashboard-wrapper, 
+    .dashboard-wrapper.sharing-page-bg {
+        flex-direction: column; /* Stacks nav bar and content */
+        height: 100vh;
+        overflow-y: auto; /* Enables smooth vertical scrolling */
+        overflow-x: hidden; /* Prevents side-to-side rubber-banding */
+    }
+
+    /* 2. Content Container: Reduce padding for small screens */
+    .dashboard-content, 
+    .sharing-page-container {
+        padding: 20px 15px !important;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* 3. Header Fixes */
+    .header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .desktop-title { display: none; }
+    .desktop-only-refresh { display: none; }
+    
+    .mobile-title {
+        display: block;
+        font-size: 1.8rem;
+        line-height: 1.2;
+    }
+
+    /* 4. The Magic Trick: Turn all Grids into Single Columns */
+    .dash-grid,
+    .activity-main-row,
+    .awards-weekly-row,
+    .goals-detailed-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px;
+    }
+
+    /* Override the inline styles on your Sync/Water/Sleep trio */
+    .sync-card {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    /* 5. Health Score & Activity Card Fixes */
+    .health-score-content,
+    .activity-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 25px;
+    }
+
+    .score-metrics-list {
+        width: 100%;
+        grid-template-columns: 1fr 1fr; /* Keep pills 2x2 on mobile */
+    }
+
+    .activity-stats {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    /* 6. Fix Side-by-Side Content in Sharing Page */
+    .activity-body-side, 
+    .hs-body {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* 7. Podium Scaling for smaller screens */
+    .lb-podium {
+        gap: 15px;
+        transform: scale(0.85); /* Shrinks the podium perfectly to fit */
+        margin-bottom: 20px;
+    }
+
+    /* 8. Make Carousels horizontally scrollable with snapping */
+    .recommendations-carousel,
+    .clinics-grid-container {
+        display: flex;
+        flex-direction: row !important;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 15px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+    }
+
+    .blog-card,
+    .clinic-tile {
+        min-width: 260px; /* Forces them to stay wide so you scroll sideways */
+        scroll-snap-align: start;
+        margin-right: 15px;
+    }
+
+    /* Hide scrollbars for the horizontal carousels to keep it clean */
+    .recommendations-carousel::-webkit-scrollbar,
+    .clinics-grid-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* 9. Big Connect Card (Apple Health) */
+    .big-connect-card {
+        min-height: auto !important;
+        padding: 40px 20px;
+    }
+}
