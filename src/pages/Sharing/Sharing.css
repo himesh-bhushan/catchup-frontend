@@ -718,4 +718,97 @@
     .avatar-group {
         margin-bottom: 30px !important;
     }
+
+    /* 1. Fix the main white container */
+    .theme-container {
+        padding: 25px 20px 120px 20px !important; /* 120px bottom padding clears the Nav Bar! */
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        border-radius: 25px !important;
+        margin: 0 !important;
+        
+        /* If this is a popup/modal, this ensures it can scroll internally */
+        max-height: 100dvh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .search-header {
+        margin-bottom: 15px !important;
+    }
+
+    .theme-heading {
+        font-size: 1.6rem !important;
+    }
+
+    .theme-search-input {
+        padding: 14px 20px !important;
+        font-size: 1rem !important;
+    }
+
+    /* 2. Fix the user cards from overflowing */
+    .theme-card {
+        padding: 15px 12px !important; /* Tighter padding saves horizontal space */
+        gap: 10px !important; /* Forces a safe gap between text and buttons */
+        box-sizing: border-box !important;
+        width: 100% !important;
+    }
+
+    /* 3. Handle the Avatar, Name, and Score */
+    .user-info-row {
+        gap: 12px !important;
+        flex: 1 !important; /* Allows the text area to take up available space */
+        min-width: 0 !important; /* Crucial: Prevents long text from pushing buttons off-screen */
+    }
+
+    .theme-avatar-sm {
+        width: 48px !important;
+        height: 48px !important;
+        flex-shrink: 0 !important; /* Prevents avatar from squishing */
+    }
+
+    /* Forces the Name and Score to stack vertically */
+    .user-info-row > div {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+    }
+
+    .name-bold {
+        font-size: 1.05rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important; /* Adds '...' if name is too long */
+        width: 100% !important;
+    }
+
+    /* Targets the "Score: 69" text */
+    .user-info-row span {
+        font-size: 0.85rem !important;
+        color: #666 !important;
+        margin-top: 2px !important;
+        white-space: nowrap !important;
+    }
+
+    /* 4. Fix the View and Delete Buttons */
+    .action-btns-row {
+        gap: 8px !important; /* Tighter space between buttons */
+        flex-shrink: 0 !important; /* Absolutely forbids buttons from squishing */
+    }
+
+    .theme-btn-outline {
+        padding: 6px 14px !important;
+        font-size: 0.85rem !important;
+        border-radius: 10px !important;
+    }
+
+    .icon-btn-delete {
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 10px !important;
+        font-size: 1.1rem !important;
+    }
+
 }
