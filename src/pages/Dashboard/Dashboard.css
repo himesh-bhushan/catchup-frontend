@@ -582,7 +582,7 @@
         order: 1 !important; 
         margin: 0 !important;
         flex: 1 !important;
-        min-width: 0 !important; /* Prevents text from pushing avatar off screen */
+        min-width: 0 !important; 
     }
 
     .mobile-header-top {
@@ -601,24 +601,27 @@
         margin-bottom: 2px !important;
     }
 
-    /* Forces "Last updated" to stay perfectly on one line */
+    /* 🌟 Shrunk "Last updated" to stay perfectly on one line */
     .last-synced-wrapper { 
         display: flex !important;
         align-items: center !important;
         margin-top: 5px !important; 
         width: 100% !important;
         white-space: nowrap !important;
+        gap: 4px !important;
     }
+
+    .sync-icon-small { font-size: 0.75rem !important; }
 
     .last-synced-label {
-        font-size: 0.75rem !important;
+        font-size: 0.65rem !important; /* Scaled down */
         white-space: nowrap !important;
         overflow: hidden !important;
-        text-overflow: ellipsis !important; /* Adds '...' if screen is too narrow */
-        max-width: 90% !important; 
+        text-overflow: ellipsis !important; 
+        max-width: 100% !important; 
     }
 
-    .sync-time-ago { font-size: 0.75rem !important; }
+    .sync-time-ago { font-size: 0.65rem !important; }
 
     /* Hide the refresh buttons and desktop title */
     .refresh-btn, 
@@ -630,7 +633,7 @@
     /* --- 3. DASHBOARD GRID (2 COLUMNS) --- */
     .dash-grid {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* Splits screen into 2 columns */
+        grid-template-columns: repeat(2, 1fr) !important; 
         gap: 15px !important;
         width: 100% !important;
     }
@@ -639,13 +642,11 @@
     .activity-card { grid-column: span 2 !important; order: 1 !important; }
     .goals-card    { grid-column: span 2 !important; order: 2 !important; }
     
-    /* 🌟 Blood Pressure & Heart Rate share a row */
     .bp-card       { grid-column: 1 / 2 !important; order: 3 !important; }
     .heart-card    { grid-column: 2 / 3 !important; order: 4 !important; }
     
     .score-card    { grid-column: span 2 !important; order: 5 !important; }
     
-    /* 🌟 Sync Card wrapper spans full width, but holds Sleep & Water side-by-side */
     .sync-card {
         grid-column: span 2 !important;
         order: 6 !important;
@@ -668,16 +669,16 @@
         margin: 0 !important;
     }
     
-    .sync-card > .card:nth-child(1) { display: none !important; } /* Hide Syncing */
-    .sync-card > .card:nth-child(3) { grid-column: 1 / 2 !important; order: 1 !important; } /* Sleep on Left */
-    .sync-card > .card:nth-child(2) { grid-column: 2 / 3 !important; order: 2 !important; } /* Water on Right */
+    .sync-card > .card:nth-child(1) { display: none !important; } 
+    .sync-card > .card:nth-child(3) { grid-column: 1 / 2 !important; order: 1 !important; } 
+    .sync-card > .card:nth-child(2) { grid-column: 2 / 3 !important; order: 2 !important; } 
 
-    /* Shrink text for half-width cards so it doesn't overflow */
+    /* Shrink text for half-width cards */
     .bp-card .tile-value,
     .heart-card .tile-value,
     .sync-card > .card .tile-value {
         font-size: 1.6rem !important;
-        flex-wrap: wrap !important; /* Allows units like mmHg to drop to next line if needed */
+        flex-wrap: wrap !important; 
         line-height: 1.1 !important;
         gap: 4px !important;
     }
@@ -698,14 +699,14 @@
     /* --- 4. ACTIVITY RING (SIDE-BY-SIDE) --- */
     .activity-content {
         display: flex !important;
-        flex-direction: row !important; /* 🌟 Puts Ring on Left, Text on Right */
+        flex-direction: row !important; 
         align-items: center !important;
         justify-content: flex-start !important;
         gap: 20px !important;
     }
     
     .ring-wrapper {
-        width: 110px !important; /* Scaled down slightly */
+        width: 110px !important; 
         height: 110px !important;
         flex-shrink: 0 !important;
         margin: 0 !important;
@@ -715,7 +716,7 @@
         width: auto !important;
         flex: 1 !important;
         display: flex !important;
-        flex-direction: column !important; /* Stacks text vertically on the right */
+        flex-direction: column !important; 
         justify-content: center !important;
         text-align: left !important;
         gap: 12px !important;
@@ -751,11 +752,19 @@
         width: auto !important;
     }
 
-    /* --- 6. GOALS CARD --- */
+    /* --- 6. GOALS CARD (2x2 GRID) --- */
     .goals-detailed-grid {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* 🌟 Forces 2x2 layout */
+        gap: 15px 10px !important;
+    }
+
+    .goal-item-header { font-size: 0.85rem !important; }
+    
+    .goal-item-detailed p { 
+        font-size: 0.75rem !important; 
+        padding-left: 20px !important; 
+        line-height: 1.2 !important;
     }
 
     /* --- 7. RECOMMENDATIONS (1 Blog visible) --- */
@@ -772,7 +781,7 @@
     .recommendations-carousel::-webkit-scrollbar { display: none !important; }
 
     .blog-card {
-        min-width: 100% !important; /* Forces exactly one tile on screen */
+        min-width: 100% !important; 
         scroll-snap-align: center !important;
         margin: 0 !important;
     }
@@ -796,11 +805,22 @@
         margin: 0 !important;
     }
 
-    /* --- 8. NEARBY CARE (Smaller text & button) --- */
+    /* --- 8. NEARBY CARE --- */
     .recommendations-section .section-header-row h3 { font-size: 1.15rem !important; }
     .loc-btn { font-size: 0.75rem !important; padding: 8px 14px !important; }
 
-    /* --- 9. BIG CONNECT CARD (Empty State) --- */
+    /* --- 9. BIG CONNECT CARD (Empty State & Loading) --- */
     .big-tile-container { min-height: 65vh !important; }
-    .big-connect-card { padding: 40px 20px !important; width: 90% !important; margin: 0 auto !important; }
+    
+    .big-connect-card { 
+        padding: 40px 20px !important; 
+        width: 90% !important; 
+        margin: 0 auto !important; 
+    }
+    
+    /* 🌟 Shrunk the "Loading your wellness data" / Connect title text */
+    .big-connect-card h3 { 
+        font-size: 1.1rem !important; 
+        margin-bottom: 5px !important;
+    }
 }
