@@ -364,7 +364,7 @@ const Dashboard = () => {
         
         <header className="dash-header">
           <div className="mobile-header-top">
-             <div className="mobile-avatar" onClick={() => navigate('/profile')}>
+            <div className="mobile-avatar" onClick={() => navigate('/profile')} style={{ position: 'relative', zIndex: 9999, cursor: 'pointer' }}>
                 {avatarUrl ? <img src={avatarUrl} alt="User" className="avatar-img-circle" /> : <FiUser />}
              </div>
              <button className="refresh-btn" onClick={handleRefreshSync}>
