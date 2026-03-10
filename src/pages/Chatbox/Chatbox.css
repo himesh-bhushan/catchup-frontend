@@ -147,35 +147,71 @@
 }
 
 /* =========================================
-   💬 MOBILE CHATBOT LAYOUT FIX
+   💬 MOBILE CHATBOT & PANIC BUTTON FIX
    ========================================= */
+
 @media (max-width: 768px) {
-    /* 1. Push the entire chat input area above the navigation bar */
+    /* 1. CHAT INPUT: Pull it up from under the screen */
     .chat-input-wrapper, 
     .chat-bottom-section {
         position: fixed !important;
-        bottom: 85px !important; /* Sits exactly above the nav bar */
+        bottom: 95px !important; /* Sits right above your bottom nav bar */
         left: 50% !important;
         transform: translateX(-50%) !important;
-        width: 92% !important; /* Keeps it neatly inside the screen edges */
-        z-index: 100 !important;
+        width: 92% !important;
+        z-index: 9990 !important;
+        background: transparent !important;
+    }
+
+    /* 2. PANIC BUTTON: Move it safely above both the Nav and Input */
+    .panic-button-container,
+    .red-floating-button {
+        position: fixed !important;
+        bottom: 180px !important; /* Elevated above the typing area */
+        left: 20px !important;
+        z-index: 9999 !important;
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    /* 3. CHAT MESSAGES AREA: Make sure it doesn't hide behind the input */
+    .chat-container,
+    .chat-messages-display {
+        height: 100vh !important;
+        padding-bottom: 220px !important; /* Massive padding so you can scroll to the very last message */
+        overflow-y: auto !important;
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important;
+        box-sizing: border-box !important;
     }
 
-    /* 2. Fix the disclaimer text so it isn't squished */
-    .disclaimer-text {
-        font-size: 11px !important;
-        text-align: center !important;
-        margin-top: 8px !important;
-        color: #888 !important;
+    /* 4. CHAT BUBBLES: Fix the squished text and floating avatar */
+    .chat-message {
+        display: flex !important;
         width: 100% !important;
+        align-items: flex-end !important; /* Aligns the tomato avatar with the bottom of the bubble */
+        margin-bottom: 20px !important;
+    }
+    
+    /* Ensure bot messages align left */
+    .chat-message.bot {
+        justify-content: flex-start !important;
     }
 
-    /* 3. Add padding to the messages so the last text isn't hidden behind the input box */
-    .chat-messages-display,
-    .chat-container {
-        padding-bottom: 170px !important; 
+    /* Let the bubble stretch out naturally */
+    .chat-bubble,
+    .message-content {
+        max-width: 75% !important; /* Prevents it from being a narrow column */
+        width: auto !important;
+        padding: 12px 16px !important;
+        word-wrap: break-word !important;
+    }
+
+    /* Keep the avatar neat and locked to the side */
+    .chat-avatar {
+        width: 40px !important;
+        height: 40px !important;
+        flex-shrink: 0 !important;
+        margin-right: 12px !important;
     }
 }
