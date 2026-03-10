@@ -306,9 +306,33 @@
 .icon-blue { color: #5C83D6; font-size: 1rem; }
 
 .pill-text { display: flex; flex-direction: column; }
-.pill-text span { font-size: 0.65rem; font-weight: 600; opacity: 0.9; margin-bottom: 2px; text-transform: capitalize; }
-.pill-text strong { font-size: 0.95rem; font-weight: 800; display: flex; align-items: baseline; gap: 4px; line-height: 1.1; }
-.pill-text strong small { font-size: 0.65rem; font-weight: 700; opacity: 0.9; }
+
+/* Added color: #FFF to explicitly force the text to be white */
+.pill-text span { 
+    font-size: 0.65rem; 
+    font-weight: 600; 
+    opacity: 0.9; 
+    margin-bottom: 2px; 
+    text-transform: capitalize; 
+    color: #FFF; 
+}
+
+.pill-text strong { 
+    font-size: 0.95rem; 
+    font-weight: 800; 
+    display: flex; 
+    align-items: baseline; 
+    gap: 4px; 
+    line-height: 1.1; 
+    color: #FFF; 
+}
+
+.pill-text strong small { 
+    font-size: 0.65rem; 
+    font-weight: 700; 
+    opacity: 0.9; 
+    color: #FFF; 
+}
 
 .bg-red { background: #D3504A; color: #FFF; }
 .bg-orange { background: #E29E3A; color: #FFF; }
@@ -386,8 +410,8 @@
 }
 
 .award-badge-status {
-    width: 100px; /* Reduced from 140px */
-    height: 100px; 
+    width: 170px; /* Reduced from 140px */
+    height: 170px; 
     object-fit: contain; 
     transition: all 0.3s ease;
 }
