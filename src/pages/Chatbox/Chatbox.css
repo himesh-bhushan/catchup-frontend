@@ -147,16 +147,16 @@
 }
 
 /* =========================================
-   📱 MOBILE RESPONSIVE FIXES (COMPLETE)
+   📱 MOBILE RESPONSIVE FIXES (FINAL)
    ========================================= */
 
 @media (max-width: 768px) {
     
-    /* --- 1. FULL SCREEN & BACKGROUND FIX --- */
-    /* Prevents the white gap at the bottom and forces the peach background */
+    /* --- 1. LET THE APP HANDLE HEIGHT --- */
+    /* Removed 100dvh so it stops fighting your app's built-in nav bar gap */
     .chat-page-container {
-        display: block !important; 
-        height: 100dvh !important; 
+        display: flex !important; 
+        height: 100% !important; 
         width: 100vw !important;
         padding: 0 !important;
         margin: 0 !important;
@@ -164,25 +164,23 @@
     }
 
     .chat-interface-wrapper {
-        padding-left: 0 !important; /* Removes the desktop side-gap */
+        padding-left: 0 !important; 
         width: 100vw !important;
-        height: 100dvh !important; 
-        min-height: -webkit-fill-available !important; /* iOS fix */
+        height: 100% !important; 
         display: flex !important;
         flex-direction: column !important;
-        background-attachment: fixed !important;
+        position: relative !important; /* Crucial for anchoring the input box */
     }
 
-    /* --- 2. HEADER: FIXED AT TOP --- */
-    /* Locks the header to the top with a glass-morphism blur */
+    /* --- 2. HEADER: FIXED AT TOP OF CONTAINER --- */
     .chat-header {
         display: flex !important; 
-        position: fixed !important; 
+        position: absolute !important; 
         top: 0 !important;
         left: 0 !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        z-index: 9999 !important; 
+        z-index: 10 !important; 
         padding: 15px 20px !important; 
         align-items: center !important;
         justify-content: space-between !important; 
@@ -203,16 +201,15 @@
         line-height: 1 !important;
     }
 
-    /* --- 3. MESSAGES AREA: SCROLLABLE WITH PADDING --- */
-    /* Pushes text out from under the header and above the text box */
+    /* --- 3. MESSAGES AREA --- */
     .messages-container {
         flex: 1 !important;
         width: 100% !important;
         box-sizing: border-box !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important; 
-        padding-top: 90px !important; /* Pushes first message below header */
-        padding-bottom: 180px !important; /* Pushes last message above input */
+        padding-top: 80px !important; 
+        padding-bottom: 110px !important; /* Adjusted so last message clears the input */
         padding-left: 15px !important;
         padding-right: 15px !important;
     }
@@ -235,28 +232,29 @@
         word-wrap: break-word !important;
     }
 
-    /* --- 4. INPUT AREA: FLOATING ABOVE NAV BAR --- */
-    /* Safely floats the text box above your bottom navigation bar */
+    /* --- 4. INPUT AREA: ANCHORED TO PEACH BACKGROUND --- */
     .input-area {
-        position: fixed !important;
-        bottom: 110px !important; 
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        width: 92% !important;
-        padding: 0 !important; 
+        position: absolute !important; /* Anchors inside the peach wrapper, NOT the screen */
+        bottom: 0 !important; /* Sits perfectly flush at the bottom of the peach area */
+        left: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        padding: 10px 15px 15px 15px !important; 
+        box-sizing: border-box !important;
         background: transparent !important; 
         backdrop-filter: none !important; 
-        z-index: 9990 !important;
+        z-index: 10 !important;
     }
 
     .input-box-wrapper {
         box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
         padding: 6px 8px 6px 20px !important;
         background: var(--card-bg) !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    /* --- 5. DISCLAIMER: ONE LINE TEXT --- */
-    /* Forces the text to stay on a single line and adds '...' if too long */
+    /* --- 5. DISCLAIMER --- */
     .chat-disclaimer, 
     .disclaimer-text {
         font-size: 9.5px !important; 
@@ -267,7 +265,6 @@
         text-align: center !important;
         margin-top: 6px !important;
         margin-bottom: 0 !important;
-        letter-spacing: 0px !important;
         display: block !important;
     }
 }
