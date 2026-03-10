@@ -7,7 +7,6 @@ import {
   FiDroplet, FiWatch, FiRefreshCw, FiArrowLeft, FiNavigation, 
   FiBluetooth, FiExternalLink, FiShare2 
 } from 'react-icons/fi';
-import { FiHeart } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
 // Images
