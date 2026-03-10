@@ -136,3 +136,84 @@
   .profile-text-large span { white-space: nowrap; font-size: 14px; }
   .qr-card-large { width: 280px; height: 280px; }
 }
+
+
+/* =========================================
+   📱 MOBILE REPORT PAGE FIX
+   ========================================= */
+@media (max-width: 768px) {
+    /* 1. Page Container: Enable smooth scrolling */
+    .report-page-container {
+        display: block !important;
+        height: 100dvh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .share-health-wrapper {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: 100% !important;
+    }
+
+    /* 2. Top Section: Scale down the Sticky Note & Tomato */
+    .share-left-section {
+        padding: 40px 20px 20px 20px !important;
+        min-height: auto !important;
+    }
+
+    .sticky-note {
+        max-width: 280px !important;
+        padding: 20px 15px !important;
+    }
+
+    .sticky-note h2 {
+        font-size: 18px !important;
+    }
+
+    .character-illustration {
+        margin-top: -15px !important;
+    }
+
+    .tomato-img {
+        width: 190px !important; /* Shrunk so the red section doesn't swallow it */
+    }
+
+    /* 3. Bottom Red Section: Fix Overlap & Add Massive Bottom Padding */
+    .share-right-section {
+        margin-top: -100px !important; /* Less aggressive pull-up over the tomato */
+        padding: 40px 20px 160px 20px !important; /* 🌟 160px bottom padding clears the nav bar! */
+        border-top-left-radius: 35px !important;
+        border-top-right-radius: 35px !important;
+        flex: 1 !important; 
+        justify-content: flex-start !important;
+    }
+
+    /* 4. Profile Information: Scale text and icon */
+    .profile-pill-large {
+        gap: 15px !important;
+        margin-bottom: 25px !important;
+    }
+
+    .profile-icon-circle-large {
+        width: 55px !important;
+        height: 55px !important;
+    }
+
+    .profile-text-large h3 {
+        font-size: 20px !important;
+    }
+
+    .profile-text-large span {
+        font-size: 13px !important;
+    }
+
+    /* 5. QR Code: Perfect mobile sizing */
+    .qr-card-large {
+        width: 230px !important; /* Shrunk from 280px */
+        height: 230px !important;
+        padding: 20px !important;
+        border-radius: 25px !important;
+    }
+}
