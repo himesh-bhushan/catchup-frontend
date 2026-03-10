@@ -249,7 +249,7 @@
     /* --- 4. INPUT AREA & SEND BUTTON FIX --- */
     .input-area {
         position: fixed !important;
-        bottom: 85px !important; 
+        bottom: 100px !important; 
         left: 4% !important; /* Exact percentages prevent stretching */
         width: 92% !important;
         padding: 0 !important; 
