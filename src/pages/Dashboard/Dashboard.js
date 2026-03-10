@@ -7,6 +7,7 @@ import {
   FiDroplet, FiWatch, FiRefreshCw, FiArrowLeft, FiNavigation, 
   FiBluetooth, FiExternalLink, FiShare2 
 } from 'react-icons/fi';
+import { FiHeart } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
 // Images
@@ -375,8 +376,20 @@ const Dashboard = () => {
                         <div className="connect-device-card-content">
                             <button onClick={() => setShowConnectMenu(false)} className="back-btn"><FiArrowLeft size={24} /></button>
                             <h3>Select Device</h3>
-                            <button onClick={handleGoogleConnect} className="device-connect-btn oura">Connect Oura</button>
-                            <button className="device-connect-btn fitbit">Connect Fitbit</button>
+                            <div className="connect-tracker-section">
+                                <h3>Connect Tracker</h3>
+                                <p>Download our Apple Health shortcut to sync your daily activity automatically.</p>
+                                
+                                {/* The Download Button */}
+                                <a 
+                                    href="/downloads/AppleHealthSync.shortcut" 
+                                    download="CatchUp_AppleHealth.shortcut" 
+                                    className="apple-health-download-btn"
+                                >
+                                    <FiHeart className="apple-health-icon" />
+                                    Apple Health
+                                </a>
+                            </div>
                         </div>
                     ) : (
                         <>
