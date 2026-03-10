@@ -242,7 +242,6 @@ const Sharing = () => {
                     <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
                         <h3>Activity Ring</h3>
-                        <FiChevronRight color="#E64A45" />
                       </div>
                       <div className="dash-card-body activity-body-side">
                         <div className="dash-ring-wrapper-large">
@@ -279,7 +278,6 @@ const Sharing = () => {
                     <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
                         <h3>Health Score</h3>
-                        <FiChevronRight color="#E64A45" />
                       </div>
                       <div className="dash-card-body hs-body">
                         <div className="dash-ring-wrapper-medium">
@@ -345,7 +343,6 @@ const Sharing = () => {
                     <div className="glass-card sharing-awards-card">
                         <div className="dash-card-header">
                             <h3>Awards</h3>
-                            <FiChevronRight className="card-arrow" color="#E64A45" />
                         </div>
                         <div className="awards-content">
                             <img 
