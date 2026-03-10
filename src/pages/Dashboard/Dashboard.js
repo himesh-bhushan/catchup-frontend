@@ -492,6 +492,7 @@ const Dashboard = () => {
                             <div className="ring-wrapper">
                                 <div className="activity-ring" style={{ background: `conic-gradient(#FF5252 0% ${activityData.percentage}%, #E0E0E0 0% 100%)` }}>
                                     <div className="inner-circle">
+                                        <img alt="Tomato" src={tomato} width="40" />
                                         <span>{Math.round(activityData.percentage)}%</span>
                                     </div>
                                 </div>
