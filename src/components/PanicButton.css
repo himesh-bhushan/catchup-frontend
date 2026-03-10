@@ -121,62 +121,47 @@
 }
 
 /* =========================================
-   🚨 MOBILE PANIC BUTTON (CLEAN OVERRIDE)
+   🚨 MOBILE PANIC BUTTON FIX
    ========================================= */
 
 @media (max-width: 768px) {
-    /* Target the specific class for your red button */
-    .panic-button-container, 
+    /* 1. Target the red button container */
+    .panic-button-container,
     .red-floating-button {
         position: fixed !important;
-        /* Positioned to float exactly above the Nav Bar */
-        bottom: 95px !important; 
         
-        /* Centering Logic */
+        /* Elevate it: If your nav bar is 80px, 
+           bottom: 100px puts it exactly 20px above the bar.
+        */
+        bottom: 100px !important; 
+        
+        /* Center it horizontally */
         left: 50% !important;
         transform: translateX(-50%) !important;
         
-        /* Layout & Sizing */
+        /* Ensure it sits on top of the chat input and nav */
         z-index: 9999 !important;
+
+        /* Visual styling to ensure it looks like a floating button */
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 50% !important;
         display: flex !important;
         align-items: center;
         justify-content: center;
-        width: 65px !important;
-        height: 65px !important;
-        border-radius: 50% !important;
-        background-color: #ff0000; /* Ensuring the red stays bold */
-        
-        /* Depth and Visual Feedback */
-        box-shadow: 0px 6px 20px rgba(255, 0, 0, 0.4) !important;
+        box-shadow: 0px 4px 15px rgba(255, 0, 0, 0.4) !important;
+        background-color: #ff0000 !important;
         border: none !important;
-        cursor: pointer;
-        
-        /* Breathing animation */
-        animation: panic-pulse 2s infinite ease-in-out;
     }
 
-    /* Target the icon inside to ensure it remains centered */
-    .panic-button-container img, 
-    .red-floating-button svg,
-    .red-floating-button img {
-        width: 32px !important;
-        height: 32px !important;
-        display: block;
+    /* 2. Adjust the Chat Input so it doesn't overlap the new button position */
+    .chat-input-wrapper {
+        bottom: 170px !important; /* Move typing bar above the Panic button */
     }
-}
 
-/* 🔄 Panic Pulse Animation */
-@keyframes panic-pulse {
-    0% {
-        transform: translateX(-50%) scale(1);
-        box-shadow: 0px 6px 20px rgba(255, 0, 0, 0.4);
-    }
-    50% {
-        transform: translateX(-50%) scale(1.1);
-        box-shadow: 0px 8px 30px rgba(255, 0, 0, 0.6);
-    }
-    100% {
-        transform: translateX(-50%) scale(1);
-        box-shadow: 0px 6px 20px rgba(255, 0, 0, 0.4);
+    /* 3. Scale the icon inside if needed */
+    .panic-button-container img {
+        width: 30px !important;
+        height: 30px !important;
     }
 }
