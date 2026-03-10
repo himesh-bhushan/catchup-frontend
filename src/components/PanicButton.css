@@ -120,37 +120,19 @@
     100% { transform: scale(0.85); opacity: 0.9; }     
 }
 
-/* =========================================
-   🚨 MOBILE PANIC BUTTON FIX
-   ========================================= */
+
+/* --- MOBILE PANIC BUTTON POSITIONING (Phones) --- */
 @media (max-width: 768px) {
-    .panic-button-container,
-    .red-floating-button {
-        position: fixed !important;
-        
-        /* Elevate this ABOVE both the nav bar AND the chat input area */
-        bottom: 180px !important; 
-        
-        /* Kept on the left side based on your screenshot */
+    .global-panic-btn {
         left: 20px !important; 
         
-        /* Ensures it sits on top of scrolling messages */
-        z-index: 9999 !important;
+        /* Pushes it safely above the mobile bottom navigation bar */
+        bottom: 110px !important; 
         
-        /* Visual cleanup */
-        width: 60px !important;
-        height: 60px !important;
-        border-radius: 50% !important;
-        box-shadow: 0 4px 15px rgba(222, 75, 78, 0.4) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    
-    /* Ensure the icon inside is scaled properly */
-    .panic-button-container img,
-    .red-floating-button img {
-        width: 30px !important;
-        height: 30px !important;
+        width: 55px !important;
+        height: 55px !important;
+        
+        /* Ensures it absolutely stays on top of any other floating elements */
+        z-index: 9999 !important; 
     }
 }
