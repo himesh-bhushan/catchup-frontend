@@ -255,11 +255,6 @@ const Sharing = () => {
                             />
                           </svg>
                           <div className="dash-ring-inner-yellow">
-                            {viewingFriend.avatar_url ? (
-                              <img src={viewingFriend.avatar_url} alt="user" className="inner-avatar" />
-                            ) : (
-                              <span className="inner-emoji">🍅</span>
-                            )}
                             <span className="inner-percent">{Math.round(friendStats?.movePercent)}%</span>
                           </div>
                         </div>

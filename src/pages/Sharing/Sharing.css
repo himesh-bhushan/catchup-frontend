@@ -220,8 +220,11 @@
 
 .inner-avatar { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 2px; object-fit: cover; }
 .inner-emoji { font-size: 1.8rem; margin-bottom: 2px; }
-.inner-percent { font-size: 1.2rem; font-weight: 900; color: #111; }
-
+.inner-percent { 
+    font-size: 2rem; /* Increased so it looks good alone */
+    font-weight: 900; 
+    color: #111; 
+}
 .dash-stats-list {
     display: flex;
     flex-direction: column;
@@ -309,12 +312,13 @@
 
 /* Added color: #FFF to explicitly force the text to be white */
 .pill-text span { 
-    font-size: 0.65rem; 
+    font-size: 0.62rem; /* Slightly smaller to fit perfectly */
     font-weight: 600; 
     opacity: 0.9; 
     margin-bottom: 2px; 
     text-transform: capitalize; 
     color: #FFF; 
+    white-space: nowrap; /* This prevents the text from wrapping to a second line */
 }
 
 .pill-text strong { 
@@ -332,6 +336,16 @@
     font-weight: 700; 
     opacity: 0.9; 
     color: #FFF; 
+}
+
+/* Force dark text ONLY on the yellow pill */
+.bg-yellow .pill-text span {
+    color: #555 !important;
+}
+
+.bg-yellow .pill-text strong,
+.bg-yellow .pill-text strong small {
+    color: #111 !important;
 }
 
 .bg-red { background: #D3504A; color: #FFF; }
