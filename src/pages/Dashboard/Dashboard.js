@@ -387,46 +387,96 @@ const Dashboard = () => {
             <div className="big-tile-container"><div className="big-connect-card"><h3>{t('loading_data') || 'Syncing data...'}</h3></div></div>
         ) : !isDeviceConnected ? ( 
             <div className="big-tile-container">
-                <div className="big-connect-card">
+                <div className="big-connect-card" style={{ position: 'relative', minHeight: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    
+                    {/* Universal Close Button (Top Right) */}
+                    <button 
+                        onClick={() => {
+                            localStorage.setItem('skipTracker', 'true');
+                            setSkipConnect(true);
+                        }} 
+                        style={{
+                            position: 'absolute', top: '20px', right: '20px', background: '#f5f5f5',
+                            border: 'none', borderRadius: '50%', width: '36px', height: '36px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer', color: '#555', zIndex: 10, transition: '0.2s'
+                        }}
+                        onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#E64A45'; e.currentTarget.style.color = '#FFF'; }}
+                        onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#f5f5f5'; e.currentTarget.style.color = '#555'; }}
+                    >
+                        <FiX size={20} />
+                    </button>
+
                     {showConnectMenu ? (
-                        <div className="connect-device-card-content">
-                            <button onClick={() => setShowConnectMenu(false)} className="back-btn"><FiArrowLeft size={24} /></button>
-                            <h3>Select Device</h3>
-                            <div className="connect-tracker-section" style={{ marginTop: '20px' }}>
-                            <h3>Connect Tracker</h3>
-                            <p>Download our Apple Health shortcut to sync your daily activity automatically.</p>
-                            
+                        /* --- BEAUTIFIED APPLE HEALTH SCREEN --- */
+                        <div className="connect-device-card-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '20px' }}>
+                            <button onClick={() => setShowConnectMenu(false)} className="back-btn" style={{ position: 'absolute', top: '20px', left: '20px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#111' }}>
+                                <FiArrowLeft size={26} />
+                            </button>
+
+                            <div style={{ background: '#FFF0F0', padding: '18px', borderRadius: '50%', marginBottom: '20px' }}>
+                                <FiHeart size={40} color="#FF2D55" fill="#FF2D55" />
+                            </div>
+
+                            <h2 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#111', margin: '0 0 15px 0' }}>Sync Apple Health</h2>
+                            <p style={{ fontSize: '1.05rem', color: '#666', lineHeight: '1.5', maxWidth: '320px', margin: '0 0 35px 0' }}>
+                                Download our secure shortcut to automatically sync your daily activity and close your rings.
+                            </p>
+
                             <button 
                                 onClick={handleDownload} 
                                 style={{
-                                    display: 'inline-flex', alignItems: 'center', gap: '10px',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                                     background: '#111', color: '#FFF', border: 'none',
-                                    padding: '12px 24px', borderRadius: '16px', fontWeight: 'bold',
-                                    cursor: 'pointer', marginTop: '10px'
+                                    padding: '16px 30px', borderRadius: '30px', fontSize: '1.1rem', fontWeight: '800',
+                                    cursor: 'pointer', width: '100%', maxWidth: '300px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
+                                    transition: 'transform 0.2s'
                                 }}
+                                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
-                                <FiHeart style={{ color: '#FF2D55' }} />
-                                Apple Health
+                                Download Shortcut
                             </button>
 
+                            {/* Guaranteed-to-work Continue Button */}
                             <button 
-                                onClick={handleContinue} 
+                                onClick={() => {
+                                    localStorage.setItem('skipTracker', 'true');
+                                    setSkipConnect(true);
+                                }} 
                                 style={{
-                                    display: 'block', width: '100%', background: 'transparent',
-                                    color: '#888', border: 'none', padding: '12px', marginTop: '15px',
-                                    fontWeight: '600', cursor: 'pointer', textDecoration: 'underline'
+                                    background: 'transparent', color: '#888', border: 'none',
+                                    padding: '15px', marginTop: '15px', fontSize: '0.95rem', fontWeight: '700',
+                                    cursor: 'pointer', transition: 'color 0.2s'
                                 }}
+                                onMouseOver={(e) => e.target.style.color = '#111'}
+                                onMouseOut={(e) => e.target.style.color = '#888'}
                             >
-                                Continue to Dashboard
+                                Skip & Continue to Dashboard
                             </button>
                         </div>
-                        </div>
                     ) : (
-                        <>
-                            <FiWatch size={60} color="#00796b"/>
-                            <h2>{t('connect_title') || 'Connect Tracker'}</h2>
-                            <button className="connect-btn" onClick={() => setShowConnectMenu(true)}>{t('connect_btn') || 'Connect'}</button>
-                        </>
+                        /* --- MAIN CONNECT SCREEN --- */
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                            <FiWatch size={65} color="#E64A45" style={{ marginBottom: '15px' }} />
+                            <h2 style={{ fontSize: '1.8rem', fontWeight: '900', margin: '0 0 10px 0', color: '#111' }}>
+                                {t('connect_title') || 'Connect Tracker'}
+                            </h2>
+                            <p style={{ color: '#666', marginBottom: '30px', maxWidth: '280px', lineHeight: '1.5' }}>
+                                Link your device to start tracking your health score and daily goals.
+                            </p>
+                            <button 
+                                className="connect-btn" 
+                                onClick={() => setShowConnectMenu(true)}
+                                style={{
+                                    background: '#E64A45', color: '#FFF', border: 'none',
+                                    padding: '14px 40px', borderRadius: '25px', fontSize: '1.1rem', fontWeight: '800',
+                                    cursor: 'pointer', boxShadow: '0 6px 15px rgba(230, 74, 69, 0.3)'
+                                }}
+                            >
+                                {t('connect_btn') || 'Connect Device'}
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
