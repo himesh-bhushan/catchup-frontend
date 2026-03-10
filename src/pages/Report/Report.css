@@ -194,9 +194,9 @@
     }
 
     .tomato-img {
-        height: 50vh !important; /* Uses viewport height so it shrinks on small phones */
+        height: 35vh !important; /* Uses viewport height so it shrinks on small phones */
         width: auto !important;
-        max-height: 500px !important; /* Ensures it never gets too big */
+        max-height: 350px !important; /* Ensures it never gets too big */
     }
 
     /* --- 3. BOTTOM RED SECTION (Fills the rest) --- */
