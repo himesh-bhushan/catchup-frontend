@@ -177,7 +177,7 @@
         max-width: 260px !important;
         padding: 15px !important;
         min-height: auto !important;
-        margin-bottom: 20px !important;
+        margin-bottom: -20px !important;
     }
 
     .sticky-note h2 {
