@@ -147,52 +147,95 @@
 }
 
 /* =========================================
-   📱 MOBILE HEADER & DISCLAIMER FIXES
+   📱 MOBILE RESPONSIVE FIXES (ALL IN ONE)
    ========================================= */
 
 @media (max-width: 768px) {
     
-    /* --- 1. MODERN APP HEADER --- */
+    /* --- 1. RESET DESKTOP PADDING --- */
+    /* This removes the massive 140px gap on the left that is squishing your bubbles! */
+    .chat-interface-wrapper {
+        padding-left: 0 !important; 
+        width: 100vw !important;
+    }
+
+    /* --- 2. MODERN APP HEADER --- */
     .chat-header {
-        padding: 15px 20px !important; /* Slimmer padding to save screen space */
+        padding: 15px 20px !important; 
         display: flex !important;
         align-items: center !important;
-        justify-content: space-between !important; /* Pushes trash icon to the far right */
-        
-        /* Makes the header stick to the top when scrolling */
+        justify-content: space-between !important; 
         position: sticky !important;
         top: 0 !important;
         z-index: 1000 !important;
-        
-        /* Adds a modern frosted glass effect to the header */
-        background: rgba(250, 217, 198, 0.85) !important; /* Adjust if your peach color is different */
+        background: rgba(250, 217, 198, 0.85) !important; 
         backdrop-filter: blur(12px) !important;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
     }
-
-    /* Target the container holding the Title and Online Status */
     .chat-header > div {
         display: flex !important;
-        flex-direction: column !important; /* Stacks Title and Online indicator tightly */
+        flex-direction: column !important; 
         gap: 2px !important;
     }
-
     .chat-header h2 {
-        font-size: 20px !important; /* Smaller, cleaner title size */
+        font-size: 20px !important; 
         margin: 0 !important;
         line-height: 1 !important;
     }
 
-    /* --- 2. ONE-LINE DISCLAIMER TEXT --- */
+    /* --- 3. FIX SQUISHED CHAT BUBBLES --- */
+    .messages-container {
+        padding: 15px !important;
+        padding-bottom: 220px !important; /* Huge padding so the last message clears the input box */
+        box-sizing: border-box !important;
+    }
+    .message-row {
+        max-width: 92% !important; /* Allows bubbles to be much wider on phone screens */
+        gap: 10px !important;
+    }
+    .bot-avatar-circle, 
+    .user-avatar-circle {
+        width: 38px !important; /* Shrink avatars slightly */
+        height: 38px !important;
+        margin-right: 8px !important;
+    }
+    .text-bubble {
+        padding: 12px 18px !important;
+        font-size: 15px !important;
+        word-wrap: break-word !important;
+    }
+
+    /* --- 4. FLOAT THE INPUT BOX --- */
+    /* Removes the 180px desktop padding and pins it perfectly above the nav bar */
+    .input-area {
+        position: fixed !important;
+        bottom: 95px !important; 
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 92% !important;
+        padding: 0 !important; 
+        background: transparent !important; 
+        backdrop-filter: none !important; 
+        z-index: 9990 !important;
+    }
+    .input-box-wrapper {
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+        padding: 6px 8px 6px 20px !important;
+        background: var(--card-bg) !important;
+    }
+
+    /* --- 5. ONE-LINE DISCLAIMER --- */
     .chat-disclaimer, 
     .disclaimer-text {
-        font-size: 9.5px !important; /* Small enough to fit on standard phones */
-        white-space: nowrap !important; /* 🌟 FORCES TEXT TO STAY ON ONE LINE */
-        overflow: hidden !important;    /* Hides any overflow on extra-narrow phones */
-        text-overflow: ellipsis !important; /* Adds "..." if the screen is too small */
+        font-size: 9.5px !important; 
+        white-space: nowrap !important; /* 🌟 Forces one line */
+        overflow: hidden !important;    
+        text-overflow: ellipsis !important; 
         width: 100% !important;
         text-align: center !important;
         margin-top: 6px !important;
+        margin-bottom: 0 !important;
         letter-spacing: 0.2px !important;
+        display: block !important;
     }
 }
