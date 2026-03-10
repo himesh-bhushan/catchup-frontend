@@ -147,96 +147,98 @@
 }
 
 /* =========================================
-   📱 MOBILE RESPONSIVE FIXES (ALL IN ONE)
+   📱 MOBILE RESPONSIVE FIXES (COMPLETE)
    ========================================= */
 
 @media (max-width: 768px) {
     
-    /* --- 1. FIX THE SCREEN HEIGHT (Mobile Safari Bug) --- */
+    /* --- 1. FULL SCREEN & BACKGROUND FIX --- */
+    /* Prevents the white gap at the bottom and forces the peach background */
     .chat-page-container {
-        height: 100dvh !important; /* Uses dynamic viewport height so it fits exactly */
-        height: -webkit-fill-available !important; /* Fallback for iOS */
+        display: block !important; 
+        height: 100dvh !important; 
+        width: 100vw !important;
         padding: 0 !important;
         margin: 0 !important;
         overflow: hidden !important;
     }
 
     .chat-interface-wrapper {
-        padding-left: 0 !important; /* Removes desktop sidebar gap */
+        padding-left: 0 !important; /* Removes the desktop side-gap */
         width: 100vw !important;
-        height: 100% !important;
+        height: 100dvh !important; 
+        min-height: -webkit-fill-available !important; /* iOS fix */
         display: flex !important;
         flex-direction: column !important;
+        background-attachment: fixed !important;
     }
 
-    /* --- 2. BRING THE HEADER BACK --- */
+    /* --- 2. HEADER: FIXED AT TOP --- */
+    /* Locks the header to the top with a glass-morphism blur */
     .chat-header {
-        padding: 15px 20px !important; 
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important; 
-        
-        /* Forces the header to lock to the absolute top of the screen */
-        position: absolute !important; 
+        display: flex !important; 
+        position: fixed !important; 
         top: 0 !important;
         left: 0 !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        z-index: 1000 !important;
-        
+        z-index: 9999 !important; 
+        padding: 15px 20px !important; 
+        align-items: center !important;
+        justify-content: space-between !important; 
         background: rgba(250, 217, 198, 0.95) !important; 
         backdrop-filter: blur(12px) !important;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
     }
+    
     .chat-header > div {
         display: flex !important;
         flex-direction: column !important; 
         gap: 2px !important;
     }
+    
     .chat-header h2 {
         font-size: 20px !important; 
         margin: 0 !important;
         line-height: 1 !important;
     }
 
-    /* --- 3. FIX SQUISHED CHAT BUBBLES --- */
+    /* --- 3. MESSAGES AREA: SCROLLABLE WITH PADDING --- */
+    /* Pushes text out from under the header and above the text box */
     .messages-container {
         flex: 1 !important;
         width: 100% !important;
         box-sizing: border-box !important;
         overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important; /* Smooth scrolling on iOS */
-
-        /* TOP PADDING: Pushes messages down so they aren't hidden under the header */
-        padding-top: 85px !important; 
-        
-        /* BOTTOM PADDING: Pushes the last message up so it clears the input box */
-        padding-bottom: 180px !important; 
-        
-        /* Side padding */
+        -webkit-overflow-scrolling: touch !important; 
+        padding-top: 90px !important; /* Pushes first message below header */
+        padding-bottom: 180px !important; /* Pushes last message above input */
         padding-left: 15px !important;
         padding-right: 15px !important;
     }
+    
     .message-row {
         max-width: 92% !important; 
         gap: 10px !important;
     }
+    
     .bot-avatar-circle, 
     .user-avatar-circle {
         width: 38px !important; 
         height: 38px !important;
         margin-right: 8px !important;
     }
+    
     .text-bubble {
         padding: 12px 18px !important;
         font-size: 15px !important;
         word-wrap: break-word !important;
     }
 
-    /* --- 4. FLOAT THE INPUT BOX HIGHER --- */
+    /* --- 4. INPUT AREA: FLOATING ABOVE NAV BAR --- */
+    /* Safely floats the text box above your bottom navigation bar */
     .input-area {
         position: fixed !important;
-        /* Raised from 95px to 110px so it sits safely above the floating nav bar */
         bottom: 110px !important; 
         left: 50% !important;
         transform: translateX(-50%) !important;
@@ -246,17 +248,19 @@
         backdrop-filter: none !important; 
         z-index: 9990 !important;
     }
+
     .input-box-wrapper {
         box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
         padding: 6px 8px 6px 20px !important;
         background: var(--card-bg) !important;
     }
 
-    /* --- 5. ONE-LINE DISCLAIMER --- */
+    /* --- 5. DISCLAIMER: ONE LINE TEXT --- */
+    /* Forces the text to stay on a single line and adds '...' if too long */
     .chat-disclaimer, 
     .disclaimer-text {
         font-size: 9.5px !important; 
-        white-space: nowrap !important; /* Forces one line */
+        white-space: nowrap !important; 
         overflow: hidden !important;    
         text-overflow: ellipsis !important; 
         width: 100% !important;
