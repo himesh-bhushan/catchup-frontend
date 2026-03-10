@@ -811,4 +811,57 @@
         font-size: 1.1rem !important;
     }
 
+
+    /* 1. Add bottom padding so you can scroll past the Nav Bar */
+    .friend-detail-dashboard {
+        padding: 10px 15px 130px 15px !important; /* 🌟 130px safely clears the nav bar */
+        box-sizing: border-box !important;
+        width: 100% !important;
+    }
+
+    /* 2. Shrink the Header Elements */
+    .detail-header-new {
+        gap: 12px !important; /* Brings the back button closer to the avatar */
+        margin-bottom: 25px !important;
+    }
+
+    .back-circle-btn {
+        width: 42px !important;
+        height: 42px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* Brings the avatar and name tighter together */
+    .header-user-profile {
+        gap: 12px !important; 
+    }
+
+    .profile-image-ring {
+        width: 65px !important; /* Shrunk from 85px */
+        height: 65px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .black-name-title {
+        font-size: 1.6rem !important; /* Smaller name text */
+        line-height: 1.1 !important;
+        margin-bottom: 2px !important;
+    }
+
+    .health-score-pill {
+        font-size: 0.75rem !important; /* Smaller pill text */
+        padding: 4px 12px !important;
+        margin-top: 4px !important;
+    }
+
+    /* 3. Tighten the Glass Cards slightly for phone screens */
+    .dashboard-grid-layout {
+        gap: 15px !important; /* Slightly tighter gap between the different cards */
+    }
+
+    .glass-card {
+        padding: 18px 20px !important; /* Saves a little bit of horizontal space */
+        border-radius: 20px !important;
+    }
+
 }
