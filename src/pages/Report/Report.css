@@ -194,15 +194,15 @@
     }
 
     .tomato-img {
-        height: 32vh !important; /* Uses viewport height so it shrinks on small phones */
+        height: 30vh !important; /* Uses viewport height so it shrinks on small phones */
         width: auto !important;
-        max-height: 320px !important; /* Ensures it never gets too big */
+        max-height: 300px !important; /* Ensures it never gets too big */
     }
 
     /* --- 3. BOTTOM RED SECTION (Fills the rest) --- */
     .share-right-section {
         flex: 0.55 !important; /* Takes the remaining 55% of the screen */
-        margin-top: -50px !important; /* Slight overlap over the tomato */
+        margin-top: -55px !important; /* Slight overlap over the tomato */
         
         /* 100px bottom padding keeps the QR code ABOVE the navigation bar */
         padding: 25px 20px 100px 20px !important; 
