@@ -153,18 +153,24 @@
 @media (max-width: 768px) {
     
     /* --- 1. FULL SCREEN & BACKGROUND FIX --- */
-    /* Forces the peach background to paint the entire screen behind everything */
-    body, html, 
+    /* Pinning to all 4 corners ignores the keyboard bug completely */
+    body, html {
+        background-color: #FAD9C6 !important; /* Fallback for the absolute bottom layer */
+    }
+
     .chat-page-container, 
     .chat-interface-wrapper {
-        background-color: #FAD9C6 !important; /* Fallback peach */
-        background: linear-gradient(180deg, #FAD9C6 0%, #F6CAB3 100%) !important;
-        height: 100dvh !important; 
+        position: fixed !important; 
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: auto !important; /* Replaces 100dvh */
         width: 100vw !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important; /* Prevents the whole page from bouncing */
-        position: relative !important;
+        overflow: hidden !important; 
+        background: linear-gradient(180deg, #FAD9C6 0%, #F6CAB3 100%) !important;
     }
 
     /* --- 2. PIN THE HEADER TO THE TOP --- */
@@ -201,11 +207,11 @@
     .messages-container {
         position: absolute !important;
         top: 0 !important;
+        bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        bottom: 0 !important;
-        height: 100dvh !important;
-        width: 100vw !important;
+        height: 100% !important; /* Changed from 100dvh to 100% to fill the fixed wrapper */
+        width: 100% !important;
         
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important; 
