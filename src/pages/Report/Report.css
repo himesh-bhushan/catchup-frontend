@@ -139,81 +139,115 @@
 
 
 /* =========================================
-   📱 MOBILE REPORT PAGE FIX
+   📱 MOBILE REPORT PAGE (NO-SCROLL LAYOUT)
    ========================================= */
+
 @media (max-width: 768px) {
-    /* 1. Page Container: Enable smooth scrolling */
+    
+    /* --- 1. LOCK THE PAGE TO EXACTLY ONE SCREEN --- */
     .report-page-container {
-        display: block !important;
-        height: 100dvh !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100dvh !important; /* Locks to exact device height */
+        width: 100vw !important;
+        overflow: hidden !important; /* 🌟 FORBIDS SCROLLING completely */
+        background-color: var(--bg-color) !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     .share-health-wrapper {
         display: flex !important;
         flex-direction: column !important;
-        height: auto !important;
-        min-height: 100% !important;
+        height: 100% !important;
+        flex: 1 !important;
     }
 
-    /* 2. Top Section: Scale down the Sticky Note & Tomato */
+    /* --- 2. TOP SECTION (Squeezed to fit) --- */
     .share-left-section {
-        padding: 40px 20px 20px 20px !important;
-        min-height: auto !important;
+        flex: 0.45 !important; /* Takes up exactly 45% of the screen height */
+        padding: 20px 15px 0px 15px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        min-height: 0 !important; /* Prevents flexbox stretching */
     }
 
     .sticky-note {
-        max-width: 280px !important;
-        padding: 20px 15px !important;
+        max-width: 260px !important;
+        padding: 15px !important;
+        min-height: auto !important;
+        margin-bottom: 0 !important;
     }
 
     .sticky-note h2 {
-        font-size: 18px !important;
+        font-size: 16px !important; /* Scaled down */
+        margin-bottom: 0 !important;
     }
 
+    .steps-list { display: none !important; }
+
     .character-illustration {
-        margin-top: -15px !important;
+        margin-top: -10px !important;
+        display: flex !important;
+        justify-content: center !important;
     }
 
     .tomato-img {
-        width: 190px !important; /* Shrunk so the red section doesn't swallow it */
+        height: 14vh !important; /* Uses viewport height so it shrinks on small phones */
+        width: auto !important;
+        max-height: 130px !important; /* Ensures it never gets too big */
     }
 
-    /* 3. Bottom Red Section: Fix Overlap & Add Massive Bottom Padding */
+    /* --- 3. BOTTOM RED SECTION (Fills the rest) --- */
     .share-right-section {
-        margin-top: -100px !important; /* Less aggressive pull-up over the tomato */
-        padding: 40px 20px 160px 20px !important; /* 🌟 160px bottom padding clears the nav bar! */
-        border-top-left-radius: 35px !important;
-        border-top-right-radius: 35px !important;
-        flex: 1 !important; 
-        justify-content: flex-start !important;
+        flex: 0.55 !important; /* Takes the remaining 55% of the screen */
+        margin-top: -20px !important; /* Slight overlap over the tomato */
+        
+        /* 100px bottom padding keeps the QR code ABOVE the navigation bar */
+        padding: 25px 20px 100px 20px !important; 
+        
+        border-top-left-radius: 30px !important;
+        border-top-right-radius: 30px !important;
+        justify-content: center !important; /* Centers content perfectly in available space */
+        align-items: center !important;
+        position: relative !important;
+        z-index: 10 !important;
     }
 
-    /* 4. Profile Information: Scale text and icon */
+    /* --- 4. PROFILE INFO (Scaled for no-scroll) --- */
     .profile-pill-large {
-        gap: 15px !important;
-        margin-bottom: 25px !important;
+        gap: 12px !important;
+        margin-bottom: 15px !important; /* Tighter spacing */
     }
 
     .profile-icon-circle-large {
-        width: 55px !important;
-        height: 55px !important;
+        width: 45px !important;
+        height: 45px !important;
     }
 
     .profile-text-large h3 {
-        font-size: 20px !important;
+        font-size: 18px !important; /* Scaled down */
     }
 
     .profile-text-large span {
-        font-size: 13px !important;
+        font-size: 12px !important; /* Scaled down */
+        white-space: nowrap !important;
     }
 
-    /* 5. QR Code: Perfect mobile sizing */
+    /* --- 5. QR CODE (Dynamically Sized) --- */
     .qr-card-large {
-        width: 230px !important; /* Shrunk from 280px */
-        height: 230px !important;
-        padding: 20px !important;
-        border-radius: 25px !important;
+        /* Uses viewport height so the square perfectly scales based on phone size */
+        height: 24vh !important; 
+        width: 24vh !important;
+        
+        /* Limits to ensure it never gets too big or too small */
+        max-width: 190px !important; 
+        max-height: 190px !important;
+        min-width: 150px !important;
+        min-height: 150px !important;
+        
+        padding: 15px !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
     }
 }
