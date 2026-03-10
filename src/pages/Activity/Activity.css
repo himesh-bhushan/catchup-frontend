@@ -325,7 +325,7 @@
     }
 
     /* --- 5. RING ROTATION (FIXED) --- */
-    /* 🌟 Reset to 0deg because your React SVGs naturally start at the top! */
+    /* Resets to 0deg because your React SVGs naturally start at the top! */
     svg.large-circular-chart, 
     svg.mini-circular-chart,
     .large-circular-chart, 
@@ -350,7 +350,7 @@
         display: flex !important; justify-content: center !important; align-items: center !important;
     }
 
-    /* Arrow Overlay (Locked to 12 o'clock) */
+    /* Arrow Overlay (Locked to 12 o'clock, White ring removed) */
     .ring-arrow-overlay {
         position: absolute !important;
         top: 0% !important; left: 50% !important;
@@ -359,7 +359,9 @@
         width: 34px !important; height: 34px !important;
         background-color: #D93025 !important; 
         border-radius: 50% !important;
-        border: 3px solid #FFFFFF !important; 
+        
+        /* 🌟 Border removed here */
+        border: none !important; 
         
         display: flex !important; align-items: center !important; justify-content: center !important;
         z-index: 10 !important; margin: 0 !important;
