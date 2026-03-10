@@ -5,7 +5,7 @@ import DashboardNav from '../../components/DashboardNav';
 import { 
   FiChevronRight, FiUser, FiHeart, FiActivity, FiMoon, 
   FiDroplet, FiWatch, FiRefreshCw, FiArrowLeft, FiNavigation, 
-  FiBluetooth, FiExternalLink, FiShare2 
+  FiBluetooth, FiExternalLink, FiShare2, FiX 
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
