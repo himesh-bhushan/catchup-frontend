@@ -121,7 +121,7 @@
 }
 
 /* =========================================
-   🚨 MOBILE PANIC BUTTON OPTIMIZATION
+   🚨 MOBILE PANIC BUTTON (CLEAN OVERRIDE)
    ========================================= */
 
 @media (max-width: 768px) {
@@ -129,41 +129,54 @@
     .panic-button-container, 
     .red-floating-button {
         position: fixed !important;
-        /* Positioned 90px from bottom to sit just above the Nav Bar */
+        /* Positioned to float exactly above the Nav Bar */
         bottom: 95px !important; 
-        /* Centered horizontally */
+        
+        /* Centering Logic */
         left: 50% !important;
         transform: translateX(-50%) !important;
         
-        /* Ensure it's visually separated from the background */
+        /* Layout & Sizing */
         z-index: 9999 !important;
         display: flex !important;
         align-items: center;
         justify-content: center;
-        
-        /* Added shadow for depth */
-        box-shadow: 0px 4px 20px rgba(255, 0, 0, 0.4) !important;
-        
-        /* Prevents the button from being tiny on high-res screens */
         width: 65px !important;
         height: 65px !important;
         border-radius: 50% !important;
+        background-color: #ff0000; /* Ensuring the red stays bold */
         
-        /* Breathing animation to indicate it's active/emergency */
-        animation: pulse-red 2s infinite;
+        /* Depth and Visual Feedback */
+        box-shadow: 0px 6px 20px rgba(255, 0, 0, 0.4) !important;
+        border: none !important;
+        cursor: pointer;
+        
+        /* Breathing animation */
+        animation: panic-pulse 2s infinite ease-in-out;
     }
 
-    /* Keep the icon inside centered */
+    /* Target the icon inside to ensure it remains centered */
     .panic-button-container img, 
+    .red-floating-button svg,
     .red-floating-button img {
-        width: 35px !important;
-        height: 35px !important;
+        width: 32px !important;
+        height: 32px !important;
+        display: block;
     }
 }
 
-/* Pulse Animation Logic */
-@keyframes pulse-red {
-    0% { transform: translateX(-50%) scale(1); }
-    50% { transform: translateX(-50%) scale(1.08); }
-    100% { transform: translateX(-50%) scale(1); }
+/* 🔄 Panic Pulse Animation */
+@keyframes panic-pulse {
+    0% {
+        transform: translateX(-50%) scale(1);
+        box-shadow: 0px 6px 20px rgba(255, 0, 0, 0.4);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.1);
+        box-shadow: 0px 8px 30px rgba(255, 0, 0, 0.6);
+    }
+    100% {
+        transform: translateX(-50%) scale(1);
+        box-shadow: 0px 6px 20px rgba(255, 0, 0, 0.4);
+    }
 }
