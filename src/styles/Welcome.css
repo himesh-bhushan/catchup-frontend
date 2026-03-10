@@ -185,3 +185,97 @@ h1 {
         border: 2px solid #FF3B30 !important;
     }
 }
+
+
+/* =========================================
+   📱 MOBILE WELCOME / ONBOARDING SCREEN
+   ========================================= */
+
+@media (max-width: 768px) {
+    
+    /* 1. Viewport & Container Setup */
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100% !important;
+        overflow: hidden !important; /* Prevents any accidental scrolling */
+    }
+
+    .welcome-container {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important; /* Spreads Image, Text, and Buttons evenly */
+        height: 100dvh !important; /* Accounts for mobile browser UI bars */
+        padding: 40px 25px 50px 25px !important; 
+        box-sizing: border-box !important;
+        background-color: #ffffff !important;
+    }
+
+    /* 2. Hero Image Section */
+    .hero-section {
+        flex: 1 !important; /* Takes up the available empty space */
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0 !important;
+        width: 100% !important;
+        min-height: 0 !important; /* Prevents flexbox from stretching weirdly */
+    }
+
+    .hero-image {
+        width: 100% !important;
+        max-width: 320px !important; /* Keeps it from getting overwhelmingly huge */
+        height: auto !important;
+        object-fit: contain !important;
+        margin: 0 !important;
+    }
+
+    /* 3. Text Section */
+    .text-section {
+        width: 100% !important;
+        text-align: center !important; /* Centered looks much cleaner on mobile splash screens */
+        margin: 0 0 35px 0 !important;
+    }
+
+    h1 {
+        font-size: 38px !important;
+        font-weight: 800 !important;
+        margin: 0 !important;
+        text-align: center !important; /* Overrides the desktop left-align */
+        line-height: 1.1 !important;
+    }
+
+    /* 4. Button Group */
+    .button-group {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        margin: 0 !important;
+    }
+
+    .btn {
+        width: 100% !important;
+        height: 60px !important; /* Thick, premium touch target size */
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.25rem !important;
+        border-radius: 999px !important; /* Perfect pill shape */
+    }
+
+    /* Keep the established colors */
+    .btn-signup {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #000000 !important;
+    }
+
+    .btn-signin {
+        background-color: #FF3B30 !important;
+        color: #ffffff !important;
+        border: 2px solid #FF3B30 !important;
+        margin-top: 0 !important; /* Removed the random desktop margin */
+    }
+}

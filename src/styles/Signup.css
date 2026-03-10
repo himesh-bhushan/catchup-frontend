@@ -301,3 +301,121 @@
   }
   .signup-header { padding-top: 0; }
 }
+
+/* =========================================
+   📱 MOBILE SIGN-UP RESPONSIVENESS (MASTER)
+   ========================================= */
+
+@media (max-width: 768px) {
+    
+    /* 1. Global Viewport (Keyboard & Scroll Friendly) */
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100% !important;
+        /* Let the long forms scroll naturally when the keyboard pops up */
+        overflow-y: auto !important; 
+        overflow-x: hidden !important;
+    }
+
+    .signup-page-wrapper {
+        min-height: 100dvh !important; /* Adapts to Safari/Chrome address bars */
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* 2. Main Container Flex Layout */
+    .signup-form-side {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+
+    .signup-container {
+        width: 100% !important;
+        padding: 20px 25px 30px 25px !important; 
+        box-sizing: border-box !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* 3. Header & Progress Bar Spacing */
+    .signup-header {
+        margin-bottom: 25px !important;
+        padding-top: 10px !important;
+    }
+
+    .step-header-row {
+        margin-bottom: 15px !important;
+        gap: 12px !important;
+    }
+
+    .step-header-row h2 {
+        font-size: 28px !important; /* Large, bold title */
+        line-height: 1.1 !important;
+    }
+
+    .step-subtitle {
+        font-size: 15px !important;
+        margin-bottom: 25px !important;
+        margin-left: 0 !important;
+        color: #555 !important;
+    }
+
+    /* 4. Form Inputs (Prevent iOS Auto-Zoom) */
+    .custom-input, 
+    .text-area {
+        /* Font size MUST be 16px or higher to prevent Safari from zooming in on tap */
+        font-size: 16px !important; 
+        padding: 18px 20px !important;
+        border-radius: 16px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .input-label {
+        font-size: 14px !important;
+        margin-bottom: 10px !important;
+    }
+
+    /* 5. Checkbox Grid Adjustments */
+    .checkbox-grid {
+        gap: 12px !important;
+        margin-bottom: 25px !important;
+    }
+
+    .checkbox-item span {
+        font-size: 14px !important;
+    }
+
+    .terms-checkbox-wrapper {
+        margin-top: 10px !important;
+        margin-bottom: 25px !important;
+    }
+
+    .terms-label {
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+    }
+
+    /* 6. Action Button (Glued to bottom) */
+    .btn-next {
+        margin-top: auto !important; /* Pushes the button to the bottom of the screen */
+        width: 100% !important;
+        height: 60px !important; /* Thick, premium thumb target */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.15rem !important;
+        padding: 0 !important;
+        border-radius: 999px !important;
+    }
+
+    /* 7. Info Box Adjustment */
+    .info-box {
+        margin-top: 15px !important;
+        margin-bottom: 25px !important;
+        border-radius: 16px !important;
+    }
+}
