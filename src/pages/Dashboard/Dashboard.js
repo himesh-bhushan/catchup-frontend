@@ -93,14 +93,26 @@ const Dashboard = () => {
   };
 
   // --- DOWNLOAD APPLE HEALTH SHORTCUT ---
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = '/Catchup_Sync.shortcut'; // Ensure this matches your file name in public folder
-    link.setAttribute('download', 'Catchup_Sync.shortcut');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    if (!user) {
+      alert("User session not found. Please log in again.");
+      return;
+    }
+    
+    try {
+        // 1. Silently copy the hidden User ID to their device clipboard
+        await navigator.clipboard.writeText(user.id);
+        
+        // 2. Open your official Apple iCloud Shortcut link
+        // ⚠️ IMPORTANT: Replace 'YOUR_ICLOUD_LINK_HERE' with your actual link!
+        window.open('https://www.icloud.com/shortcuts/9d8e73564d6e44fe953077c58ed34007', '_blank');
+        
+    } catch (err) {
+        console.error("Failed to copy ID to clipboard", err);
+        alert("Oops! We couldn't copy your ID. Please ensure clipboard permissions are allowed.");
+    }
   };
+
 
   // --- CONTINUE & SKIP ---
   const handleContinue = () => {
