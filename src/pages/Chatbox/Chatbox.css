@@ -146,23 +146,25 @@
   opacity: 0.8;
 }
 
-
 /* =========================================
-   📱 MOBILE CHAT LAYOUT (ABSOLUTE LAYERING)
+   📱 MOBILE CHAT LAYOUT (COMPLETE & FINAL)
    ========================================= */
 
 @media (max-width: 768px) {
     
-    /* --- 1. LOCK THE BACKGROUND --- */
-    .chat-page-container,
+    /* --- 1. FULL SCREEN & BACKGROUND FIX --- */
+    /* Forces the peach background to paint the entire screen behind everything */
+    body, html, 
+    .chat-page-container, 
     .chat-interface-wrapper {
+        background-color: #FAD9C6 !important; /* Fallback peach */
+        background: linear-gradient(180deg, #FAD9C6 0%, #F6CAB3 100%) !important;
         height: 100dvh !important; 
         width: 100vw !important;
-        padding: 0 !important;
         margin: 0 !important;
-        display: block !important;
-        position: relative !important;
+        padding: 0 !important;
         overflow: hidden !important; /* Prevents the whole page from bouncing */
+        position: relative !important;
     }
 
     /* --- 2. PIN THE HEADER TO THE TOP --- */
@@ -174,7 +176,7 @@
         height: auto !important;
         z-index: 9999 !important; /* Forces it to stay visible */
         
-        /* Added extra top padding so it doesn't collide with the iPhone Notch/Clock */
+        /* Extra top padding so it doesn't collide with the iPhone Notch/Clock */
         padding: 25px 20px 15px 20px !important; 
         box-sizing: border-box !important;
         
@@ -238,12 +240,11 @@
         word-wrap: break-word !important;
     }
 
-    /* --- 4. PIN THE INPUT BOX TO THE BOTTOM --- */
+    /* --- 4. INPUT AREA & SEND BUTTON FIX --- */
     .input-area {
         position: fixed !important;
-        bottom: 110px !important; /* Floating above your nav bar */
-        left: 50% !important;
-        transform: translateX(-50%) !important;
+        bottom: 110px !important; 
+        left: 4% !important; /* Exact percentages prevent stretching */
         width: 92% !important;
         padding: 0 !important; 
         background: transparent !important; 
@@ -251,22 +252,53 @@
     }
 
     .input-box-wrapper {
+        display: flex !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
         box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
-        padding: 6px 8px 6px 20px !important;
+        padding: 6px 6px 6px 18px !important; 
         background: var(--card-bg) !important;
+        border-radius: 30px !important;
     }
 
-    /* --- 5. DISCLAIMER (ONE LINE) --- */
+    .input-box-wrapper input {
+        flex: 1 !important;
+        min-width: 0 !important; /* Crucial: stops the input from pushing the button out of shape */
+        font-size: 15px !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+    }
+
+    /* Fixes the oval button and makes it a perfect circle again */
+    .send-btn {
+        flex-shrink: 0 !important; /* Absolutely forbids the button from squishing */
+        width: 40px !important; 
+        height: 40px !important;
+        border-radius: 50% !important;
+        margin-left: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* --- 5. DISCLAIMER (FULL LINE, NO ELLIPSIS) --- */
     .chat-disclaimer, 
     .disclaimer-text {
-        font-size: 9.5px !important; 
-        white-space: nowrap !important; 
-        overflow: hidden !important;    
-        text-overflow: ellipsis !important; 
+        font-size: 7.5px !important; /* Shrunk font slightly to fit the full string */
+        line-height: 1 !important;
+        white-space: nowrap !important; /* Keeps it on one line */
         width: 100% !important;
         text-align: center !important;
-        margin-top: 6px !important;
+        margin-top: 8px !important;
         margin-bottom: 0 !important;
+        letter-spacing: -0.2px !important; /* Pulls letters slightly closer together */
+        
+        /* Removed overflow hidden so it fully displays */
+        text-overflow: clip !important; 
+        overflow: visible !important;
         display: block !important;
+        color: var(--text-secondary) !important;
     }
 }
