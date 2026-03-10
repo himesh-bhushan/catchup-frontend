@@ -672,7 +672,6 @@
 @media (max-width: 768px) {
     
     /* --- 1. GLOBAL WRAPPER & SCROLLING --- */
-    /* Locks the background and unlocks smooth scrolling inside the content area */
     .dashboard-wrapper, 
     .dashboard-wrapper.sharing-page-bg {
         display: block !important;
@@ -685,34 +684,53 @@
         height: 100% !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
-        /* 🌟 140px bottom padding clears the Nav Bar completely! */
         padding: 20px 15px 140px 15px !important; 
         box-sizing: border-box !important;
         width: 100% !important;
     }
 
-    /* --- 2. HEADER ALIGNMENT --- */
-    .mobile-header-top {
-        margin-bottom: 15px !important;
-    }
-    
-    .header-flex {
-        flex-direction: column !important;
+    /* --- 2. NEW HEADER: TITLE LEFT, AVATAR RIGHT --- */
+    .dash-header {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
         align-items: flex-start !important;
-        gap: 5px !important;
+        width: 100% !important;
+        margin-bottom: 25px !important;
     }
-    
-    .desktop-title { display: none !important; }
-    .desktop-only-refresh { display: none !important; }
-    
+
+    .header-flex {
+        order: 1 !important; /* Puts Title on the Left */
+        margin: 0 !important;
+        flex: 1 !important;
+    }
+
+    .mobile-header-top {
+        order: 2 !important; /* Puts Avatar on the Right */
+        margin: 0 !important;
+        width: auto !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+        gap: 0 !important; /* Removes gap since refresh button is hidden */
+    }
+
     .mobile-title {
         display: block !important;
-        font-size: 1.8rem !important;
-        line-height: 1.2 !important;
+        font-size: 1.6rem !important; /* Scaled to fit nicely beside the avatar */
+        line-height: 1.25 !important;
         margin-bottom: 5px !important;
     }
 
-    /* --- 3. DASHBOARD GRID (STACK EVERYTHING) --- */
+    /* Hide the refresh buttons and desktop title */
+    .refresh-btn, 
+    .desktop-only-refresh,
+    .desktop-title { 
+        display: none !important; 
+    }
+
+    .last-synced-wrapper { margin-top: 5px !important; }
+
+    /* --- 3. DASHBOARD GRID & CUSTOM TILE ORDER --- */
     .dash-grid {
         display: flex !important;
         flex-direction: column !important;
@@ -720,14 +738,43 @@
         width: 100% !important;
     }
 
-    /* Overrides the inline React styles to force the Sync/Water/Sleep row to stack */
+    /* Specific Tile Order Requests */
+    .activity-card { order: 1 !important; }
+    .goals-card    { order: 2 !important; }
+    .bp-card       { order: 3 !important; }
+    .heart-card    { order: 4 !important; }
+    .score-card    { order: 5 !important; }
+    
+    /* The Sync Card acts as a wrapper for Syncing, Water, and Sleep tiles */
     .sync-card {
+        order: 6 !important;
         display: flex !important;
         flex-direction: column !important;
         gap: 15px !important;
         width: 100% !important;
+        background: transparent !important;
+        padding: 0 !important;
+        box-shadow: none !important;
     }
 
+    .awards-card   { order: 7 !important; }
+
+    /* Inside the Sync Card Wrapper */
+    .sync-card > .card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        min-height: auto !important;
+        margin: 0 !important;
+    }
+    
+    /* 1st child: Syncing (Hide it completely) */
+    .sync-card > .card:nth-child(1) { display: none !important; }
+    /* 2nd child: Water (Order 2 - place it under sleep) */
+    .sync-card > .card:nth-child(2) { order: 2 !important; }
+    /* 3rd child: Sleep (Order 1 - place it above water) */
+    .sync-card > .card:nth-child(3) { order: 1 !important; }
+
+    /* Standardizes all cards */
     .card {
         width: 100% !important;
         box-sizing: border-box !important;
@@ -754,14 +801,14 @@
     /* --- 5. HEALTH SCORE CARD --- */
     .health-score-content {
         display: flex !important;
-        flex-direction: row !important; /* Keeps ring and pills side-by-side */
+        flex-direction: row !important;
         align-items: center !important;
         justify-content: space-between !important;
         gap: 15px !important;
     }
     
     .score-ring-wrapper {
-        width: 120px !important; /* Scaled perfectly for phone screens */
+        width: 120px !important;
         height: 120px !important;
         flex-shrink: 0 !important;
     }
@@ -774,39 +821,60 @@
     /* --- 6. GOALS CARD --- */
     .goals-detailed-grid {
         display: flex !important;
-        flex-direction: column !important; /* Stacks the goals vertically */
+        flex-direction: column !important;
         gap: 12px !important;
     }
 
-    /* --- 7. CAROUSELS (Horizontal Scrolling) --- */
-    .recommendations-carousel,
+    /* --- 7. RECOMMENDATIONS (1 Blog visible) --- */
+    .recommendations-carousel {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 10px !important; 
+        padding-bottom: 10px !important;
+    }
+
+    .recommendations-carousel::-webkit-scrollbar { display: none !important; }
+
+    .blog-card {
+        min-width: 100% !important; /* 🌟 Forces exactly one tile on screen */
+        scroll-snap-align: center !important;
+        margin: 0 !important;
+    }
+
+    /* Clinics Carousel */
     .clinics-grid-container {
         display: flex !important;
         flex-direction: row !important;
         overflow-x: auto !important;
-        flex-wrap: nowrap !important;
-        padding-bottom: 15px !important;
         scroll-snap-type: x mandatory !important;
         -webkit-overflow-scrolling: touch !important;
         gap: 15px !important;
+        padding-bottom: 15px !important;
     }
 
-    /* Hides the ugly scrollbar while keeping functionality */
-    .recommendations-carousel::-webkit-scrollbar,
-    .clinics-grid-container::-webkit-scrollbar {
-        display: none !important;
-    }
+    .clinics-grid-container::-webkit-scrollbar { display: none !important; }
 
-    .blog-card,
     .clinic-tile {
         min-width: 260px !important;
         scroll-snap-align: start !important;
+        margin: 0 !important;
     }
 
-    /* --- 8. BIG CONNECT CARD (Empty State) --- */
-    .big-tile-container {
-        min-height: 65vh !important;
+    /* --- 8. NEARBY CARE (Smaller text & button) --- */
+    .recommendations-section .section-header-row h3 {
+        font-size: 1.15rem !important; /* Shrunk from 1.5rem */
     }
+    
+    .loc-btn {
+        font-size: 0.75rem !important; /* Shrunk from 0.9rem */
+        padding: 8px 14px !important;
+    }
+
+    /* --- 9. BIG CONNECT CARD (Empty State) --- */
+    .big-tile-container { min-height: 65vh !important; }
     
     .big-connect-card {
         padding: 40px 20px !important;
