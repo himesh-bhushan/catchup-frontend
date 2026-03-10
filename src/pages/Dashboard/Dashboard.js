@@ -105,7 +105,7 @@ const Dashboard = () => {
         
         // 2. Open your official Apple iCloud Shortcut link
         // ⚠️ IMPORTANT: Replace 'YOUR_ICLOUD_LINK_HERE' with your actual link!
-        window.open('https://www.icloud.com/shortcuts/9d8e73564d6e44fe953077c58ed34007', '_blank');
+        window.open('https://www.icloud.com/shortcuts/525c6fb259844e4eb3e838d4553f77ca', '_blank');
         
     } catch (err) {
         console.error("Failed to copy ID to clipboard", err);
