@@ -147,80 +147,52 @@
 }
 
 /* =========================================
-   💬 MOBILE CHATBOT & PANIC BUTTON FIX
+   📱 MOBILE HEADER & DISCLAIMER FIXES
    ========================================= */
 
 @media (max-width: 768px) {
-    /* 1. RESET DESKTOP PADDING 
-       (Removes the 140px sidebar gap so the chat fits the phone screen) */
-    .chat-interface-wrapper {
-        padding-left: 0 !important;
-        width: 100vw !important;
+    
+    /* --- 1. MODERN APP HEADER --- */
+    .chat-header {
+        padding: 15px 20px !important; /* Slimmer padding to save screen space */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important; /* Pushes trash icon to the far right */
+        
+        /* Makes the header stick to the top when scrolling */
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1000 !important;
+        
+        /* Adds a modern frosted glass effect to the header */
+        background: rgba(250, 217, 198, 0.85) !important; /* Adjust if your peach color is different */
+        backdrop-filter: blur(12px) !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
     }
 
-    .chat-header {
-        padding: 20px 15px !important;
+    /* Target the container holding the Title and Online Status */
+    .chat-header > div {
+        display: flex !important;
+        flex-direction: column !important; /* Stacks Title and Online indicator tightly */
+        gap: 2px !important;
     }
 
     .chat-header h2 {
-        font-size: 22px !important;
+        font-size: 20px !important; /* Smaller, cleaner title size */
+        margin: 0 !important;
+        line-height: 1 !important;
     }
 
-    /* 2. CHAT INPUT: Pull it up and center it */
-    .input-area {
-        position: fixed !important;
-        bottom: 95px !important; /* Sits right above your bottom nav bar */
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        width: 92% !important;
-        /* Remove the massive desktop padding (180px) */
-        padding: 0 !important; 
-        background: transparent !important;
-        backdrop-filter: none !important;
-        z-index: 9990 !important;
-    }
-
-    .input-box-wrapper {
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
-        padding: 6px 8px 6px 20px !important;
-    }
-
-    /* 3. PANIC BUTTON: Move it safely above the Input box */
-    /* (Targeting both potential class names just to be safe) */
-    .global-panic-btn,
-    .panic-button-container {
-        position: fixed !important;
-        bottom: 180px !important; /* Elevated above the typing area */
-        left: 15px !important;
-        z-index: 9999 !important;
-        width: 55px !important;
-        height: 55px !important;
-    }
-
-    /* 4. CHAT MESSAGES AREA */
-    .messages-container {
-        padding: 15px !important;
-        padding-bottom: 220px !important; /* Massive padding to scroll past the input box */
-        height: 100vh !important;
-        box-sizing: border-box !important;
-    }
-
-    /* 5. CHAT BUBBLES: Fix the squished text */
-    .message-row {
-        max-width: 90% !important; /* Allows bubbles to be wider on small phone screens */
-        gap: 10px !important;
-    }
-
-    .bot-avatar-circle, 
-    .user-avatar-circle {
-        width: 38px !important; /* Slightly scale down avatars for mobile */
-        height: 38px !important;
-        margin-right: 8px !important;
-    }
-
-    .text-bubble {
-        padding: 12px 18px !important;
-        font-size: 15px !important;
-        word-wrap: break-word !important;
+    /* --- 2. ONE-LINE DISCLAIMER TEXT --- */
+    .chat-disclaimer, 
+    .disclaimer-text {
+        font-size: 9.5px !important; /* Small enough to fit on standard phones */
+        white-space: nowrap !important; /* 🌟 FORCES TEXT TO STAY ON ONE LINE */
+        overflow: hidden !important;    /* Hides any overflow on extra-narrow phones */
+        text-overflow: ellipsis !important; /* Adds "..." if the screen is too small */
+        width: 100% !important;
+        text-align: center !important;
+        margin-top: 6px !important;
+        letter-spacing: 0.2px !important;
     }
 }
