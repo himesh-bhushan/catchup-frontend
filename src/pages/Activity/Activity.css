@@ -324,15 +324,15 @@
         position: relative !important;
     }
 
-    /* --- 5. RING ROTATION (START AT TOP FIX) --- */
-    /* Forces the SVGs to draw from 12 o'clock using a strict center origin */
+    /* --- 5. RING ROTATION (FIXED) --- */
+    /* 🌟 Reset to 0deg because your React SVGs naturally start at the top! */
     svg.large-circular-chart, 
     svg.mini-circular-chart,
     .large-circular-chart, 
     .mini-circular-chart {
         display: block !important;
-        transform: rotate(-90deg) !important;
-        transform-origin: 50% 50% !important; /* 🌟 Guaranteed dead-center rotation */
+        transform: rotate(0deg) !important; 
+        transform-origin: 50% 50% !important; 
         overflow: visible !important;
     }
 
