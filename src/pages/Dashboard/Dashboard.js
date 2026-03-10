@@ -385,7 +385,7 @@ const Dashboard = () => {
 
         {loading ? (
             <div className="big-tile-container"><div className="big-connect-card"><h3>{t('loading_data') || 'Syncing data...'}</h3></div></div>
-        ) : !(!isDeviceConnected && !skipConnect) ? ( 
+        ) : (!isDeviceConnected && !skipConnect) ? ( 
             <div className="big-tile-container">
                 <div className="big-connect-card" style={{ position: 'relative', minHeight: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     
