@@ -560,19 +560,17 @@
 
 @media (max-width: 768px) {
     
-    /* --- 1. GENERAL LAYOUT --- */
+    /* --- 1. GENERAL LAYOUT & HEADER --- */
     .sharing-page-container {
         padding: 20px 15px !important;
     }
 
-    /* --- 2. HEADER --- */
     .lb-header {
         justify-content: space-between !important;
         margin-bottom: 35px !important;
         position: relative !important;
     }
     
-    /* Forces the "Sharing" title perfectly into the center */
     .lb-header h2, 
     .lb-header .sharing-title-text {
         position: absolute !important;
@@ -584,35 +582,32 @@
         color: #000 !important;
     }
 
-    /* --- 3. THE PODIUM (Top 3) --- */
+    /* --- 2. THE PODIUM (Top 3) --- */
     .lb-podium {
         gap: 15px !important;
         margin-bottom: 40px !important;
         align-items: flex-end !important;
     }
 
-    /* Rank Text (2ND, 3RD) above the avatars */
     .podium-rank {
         color: #FFF !important;
         font-size: 1rem !important;
         margin-bottom: 8px !important;
-        text-shadow: 0 1px 4px rgba(0,0,0,0.15) !important; /* Makes white text pop on peach background */
+        text-shadow: 0 1px 4px rgba(0,0,0,0.15) !important; 
     }
 
-    /* Avatars as pure white circles */
     .podium-avatar {
         width: 75px !important;
         height: 75px !important;
         background: #FFF !important;
-        border: 3px solid #FFF !important; /* Removes the red borders from desktop */
+        border: 3px solid #FFF !important; 
         box-shadow: 0 8px 20px rgba(0,0,0,0.05) !important;
     }
 
-    /* Elevate 1st place avatar */
     .first-avatar {
         width: 100px !important;
         height: 100px !important;
-        margin-bottom: 15px !important; /* Pushes the crown higher than 2nd/3rd */
+        margin-bottom: 15px !important; 
     }
 
     .podium-crown {
@@ -620,9 +615,8 @@
         margin-bottom: -8px !important;
     }
 
-    /* Retro/Digital Font styling for scores */
     .podium-score {
-        font-family: 'Courier New', Courier, monospace !important; /* Simulates the pixel font */
+        font-family: 'Courier New', Courier, monospace !important; 
         font-size: 1.5rem !important;
         font-weight: 900 !important;
         letter-spacing: -1px !important;
@@ -633,7 +627,6 @@
         font-size: 1.8rem !important;
     }
 
-    /* Username styling */
     .podium-name {
         font-family: monospace !important;
         font-size: 0.75rem !important;
@@ -641,25 +634,22 @@
         margin-top: 2px !important;
     }
 
-    /* --- 4. LIST CARDS (4th to 7th) --- */
+    /* --- 3. LIST CARDS (4th to 7th) --- */
     .lb-list-alt {
         gap: 12px !important;
         padding: 0 5px !important;
     }
 
     .lb-list-card {
-        background: #E85D38 !important; /* Vibrant orange/red from the mockup */
-        border-radius: 20px !important; /* More rounded corners */
+        background: #E85D38 !important; 
+        border-radius: 20px !important; 
         padding: 16px 20px !important;
         margin-bottom: 12px !important;
         box-shadow: 0 8px 20px rgba(232, 93, 56, 0.25) !important;
     }
 
-    .lb-card-left {
-        gap: 15px !important;
-    }
+    .lb-card-left { gap: 15px !important; }
 
-    /* Rank number & arrow */
     .lb-card-rank {
         display: flex !important;
         flex-direction: column !important;
@@ -676,7 +666,6 @@
         background: #FFF !important;
     }
 
-    /* Added class targeting username inside the list if it exists */
     .lb-card-name, .lb-card-left span {
         font-family: monospace !important;
         font-size: 0.8rem !important;
@@ -685,15 +674,14 @@
     }
 
     .lb-card-score {
-        font-family: 'Courier New', Courier, monospace !important; /* Simulates pixel font */
+        font-family: 'Courier New', Courier, monospace !important; 
         font-size: 1.6rem !important;
         font-weight: 900 !important;
         letter-spacing: -1px !important;
         color: #FFF !important;
     }
 
-    /* --- 5. EMPTY STATE / ONBOARDING SCREEN --- */
-    /* Shrinks the 3 blank overlapping circles if the user hasn't added friends yet */
+    /* --- 4. EMPTY STATE / ONBOARDING SCREEN --- */
     .sharing-title {
         font-size: 2.2rem !important;
         text-align: center !important;
@@ -715,60 +703,48 @@
         height: 100px !important;
     }
     
-    .avatar-group {
-        margin-bottom: 30px !important;
-    }
+    .avatar-group { margin-bottom: 30px !important; }
 
-    /* 1. Fix the main white container */
+    /* --- 5. "FIND FRIENDS" MODAL --- */
     .theme-container {
-        padding: 25px 20px 120px 20px !important; /* 120px bottom padding clears the Nav Bar! */
+        padding: 25px 20px 120px 20px !important; 
         width: 100% !important;
         max-width: 100vw !important;
         box-sizing: border-box !important;
         border-radius: 25px !important;
         margin: 0 !important;
-        
-        /* If this is a popup/modal, this ensures it can scroll internally */
         max-height: 100dvh !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
     }
 
-    .search-header {
-        margin-bottom: 15px !important;
-    }
-
-    .theme-heading {
-        font-size: 1.6rem !important;
-    }
-
+    .search-header { margin-bottom: 15px !important; }
+    .theme-heading { font-size: 1.6rem !important; }
+    
     .theme-search-input {
         padding: 14px 20px !important;
         font-size: 1rem !important;
     }
 
-    /* 2. Fix the user cards from overflowing */
     .theme-card {
-        padding: 15px 12px !important; /* Tighter padding saves horizontal space */
-        gap: 10px !important; /* Forces a safe gap between text and buttons */
+        padding: 15px 12px !important; 
+        gap: 10px !important; 
         box-sizing: border-box !important;
         width: 100% !important;
     }
 
-    /* 3. Handle the Avatar, Name, and Score */
     .user-info-row {
         gap: 12px !important;
-        flex: 1 !important; /* Allows the text area to take up available space */
-        min-width: 0 !important; /* Crucial: Prevents long text from pushing buttons off-screen */
+        flex: 1 !important; 
+        min-width: 0 !important; 
     }
 
     .theme-avatar-sm {
         width: 48px !important;
         height: 48px !important;
-        flex-shrink: 0 !important; /* Prevents avatar from squishing */
+        flex-shrink: 0 !important; 
     }
 
-    /* Forces the Name and Score to stack vertically */
     .user-info-row > div {
         display: flex !important;
         flex-direction: column !important;
@@ -780,11 +756,10 @@
         font-size: 1.05rem !important;
         white-space: nowrap !important;
         overflow: hidden !important;
-        text-overflow: ellipsis !important; /* Adds '...' if name is too long */
+        text-overflow: ellipsis !important; 
         width: 100% !important;
     }
 
-    /* Targets the "Score: 69" text */
     .user-info-row span {
         font-size: 0.85rem !important;
         color: #666 !important;
@@ -792,10 +767,9 @@
         white-space: nowrap !important;
     }
 
-    /* 4. Fix the View and Delete Buttons */
     .action-btns-row {
-        gap: 8px !important; /* Tighter space between buttons */
-        flex-shrink: 0 !important; /* Absolutely forbids buttons from squishing */
+        gap: 8px !important; 
+        flex-shrink: 0 !important; 
     }
 
     .theme-btn-outline {
@@ -811,17 +785,31 @@
         font-size: 1.1rem !important;
     }
 
-
-    /* 1. Add bottom padding so you can scroll past the Nav Bar */
-    .friend-detail-dashboard {
-        padding: 10px 15px 130px 15px !important; /* 🌟 130px safely clears the nav bar */
-        box-sizing: border-box !important;
-        width: 100% !important;
+    /* --- 6. FRIEND DETAIL PAGE (Progress & Cards) --- */
+    
+    /* Ensure scrolling is unlocked and Nav Bar is cleared */
+    .dashboard-wrapper.sharing-page-bg {
+        display: block !important;
+        height: 100dvh !important;
+        width: 100vw !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important; 
     }
 
-    /* 2. Shrink the Header Elements */
+    .friend-detail-dashboard {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: 100% !important;
+        padding: 20px 15px 140px 15px !important; 
+        box-sizing: border-box !important;
+        width: 100% !important;
+        overflow: visible !important;
+    }
+
+    /* Detail Header */
     .detail-header-new {
-        gap: 12px !important; /* Brings the back button closer to the avatar */
+        gap: 12px !important; 
         margin-bottom: 25px !important;
     }
 
@@ -831,37 +819,79 @@
         flex-shrink: 0 !important;
     }
 
-    /* Brings the avatar and name tighter together */
-    .header-user-profile {
-        gap: 12px !important; 
-    }
+    .header-user-profile { gap: 12px !important; }
 
     .profile-image-ring {
-        width: 65px !important; /* Shrunk from 85px */
+        width: 65px !important; 
         height: 65px !important;
         flex-shrink: 0 !important;
     }
 
     .black-name-title {
-        font-size: 1.6rem !important; /* Smaller name text */
+        font-size: 1.6rem !important; 
         line-height: 1.1 !important;
         margin-bottom: 2px !important;
     }
 
     .health-score-pill {
-        font-size: 0.75rem !important; /* Smaller pill text */
+        font-size: 0.75rem !important; 
         padding: 4px 12px !important;
         margin-top: 4px !important;
     }
 
-    /* 3. Tighten the Glass Cards slightly for phone screens */
-    .dashboard-grid-layout {
-        gap: 15px !important; /* Slightly tighter gap between the different cards */
-    }
+    /* Glass Cards Base */
+    .dashboard-grid-layout { gap: 15px !important; }
 
     .glass-card {
-        padding: 18px 20px !important; /* Saves a little bit of horizontal space */
+        padding: 18px 20px !important; 
         border-radius: 20px !important;
     }
+    
+    .dash-card-header h3 { font-size: 1.1rem !important; }
 
+    /* Activity Ring Scaling */
+    .activity-body-side {
+        gap: 15px !important; 
+    }
+
+    .dash-ring-wrapper-large {
+        width: 120px !important; 
+        height: 120px !important;
+        margin: 0 auto !important; 
+    }
+    
+    .dash-ring-inner-yellow {
+        width: 80px !important; 
+        height: 80px !important;
+    }
+    
+    .inner-percent { font-size: 1.4rem !important; }
+    .inner-avatar { width: 30px !important; height: 30px !important; }
+    .inner-emoji { font-size: 1.4rem !important; }
+
+    .dash-stats-list {
+        gap: 10px !important;
+        align-items: center !important; 
+    }
+    
+    .dash-stat-item { align-items: center !important; }
+    .stat-lbl { font-size: 0.9rem !important; color: #666 !important; }
+    .stat-val { font-size: 1.4rem !important; }
+
+    /* Health Score Scaling */
+    .hs-body {
+        gap: 20px !important;
+    }
+
+    .dash-ring-wrapper-medium {
+        width: 130px !important; 
+        height: 130px !important;
+        margin: 0 auto !important;
+    }
+    
+    .hs-center-val { font-size: 2.2rem !important; }
+    
+    .hs-pills-list { gap: 8px !important; }
+    .hs-pill { padding: 8px 10px !important; }
+    .pill-text strong { font-size: 0.85rem !important; }
 }
