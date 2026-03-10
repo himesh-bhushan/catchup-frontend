@@ -123,44 +123,33 @@
 /* =========================================
    🚨 MOBILE PANIC BUTTON FIX
    ========================================= */
-
 @media (max-width: 768px) {
-    /* 1. Target the red button container */
     .panic-button-container,
     .red-floating-button {
         position: fixed !important;
         
-        /* Elevate it: If your nav bar is 80px, 
-           bottom: 100px puts it exactly 20px above the bar.
-        */
-        bottom: 100px !important; 
+        /* Elevate this ABOVE both the nav bar AND the chat input area */
+        bottom: 180px !important; 
         
-        /* Center it horizontally */
-        left: 50% !important;
-        transform: translateX(-50%) !important;
+        /* Kept on the left side based on your screenshot */
+        left: 20px !important; 
         
-        /* Ensure it sits on top of the chat input and nav */
+        /* Ensures it sits on top of scrolling messages */
         z-index: 9999 !important;
-
-        /* Visual styling to ensure it looks like a floating button */
+        
+        /* Visual cleanup */
         width: 60px !important;
         height: 60px !important;
         border-radius: 50% !important;
+        box-shadow: 0 4px 15px rgba(222, 75, 78, 0.4) !important;
         display: flex !important;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0px 4px 15px rgba(255, 0, 0, 0.4) !important;
-        background-color: #ff0000 !important;
-        border: none !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
-
-    /* 2. Adjust the Chat Input so it doesn't overlap the new button position */
-    .chat-input-wrapper {
-        bottom: 170px !important; /* Move typing bar above the Panic button */
-    }
-
-    /* 3. Scale the icon inside if needed */
-    .panic-button-container img {
+    
+    /* Ensure the icon inside is scaled properly */
+    .panic-button-container img,
+    .red-floating-button img {
         width: 30px !important;
         height: 30px !important;
     }

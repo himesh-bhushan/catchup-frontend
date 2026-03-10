@@ -147,73 +147,35 @@
 }
 
 /* =========================================
-   5. MOBILE ADJUSTMENTS
-========================================= */
-@media (max-width: 1024px) {
-  .chat-page-container { flex-direction: column; }
-  .chat-interface-wrapper { padding-left: 0; }
-  .input-area { bottom: 110px; padding: 0 20px; background: transparent; backdrop-filter: none; }
-  .input-box-wrapper { box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
-  .messages-container { padding-bottom: 200px; padding-left: 20px; padding-right: 20px; }
-  .mobile-back-btn { display: block; }
-  .chat-header { padding: 20px; }
-  .message-row { max-width: 90%; }
-}
-
-/* =========================================
-   💬 MOBILE CHATBOT OPTIMIZATION
+   💬 MOBILE CHATBOT LAYOUT FIX
    ========================================= */
-
 @media (max-width: 768px) {
-    /* 1. Container: Ensure the chat takes up the full screen height */
-    .chat-container {
-        height: calc(100vh - 80px); /* Adjusts for the bottom nav */
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 100px; /* Space for the fixed input area */
+    /* 1. Push the entire chat input area above the navigation bar */
+    .chat-input-wrapper, 
+    .chat-bottom-section {
+        position: fixed !important;
+        bottom: 85px !important; /* Sits exactly above the nav bar */
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 92% !important; /* Keeps it neatly inside the screen edges */
+        z-index: 100 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
     }
 
-    /* 2. Messages Area: Make it scrollable and take up available space */
-    .chat-messages-display {
-        flex: 1;
-        overflow-y: auto;
-        padding: 15px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    /* 3. Input Wrapper: Pin it to the bottom, just above the Nav Bar */
-    .chat-input-wrapper {
-        position: fixed;
-        bottom: 85px; /* Sits right above your bottom navigation */
-        left: 5%;
-        width: 90%;
-        z-index: 10;
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        border-radius: 30px;
-        padding: 5px;
-        box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-    }
-
-    /* 4. The Message Box: Fix the "CatchUp Assistant can make mistakes" text */
+    /* 2. Fix the disclaimer text so it isn't squished */
     .disclaimer-text {
-        font-size: 10px;
-        margin-top: 8px;
-        text-align: center;
-        width: 100%;
-        color: #888;
+        font-size: 11px !important;
+        text-align: center !important;
+        margin-top: 8px !important;
+        color: #888 !important;
+        width: 100% !important;
     }
 
-    /* 5. Navigation Bar Fix: Fix the overlapping Red Button */
-    .mobile-nav-container {
-        z-index: 100; /* Keeps nav on very top */
-    }
-
-    /* If the red button is a 'Back' or 'Home' button, move it slightly */
-    .red-floating-button {
-        bottom: 100px !important; /* Move it up so it doesn't block icons */
-        left: 20px !important;
+    /* 3. Add padding to the messages so the last text isn't hidden behind the input box */
+    .chat-messages-display,
+    .chat-container {
+        padding-bottom: 170px !important; 
     }
 }
