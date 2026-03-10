@@ -146,86 +146,82 @@
   opacity: 0.8;
 }
 
+
 /* =========================================
-   📱 MOBILE RESPONSIVE FIXES (COMPLETE)
+   📱 MOBILE CHAT LAYOUT (ABSOLUTE LAYERING)
    ========================================= */
 
 @media (max-width: 768px) {
     
-    /* --- 1. FULL SCREEN & BACKGROUND FIX --- */
-    /* Flexbox guarantees the background stretches to the absolute bottom */
-    .chat-page-container {
-        display: flex !important; 
-        flex-direction: column !important;
-        height: 100vh !important; /* Fallback */
-        height: 100dvh !important; /* Dynamic mobile height */
+    /* --- 1. LOCK THE BACKGROUND --- */
+    .chat-page-container,
+    .chat-interface-wrapper {
+        height: 100dvh !important; 
         width: 100vw !important;
         padding: 0 !important;
         margin: 0 !important;
-        overflow: hidden !important;
-        background: var(--bg-color) !important; 
-    }
-
-    .chat-interface-wrapper {
-        flex: 1 !important; /* Forces it to fill the entire remaining space */
-        width: 100vw !important;
-        padding-left: 0 !important; /* Removes desktop side-gap */
-        display: flex !important;
-        flex-direction: column !important;
+        display: block !important;
         position: relative !important;
+        overflow: hidden !important; /* Prevents the whole page from bouncing */
     }
 
-    /* Enforce the gradient on mobile so it doesn't break */
-    [data-theme="light"] .chat-interface-wrapper {
-        background: linear-gradient(180deg, #FAD9C6 0%, #F6CAB3 100%) !important;
-    }
-
-    /* --- 2. HEADER: RESTORED & BULLETPROOF --- */
-    /* By using Flexbox instead of 'fixed', iOS can never hide it */
+    /* --- 2. PIN THE HEADER TO THE TOP --- */
     .chat-header {
-        display: flex !important; 
-        position: relative !important; /* Keeps it in the document flow */
+        position: fixed !important; 
+        top: 0 !important;
+        left: 0 !important;
         width: 100% !important;
+        height: auto !important;
+        z-index: 9999 !important; /* Forces it to stay visible */
+        
+        /* Added extra top padding so it doesn't collide with the iPhone Notch/Clock */
+        padding: 25px 20px 15px 20px !important; 
         box-sizing: border-box !important;
-        z-index: 1000 !important; 
-        padding: 15px 20px !important; 
+        
+        display: flex !important;
         align-items: center !important;
         justify-content: space-between !important; 
+        
         background: rgba(250, 217, 198, 0.95) !important; 
         backdrop-filter: blur(12px) !important;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
-        flex-shrink: 0 !important; /* Prevents the header from squishing */
-    }
-    
-    .chat-header > div {
-        display: flex !important;
-        flex-direction: column !important; 
-        gap: 2px !important;
     }
     
     .chat-header h2 {
         font-size: 20px !important; 
         margin: 0 !important;
         line-height: 1 !important;
+        color: var(--text-primary) !important; 
+        display: block !important;
     }
 
-    /* --- 3. MESSAGES AREA: SCROLLABLE WITH PADDING --- */
+    /* --- 3. THE MESSAGES (INDEPENDENT SCROLL WINDOW) --- */
     .messages-container {
-        flex: 1 !important; /* Takes up all space between header and bottom */
-        width: 100% !important;
-        box-sizing: border-box !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        height: 100dvh !important;
+        width: 100vw !important;
+        
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important; 
+        box-sizing: border-box !important;
         
-        padding-top: 20px !important; /* Normal top padding */
-        padding-bottom: 180px !important; /* Huge bottom padding to clear the text box */
+        /* PUSHES MESSAGES OUT FROM UNDER THE HEADER */
+        padding-top: 110px !important; 
+        /* PUSHES LAST MESSAGE UP FROM UNDER THE INPUT BOX */
+        padding-bottom: 200px !important; 
+        
         padding-left: 15px !important;
         padding-right: 15px !important;
     }
     
     .message-row {
-        max-width: 92% !important; 
+        max-width: 90% !important; 
         gap: 10px !important;
+        margin-bottom: 5px !important;
     }
     
     .bot-avatar-circle, 
@@ -242,17 +238,16 @@
         word-wrap: break-word !important;
     }
 
-    /* --- 4. INPUT AREA: FLOATING ABOVE NAV BAR --- */
+    /* --- 4. PIN THE INPUT BOX TO THE BOTTOM --- */
     .input-area {
         position: fixed !important;
-        bottom: 110px !important; 
+        bottom: 110px !important; /* Floating above your nav bar */
         left: 50% !important;
         transform: translateX(-50%) !important;
         width: 92% !important;
         padding: 0 !important; 
         background: transparent !important; 
-        backdrop-filter: none !important; 
-        z-index: 9990 !important;
+        z-index: 9990 !important; /* Keeps it above the scrolling messages */
     }
 
     .input-box-wrapper {
@@ -261,7 +256,7 @@
         background: var(--card-bg) !important;
     }
 
-    /* --- 5. DISCLAIMER: ONE LINE TEXT --- */
+    /* --- 5. DISCLAIMER (ONE LINE) --- */
     .chat-disclaimer, 
     .disclaimer-text {
         font-size: 9.5px !important; 
@@ -272,7 +267,6 @@
         text-align: center !important;
         margin-top: 6px !important;
         margin-bottom: 0 !important;
-        letter-spacing: 0px !important;
         display: block !important;
     }
 }
