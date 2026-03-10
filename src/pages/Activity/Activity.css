@@ -420,40 +420,73 @@
         height: 80px !important;
         width: 100% !important;
     }
+}
 
-    /* 1. Rotate all rings to start at 12 o'clock (Top) */
-    .mini-circular-chart,
-    .large-circular-chart {
+/* =========================================
+   🎯 FINAL FIX: RING ROTATION & ARROW ALIGN
+   ========================================= */
+
+@media (max-width: 768px) {
+    /* 1. Rotate ONLY the rings, not the container */
+    .large-circular-chart, 
+    .mini-circular-chart {
         transform: rotate(-90deg) !important;
         transform-origin: center !important;
-        display: block;
+        overflow: visible !important;
     }
 
-    /* 2. Position the Arrow Overlay at the exact top center */
+    /* 2. Fix the Red Arrow Cap */
+    /* This makes it a perfect circle at the top of the ring */
     .ring-arrow-overlay {
         position: absolute !important;
-        top: 0% !important; 
+        top: 0 !important;
         left: 50% !important;
-        /* translate(-50%, -50%) ensures the center of the arrow 
-           sits exactly on the top edge of the ring container */
-        transform: translate(-50%, -50%) !important;
-        margin: 0 !important;
+        /* translate(-50%, -50%) centers the circle exactly ON the ring line */
+        transform: translate(-50%, -50%) !important; 
+        
+        width: 30px !important; 
+        height: 30px !important;
+        background-color: #D93025 !important; /* Matches your red theme */
+        border-radius: 50% !important;
+        
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         z-index: 10 !important;
-        pointer-events: none;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 2px solid #fff !important; /* Adds a clean border like the mockup */
     }
 
-    /* 3. Counter-rotate the arrow icon so it points "Forward" (Right) */
-    /* Since the parent is rotated -90deg, the arrow naturally points up.
-       We rotate it 90deg to keep it pointing in the direction of progress. */
+    /* Points the arrow icon inside to the RIGHT */
     .ring-arrow-overlay svg, 
     .ring-arrow-overlay i {
-        display: block !important;
-        transform: rotate(90deg) !important;
+        font-size: 16px !important;
+        color: white !important;
+        transform: rotate(0deg) !important; /* Keeps it pointing forward */
     }
 
-    /* 4. Ensure the container is a stable anchor */
+    /* 3. Fix the "Move" text overlap seen in your screenshot */
+    .main-ring-section {
+        margin-top: 20px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
     .large-ring-container {
-        position: relative !important;
-        overflow: visible !important; /* Prevents arrow from being clipped */
+        width: 260px !important;
+        height: 260px !important;
+        margin-bottom: 20px !important; /* Adds space so KCAL text isn't cut off */
+    }
+
+    .stat-block h3 {
+        text-align: left !important;
+        margin-left: 5px !important;
+    }
+
+    /* 4. Fix Weekly Ring starting points */
+    .mini-circular-chart {
+        transform: rotate(-90deg) !important;
     }
 }
