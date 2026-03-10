@@ -505,7 +505,7 @@
 .theme-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
 
 .user-info-row { display: flex; align-items: center; gap: 20px; }
-.theme-avatar-sm { width: 60px; height: 60px; border-radius: 16px; object-fit: cover; background: #FDE6D8; display: block; }
+.theme-avatar-sm { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: transparent; display: block; }
 .name-bold { font-size: 1.2rem; font-weight: 800; color: #111; margin: 0; }
 
 .action-btns-row { display: flex; align-items: center; gap: 12px; }
