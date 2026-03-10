@@ -166,10 +166,11 @@
     /* --- 2. TOP SECTION (Squeezed to fit) --- */
     .share-left-section {
         flex: 0.45 !important; /* Takes up exactly 45% of the screen height */
-        padding: 20px 15px -20px 15px !important;
+        padding: 20px 15px 0px 15px !important;
         justify-content: center !important;
         align-items: center !important;
         min-height: 0 !important; /* Prevents flexbox stretching */
+        margin-bottom: -20px;;
     }
 
     .sticky-note {
