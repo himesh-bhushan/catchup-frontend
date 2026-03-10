@@ -5,7 +5,7 @@ import DashboardNav from '../../components/DashboardNav';
 import { 
   FiChevronRight, FiUser, FiHeart, FiActivity, FiMoon, 
   FiDroplet, FiWatch, FiRefreshCw, FiArrowLeft, FiNavigation, 
-  FiExternalLink, FiShare2, FiX 
+  FiBluetooth, FiExternalLink, FiShare2 
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
@@ -49,10 +49,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [isDeviceConnected, setIsDeviceConnected] = useState(localStorage.getItem('deviceConnected') === 'true');
   const [showConnectMenu, setShowConnectMenu] = useState(false);
-  
-  // NEW: State to allow skipping the connect screen to see the dashboard
-  const [skipConnect, setSkipConnect] = useState(false); 
-
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
 
@@ -87,14 +83,12 @@ const Dashboard = () => {
     }
   };
 
-  // --- DOWNLOAD APPLE HEALTH SHORTCUT ---
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = '/Catchup_Sync.shortcut'; // Ensure the file is named this in your public folder
-    link.setAttribute('download', 'Catchup_Sync.shortcut');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleGoogleConnect = () => {
+    if (!user) return;
+    const clientID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    const redirectURI = encodeURIComponent("https://backend.catchup.page/api/auth/google/callback");
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=https://www.googleapis.com/auth/fitness.activity.read%20https://www.googleapis.com/auth/fitness.body.read&access_type=offline&prompt=consent&state=${user.id}`;
+    window.location.href = authUrl;
   };
 
   // --- LOCATION LOGIC ---
@@ -141,12 +135,12 @@ const Dashboard = () => {
 
   const openGoogleMaps = (name, address) => {
     const searchQuery = encodeURIComponent(`${name} ${address}`);
-    window.open(`https://maps.google.com/?q=${searchQuery}`, '_blank');
+    window.open(`https://www.google.com/maps/search/?api=1&query=${searchQuery}`, '_blank');
   };
 
   // --- NATIVE SOCIAL SHARING ---
   const handleShare = async (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Prevents the card click from navigating away
     const shareData = {
       title: 'Monthly Mover Award!',
       text: `I just unlocked the 'Monthly Mover' badge on CatchUp for completing my activity ring every single day! 🍅💪 Catch up with me!`,
@@ -157,6 +151,7 @@ const Dashboard = () => {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
+        // Fallback for desktop browsers
         navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
         alert("Award text copied to clipboard! Paste it on social media to share.");
       }
@@ -214,10 +209,11 @@ const Dashboard = () => {
             const goal = profile?.calorie_goal || 500;
             const cals = todayLog?.calories || 0;
 
+              // --- NEW: GOALS CALCULATION ---
             const stepGoalMet = (todayLog?.steps || 0) >= 5000;
-            const moveGoalMet = cals >= goal;
-            const sleepGoalMet = profile?.sleep_seconds >= (7 * 3600);
-            const waterGoalMet = profile?.water_intake >= 2000;
+            const moveGoalMet = cals >= goal; // Activity Ring completed
+            const sleepGoalMet = profile?.sleep_seconds >= (7 * 3600); // 7 hours
+            const waterGoalMet = profile?.water_intake >= 2000; // 2 Liters (2000ml)
 
             let completedGoals = 0;
             if (stepGoalMet) completedGoals++;
@@ -233,7 +229,10 @@ const Dashboard = () => {
                 sleep: sleepGoalMet,
                 water: waterGoalMet
             });
+            // -----------------------------
 
+
+            // 🟢 NEW AWARDS LOGIC: Check entire month
             const today = new Date();
             const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
             const daysPassed = today.getDate(); 
@@ -248,6 +247,7 @@ const Dashboard = () => {
             if (monthLogs) {
                 const uniqueDays = new Set();
                 monthLogs.forEach(log => {
+                    // Count how many unique days they hit the goal
                     if (log.calories >= goal && !uniqueDays.has(log.date)) {
                         uniqueDays.add(log.date);
                         daysMetGoal++;
@@ -255,6 +255,7 @@ const Dashboard = () => {
                 });
             }
 
+            // Award is earned if they met the goal for every day of the month so far!
             setIsAwardEarned(daysMetGoal >= daysPassed);
 
             setActivityData({
@@ -270,7 +271,7 @@ const Dashboard = () => {
   useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
 
   // ==========================================
-  // 🩺 HEALTH SCORE CALCULATIONS
+  // 🩺 HEALTH SCORE CALCULATIONS (FOR DASHBOARD PREVIEW)
   // ==========================================
   const heart = otherStats.heart_rate || 0;
   const sleep = otherStats.sleep || 0;
@@ -308,6 +309,7 @@ const Dashboard = () => {
   
   const totalScore = Math.round(hrContrib + sleepContrib + calContrib + waterContrib);
 
+  // SVG Configuration
   const radius = 35;
   const circumference = 2 * Math.PI * radius;
   const strokeWidth = 14;
@@ -366,61 +368,26 @@ const Dashboard = () => {
 
         {loading ? (
             <div className="big-tile-container"><div className="big-connect-card"><h3>{t('loading_data') || 'Syncing data...'}</h3></div></div>
-        ) : (!isDeviceConnected && !skipConnect) ? ( 
+        ) : !isDeviceConnected ? ( 
             <div className="big-tile-container">
-                <div className="big-connect-card" style={{ position: 'relative' }}>
-                    
-                    {/* Universal Close Button to go to Dashboard */}
-                    <button 
-                        onClick={() => setSkipConnect(true)} 
-                        style={{
-                            position: 'absolute',
-                            top: '20px',
-                            right: '20px',
-                            background: '#f5f5f5',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '36px',
-                            height: '36px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            color: '#555',
-                            zIndex: 10
-                        }}
-                    >
-                        <FiX size={20} />
-                    </button>
-
+                <div className="big-connect-card">
                     {showConnectMenu ? (
                         <div className="connect-device-card-content">
                             <button onClick={() => setShowConnectMenu(false)} className="back-btn"><FiArrowLeft size={24} /></button>
                             <h3>Select Device</h3>
-                            <div className="connect-tracker-section" style={{ marginTop: '20px' }}>
+                            <div className="connect-tracker-section">
                                 <h3>Connect Tracker</h3>
                                 <p>Download our Apple Health shortcut to sync your daily activity automatically.</p>
                                 
-                                {/* Programmatic Download Button */}
-                                <button 
-                                    onClick={handleDownload} 
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: '10px',
-                                        background: '#111',
-                                        color: '#FFF',
-                                        border: 'none',
-                                        padding: '12px 24px',
-                                        borderRadius: '16px',
-                                        fontWeight: 'bold',
-                                        cursor: 'pointer',
-                                        marginTop: '10px'
-                                    }}
+                                {/* The Download Button */}
+                                <a 
+                                    href="/downloads/AppleHealthSync.shortcut" 
+                                    download="CatchUp_AppleHealth.shortcut" 
+                                    className="apple-health-download-btn"
                                 >
-                                    <FiHeart style={{ color: '#FF2D55' }} />
+                                    <FiHeart className="apple-health-icon" />
                                     Apple Health
-                                </button>
+                                </a>
                             </div>
                         </div>
                     ) : (
@@ -456,7 +423,11 @@ const Dashboard = () => {
                         </div>
                     </div>
 
+                    {/* ALIGNED 3-COLUMN TRIO ROW USING ORIGINAL 'sync-card' CLASS AS WRAPPER */}
+                    {/* By keeping 'sync-card' but removing 'card', it inherits the CSS grid stretch perfectly without adding a white box around all three */}
                     <div className="sync-card" style={{ display: 'grid', gridTemplateColumns: '1.95fr 0.925fr 0.925fr', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
+                        
+                        {/* Actual Sync Tile */}
                         <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
                             <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                                 <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
@@ -466,33 +437,41 @@ const Dashboard = () => {
                                 Synced {lastSyncedAgo ? lastSyncedAgo : 'just now'}
                             </p>
                         </div>
+
+                        {/* Actual Water Tile */}
                         <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
+                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
                             </div>
                             <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
                                 {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>L</span>
                             </div>
                         </div>
+
+                        {/* Actual Sleep Tile */}
                         <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
+                                <FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" />
                             </div>
                             <div className="tile-value" style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
                                 {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>hrs</span>
                             </div>
                         </div>
+
                     </div>
 
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('Goals Completed')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="goals-progress-bar" style={{ position: 'relative' }}>
+                            {/* Dynamic progress bar width with tomato attached inside */}
                             <div 
                                 className="progress-fill" 
                                 style={{
                                     width: `${(goalsData.completed / goalsData.total) * 100}%`, 
                                     position: 'relative', 
-                                    overflow: 'visible' 
+                                    overflow: 'visible' /* Ensures the tomato isn't clipped by the bar */
                                 }}
                             >
                                 <img 
@@ -501,20 +480,23 @@ const Dashboard = () => {
                                     className="progress-tomato" 
                                     style={{
                                         position: 'absolute',
-                                        right: '-16px', 
+                                        right: '-16px', /* Pins the tomato exactly on the edge */
                                         top: '50%',
                                         transform: 'translateY(-50%)',
-                                        width: '32px', 
+                                        width: '32px', /* Fixed size instead of the buggy width="100%" */
                                         height: 'auto',
                                         zIndex: 10
                                     }}  
                                 />
                             </div>
+                            
+                            {/* Dynamic fraction */}
                             <span className="progress-text">{goalsData.completed}/{goalsData.total}</span>
                         </div>
                         <div className="goals-detailed-grid">
                             <div className="goal-item-detailed">
                                 <div className="goal-item-header">
+                                    {/* Green dot if completed, gray if not */}
                                     <div className="goal-dot" style={{ backgroundColor: goalsData.steps ? '#4CAF50' : '#E0E0E0' }}></div> Daily Steps
                                 </div>
                                 <p>Walk 5,000 steps per day</p>
@@ -541,19 +523,21 @@ const Dashboard = () => {
                     </div>
 
                     <div className="card bp-card" onClick={() => navigate('/blood-pressure')}>
-                        <div className="card-header"><h3>{t('Blood Pressure')}</h3></div>
+                        <div className="card-header"><h3>{t('Blood Pressure')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="tile-value">{otherStats.blood_pressure} <span>mmHg</span></div>
                     </div>
 
                     <div className="card heart-card" onClick={() => navigate('/heart-rate')}>
-                        <div className="card-header"><h3>{t('Heart Rate')}</h3></div>
+                        <div className="card-header"><h3>{t('Heart Rate')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="tile-value">{otherStats.heart_rate} <span>BPM</span></div>
                     </div>
 
+                    {/* Health Score Section */}
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
                         <div className="card-header score-header-nudged">
                             <h3>{t('Health Score') || "Health Score"}</h3>
                         </div>
+                        
                         <div className="health-score-content">
                             <div className="score-ring-wrapper" style={{ position: 'relative' }}>
                                 <svg width="100%" height="100%" viewBox="0 0 100 100" style={{ overflow: 'visible' }}>
@@ -575,7 +559,13 @@ const Dashboard = () => {
                                       strokeDasharray={`${waterLen} ${circumference}`} strokeDashoffset={-waterOffset} transform="rotate(-90 50 50)" />
                                   )}
                                 </svg>
-                                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{
+                                    position: 'absolute',
+                                    top: 0, left: 0, right: 0, bottom: 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}>
                                     <span style={{ color: '#DE4B4E', fontWeight: 'bold', fontSize: '1.2rem' }}>{totalScore}</span>
                                 </div>
                             </div>
@@ -588,15 +578,19 @@ const Dashboard = () => {
                                         <span className="metric-value">{otherStats.heart_rate} <strong>BPM</strong></span>
                                     </div>
                                 </div>
+                                
                                 <div className="metric-pill pill-orange" onClick={() => navigate('/sleep')}>
                                     <div className="metric-icon-circle"><FiMoon color="#F7931E" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Sleep Hours</span>
                                         <span className="metric-value">
-                                            {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <strong>hours</strong>
+                                            {otherStats.sleep > 0 
+                                                ? (otherStats.sleep / 3600).toFixed(1) 
+                                                : '0.0'} <strong>hours</strong>
                                         </span>
                                     </div>
                                 </div>
+
                                 <div className="metric-pill pill-yellow">
                                     <div className="metric-icon-circle"><FiActivity color="#333" /></div>
                                     <div className="metric-text-group">
@@ -604,12 +598,15 @@ const Dashboard = () => {
                                         <span className="metric-value">{activityData.calories} <strong>KCAL</strong></span>
                                     </div>
                                 </div>
+
                                 <div className="metric-pill pill-blue" onClick={() => navigate('/water')}>
                                     <div className="metric-icon-circle"><FiDroplet color="#4A90E2" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Water Intake</span>
                                         <span className="metric-value">
-                                            {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <strong>L</strong>
+                                            {otherStats.water_intake > 0 
+                                                ? (otherStats.water_intake / 1000).toFixed(1) 
+                                                : '0.0'} <strong>L</strong>
                                         </span>
                                     </div>
                                 </div>
@@ -620,14 +617,28 @@ const Dashboard = () => {
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards')}</h3></div>
                         <div className="awards-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <img src={awards} alt="Award Badge" className={`award-badge-status ${isAwardEarned ? 'earned-color' : 'not-earned-gray'}`} />
+                            <img 
+                                src={awards} 
+                                alt="Award Badge" 
+                                className={`award-badge-status ${isAwardEarned ? 'earned-color' : 'not-earned-gray'}`} 
+                            />
+                            
+                            {/* NEW: Share Button shows up only if award is earned */}
                             {isAwardEarned && (
                                 <button 
                                     onClick={handleShare}
                                     style={{
-                                        marginTop: '15px', display: 'flex', alignItems: 'center', gap: '8px',
-                                        background: '#DE4B4E', color: 'white', border: 'none', padding: '8px 16px',
-                                        borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer',
+                                        marginTop: '15px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        background: '#DE4B4E',
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '8px 16px',
+                                        borderRadius: '20px',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
                                         boxShadow: '0 4px 10px rgba(222, 75, 78, 0.3)'
                                     }}>
                                     <FiShare2 size={16} /> Share
@@ -637,6 +648,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
+                {/* Recommendations */}
                 <div className="recommendations-section">
                     <h3>{t('recommendations') || "Recommendations"}</h3>
                     <div className="recommendations-carousel">
@@ -649,6 +661,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
+                {/* Nearby Care */}
                 <div className="recommendations-section">
                     <div className="section-header-row">
                         <h3>{t('nearby_care') || "Find Nearby Care"}</h3>
@@ -656,9 +669,11 @@ const Dashboard = () => {
                              <FiNavigation /> {locationLoading ? t('locating') : t('use_my_location') || "Use My Location"}
                         </button>
                     </div>
+
                     {clinics.length === 0 && !locationLoading && (
                         <div className="empty-clinics-state"><p>{t('location_prompt') || 'Click "Use My Location" to see clinics near you.'}</p></div>
                     )}
+
                     <div className="clinics-grid-container">
                         {clinics.map((clinic) => (
                             <div key={clinic.id} className="clinic-tile" onClick={() => openGoogleMaps(clinic.name, clinic.fullAddress)}>
