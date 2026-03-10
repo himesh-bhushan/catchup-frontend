@@ -421,21 +421,24 @@
         width: 100% !important;
     }
 }
+
+
 /* =========================================
    🎯 FINAL FIX: RING START & ARROW ALIGN
    ========================================= */
 
 @media (max-width: 768px) {
-    /* 1. Force the Rings (Large & Mini) to start at the TOP */
+    /* 1. Reset and Force the Ring to start at the TOP */
+    /* We rotate the SVG -90deg so the 'start' is at 12 o'clock */
     .large-circular-chart, 
     .mini-circular-chart {
+        display: block !important;
         transform: rotate(-90deg) !important;
         transform-origin: center !important;
-        display: block !important;
         overflow: visible !important;
     }
 
-    /* 2. Lock the Arrow Overlay to the Top Dead Center */
+    /* 2. Lock the Arrow Cap to the 12 o'clock position */
     .large-ring-container {
         position: relative !important;
         display: flex !important;
@@ -445,48 +448,54 @@
 
     .ring-arrow-overlay {
         position: absolute !important;
-        /* Position exactly at the top of the container */
-        top: 0 !important;
+        /* Position exactly at the vertical peak */
+        top: 0% !important; 
         left: 50% !important;
-        /* translate(-50%, -50%) centers the cap circle ON the ring line */
+        /* translate(-50%, -50%) centers the cap perfectly ON the ring stroke */
         transform: translate(-50%, -50%) !important;
         
-        /* Shape the cap as a perfect circle */
-        width: 32px !important; 
-        height: 32px !important;
+        /* Forces the cap to be a perfect circle with a white border */
+        width: 34px !important; 
+        height: 34px !important;
         background-color: #D93025 !important; 
         border-radius: 50% !important;
-        border: 3px solid #FFFFFF !important; /* Adds the clean white border */
+        border: 3px solid #FFFFFF !important; 
         
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         z-index: 10 !important;
         margin: 0 !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15) !important;
     }
 
-    /* 3. Point the Arrow Icon inside to the RIGHT (Forward) */
+    /* 3. Ensure the Arrow icon inside points RIGHT */
     .ring-arrow-overlay svg, 
     .ring-arrow-overlay i {
         color: white !important;
         font-size: 16px !important;
-        /* Parent is rotated -90 in the chart, but we want the icon to look natural */
+        /* We reset the rotation here so the arrow points in the direction of progress */
         transform: rotate(0deg) !important; 
     }
 
-    /* 4. Spacing Fix for "Move" Text */
-    /* Adds space below the ring so the KCAL stats don't overlap the Nav Bar */
+    /* 4. Fix Weekly Progress Start Points */
+    .mini-ring-wrapper {
+        position: relative !important;
+    }
+
+    /* 5. Mobile Layout Spacing Fix */
+    /* This ensures your Move stats and Change Goal button don't overlap */
     .main-ring-section {
+        margin-top: 10px !important;
         margin-bottom: 40px !important;
     }
 
     .large-ring-container {
-        margin-bottom: 30px !important;
+        margin-bottom: 35px !important;
     }
 
-    /* 5. Weekly Rings Alignment */
-    .mini-ring-wrapper {
-        position: relative !important;
+    /* Tighten the Weekday letters */
+    .day-letter-box {
+        margin-bottom: 5px !important;
     }
 }
