@@ -37,7 +37,28 @@
     justify-content: center;
     transition: transform 0.2s ease;
 }
+/* Add this new class */
+.lb-search-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
 
+/* Update your existing search bar class to this */
+.lb-search-bar-alt {
+    flex: 1; /* Tells the bar to take up the remaining space next to the icon */
+    padding: 18px 24px;
+    border-radius: 16px;
+    border: none;
+    background: #FFF;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    outline: none;
+    margin: 0;
+}
 .lb-transparent-btn:hover { transform: scale(1.15); }
 
 .lb-search-bar-alt {
@@ -493,7 +514,14 @@
 .icon-btn-delete { background: #FFF0F0; border: none; color: #E64A45; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; }
 
 /* --- LEADERBOARD LIST ITEMS --- */
-.lb-list-alt { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+/* Update this class to include width: 100% */
+.lb-list-alt { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 15px; 
+    width: 100%; /* THIS FIXES THE SQUISHED RECTANGLE */
+}
 .lb-list-card { display: flex; justify-content: space-between; align-items: center; background: #D4664C; width: 100%; max-width: 700px; padding: 18px 30px; border-radius: 16px; color: #FFF; margin: 0 auto 15px; transition: transform 0.2s; cursor: pointer; }
 .lb-list-card:hover { transform: scale(1.02); }
 .lb-card-left { display: flex; align-items: center; gap: 20px; }
