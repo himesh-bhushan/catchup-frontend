@@ -151,67 +151,76 @@
    ========================================= */
 
 @media (max-width: 768px) {
-    /* 1. CHAT INPUT: Pull it up from under the screen */
-    .chat-input-wrapper, 
-    .chat-bottom-section {
+    /* 1. RESET DESKTOP PADDING 
+       (Removes the 140px sidebar gap so the chat fits the phone screen) */
+    .chat-interface-wrapper {
+        padding-left: 0 !important;
+        width: 100vw !important;
+    }
+
+    .chat-header {
+        padding: 20px 15px !important;
+    }
+
+    .chat-header h2 {
+        font-size: 22px !important;
+    }
+
+    /* 2. CHAT INPUT: Pull it up and center it */
+    .input-area {
         position: fixed !important;
         bottom: 95px !important; /* Sits right above your bottom nav bar */
         left: 50% !important;
         transform: translateX(-50%) !important;
         width: 92% !important;
-        z-index: 9990 !important;
+        /* Remove the massive desktop padding (180px) */
+        padding: 0 !important; 
         background: transparent !important;
+        backdrop-filter: none !important;
+        z-index: 9990 !important;
     }
 
-    /* 2. PANIC BUTTON: Move it safely above both the Nav and Input */
-    .panic-button-container,
-    .red-floating-button {
+    .input-box-wrapper {
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+        padding: 6px 8px 6px 20px !important;
+    }
+
+    /* 3. PANIC BUTTON: Move it safely above the Input box */
+    /* (Targeting both potential class names just to be safe) */
+    .global-panic-btn,
+    .panic-button-container {
         position: fixed !important;
         bottom: 180px !important; /* Elevated above the typing area */
-        left: 20px !important;
+        left: 15px !important;
         z-index: 9999 !important;
-        width: 60px !important;
-        height: 60px !important;
+        width: 55px !important;
+        height: 55px !important;
     }
 
-    /* 3. CHAT MESSAGES AREA: Make sure it doesn't hide behind the input */
-    .chat-container,
-    .chat-messages-display {
+    /* 4. CHAT MESSAGES AREA */
+    .messages-container {
+        padding: 15px !important;
+        padding-bottom: 220px !important; /* Massive padding to scroll past the input box */
         height: 100vh !important;
-        padding-bottom: 220px !important; /* Massive padding so you can scroll to the very last message */
-        overflow-y: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
         box-sizing: border-box !important;
     }
 
-    /* 4. CHAT BUBBLES: Fix the squished text and floating avatar */
-    .chat-message {
-        display: flex !important;
-        width: 100% !important;
-        align-items: flex-end !important; /* Aligns the tomato avatar with the bottom of the bubble */
-        margin-bottom: 20px !important;
-    }
-    
-    /* Ensure bot messages align left */
-    .chat-message.bot {
-        justify-content: flex-start !important;
+    /* 5. CHAT BUBBLES: Fix the squished text */
+    .message-row {
+        max-width: 90% !important; /* Allows bubbles to be wider on small phone screens */
+        gap: 10px !important;
     }
 
-    /* Let the bubble stretch out naturally */
-    .chat-bubble,
-    .message-content {
-        max-width: 75% !important; /* Prevents it from being a narrow column */
-        width: auto !important;
-        padding: 12px 16px !important;
+    .bot-avatar-circle, 
+    .user-avatar-circle {
+        width: 38px !important; /* Slightly scale down avatars for mobile */
+        height: 38px !important;
+        margin-right: 8px !important;
+    }
+
+    .text-bubble {
+        padding: 12px 18px !important;
+        font-size: 15px !important;
         word-wrap: break-word !important;
-    }
-
-    /* Keep the avatar neat and locked to the side */
-    .chat-avatar {
-        width: 40px !important;
-        height: 40px !important;
-        flex-shrink: 0 !important;
-        margin-right: 12px !important;
     }
 }
