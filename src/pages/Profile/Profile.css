@@ -578,6 +578,86 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
+/* =========================================
+   📱 MOBILE PROFILE PAGE FIXES
+   ========================================= */
+
+@media (max-width: 768px) {
+    
+    /* --- 1. UNLOCK PAGE SCROLLING --- */
+    /* Forces the entire wrapper to scroll instead of trapping it inside the menu */
+    .profile-wrapper, 
+    .profile-wrapper.viewing-menu, 
+    .profile-wrapper.viewing-content {
+        display: block !important;
+        height: 100dvh !important; /* Locks to screen height */
+        width: 100vw !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important; /* Smooth scrolling for iOS */
+        
+        /* 🌟 140px bottom padding so you can scroll past the bottom Nav Bar */
+        padding: 20px 15px 140px 15px !important; 
+        box-sizing: border-box !important;
+    }
+
+    /* Removes the internal scroll trap from the menu side */
+    .profile-menu-side {
+        height: auto !important; 
+        overflow: visible !important; 
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    /* --- 2. CENTER AVATAR, NAME, AND EMAIL --- */
+    .profile-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important; /* Forces child text to center */
+        width: 100% !important;
+        margin-top: 20px !important;
+        margin-bottom: 35px !important;
+        position: relative !important;
+    }
+
+    /* Keeps the back arrow safely on the top left */
+    .nav-back-btn {
+        position: absolute !important;
+        left: 0 !important;
+        top: -15px !important;
+    }
+
+    .avatar-circle {
+        margin: 0 auto 15px auto !important; /* Perfectly centers the avatar */
+    }
+
+    .profile-name {
+        text-align: center !important;
+        font-size: 28px !important;
+        width: 100% !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* Targets the email text (even if it doesn't have a specific class) */
+    .profile-header p, 
+    .profile-header span {
+        text-align: center !important;
+        width: 100% !important;
+        font-size: 0.95rem !important;
+        color: var(--text-secondary) !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+
+    /* --- 3. MENU LIST ADJUSTMENTS --- */
+    .menu-item {
+        padding: 18px 20px !important; /* Makes the buttons a bit taller for easier tapping */
+        border-radius: 20px !important;
+        margin-bottom: 12px !important;
+    }
+}
+
 .toggle-switch.on .toggle-thumb { left: 24px; }
 
 /* Dark Mode Overrides */
