@@ -601,6 +601,15 @@
         margin-bottom: 2px !important;
     }
 
+    /* Ensures the fetched avatar image is perfectly round on mobile */
+    .avatar-img-circle {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        border-radius: 50% !important;
+    }
+
     /* 🌟 Shrunk "Last updated" to stay perfectly on one line */
     .last-synced-wrapper { 
         display: flex !important;

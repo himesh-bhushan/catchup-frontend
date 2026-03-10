@@ -212,9 +212,15 @@ const Dashboard = () => {
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
                 if (profile.avatar_url) {
-                    const fileName = profile.avatar_url.split('/').pop();
-                    const { data: img } = await supabase.storage.from('avatars').download(fileName);
-                    if (img) setAvatarUrl(URL.createObjectURL(img));
+                    // 1. If it's a Google/Web image, use it directly!
+                    if (profile.avatar_url.startsWith('http')) {
+                        setAvatarUrl(profile.avatar_url);
+                    } else {
+                        // 2. Otherwise, fetch it from your Supabase storage
+                        const fileName = profile.avatar_url.split('/').pop();
+                        const { data: img } = await supabase.storage.from('avatars').download(fileName);
+                        if (img) setAvatarUrl(URL.createObjectURL(img));
+                    }
                 }
                 if (profile.google_connected) setIsDeviceConnected(true);
                 
