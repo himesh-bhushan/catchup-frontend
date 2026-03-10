@@ -32,6 +32,7 @@ const Dashboard = () => {
   
   const [lastSynced, setLastSynced] = useState(null); 
   const [lastSyncedAgo, setLastSyncedAgo] = useState(null);
+  const [skipConnect, setSkipConnect] = useState(localStorage.getItem('skipTracker') === 'true');
   
   const [activityData, setActivityData] = useState({
     calories: 0, steps: 0, distance: 0, goal: 500, percentage: 0
@@ -89,6 +90,22 @@ const Dashboard = () => {
     const redirectURI = encodeURIComponent("https://backend.catchup.page/api/auth/google/callback");
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}&scope=https://www.googleapis.com/auth/fitness.activity.read%20https://www.googleapis.com/auth/fitness.body.read&access_type=offline&prompt=consent&state=${user.id}`;
     window.location.href = authUrl;
+  };
+
+  // --- DOWNLOAD APPLE HEALTH SHORTCUT ---
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = '/Catchup_Sync.shortcut'; // Ensure this matches your file name in public folder
+    link.setAttribute('download', 'Catchup_Sync.shortcut');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // --- CONTINUE & SKIP ---
+  const handleContinue = () => {
+    localStorage.setItem('skipTracker', 'true'); // Saves preference
+    setSkipConnect(true); // Hides the connect screen immediately
   };
 
   // --- LOCATION LOGIC ---
@@ -375,20 +392,34 @@ const Dashboard = () => {
                         <div className="connect-device-card-content">
                             <button onClick={() => setShowConnectMenu(false)} className="back-btn"><FiArrowLeft size={24} /></button>
                             <h3>Select Device</h3>
-                            <div className="connect-tracker-section">
-                                <h3>Connect Tracker</h3>
-                                <p>Download our Apple Health shortcut to sync your daily activity automatically.</p>
-                                
-                                {/* The Download Button */}
-                                <a 
-                                    href="/downloads/AppleHealthSync.shortcut" 
-                                    download="CatchUp_AppleHealth.shortcut" 
-                                    className="apple-health-download-btn"
-                                >
-                                    <FiHeart className="apple-health-icon" />
-                                    Apple Health
-                                </a>
-                            </div>
+                            <div className="connect-tracker-section" style={{ marginTop: '20px' }}>
+                            <h3>Connect Tracker</h3>
+                            <p>Download our Apple Health shortcut to sync your daily activity automatically.</p>
+                            
+                            <button 
+                                onClick={handleDownload} 
+                                style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '10px',
+                                    background: '#111', color: '#FFF', border: 'none',
+                                    padding: '12px 24px', borderRadius: '16px', fontWeight: 'bold',
+                                    cursor: 'pointer', marginTop: '10px'
+                                }}
+                            >
+                                <FiHeart style={{ color: '#FF2D55' }} />
+                                Apple Health
+                            </button>
+
+                            <button 
+                                onClick={handleContinue} 
+                                style={{
+                                    display: 'block', width: '100%', background: 'transparent',
+                                    color: '#888', border: 'none', padding: '12px', marginTop: '15px',
+                                    fontWeight: '600', cursor: 'pointer', textDecoration: 'underline'
+                                }}
+                            >
+                                Continue to Dashboard
+                            </button>
+                        </div>
                         </div>
                     ) : (
                         <>
