@@ -243,3 +243,181 @@
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+
+/* =========================================
+   📱 MOBILE ACTIVITY PAGE RESPONSIVENESS
+   ========================================= */
+
+@media (max-width: 768px) {
+    
+    /* 1. Global Wrapper & Padding */
+    .activity-page-wrapper, 
+    .dashboard-wrapper.activity-page-bg {
+        padding: 20px 20px 130px 20px !important; /* 130px bottom padding to clear nav bar */
+        min-height: 100dvh !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        display: block !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .activity-page-container {
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    /* 2. Header Fixes (Back button left, Title center, Calendar right) */
+    .activity-header {
+        margin-bottom: 30px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+
+    .header-left {
+        gap: 15px !important;
+        flex: 1 !important;
+    }
+
+    .header-left h2 {
+        font-size: 1.3rem !important; /* Scaled down to fit the date cleanly */
+        white-space: nowrap !important;
+    }
+
+    .calendar-wrapper {
+        width: 40px !important;
+        height: 40px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* 3. Convert Desktop Grid to Mobile Vertical Stack */
+    .activity-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 25px !important;
+        width: 100% !important;
+    }
+
+    /* 4. Horizontal Week View (M T W T F S S across the top) */
+    .week-sidebar {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        gap: 5px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .day-row {
+        flex-direction: column !important; /* Puts the letter on top of the ring */
+        gap: 8px !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .day-letter-box {
+        font-size: 0.9rem !important;
+        width: 28px !important;
+        height: 28px !important;
+        background: transparent !important; /* Matches mockup */
+    }
+
+    /* Grey background circle for the currently selected/active day letter */
+    .day-row.selected .day-letter-box {
+        background-color: #F0F0F0 !important; 
+        color: #E63946 !important;
+    }
+
+    .mini-ring-wrapper {
+        width: 36px !important; /* Perfectly sized so 7 days fit on screen */
+        height: 36px !important;
+    }
+
+    /* 5. Center the Main Large Ring */
+    .main-ring-section {
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .large-ring-container {
+        width: 260px !important; /* Scaled down for mobile */
+        height: 260px !important;
+        margin: 0 auto 30px auto !important;
+    }
+
+    /* 6. Stats Section Alignment (Left aligned like mockup) */
+    .stats-graphs-section {
+        width: 100% !important;
+    }
+
+    .stat-block {
+        margin-bottom: 30px !important;
+        width: 100% !important;
+    }
+
+    .stat-block h3 {
+        font-size: 1.6rem !important;
+        color: #111 !important;
+        margin-bottom: 5px !important;
+        text-align: left !important; /* Aligns "Move" to the left */
+    }
+
+    .stat-highlight {
+        margin-bottom: 20px !important;
+        gap: 8px !important;
+        justify-content: flex-start !important; /* Aligns "310/500 KCAL" to left */
+    }
+
+    .big-num {
+        font-size: 2.2rem !important;
+        line-height: 1 !important;
+    }
+
+    .sub-text {
+        font-size: 1.3rem !important;
+    }
+
+    /* 7. Steps & Distance Side-by-Side row */
+    .dual-stat-header {
+        display: flex !important;
+        flex-direction: row !important; /* Forces a horizontal split */
+        justify-content: space-between !important;
+        width: 100% !important;
+        margin-top: 15px !important;
+        margin-bottom: 0 !important;
+        gap: 20px !important;
+    }
+
+    /* Targets the invisible containers holding Steps and Distance */
+    .dual-stat-header > div {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important; /* Left aligns the text inside */
+    }
+
+    .dual-stat-header h3 {
+        font-size: 1.4rem !important;
+        margin-bottom: 5px !important;
+        color: #111 !important;
+        font-weight: 400 !important;
+    }
+
+    .dual-stat-header .big-num {
+        font-size: 1.6rem !important;
+        color: #000 !important;
+    }
+
+    .dual-stat-header .sub-text {
+        font-size: 1rem !important;
+        color: #000 !important; /* Matches black "KM" in mockup */
+    }
+
+    /* 8. Fix Bar Chart Width */
+    .chart-outer-wrapper {
+        height: 80px !important;
+        width: 100% !important;
+    }
+}
