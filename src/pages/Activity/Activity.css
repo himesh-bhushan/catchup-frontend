@@ -109,7 +109,7 @@
     display: block !important; 
     max-width: 100% !important; 
     overflow: visible !important; 
-    transform: rotate(90deg) !important; 
+    transform: rotate(0deg) !important; 
     transform-origin: 50% 50% !important;
 }
 
@@ -135,7 +135,7 @@
 /* 🌟 DESKTOP FIX: Pushes the 9 o'clock start to exactly 12 o'clock */
 .large-circular-chart { 
     display: block !important;
-    transform: rotate(90deg) !important; 
+    transform: rotate(0deg) !important; 
     transform-origin: 50% 50% !important;
     overflow: visible !important; 
 }
@@ -361,7 +361,7 @@
     .large-circular-chart, 
     .mini-circular-chart {
         display: block !important;
-        transform: rotate(90deg) !important; 
+        transform: rotate(0deg) !important; 
         transform-origin: 50% 50% !important; 
         overflow: visible !important;
     }
