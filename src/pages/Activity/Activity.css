@@ -22,7 +22,6 @@
     margin: 0 auto;
     padding: 30px 40px; 
 }
-
 /* --- HEADER --- */
 .activity-header {
     display: flex;
@@ -35,7 +34,7 @@
 .header-left { 
     display: flex; 
     align-items: center; 
-    gap: 15px; 
+    gap: 15px; /* Spacing between elements */
 }
 
 .header-left h2 { font-size: 1.8rem; font-weight: 600; margin: 0; color: #000; }
@@ -53,10 +52,11 @@
     display: flex; justify-content: center; align-items: center;
     cursor: pointer; position: relative;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-left: 5px; 
+    margin-left: 5px; /* Tiny nudge */
 }
 .calendar-wrapper:hover { transform: scale(1.05); border-color: #bbb; }
 .hidden-date-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+
 
 /* --- MAIN GRID --- */
 .activity-grid {
@@ -100,17 +100,18 @@
 }
 .day-row.selected .mini-ring-wrapper { opacity: 1; transform: scale(1.1); }
 
-/* 🌟 DESKTOP FIX: Rotates the mini rings so they start at 12 o'clock */
+/* 🌟 DESKTOP FIX: Rotates the mini rings 90deg clockwise so 9 o'clock becomes 12 o'clock */
 .mini-circular-chart { 
     display: block; 
     max-width: 100%; 
     overflow: visible; 
-    transform: rotate(90deg); /* Shifts the start point from left to top */
+    transform: rotate(90deg); 
     transform-origin: 50% 50%;
 }
 
-.mini-circle-bg { fill: #F8E7D6; stroke: none; } 
-.mini-circle { fill: none; stroke: #E63946; stroke-width: 6; stroke-linecap: round; } 
+.mini-circle-bg { fill: #F8E7D6; stroke: none; } /* Solid beige center for mini rings */
+.mini-circle { fill: none; stroke: #E63946; stroke-width: 6; stroke-linecap: round; } /* Thick stroke */
+
 
 /* --- CENTER RING --- */
 .main-ring-section {
@@ -126,7 +127,13 @@
     position: relative;
     margin-bottom: 40px;
 }
-.large-circular-chart { transform: rotate(0deg); overflow: visible; }
+
+/* 🌟 DESKTOP FIX: Rotates the main ring 90deg clockwise to match the mini rings */
+.large-circular-chart { 
+    transform: rotate(90deg); 
+    transform-origin: 50% 50%;
+    overflow: visible; 
+}
 
 /* The Solid Beige Center */
 .circle-bg { fill: #F8E7D6; stroke: none; }
@@ -135,16 +142,16 @@
 .circle { 
     fill: none; 
     stroke: #D93025; 
-    stroke-width: 4; 
+    stroke-width: 4; /* Refined thickness */
     stroke-linecap: round;
     transition: stroke-dasharray 0.5s ease;
 }
 
 .ring-arrow-overlay {
     position: absolute;
-    top: 10px;              
-    left: 50%;              
-    transform: translateX(-50%); 
+    top: 10px;              /* Position near the top edge */
+    left: 50%;              /* Move to horizontal center */
+    transform: translateX(-50%); /* Perfect centering adjustment */
     pointer-events: none;
     color: white;
 }
@@ -157,6 +164,7 @@
     transition: transform 0.2s;
 }
 .change-goal-btn:hover { transform: translateY(-2px); }
+
 
 /* --- RIGHT COLUMN: STATS --- */
 .stats-graphs-section { padding-left: 0; }
@@ -197,7 +205,7 @@
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5); 
+    background: rgba(0, 0, 0, 0.5); /* Dimmed background */
     display: flex; align-items: center; justify-content: center;
     z-index: 1000;
     animation: fadeIn 0.2s ease-out;
@@ -324,18 +332,11 @@
         position: relative !important;
     }
 
-    /* --- 5. RING ROTATION (SPLIT FOR MAIN VS MINI) --- */
-    /* Main ring starts at 12 o'clock naturally */
+    /* --- 5. RING ROTATION (FIXED) --- */
+    /* 🌟 Matches the 90deg clockwise rotation we applied to Desktop! */
     svg.large-circular-chart, 
-    .large-circular-chart {
-        display: block !important;
-        transform: rotate(0deg) !important; 
-        transform-origin: 50% 50% !important; 
-        overflow: visible !important;
-    }
-    
-    /* Mini rings preserve the desktop fix */
-    svg.mini-circular-chart, 
+    svg.mini-circular-chart,
+    .large-circular-chart, 
     .mini-circular-chart {
         display: block !important;
         transform: rotate(90deg) !important; 
