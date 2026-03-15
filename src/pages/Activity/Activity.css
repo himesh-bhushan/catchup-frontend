@@ -104,13 +104,13 @@
 }
 .day-row.selected .mini-ring-wrapper { opacity: 1; transform: scale(1.1); }
 
-/* 🌟 DESKTOP FIX: Rotates the mini rings -90deg so they start exactly at 12 o'clock */
+/* 🌟 DESKTOP FIX: Pushes the 9 o'clock start to exactly 12 o'clock */
 .mini-circular-chart { 
-    display: block; 
-    max-width: 100%; 
-    overflow: visible; 
-    transform: rotate(-90deg); 
-    transform-origin: 50% 50%;
+    display: block !important; 
+    max-width: 100% !important; 
+    overflow: visible !important; 
+    transform: rotate(90deg) !important; 
+    transform-origin: 50% 50% !important;
 }
 
 .mini-circle-bg { fill: #F8E7D6; stroke: none; } 
@@ -132,12 +132,12 @@
     margin-bottom: 40px;
 }
 
-/* 🌟 DESKTOP FIX: Rotates the main ring -90deg so it starts exactly at 12 o'clock */
+/* 🌟 DESKTOP FIX: Pushes the 9 o'clock start to exactly 12 o'clock */
 .large-circular-chart { 
-    display: block;
-    transform: rotate(-90deg); 
-    transform-origin: 50% 50%;
-    overflow: visible; 
+    display: block !important;
+    transform: rotate(90deg) !important; 
+    transform-origin: 50% 50% !important;
+    overflow: visible !important; 
 }
 
 /* The Solid Beige Center */
@@ -356,13 +356,12 @@
     }
 
     /* --- 5. RING ROTATION (MOBILE BULLETPROOFING) --- */
-    /* Forces the -90deg rotation to remain active on small screens */
     svg.large-circular-chart, 
     svg.mini-circular-chart,
     .large-circular-chart, 
     .mini-circular-chart {
         display: block !important;
-        transform: rotate(-90deg) !important; 
+        transform: rotate(90deg) !important; 
         transform-origin: 50% 50% !important; 
         overflow: visible !important;
     }
