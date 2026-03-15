@@ -698,7 +698,7 @@ const Dashboard = () => {
                                 <div className="metric-pill pill-yellow">
                                     <div className="metric-icon-circle"><FiActivity color="#333" /></div>
                                     <div className="metric-text-group">
-                                        <span className="metric-label">Calories Burned</span>
+                                        <span className="metric-label">Calories </span>
                                         <span className="metric-value">{activityData.calories} <strong>KCAL</strong></span>
                                     </div>
                                 </div>
