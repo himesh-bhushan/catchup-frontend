@@ -22,6 +22,7 @@
     margin: 0 auto;
     padding: 30px 40px; 
 }
+
 /* --- HEADER --- */
 .activity-header {
     display: flex;
@@ -34,7 +35,7 @@
 .header-left { 
     display: flex; 
     align-items: center; 
-    gap: 15px; /* Spacing between elements */
+    gap: 15px; 
 }
 
 .header-left h2 { font-size: 1.8rem; font-weight: 600; margin: 0; color: #000; }
@@ -52,11 +53,10 @@
     display: flex; justify-content: center; align-items: center;
     cursor: pointer; position: relative;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-left: 5px; /* Tiny nudge */
+    margin-left: 5px; 
 }
 .calendar-wrapper:hover { transform: scale(1.05); border-color: #bbb; }
 .hidden-date-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-
 
 /* --- MAIN GRID --- */
 .activity-grid {
@@ -100,17 +100,17 @@
 }
 .day-row.selected .mini-ring-wrapper { opacity: 1; transform: scale(1.1); }
 
-/* 🌟 DESKTOP FIX: Rotates the mini rings 90deg clockwise so 9 o'clock becomes 12 o'clock */
+/* 🌟 DESKTOP FIX: Rotates the mini rings -90deg so they start exactly at 12 o'clock */
 .mini-circular-chart { 
     display: block; 
     max-width: 100%; 
     overflow: visible; 
-    transform: rotate(90deg); 
+    transform: rotate(-90deg); 
     transform-origin: 50% 50%;
 }
 
-.mini-circle-bg { fill: #F8E7D6; stroke: none; } /* Solid beige center for mini rings */
-.mini-circle { fill: none; stroke: #E63946; stroke-width: 6; stroke-linecap: round; } /* Thick stroke */
+.mini-circle-bg { fill: #F8E7D6; stroke: none; } 
+.mini-circle { fill: none; stroke: #E63946; stroke-width: 6; stroke-linecap: round; } 
 
 
 /* --- CENTER RING --- */
@@ -128,11 +128,12 @@
     margin-bottom: 40px;
 }
 
-/* 🌟 DESKTOP FIX: Rotates the main ring 90deg clockwise to match the mini rings */
+/* 🌟 DESKTOP FIX: Rotates the main ring -90deg so it starts exactly at 12 o'clock */
 .large-circular-chart { 
-    transform: rotate(90deg); 
+    transform: rotate(-90deg); 
     transform-origin: 50% 50%;
     overflow: visible; 
+    display: block;
 }
 
 /* The Solid Beige Center */
@@ -142,18 +143,35 @@
 .circle { 
     fill: none; 
     stroke: #D93025; 
-    stroke-width: 4; /* Refined thickness */
+    stroke-width: 4; 
     stroke-linecap: round;
     transition: stroke-dasharray 0.5s ease;
 }
 
+/* 🌟 DESKTOP FIX: Upgraded Arrow to have the Red Cap globally */
 .ring-arrow-overlay {
     position: absolute;
-    top: 10px;              /* Position near the top edge */
-    left: 50%;              /* Move to horizontal center */
-    transform: translateX(-50%); /* Perfect centering adjustment */
+    top: 0;              
+    left: 50%;              
+    transform: translate(-50%, -50%); 
+    width: 34px; 
+    height: 34px;
+    background-color: #D93025; 
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    z-index: 10;
     pointer-events: none;
     color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.ring-arrow-overlay svg, 
+.ring-arrow-overlay i {
+    font-size: 16px;
+    /* Keeps the arrow pointing right */
+    transform: rotate(0deg); 
 }
 
 .change-goal-btn {
@@ -205,7 +223,7 @@
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    background: rgba(0, 0, 0, 0.5); 
     display: flex; align-items: center; justify-content: center;
     z-index: 1000;
     animation: fadeIn 0.2s ease-out;
@@ -333,13 +351,13 @@
     }
 
     /* --- 5. RING ROTATION (FIXED) --- */
-    /* 🌟 Matches the 90deg clockwise rotation we applied to Desktop! */
+    /* Synchronized with Desktop to -90deg */
     svg.large-circular-chart, 
     svg.mini-circular-chart,
     .large-circular-chart, 
     .mini-circular-chart {
         display: block !important;
-        transform: rotate(90deg) !important; 
+        transform: rotate(-90deg) !important; 
         transform-origin: 50% 50% !important; 
         overflow: visible !important;
     }
@@ -358,17 +376,15 @@
         display: flex !important; justify-content: center !important; align-items: center !important;
     }
 
-    /* Arrow Overlay (Locked to 12 o'clock, White ring removed) */
+    /* Arrow Overlay */
     .ring-arrow-overlay {
         position: absolute !important;
         top: 0% !important; left: 50% !important;
         transform: translate(-50%, -50%) !important;
-        
         width: 34px !important; height: 34px !important;
         background-color: #D93025 !important; 
         border-radius: 50% !important;
         border: none !important; 
-        
         display: flex !important; align-items: center !important; justify-content: center !important;
         z-index: 10 !important; margin: 0 !important;
         box-shadow: 0 2px 10px rgba(0,0,0,0.15) !important;
