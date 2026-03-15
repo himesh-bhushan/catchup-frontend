@@ -109,7 +109,7 @@
     display: block; 
     max-width: 100%; 
     overflow: visible; 
-    transform: rotate(0deg); 
+    transform: rotate(-90deg); 
     transform-origin: 50% 50%;
 }
 
@@ -135,7 +135,7 @@
 /* 🌟 DESKTOP FIX: Rotates the main ring -90deg so it starts exactly at 12 o'clock */
 .large-circular-chart { 
     display: block;
-    transform: rotate(0deg); 
+    transform: rotate(-90deg); 
     transform-origin: 50% 50%;
     overflow: visible; 
 }
@@ -362,7 +362,7 @@
     .large-circular-chart, 
     .mini-circular-chart {
         display: block !important;
-        transform: rotate(0deg) !important; 
+        transform: rotate(-90deg) !important; 
         transform-origin: 50% 50% !important; 
         overflow: visible !important;
     }
