@@ -155,7 +155,7 @@
 /* 🌟 ARROW FIX: Premium Red Cap applied globally */
 .ring-arrow-overlay {
     position: absolute;
-    top: 16px;              
+    top: 18px;              
     left: 50%;              
     transform: translate(-50%, -50%); 
     width: 34px; 
@@ -383,7 +383,7 @@
     /* Keep the arrow overlay aligned perfectly on mobile */
     .ring-arrow-overlay {
         position: absolute !important;
-        top: 0% !important; left: 50% !important;
+        top: 18px !important; left: 50% !important;
         transform: translate(-50%, -50%) !important;
         margin: 0 !important;
         z-index: 10 !important;
