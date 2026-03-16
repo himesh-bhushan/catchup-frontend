@@ -11,6 +11,10 @@ import './HeartRate.css';
 
 const HeartRate = () => {
   const navigate = useNavigate();
+  
+  // 🌟 ADDED: Date State
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  
   const [range, setRange] = useState('Week'); 
   const [logs, setLogs] = useState([]);
   const [todayLog, setTodayLog] = useState({ bpm: 0 });
@@ -26,19 +30,39 @@ const HeartRate = () => {
     if (!user) return;
 
     try {
-      // 1. FETCH LATEST FROM PROFILE (Matches Dashboard)
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('heart_rate')
-        .eq('id', user.id)
-        .single();
+      // 🌟 UPDATED: Check if the selected date is Today
+      const isToday = date === new Date().toISOString().split('T')[0];
+      let currentBpm = 0;
 
-      if (profile?.heart_rate) {
-        setTodayLog({ 
-          bpm: profile.heart_rate, 
-          date: new Date().toISOString() 
-        });
+      if (isToday) {
+        // 1. FETCH LATEST FROM PROFILE (If Today)
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('heart_rate')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.heart_rate) {
+          currentBpm = profile.heart_rate;
+        }
+      } else {
+        // 1. FETCH FROM LOGS (If Past Date)
+        const { data: logEntry } = await supabase
+          .from('heart_rate_logs')
+          .select('bpm')
+          .eq('user_id', user.id)
+          .eq('date', date)
+          .maybeSingle();
+
+        if (logEntry) {
+          currentBpm = logEntry.bpm;
+        }
       }
+
+      setTodayLog({ 
+        bpm: currentBpm, 
+        date: date 
+      });
 
       // 2. FETCH HISTORY FROM LOGS (For the Graph)
       const { data: history, error: historyError } = await supabase
@@ -59,35 +83,40 @@ const HeartRate = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [date]); // 🌟 ADDED: 'date' as a dependency
 
   useEffect(() => {
     fetchHRData();
-  }, [fetchHRData, range]);
+  }, [fetchHRData, range, date]); // 🌟 ADDED: 'date' to useEffect
 
   const handleAddReading = async () => {
     if (!newBPM) return;
 
     const { data: { user } } = await supabase.auth.getUser();
-    const todayStr = new Date().toISOString().split('T')[0];
     const bpmValue = parseInt(newBPM);
 
-    // Update Logs (History)
+    // 🌟 UPDATED: Update log for the SELECTED date
     const { error: logError } = await supabase
       .from('heart_rate_logs')
       .upsert({
         user_id: user.id,
-        date: todayStr,
+        date: date, // Uses selected date
         bpm: bpmValue
       }, { onConflict: 'user_id,date' });
 
-    // Update Profile (Dashboard)
-    const { error: profError } = await supabase
-        .from('profiles')
-        .update({ heart_rate: bpmValue })
-        .eq('id', user.id);
+    // 🌟 UPDATED: Only update the profile if the reading is for Today
+    const isToday = date === new Date().toISOString().split('T')[0];
+    let profError = null;
 
-    if (!logError && !profError) {
+    if (isToday) {
+        const { error } = await supabase
+            .from('profiles')
+            .update({ heart_rate: bpmValue })
+            .eq('id', user.id);
+        profError = error;
+    }
+
+    if (!logError) {
       setIsAdding(false);
       setNewBPM('');
       fetchHRData(); // Refresh UI
@@ -164,7 +193,17 @@ const HeartRate = () => {
                ))}
             </div>
 
-            <button className="calendar-btn"><FiCalendar /></button>
+            {/* 🌟 UPDATED: Wrapped the icon in an invisible date input */}
+            <button className="calendar-btn" style={{ position: 'relative', overflow: 'hidden' }}>
+              <FiCalendar />
+              <input 
+                type="date" 
+                value={date} 
+                onChange={(e) => setDate(e.target.value)} 
+                max={new Date().toISOString().split('T')[0]} 
+                style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer', left: 0, top: 0 }}
+              />
+            </button>
           </div>
 
           <div className="stats-block">
@@ -180,7 +219,8 @@ const HeartRate = () => {
 
           <div className="today-reading-block">
              <div className="today-header">
-                <h3>Latest Reading</h3>
+                {/* 🌟 UPDATED: Shows correct heading based on selected date */}
+                <h3>{date === new Date().toISOString().split('T')[0] ? 'Latest Reading' : 'Reading for Date'}</h3>
                 <button className="add-reading-btn" onClick={() => setIsAdding(!isAdding)}>
                    {isAdding ? 'Close' : <FiPlus />}
                 </button>
@@ -202,7 +242,8 @@ const HeartRate = () => {
                 </h1>
              )}
              <p className="date-sub">
-                {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {/* 🌟 UPDATED: Shows the selected date */}
+                {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
              </p>
           </div>
         </div>
