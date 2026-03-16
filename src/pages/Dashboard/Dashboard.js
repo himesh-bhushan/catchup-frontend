@@ -204,19 +204,30 @@ const Dashboard = () => {
     if (session?.user) {
         setUser(session.user);
         try {
+            // 1. FETCH ALL DATA FIRST
+            const todayStr = new Date().toISOString().split('T')[0];
+            
             const { data: profile } = await supabase
                 .from('profiles')
                 .select('first_name, calorie_goal, avatar_url, google_connected, last_synced_at, heart_rate, sleep_seconds, water_intake, blood_pressure')
                 .eq('id', session.user.id).single();
             
+            const { data: todayLog } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
+            
+            const { data: sleepLog } = await supabase.from('sleep_logs').select('seconds').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
+
+            // 2. PROCESS VARIABLES
+            const goal = profile?.calorie_goal || 500;
+            const cals = todayLog?.calories || 0;
+            const actualSleepSeconds = sleepLog?.seconds || 0; 
+
+            // 3. SET STATES
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
                 if (profile.avatar_url) {
-                    // 1. If it's a Google/Web image, use it directly!
                     if (profile.avatar_url.startsWith('http')) {
                         setAvatarUrl(profile.avatar_url);
                     } else {
-                        // 2. Otherwise, fetch it from your Supabase storage
                         const fileName = profile.avatar_url.split('/').pop();
                         const { data: img } = await supabase.storage.from('avatars').download(fileName);
                         if (img) setAvatarUrl(URL.createObjectURL(img));
@@ -232,30 +243,17 @@ const Dashboard = () => {
 
                 setOtherStats({
                     heart_rate: profile.heart_rate || 0,
-                    sleep: actualSleepSeconds, // 🌟 Now perfectly synced with HealthScore.js!
+                    sleep: actualSleepSeconds, 
                     water_intake: profile.water_intake || 0,
                     blood_pressure: profile.blood_pressure || "--/--"
                 });
             }
 
-            // Existing code...
-            const todayStr = new Date().toISOString().split('T')[0];
-            
-            // 1. Fetch Activity Log for Calories/Steps/Move
-            const { data: todayLog } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
-            
-            // 2. 🌟 NEW: Fetch Sleep Log specifically for today to match the HealthScore page!
-            const { data: sleepLog } = await supabase.from('sleep_logs').select('seconds').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
-
-            const goal = profile?.calorie_goal || 500;
-            const cals = todayLog?.calories || 0;
-            const actualSleepSeconds = sleepLog?.seconds || 0; // 🌟 Use the specific daily log!
-
-              // --- NEW: GOALS CALCULATION ---
+            // --- GOALS CALCULATION ---
             const stepGoalMet = (todayLog?.steps || 0) >= 5000;
-            const moveGoalMet = cals >= goal; // Activity Ring completed
-            const sleepGoalMet = profile?.sleep_seconds >= (7 * 3600); // 7 hours
-            const waterGoalMet = profile?.water_intake >= 2000; // 2 Liters (2000ml)
+            const moveGoalMet = cals >= goal; 
+            const sleepGoalMet = actualSleepSeconds >= (7 * 3600);
+            const waterGoalMet = profile?.water_intake >= 2000; 
 
             let completedGoals = 0;
             if (stepGoalMet) completedGoals++;
@@ -273,8 +271,7 @@ const Dashboard = () => {
             });
             // -----------------------------
 
-
-            // 🟢 NEW AWARDS LOGIC: Check entire month
+            // --- AWARDS LOGIC ---
             const today = new Date();
             const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
             const daysPassed = today.getDate(); 
@@ -289,7 +286,6 @@ const Dashboard = () => {
             if (monthLogs) {
                 const uniqueDays = new Set();
                 monthLogs.forEach(log => {
-                    // Count how many unique days they hit the goal
                     if (log.calories >= goal && !uniqueDays.has(log.date)) {
                         uniqueDays.add(log.date);
                         daysMetGoal++;
@@ -297,7 +293,6 @@ const Dashboard = () => {
                 });
             }
 
-            // Award is earned if they met the goal for every day of the month so far!
             setIsAwardEarned(daysMetGoal >= daysPassed);
 
             setActivityData({
