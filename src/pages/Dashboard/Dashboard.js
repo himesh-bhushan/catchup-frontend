@@ -232,17 +232,24 @@ const Dashboard = () => {
 
                 setOtherStats({
                     heart_rate: profile.heart_rate || 0,
-                    sleep: profile.sleep_seconds || 0, 
+                    sleep: actualSleepSeconds, // 🌟 Now perfectly synced with HealthScore.js!
                     water_intake: profile.water_intake || 0,
                     blood_pressure: profile.blood_pressure || "--/--"
                 });
             }
 
+            // Existing code...
             const todayStr = new Date().toISOString().split('T')[0];
+            
+            // 1. Fetch Activity Log for Calories/Steps/Move
             const { data: todayLog } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
             
+            // 2. 🌟 NEW: Fetch Sleep Log specifically for today to match the HealthScore page!
+            const { data: sleepLog } = await supabase.from('sleep_logs').select('seconds').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
+
             const goal = profile?.calorie_goal || 500;
             const cals = todayLog?.calories || 0;
+            const actualSleepSeconds = sleepLog?.seconds || 0; // 🌟 Use the specific daily log!
 
               // --- NEW: GOALS CALCULATION ---
             const stepGoalMet = (todayLog?.steps || 0) >= 5000;
