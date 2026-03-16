@@ -300,7 +300,7 @@
  /* 🌟 Updated to make the image significantly bigger */
   .signup-hero-image {
     width: 100% !important;      
-    max-width: 600px !important; /* Increased container allowance */
+    max-width: 400px !important; /* Increased container allowance */
     height: auto !important;
     object-fit: contain !important;
     display: block !important; 
