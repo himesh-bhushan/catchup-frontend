@@ -16,7 +16,7 @@
     z-index: 2000; 
     transition: transform 0.2s, box-shadow 0.2s;
     padding: 0; 
-    overflow: visible; /* 🌟 CHANGED: Must be visible so the speech bubble isn't cut off */
+    overflow: hidden; 
 }
 
 .global-panic-btn:hover {
@@ -29,47 +29,6 @@
     height: 100%;
     object-fit: cover; 
     display: block;
-    border-radius: 50%; /* 🌟 ADDED: Keeps the image round since we removed overflow: hidden above */
-}
-
-/* 🌟 NEW: THE SPEECH BUBBLE TEXT */
-.global-panic-btn::after {
-    content: 'Panic Button';
-    position: absolute;
-    left: calc(100% + 15px); /* Pushes it to the right of the button */
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #FF3B30;
-    color: white;
-    padding: 6px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 700;
-    font-family: 'Poppins', sans-serif;
-    white-space: nowrap;
-    pointer-events: none; /* Allows clicks to pass through */
-    box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
-    animation: floatBubble 2.5s infinite ease-in-out;
-}
-
-/* 🌟 NEW: THE SPEECH BUBBLE TRIANGLE/TAIL */
-.global-panic-btn::before {
-    content: '';
-    position: absolute;
-    left: calc(100% + 4px); /* Pushes the triangle just outside the button */
-    top: 50%;
-    transform: translateY(-50%);
-    border-width: 6px;
-    border-style: solid;
-    border-color: transparent #FF3B30 transparent transparent;
-    pointer-events: none;
-    animation: floatBubble 2.5s infinite ease-in-out;
-}
-
-/* 🌟 NEW: GENTLE FLOATING ANIMATION FOR BUBBLE */
-@keyframes floatBubble {
-    0%, 100% { transform: translateY(-50%) translateX(0); }
-    50% { transform: translateY(-50%) translateX(6px); }
 }
 
 @media (max-width: 1024px) {
@@ -85,7 +44,7 @@
 .panic-overlay {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
-    background-color: rgba(20, 20, 20, 0.98); 
+    background-color: rgba(20, 20, 20, 0.98); /* Slightly darker background */
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -99,13 +58,13 @@
 
 /* ✅ UPDATED BUTTON POSITION */
 .close-panic-btn {
-    position: relative; 
-    margin-top: 80px;   
+    position: relative; /* No longer absolute top */
+    margin-top: 80px;   /* Pushes it below the circle */
     background: transparent;
     border: 1px solid rgba(255,255,255,0.8);
     color: white;
     padding: 12px 30px;
-    border-radius: 50px; 
+    border-radius: 50px; /* Pill shape */
     font-size: 1rem;
     cursor: pointer;
     display: flex;
@@ -130,10 +89,12 @@
 
 /* ✅ RED CIRCLE */
 .breathing-circle {
-    width: 280px;   
+    width: 280px;   /* Made it larger like the design */
     height: 280px;
+    /* Red Gradient */
     background: linear-gradient(135deg, #FF6B6B, #FF3B30);
     border-radius: 50%;
+    /* Red Glow */
     box-shadow: 0 0 60px rgba(255, 59, 48, 0.5);
     animation: breathe 12s infinite ease-in-out; 
 }
@@ -142,12 +103,12 @@
 .breathing-text {
     position: absolute;
     color: white;
-    font-size: 2rem; 
+    font-size: 2rem; /* Larger text */
     font-weight: 700;
     letter-spacing: 0.5px;
     pointer-events: none;
     font-family: 'Poppins', sans-serif;
-    white-space: nowrap; 
+    white-space: nowrap; /* Forces text to one line */
     text-align: center;
     text-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
@@ -159,22 +120,23 @@
     100% { transform: scale(0.85); opacity: 0.9; }     
 }
 
+
 /* --- MOBILE PANIC BUTTON POSITIONING (Phones) --- */
 @media (max-width: 768px) {
     .global-panic-btn {
         left: 20px !important; 
+        
+        /* Pushes it safely above the mobile bottom navigation bar */
         bottom: 110px !important; 
+        
         width: 55px !important;
         height: 55px !important;
+        
+        /* Ensures it absolutely stays on top of any other floating elements */
         z-index: 9999 !important; 
     }
 
-    /* ✅ Hides the speech bubble on mobile to save screen space */
-    .global-panic-btn::after,
-    .global-panic-btn::before {
-        display: none !important;
-    }
-
+    /* ✅ Hides the button on all pages EXCEPT the dashboard on mobile */
     .global-panic-btn.hide-on-mobile {
         display: none !important;
     }
