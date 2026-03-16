@@ -266,8 +266,18 @@
     height: 100vh;
     overflow: hidden;
   }
+
+  .hero-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px; /* Controls the space between the text and tomato */
+  }
+  
   .signup-hero-side {
     display: flex;
+    flex-direction: column; /* 🌟 ADDED: Stacks the text and tomato on top of each other */
     flex: 4;
     background-color: #FFF9C4;
     align-items: center;

@@ -186,8 +186,7 @@ const Dashboard = () => {
         title: t('rec_tomatoes') || "Why Tomato is Good For Us", 
         img: blog1, 
         color: "#fff3e0",
-        category: "HEALTHY",
-        author: "CHATGPT",
+        author: "YX",
         photographer: "PINTEREST",
         content: "Tomatoes are good for our health because they are rich in vitamins, antioxidants, and nutrients that support many body functions. Regularly eating tomatoes can help improve heart health, strengthen the immune system, and protect the body from certain diseases.\n\n1. Rich in Nutrients\nTomatoes contain important nutrients such as vitamin C, vitamin A, potassium, and folate. These nutrients help support the immune system, maintain healthy skin, and keep the body functioning properly.\n\n2. High in Antioxidants\nTomatoes are a great source of antioxidants, especially lycopene. Antioxidants help protect the body's cells from damage caused by harmful molecules called free radicals, which may reduce the risk of certain chronic diseases.\n\n3. Supports Heart Health\nEating tomatoes may help improve heart health because they contain potassium and antioxidants that can help regulate blood pressure and reduce inflammation. This can lower the risk of heart-related problems and support overall cardiovascular health.\n\n4. Good for Skin Health\nTomatoes can help keep the skin healthy because they contain vitamin C and antioxidants such as lycopene. These nutrients help protect the skin from damage caused by sunlight and pollution, while also supporting collagen production, which keeps the skin firm and healthy."
     },
@@ -196,8 +195,7 @@ const Dashboard = () => {
         title: t('rec_heart') || "5 Steps to Better Health", 
         img: blog2, 
         color: "#ffebee",
-        category: "HEALTHY",
-        author: "CHATGPT",
+        author: "HB",
         photographer: "PINTEREST",
         content: "Better health can be achieved by adopting simple daily habits that support both the body and mind. By maintaining a balanced lifestyle that includes proper nutrition, rest, physical activity, hydration, and stress management, individuals can improve their overall well-being and quality of life.\n\n1. Eat a Balanced Diet\nMaintaining a healthy diet is one of the most important steps to better health. Eating a variety of fruits, vegetables, whole grains, and protein provides the body with essential nutrients needed for energy, growth, and proper body functions.\n\n2. Get Enough Sleep\nQuality sleep allows the body and mind to recover and recharge. Getting enough sleep improves concentration, strengthens the immune system, and supports overall physical and mental well-being.\n\n3. Exercise Regularly\nRegular physical activity helps improve cardiovascular health, strengthen muscles, and maintain a healthy weight. Even simple activities such as walking, cycling, or stretching can greatly benefit overall health.\n\n4. Stay Hydrated\nDrinking enough water is essential for many body functions, including digestion, temperature regulation, and nutrient transport. Proper hydration helps keep the body energized and functioning efficiently."
     },
@@ -206,8 +204,7 @@ const Dashboard = () => {
         title: t('rec_sleep') || "Why Sleep is Your Superpower", 
         img: blog3, 
         color: "#e3f2fd",
-        category: "HEALTHY",
-        author: "CHATGPT",
+        author: "YX",
         photographer: "PINTEREST",
         content: "Sleep restores energy, strengthens memory, and supports overall physical and mental health. Because it improves performance, mood, and well-being, sleep is often considered a \"superpower.\"\n\nOne of the main reasons sleep is considered a superpower is its impact on brain performance. During sleep, the brain consolidates memories and processes information learned throughout the day. This improves learning ability, creativity, and problem-solving skills. Adequate sleep also helps maintain attention and cognitive clarity, allowing individuals to think more effectively and make better decisions.\n\nSleep is essential for the body's recovery and overall health. While sleeping, the body repairs tissues, strengthens the immune system, and regulates hormones that control appetite and metabolism. Getting enough sleep reduces the risk of health problems such as heart disease, obesity, and weakened immunity. As a result, quality sleep helps individuals maintain long-term physical well-being.\n\nSleep also plays a key role in emotional regulation and mental health. Lack of sleep can lead to irritability, stress, and difficulty managing emotions. In contrast, sufficient sleep helps stabilize mood and enhances resilience to daily challenges. When individuals are well-rested, they tend to have better emotional control, improved relationships, and a more positive outlook on life."
     },
