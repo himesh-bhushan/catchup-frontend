@@ -15,7 +15,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center; /* Ensures the form floats in the middle vertically */
+  align-items: center; 
   width: 100%;
 }
 
@@ -267,7 +267,6 @@
     overflow: hidden;
   }
   
-  /* 🌟 FIX: Forces vertical stacking */
   .signup-hero-side {
     display: flex;
     flex-direction: column; 
@@ -278,15 +277,14 @@
     padding: 40px;
   }
 
-  /* 🌟 FIX: Centers text above the image */
   .hero-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 40px; /* Space between title and tomato */
-    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 30px !important; 
+    width: 100% !important;
   }
 
   .signup-hero-side h1 {
@@ -297,14 +295,15 @@
     margin: 0; 
   }
 
-  /* 🌟 FIX: Enlarges the image and locks it in the center */
   .hero-image {
-    width: 90%; 
-    max-width: 400px;
-    height: auto;
-    object-fit: contain;
-    display: block; 
-    margin: 0 auto; 
+    width: 90% !important; 
+    max-width: 400px !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important; 
+    margin: 0 auto !important; 
+    position: static !important; 
+    transform: none !important;
   }
 
   .signup-form-side {

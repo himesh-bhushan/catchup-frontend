@@ -212,7 +212,6 @@ const Signup = () => {
             {loading ? "Processing..." : "Sign up"}
           </button>
 
-          {/* 🌟 ADDED REVERSE LINK */}
           <div style={{ textAlign: 'center', marginTop: '25px', fontSize: '14px', color: '#666' }}>
              Already have an account?{' '}
              <span 
@@ -222,7 +221,6 @@ const Signup = () => {
                 Sign in
              </span>
           </div>
-
         </div>
       );
 
@@ -365,7 +363,6 @@ const Signup = () => {
   return (
     <div className="signup-page-wrapper">
       <div className="signup-hero-side">
-        {/* 🌟 THIS WRAPPER STACKS THEM */}
         <div className="hero-content-wrapper">
           <h1>Time to<br />“ketchup” on<br />your wellness</h1>
           <img src={tomatoHero} alt="Tomato Superhero" className="hero-image" />
