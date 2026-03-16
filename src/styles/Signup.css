@@ -287,17 +287,19 @@
     width: 100% !important;
   }
 
+  /* 🌟 Updated to make the text smaller */
   .signup-hero-side h1 {
-    font-size: 3.5rem;
+    font-size: 2.8rem; /* 🌟 CHANGED: Decreased from 3.5rem */
     font-weight: 800;
     color: #FF3B30;
     line-height: 1.1;
     margin: 0; 
   }
 
+  /* 🌟 Updated to make the image bigger */
   .hero-image {
-    width: 90% !important; 
-    max-width: 400px !important;
+    width: 100% !important;      /* 🌟 CHANGED: Increased from 90% */
+    max-width: 550px !important; /* 🌟 CHANGED: Increased from 400px */
     height: auto !important;
     object-fit: contain !important;
     display: block !important; 
