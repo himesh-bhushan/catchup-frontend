@@ -11,11 +11,11 @@ const Welcome = () => {
   return (
     <div className="welcome-container">
       {/* Image Section */}
-      <div className="hero-section">
+      <div className="welcome-hero-section">
         <img 
           src={tomatoHero} 
           alt="Tomato Superhero" 
-          className="hero-image" 
+          className="welcome-hero-image" 
         />
       </div>
 
