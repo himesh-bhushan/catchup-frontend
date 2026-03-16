@@ -600,6 +600,7 @@
         font-size: 1.6rem !important; 
         line-height: 1.25 !important;
         margin-bottom: 2px !important;
+        text-align: left;
     }
 
     /* Ensures the fetched avatar image is perfectly round on mobile */
