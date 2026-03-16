@@ -298,7 +298,7 @@
 
   /* 🌟 Updated to make the image bigger */
  /* 🌟 Updated to make the image significantly bigger */
-  .hero-image {
+  .signup-hero-image {
     width: 100% !important;      
     max-width: 600px !important; /* Increased container allowance */
     height: auto !important;

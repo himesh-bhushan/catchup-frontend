@@ -365,7 +365,7 @@ const Signup = () => {
       <div className="signup-hero-side">
         <div className="hero-content-wrapper">
           <h1>Time to<br />“ketchup” on<br />your wellness</h1>
-          <img src={tomatoHero} alt="Tomato Superhero" className="hero-image" />
+          <img src={tomatoHero} alt="Tomato Superhero" className="signup-hero-image" />
         </div>
       </div>
       <div className="signup-form-side">
