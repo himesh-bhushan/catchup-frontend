@@ -298,10 +298,12 @@
 .metric-pill {
     display: flex;
     align-items: center;
-    gap: 10px; /* Tighter horizontal spacing */
-    padding: 6px 10px; /* Thinner padding to reduce height */
+    gap: 8px; 
+    padding: 6px 10px; 
     border-radius: 10px;
     color: white;
+    min-width: 0; /* 👈 THIS LINE IS CRITICAL */
+    overflow: hidden;
 }
 
 .metric-icon-circle {
@@ -463,8 +465,8 @@
   /* Desktop Typography & Sizing Scaling */
   .tile-value { font-size: 3.5rem; }
   .tile-value span { font-size: 1.4rem; }
-  .score-ring-wrapper { width: 140px; height: 140px; }
-  .score-inner { font-size: 2rem; }
+  .score-ring-wrapper { width: 100px; height: 100px; } /* Shrink the ring */
+  .score-inner { font-size: 1.4rem; } /* Shrink the inner text slightly to match */
 }
 
 /* =========================================
@@ -765,7 +767,7 @@
         flex-direction: column;
         gap: 6px;  
         flex: 1; /* 👈 Lets the pills take up available space instead of forcing a width */
-        min-width: 120px; /* 👈 Prevents the pills from getting too crushed */
+        min-width: 0; /* 👈 Prevents the pills from getting too crushed */
     }
 
     /* --- 6. GOALS CARD (2x2 GRID) --- */
