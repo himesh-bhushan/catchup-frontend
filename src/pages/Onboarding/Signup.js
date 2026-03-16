@@ -24,7 +24,6 @@ const Signup = () => {
     conditions: [], 
     medications: '', allergies: '',
     emergencyName: '', emergencyPhone: '',
-    // ✅ NEW: Store the custom "Other" text separately
     otherConditionText: '' 
   });
 
@@ -117,12 +116,9 @@ const Signup = () => {
     const currentUid = sessionData.session.user.id;
     localStorage.setItem('userName', formData.firstName);
 
-    // ✅ LOGIC: Merge "Others..." text into the main conditions array
     let finalConditions = [...formData.conditions];
     if (finalConditions.includes('Others...')) {
-        // Remove the placeholder string
         finalConditions = finalConditions.filter(c => c !== 'Others...');
-        // Add the user typed text if it exists
         if (formData.otherConditionText.trim()) {
             finalConditions.push(formData.otherConditionText.trim());
         }
@@ -140,10 +136,7 @@ const Signup = () => {
             height: formData.height,
             weight: formData.weight,
             blood_type: formData.bloodType,
-            
-            // ✅ Save the processed array
             conditions: finalConditions, 
-            
             medications: formData.medications,
             allergies: formData.allergies,
             emergency_name: formData.emergencyName,
@@ -218,6 +211,18 @@ const Signup = () => {
           >
             {loading ? "Processing..." : "Sign up"}
           </button>
+
+          {/* 🌟 ADDED REVERSE LINK */}
+          <div style={{ textAlign: 'center', marginTop: '25px', fontSize: '14px', color: '#666' }}>
+             Already have an account?{' '}
+             <span 
+                onClick={() => navigate('/signin')} 
+                style={{ color: '#0000EE', fontWeight: 'bold', cursor: 'pointer' }}
+             >
+                Sign in
+             </span>
+          </div>
+
         </div>
       );
 
@@ -297,7 +302,6 @@ const Signup = () => {
             ))}
           </div>
 
-          {/* ✅ NEW: Text Input appears if "Others..." is checked */}
           {formData.conditions.includes('Others...') && (
             <div className="animate-fade-in" style={{marginBottom: '20px'}}>
                 <label className="input-label" style={{marginTop: 0}}>Please specify condition:</label>
@@ -361,6 +365,7 @@ const Signup = () => {
   return (
     <div className="signup-page-wrapper">
       <div className="signup-hero-side">
+        {/* 🌟 THIS WRAPPER STACKS THEM */}
         <div className="hero-content-wrapper">
           <h1>Time to<br />“ketchup” on<br />your wellness</h1>
           <img src={tomatoHero} alt="Tomato Superhero" className="hero-image" />

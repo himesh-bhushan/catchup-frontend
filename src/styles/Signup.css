@@ -15,6 +15,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
+  align-items: center; /* Ensures the form floats in the middle vertically */
   width: 100%;
 }
 
@@ -24,19 +25,20 @@
   padding: 20px 30px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 /* --- HEADER & PROGRESS --- */
 .signup-header {
   display: flex;
   align-items: center;
-  justify-content: center; /* Centered progress bar */
+  justify-content: center; 
   margin-bottom: 20px;
   padding-top: 20px;
 }
 
 .progress-bar-container {
-  width: 100%; /* Full width */
+  width: 100%; 
   height: 6px;
   background-color: #eee;
   border-radius: 10px;
@@ -50,28 +52,25 @@
   transition: width 0.3s ease;
 }
 
-/* --- NEW: INLINE HEADER ROW (Arrow + Title) --- */
+/* --- INLINE HEADER ROW --- */
 .step-header-row {
   display: flex;
   align-items: center;
-  gap: 15px; /* Space between arrow and title */
+  gap: 15px; 
   margin-bottom: 20px;
 }
 
-/* Clear margins on titles inside the row to align perfectly */
 .step-header-row h2 {
   margin: 0; 
   font-size: 28px;
   font-weight: 800;
-  color: #FF3B30; /* Keep the red title */
+  color: #FF3B30; 
 }
 
-/* Specifically target Step 1 title if it doesn't have .section-title class */
 .step-header-row h2:not(.section-title) {
-  color: #000; /* Step 1 title was black in your previous design? Adjusted to match visual preference */
+  color: #000; 
 }
 
-/* Button style */
 .back-btn-inline {
   background: none;
   border: none;
@@ -91,7 +90,6 @@
 
 /* --- FORM TEXT --- */
 .section-title {
-  /* Font styling handled in header-row now */
   color: #FF3B30 !important;
 }
 
@@ -107,7 +105,7 @@
   font-size: 16px;
   color: #666;
   margin-bottom: 30px;
-  margin-left: 5px; /* Slight alignment fix */
+  margin-left: 5px; 
 }
 
 .input-label {
@@ -259,89 +257,94 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- DESKTOP SPLIT SCREEN --- */
+/* =========================================
+   🖥️ DESKTOP SPLIT SCREEN
+   ========================================= */
 @media (min-width: 1024px) {
   .signup-page-wrapper {
     flex-direction: row;
     height: 100vh;
     overflow: hidden;
   }
-
-  .hero-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px; /* Controls the space between the text and tomato */
-  }
   
+  /* 🌟 FIX: Forces vertical stacking */
   .signup-hero-side {
     display: flex;
-    flex-direction: column; /* 🌟 ADDED: Stacks the text and tomato on top of each other */
-    flex: 4;
+    flex-direction: column; 
+    flex: 4; 
     background-color: #FFF9C4;
     align-items: center;
     justify-content: center;
     padding: 40px;
   }
+
+  /* 🌟 FIX: Centers text above the image */
+  .hero-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 40px; /* Space between title and tomato */
+    width: 100%;
+  }
+
   .signup-hero-side h1 {
     font-size: 3.5rem;
     font-weight: 800;
     color: #FF3B30;
     line-height: 1.1;
-    margin-bottom: 40px;
-    text-align: center;
+    margin: 0; 
   }
+
+  /* 🌟 FIX: Enlarges the image and locks it in the center */
   .hero-image {
-    width: 80%;
-    max-width: 380px;
+    width: 90%; 
+    max-width: 400px;
     height: auto;
     object-fit: contain;
+    display: block; 
+    margin: 0 auto; 
   }
+
   .signup-form-side {
-    flex: 6;
+    flex: 6; 
     overflow-y: auto;
-    align-items: flex-start;
-    padding-top: 40px;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    padding: 40px;
   }
+
   .signup-container {
     max-width: 450px;
     margin: 0 auto;
-    padding-bottom: 50px;
+    padding: 0; 
   }
-  .signup-header { padding-top: 0; }
 }
 
 /* =========================================
    📱 MOBILE SIGN-UP RESPONSIVENESS (MASTER)
    ========================================= */
-
 @media (max-width: 768px) {
-    
-    /* 1. Global Viewport (Keyboard & Scroll Friendly) */
     html, body {
         margin: 0 !important;
         padding: 0 !important;
         height: 100% !important;
-        /* Let the long forms scroll naturally when the keyboard pops up */
         overflow-y: auto !important; 
         overflow-x: hidden !important;
     }
-
     .signup-page-wrapper {
-        min-height: 100dvh !important; /* Adapts to Safari/Chrome address bars */
+        min-height: 100dvh !important; 
         display: flex !important;
         flex-direction: column !important;
     }
-
-    /* 2. Main Container Flex Layout */
     .signup-form-side {
         flex: 1 !important;
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
     }
-
     .signup-container {
         width: 100% !important;
         padding: 20px 25px 30px 25px !important; 
@@ -350,70 +353,54 @@
         display: flex !important;
         flex-direction: column !important;
     }
-
-    /* 3. Header & Progress Bar Spacing */
     .signup-header {
         margin-bottom: 25px !important;
         padding-top: 10px !important;
     }
-
     .step-header-row {
         margin-bottom: 15px !important;
         gap: 12px !important;
     }
-
     .step-header-row h2 {
-        font-size: 28px !important; /* Large, bold title */
+        font-size: 28px !important; 
         line-height: 1.1 !important;
     }
-
     .step-subtitle {
         font-size: 15px !important;
         margin-bottom: 25px !important;
         margin-left: 0 !important;
         color: #555 !important;
     }
-
-    /* 4. Form Inputs (Prevent iOS Auto-Zoom) */
     .custom-input, 
     .text-area {
-        /* Font size MUST be 16px or higher to prevent Safari from zooming in on tap */
         font-size: 16px !important; 
         padding: 18px 20px !important;
         border-radius: 16px !important;
         margin-bottom: 15px !important;
     }
-    
     .input-label {
         font-size: 14px !important;
         margin-bottom: 10px !important;
     }
-
-    /* 5. Checkbox Grid Adjustments */
     .checkbox-grid {
         gap: 12px !important;
         margin-bottom: 25px !important;
     }
-
     .checkbox-item span {
         font-size: 14px !important;
     }
-
     .terms-checkbox-wrapper {
         margin-top: 10px !important;
         margin-bottom: 25px !important;
     }
-
     .terms-label {
         font-size: 12px !important;
         line-height: 1.4 !important;
     }
-
-    /* 6. Action Button (Glued to bottom) */
     .btn-next {
-        margin-top: auto !important; /* Pushes the button to the bottom of the screen */
+        margin-top: auto !important; 
         width: 100% !important;
-        height: 60px !important; /* Thick, premium thumb target */
+        height: 60px !important; 
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -421,8 +408,6 @@
         padding: 0 !important;
         border-radius: 999px !important;
     }
-
-    /* 7. Info Box Adjustment */
     .info-box {
         margin-top: 15px !important;
         margin-bottom: 25px !important;
