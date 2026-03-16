@@ -248,11 +248,12 @@
 .health-score-content {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* 👈 Changed from center to space-between */
-    gap: 15px; /* 👈 Reduced gap to prevent overflow */
+    justify-content: space-between; 
+    gap: 12px; 
     flex-grow: 1;
     width: 100%;
-    box-sizing: border-box; /* Ensures padding is respected */
+    box-sizing: border-box; 
+    overflow: hidden; /* <--- THIS IS NEW */
 }
 
 /* --- Left Side: Donut Ring --- */
@@ -291,17 +292,19 @@
   display: flex;
   flex-direction: column;
   gap: 6px;  
-  flex: 1; /* 👈 Lets the pills take up available space instead of forcing a width */
-  min-width: 120px; /* 👈 Prevents the pills from getting too crushed */
+  flex: 1; 
+  min-width: 0; /* <--- THIS IS NEW */
 }
 
 .metric-pill {
     display: flex;
     align-items: center;
-    gap: 10px; /* Tighter horizontal spacing */
-    padding: 6px 10px; /* Thinner padding to reduce height */
+    gap: 8px; 
+    padding: 6px 10px; 
     border-radius: 10px;
     color: white;
+    min-width: 0;     /* <--- THIS IS NEW */
+    overflow: hidden; /* <--- THIS IS NEW */
 }
 
 .metric-icon-circle {
