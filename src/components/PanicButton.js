@@ -45,6 +45,9 @@ const PanicButton = () => {
       >
         <img src={panicBtnImg} alt="Panic" /> 
       </button>
+      <div className="panic-bubble">
+        Panic Button
+      </div>
 
       {/* GLOBAL OVERLAY */}
       {panicMode && (
