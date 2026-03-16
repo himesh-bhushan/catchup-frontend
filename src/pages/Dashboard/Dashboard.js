@@ -772,15 +772,21 @@ const Dashboard = () => {
 
                 {/* Nearby Care */}
                 <div className="recommendations-section">
-                    <div className="section-header-row">
-                        <h3>{t('nearby_care') || "Find Nearby Care"}</h3>
+                    
+                    {/* 🌟 WRAP THE TITLE AND BUTTON IN THE FLEX ROW */}
+                    <div className="section-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                        <h3 style={{ margin: 0 }}>{t('nearby_care') || "Find Nearby Care"}</h3>
+                        
                         <button onClick={handleGetLocation} className="loc-btn">
                              <FiNavigation /> {locationLoading ? t('locating') : t('use_my_location') || "Use My Location"}
                         </button>
                     </div>
 
+                    {/* Subtitle / Empty State text sits below the row */}
                     {clinics.length === 0 && !locationLoading && (
-                        <div className="empty-clinics-state"><p>{t('location_prompt') || 'Click "Use My Location" to see clinics near you.'}</p></div>
+                        <div className="empty-clinics-state">
+                            <p style={{ marginTop: 0 }}>{t('location_prompt') || 'Click "Use My Location" to see clinics near you.'}</p>
+                        </div>
                     )}
 
                     <div className="clinics-grid-container">
