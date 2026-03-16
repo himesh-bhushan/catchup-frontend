@@ -248,8 +248,8 @@
 .health-score-content {
     display: flex;
     align-items: center;
-    justify-content: space-between; 
-    gap: 12px; 
+    justify-content: center; 
+    gap: 30px; 
     flex-grow: 1;
     width: 100%;
     box-sizing: border-box; 
@@ -258,8 +258,8 @@
 
 /* --- Left Side: Donut Ring --- */
 .score-ring-wrapper { 
-    width: 100px; /* Scaled down from 120px */
-    height: 100px; /* Scaled down from 120px */
+    width: 130px; /* Scaled down from 120px */
+    height: 130px; /* Scaled down from 120px */
     position: relative; 
     flex-shrink: 0; 
     margin: 0; 
@@ -282,7 +282,7 @@
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    font-size: 1.3rem; /* Scaled down font to fit the smaller ring */
+    font-size: 1.8rem; /* Scaled down font to fit the smaller ring */
     font-weight: 800; 
     color: #EF473A; 
 }
@@ -292,7 +292,8 @@
   display: flex;
   flex-direction: column;
   gap: 6px;  
-  flex: 1; 
+  flex: 0 1 auto; /* Stops the pills from infinitely stretching */
+  width: 145px; /* Locks the pills to a neat, compact width */
   min-width: 0; /* <--- THIS IS NEW */
 }
 
