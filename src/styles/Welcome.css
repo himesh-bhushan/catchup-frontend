@@ -188,7 +188,7 @@ h1 {
 
 
 /* =========================================
-   📱 MOBILE VIEW (BULLETPROOF OVERRIDES)
+   📱 MOBILE VIEW 
    ========================================= */
 @media (max-width: 768px) {
     
@@ -209,9 +209,9 @@ h1 {
         background-color: #ffffff !important;
     }
 
-    /* 1. Hero Image Section (TOP) */
-    .hero-section {
-        position: relative !important; /* 🌟 Kills absolute positioning bugs */
+    /* 🌟 FULLY ISOLATED HERO SECTION */
+    .welcome-hero-section {
+        position: relative !important; 
         flex: 1 !important; 
         display: flex !important;
         justify-content: center !important;
@@ -221,19 +221,19 @@ h1 {
         overflow: visible !important;
     }
 
-    .hero-image {
-        position: relative !important; /* 🌟 Prevents it from floating to the corner */
-        right: auto !important;        /* 🌟 Resets any right-side pinning */
-        bottom: auto !important;       /* 🌟 Resets any bottom pinning */
+    /* 🌟 FULLY ISOLATED HERO IMAGE */
+    .welcome-hero-image {
+        position: relative !important; 
+        right: auto !important;        
+        bottom: auto !important;       
         width: 100% !important; 
         max-width: 320px !important; 
         height: auto !important;
         object-fit: contain !important;
         margin: 0 auto !important; 
-        transform: none !important;    /* 🌟 Kills any weird scaling/moving */
+        transform: none !important;    
     }
 
-    /* 2. Text Section (MIDDLE) */
     .text-section {
         width: 100% !important;
         text-align: center !important; 
@@ -248,7 +248,6 @@ h1 {
         line-height: 1.15 !important;
     }
 
-    /* 3. Button Group (BOTTOM) */
     .button-group {
         width: 100% !important;
         display: flex !important;
