@@ -288,8 +288,8 @@
 }
 
 .hs-mini-ring-wrapper {
-    width: 50px;
-    height: 50px;
+    width: 85px;
+    height: 85px;
     position: relative;
     display: flex;
     align-items: center;
@@ -298,7 +298,7 @@
 
 .hs-mini-score {
     position: absolute;
-    font-size: 0.95rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: #333;
 }
