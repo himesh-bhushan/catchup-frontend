@@ -36,6 +36,7 @@ const Dashboard = () => {
   const [lastSynced, setLastSynced] = useState(null); 
   const [lastSyncedAgo, setLastSyncedAgo] = useState(null);
   const [skipConnect, setSkipConnect] = useState(localStorage.getItem('skipTracker') === 'true');
+  const [selectedArticle, setSelectedArticle] = useState(null); // 🌟 Modal State
   
   const [activityData, setActivityData] = useState({
     calories: 0, steps: 0, distance: 0, goal: 500, percentage: 0
@@ -103,24 +104,12 @@ const Dashboard = () => {
     }
     
     try {
-        // 1. Silently copy the hidden User ID to their device clipboard
         await navigator.clipboard.writeText(user.id);
-        
-        // 2. Open your official Apple iCloud Shortcut link
-        // ⚠️ IMPORTANT: Replace 'YOUR_ICLOUD_LINK_HERE' with your actual link!
         window.open('https://www.icloud.com/shortcuts/525c6fb259844e4eb3e838d4553f77ca', '_blank');
-        
     } catch (err) {
         console.error("Failed to copy ID to clipboard", err);
         alert("Oops! We couldn't copy your ID. Please ensure clipboard permissions are allowed.");
     }
-  };
-
-
-  // --- CONTINUE & SKIP ---
-  const handleContinue = () => {
-    localStorage.setItem('skipTracker', 'true'); // Saves preference
-    setSkipConnect(true); // Hides the connect screen immediately
   };
 
   // --- LOCATION LOGIC ---
@@ -172,7 +161,7 @@ const Dashboard = () => {
 
   // --- NATIVE SOCIAL SHARING ---
   const handleShare = async (e) => {
-    e.stopPropagation(); // Prevents the card click from navigating away
+    e.stopPropagation(); 
     const shareData = {
       title: 'Monthly Mover Award!',
       text: `I just unlocked the 'Monthly Mover' badge on CatchUp for completing my activity ring every single day! 🍅💪 Catch up with me!`,
@@ -183,7 +172,6 @@ const Dashboard = () => {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
-        // Fallback for desktop browsers
         navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
         alert("Award text copied to clipboard! Paste it on social media to share.");
       }
@@ -192,11 +180,38 @@ const Dashboard = () => {
     }
   };
 
-  // --- RECOMMENDATIONS ---
+  // 🌟 RECOMMENDATIONS WITH FULL ARTICLE CONTENT
   const recommendations = [
-    { id: 1, title: t('rec_tomatoes') || "Health Benefits of Tomatoes", img: blog1, color: "#fff3e0" },
-    { id: 2, title: t('rec_heart') || "Better Heart Health", img: blog2, color: "#ffebee" },
-    { id: 3, title: t('rec_sleep') || "Why Sleep is Important", img: blog3, color: "#e3f2fd" },
+    { 
+        id: 1, 
+        title: t('rec_tomatoes') || "Why Tomato is Good For Us", 
+        img: blog1, 
+        color: "#fff3e0",
+        category: "HEALTHY",
+        author: "CHATGPT",
+        photographer: "PINTEREST",
+        content: "Tomatoes are good for our health because they are rich in vitamins, antioxidants, and nutrients that support many body functions. Regularly eating tomatoes can help improve heart health, strengthen the immune system, and protect the body from certain diseases.\n\n1. Rich in Nutrients\nTomatoes contain important nutrients such as vitamin C, vitamin A, potassium, and folate. These nutrients help support the immune system, maintain healthy skin, and keep the body functioning properly.\n\n2. High in Antioxidants\nTomatoes are a great source of antioxidants, especially lycopene. Antioxidants help protect the body's cells from damage caused by harmful molecules called free radicals, which may reduce the risk of certain chronic diseases.\n\n3. Supports Heart Health\nEating tomatoes may help improve heart health because they contain potassium and antioxidants that can help regulate blood pressure and reduce inflammation. This can lower the risk of heart-related problems and support overall cardiovascular health.\n\n4. Good for Skin Health\nTomatoes can help keep the skin healthy because they contain vitamin C and antioxidants such as lycopene. These nutrients help protect the skin from damage caused by sunlight and pollution, while also supporting collagen production, which keeps the skin firm and healthy."
+    },
+    { 
+        id: 2, 
+        title: t('rec_heart') || "5 Steps to Better Health", 
+        img: blog2, 
+        color: "#ffebee",
+        category: "HEALTHY",
+        author: "CHATGPT",
+        photographer: "PINTEREST",
+        content: "Better health can be achieved by adopting simple daily habits that support both the body and mind. By maintaining a balanced lifestyle that includes proper nutrition, rest, physical activity, hydration, and stress management, individuals can improve their overall well-being and quality of life.\n\n1. Eat a Balanced Diet\nMaintaining a healthy diet is one of the most important steps to better health. Eating a variety of fruits, vegetables, whole grains, and protein provides the body with essential nutrients needed for energy, growth, and proper body functions.\n\n2. Get Enough Sleep\nQuality sleep allows the body and mind to recover and recharge. Getting enough sleep improves concentration, strengthens the immune system, and supports overall physical and mental well-being.\n\n3. Exercise Regularly\nRegular physical activity helps improve cardiovascular health, strengthen muscles, and maintain a healthy weight. Even simple activities such as walking, cycling, or stretching can greatly benefit overall health.\n\n4. Stay Hydrated\nDrinking enough water is essential for many body functions, including digestion, temperature regulation, and nutrient transport. Proper hydration helps keep the body energized and functioning efficiently."
+    },
+    { 
+        id: 3, 
+        title: t('rec_sleep') || "Why Sleep is Your Superpower", 
+        img: blog3, 
+        color: "#e3f2fd",
+        category: "HEALTHY",
+        author: "CHATGPT",
+        photographer: "PINTEREST",
+        content: "Sleep restores energy, strengthens memory, and supports overall physical and mental health. Because it improves performance, mood, and well-being, sleep is often considered a \"superpower.\"\n\nOne of the main reasons sleep is considered a superpower is its impact on brain performance. During sleep, the brain consolidates memories and processes information learned throughout the day. This improves learning ability, creativity, and problem-solving skills. Adequate sleep also helps maintain attention and cognitive clarity, allowing individuals to think more effectively and make better decisions.\n\nSleep is essential for the body's recovery and overall health. While sleeping, the body repairs tissues, strengthens the immune system, and regulates hormones that control appetite and metabolism. Getting enough sleep reduces the risk of health problems such as heart disease, obesity, and weakened immunity. As a result, quality sleep helps individuals maintain long-term physical well-being.\n\nSleep also plays a key role in emotional regulation and mental health. Lack of sleep can lead to irritability, stress, and difficulty managing emotions. In contrast, sufficient sleep helps stabilize mood and enhances resilience to daily challenges. When individuals are well-rested, they tend to have better emotional control, improved relationships, and a more positive outlook on life."
+    },
   ];
 
   // --- DATA FETCHING ---
@@ -272,7 +287,6 @@ const Dashboard = () => {
                 sleep: sleepGoalMet,
                 water: waterGoalMet
             });
-            // -----------------------------
 
             // --- AWARDS LOGIC ---
             const today = new Date();
@@ -531,8 +545,6 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* ALIGNED 3-COLUMN TRIO ROW USING ORIGINAL 'sync-card' CLASS AS WRAPPER */}
-                    {/* By keeping 'sync-card' but removing 'card', it inherits the CSS grid stretch perfectly without adding a white box around all three */}
                     <div className="sync-card" style={{ display: 'grid', gridTemplateColumns: '1.95fr 0.925fr 0.925fr', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
                         
                         {/* Actual Sync Tile */}
@@ -573,13 +585,12 @@ const Dashboard = () => {
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
                         <div className="card-header"><h3>{t('Goals Completed')}</h3><FiChevronRight className="card-arrow" /></div>
                         <div className="goals-progress-bar" style={{ position: 'relative' }}>
-                            {/* Dynamic progress bar width with tomato attached inside */}
                             <div 
                                 className="progress-fill" 
                                 style={{
                                     width: `${(goalsData.completed / goalsData.total) * 100}%`, 
                                     position: 'relative', 
-                                    overflow: 'visible' /* Ensures the tomato isn't clipped by the bar */
+                                    overflow: 'visible' 
                                 }}
                             >
                                 <img 
@@ -588,23 +599,20 @@ const Dashboard = () => {
                                     className="progress-tomato" 
                                     style={{
                                         position: 'absolute',
-                                        right: '-16px', /* Pins the tomato exactly on the edge */
+                                        right: '-16px', 
                                         top: '50%',
                                         transform: 'translateY(-50%)',
-                                        width: '32px', /* Fixed size instead of the buggy width="100%" */
+                                        width: '32px', 
                                         height: 'auto',
                                         zIndex: 10
                                     }}  
                                 />
                             </div>
-                            
-                            {/* Dynamic fraction */}
                             <span className="progress-text">{goalsData.completed}/{goalsData.total}</span>
                         </div>
                         <div className="goals-detailed-grid">
                             <div className="goal-item-detailed">
                                 <div className="goal-item-header">
-                                    {/* Green dot if completed, gray if not */}
                                     <div className="goal-dot" style={{ backgroundColor: goalsData.steps ? '#4CAF50' : '#E0E0E0' }}></div> Daily Steps
                                 </div>
                                 <p>Walk 5,000 steps per day</p>
@@ -732,7 +740,7 @@ const Dashboard = () => {
                                 className={`award-badge-status ${isAwardEarned ? 'earned-color' : 'not-earned-gray'}`} 
                             />
                             
-                            {/* NEW: Share Button shows up only if award is earned */}
+                            {/* Share Button shows up only if award is earned */}
                             {isAwardEarned && (
                                 <button 
                                     onClick={handleShare}
@@ -762,7 +770,7 @@ const Dashboard = () => {
                     <h3>{t('recommendations') || "Recommendations"}</h3>
                     <div className="recommendations-carousel">
                         {recommendations.map((blog) => (
-                            <div key={blog.id} className="blog-card" onClick={() => console.log('Open blog', blog.id)}>
+                            <div key={blog.id} className="blog-card" onClick={() => setSelectedArticle(blog)}>
                                 <div className="blog-img-wrapper" style={{backgroundColor: blog.color}}><img src={blog.img} alt={blog.title} /></div>
                                 <div className="blog-content"><p>{blog.title}</p></div>
                             </div>
@@ -773,7 +781,6 @@ const Dashboard = () => {
                 {/* Nearby Care */}
                 <div className="recommendations-section">
                     
-                    {/* 🌟 WRAP THE TITLE AND BUTTON IN THE FLEX ROW */}
                     <div className="section-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                         <h3 style={{ margin: 0 }}>{t('nearby_care') || "Find Nearby Care"}</h3>
                         
@@ -809,6 +816,42 @@ const Dashboard = () => {
             </div>
          )}
       </div>
+
+      {/* 🌟 ARTICLE MODAL POPUP */}
+      {selectedArticle && (
+        <div className="article-modal-overlay" onClick={() => setSelectedArticle(null)}>
+            <div className="article-modal-content" onClick={(e) => e.stopPropagation()}>
+                
+                <button className="article-modal-close" onClick={() => setSelectedArticle(null)}>
+                    <FiX size={24} />
+                </button>
+                
+                <div className="article-modal-header" style={{ backgroundColor: selectedArticle.color }}>
+                    <img src={selectedArticle.img} alt={selectedArticle.title} className="article-hero-img" />
+                </div>
+                
+                <div className="article-modal-body">
+                    <span className="article-category">{selectedArticle.category}</span>
+                    <h2>{selectedArticle.title}</h2>
+                    
+                    {(selectedArticle.author || selectedArticle.photographer) && (
+                        <div className="article-credits">
+                            {selectedArticle.author && <p><strong>WRITTEN BY:</strong> {selectedArticle.author}</p>}
+                            {selectedArticle.photographer && <p><strong>PHOTOGRAPHED BY:</strong> {selectedArticle.photographer}</p>}
+                        </div>
+                    )}
+
+                    <div className="article-text">
+                        {selectedArticle.content.split('\n\n').map((paragraph, index) => (
+                            <p key={index}>{paragraph}</p>
+                        ))}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+      )}
+
     </div>
   );
 };
