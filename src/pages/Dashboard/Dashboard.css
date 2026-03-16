@@ -468,8 +468,8 @@
   /* Desktop Typography & Sizing Scaling */
   .tile-value { font-size: 3.5rem; }
   .tile-value span { font-size: 1.4rem; }
-  .score-ring-wrapper { width: 100px; height: 100px; } /* <--- SHRUNK FROM 140px */
-  .score-inner { font-size: 1.4rem; }
+  .score-ring-wrapper { width: 140px; height: 140px; } /* <--- SHRUNK FROM 140px */
+  .score-inner { font-size: 1.8rem; }
 }
 
 /* =========================================
