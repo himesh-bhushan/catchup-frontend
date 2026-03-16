@@ -269,11 +269,12 @@
   
   .signup-hero-side {
     display: flex;
-    flex-direction: column; 
-    flex: 4; 
-    background-color: #FFF9C4;
-    align-items: center;
+    flex: 1; /* Takes 50% width */
+    background-color: #FFF9C4; /* The Light Yellow from screenshot */
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    text-align: center;
     padding: 40px;
   }
 
@@ -288,22 +289,17 @@
   }
 
   .signup-hero-side h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
     color: #FF3B30;
-    line-height: 1.1;
-    margin: 0; 
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 30px;
   }
 
   .hero-image {
-    width: 90% !important; 
-    max-width: 400px !important;
-    height: auto !important;
-    object-fit: contain !important;
-    display: block !important; 
-    margin: 0 auto !important; 
-    position: static !important; 
-    transform: none !important;
+    width: 60%;
+    max-width: 400px;
+    object-fit: contain;
   }
 
   .signup-form-side {
