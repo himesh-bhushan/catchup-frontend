@@ -743,11 +743,13 @@
 
     /* --- 5. HEALTH SCORE CARD --- */
     .health-score-content {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 15px !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* 👈 Changed from center to space-between */
+        gap: 15px; /* 👈 Reduced gap to prevent overflow */
+        flex-grow: 1;
+        width: 100%;
+        box-sizing: border-box; /* Ensures padding is respected */
     }
     
     .score-ring-wrapper {
@@ -757,8 +759,11 @@
     }
 
     .score-metrics-list {
-        flex: 1 !important;
-        width: auto !important;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;  
+        flex: 1; /* 👈 Lets the pills take up available space instead of forcing a width */
+        min-width: 120px; /* 👈 Prevents the pills from getting too crushed */
     }
 
     /* --- 6. GOALS CARD (2x2 GRID) --- */
