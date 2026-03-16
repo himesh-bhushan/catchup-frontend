@@ -188,7 +188,7 @@ h1 {
 
 
 /* =========================================
-   📱 MOBILE VIEW (CLEANED UP & MERGED)
+   📱 MOBILE VIEW (BULLETPROOF OVERRIDES)
    ========================================= */
 @media (max-width: 768px) {
     
@@ -202,7 +202,7 @@ h1 {
     .welcome-container {
         display: flex !important;
         flex-direction: column !important;
-        justify-content: flex-start !important; /* Stacks items from top to bottom */
+        justify-content: space-between !important; 
         height: 100dvh !important; 
         padding: 40px 25px 40px 25px !important; 
         box-sizing: border-box !important;
@@ -211,7 +211,8 @@ h1 {
 
     /* 1. Hero Image Section (TOP) */
     .hero-section {
-        flex: 1 !important; /* Allows the image to take up the available top space */
+        position: relative !important; /* 🌟 Kills absolute positioning bugs */
+        flex: 1 !important; 
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
@@ -221,12 +222,15 @@ h1 {
     }
 
     .hero-image {
-        width: 110% !important; /* Makes the tomato big and bold */
-        max-width: 380px !important; 
+        position: relative !important; /* 🌟 Prevents it from floating to the corner */
+        right: auto !important;        /* 🌟 Resets any right-side pinning */
+        bottom: auto !important;       /* 🌟 Resets any bottom pinning */
+        width: 100% !important; 
+        max-width: 320px !important; 
         height: auto !important;
-        max-height: 45vh !important; /* Prevents it from getting too tall and crushing buttons */
         object-fit: contain !important;
-        margin: 0 !important; /* 🌟 REMOVED the -50px desktop margin that was pulling it down */
+        margin: 0 auto !important; 
+        transform: none !important;    /* 🌟 Kills any weird scaling/moving */
     }
 
     /* 2. Text Section (MIDDLE) */
