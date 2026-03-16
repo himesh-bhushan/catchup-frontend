@@ -11,6 +11,10 @@ import './BloodPressure.css';
 
 const BloodPressure = () => {
   const navigate = useNavigate();
+  
+  // 🌟 ADDED: Date State
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  
   const [range, setRange] = useState('Week'); 
   const [logs, setLogs] = useState([]);
   const [todayLog, setTodayLog] = useState({ systolic: 0, diastolic: 0 });
@@ -26,21 +30,44 @@ const BloodPressure = () => {
     if (!user) return;
 
     try {
-      // 1. FETCH LATEST FROM PROFILE (Matches Dashboard 110/75)
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('blood_pressure')
-        .eq('id', user.id)
-        .single();
+      // 🌟 UPDATED: Check if the selected date is Today
+      const isToday = date === new Date().toISOString().split('T')[0];
+      let sys = 0;
+      let dia = 0;
 
-      if (profile?.blood_pressure) {
-        const [sys, dia] = profile.blood_pressure.split('/');
-        setTodayLog({ 
-          systolic: parseInt(sys), 
-          diastolic: parseInt(dia), 
-          date: new Date().toISOString() 
-        });
+      if (isToday) {
+        // 1. FETCH LATEST FROM PROFILE (If Today)
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('blood_pressure')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.blood_pressure) {
+          const [s, d] = profile.blood_pressure.split('/');
+          sys = parseInt(s);
+          dia = parseInt(d);
+        }
+      } else {
+        // 1. FETCH FROM LOGS (If Past Date)
+        const { data: logEntry } = await supabase
+          .from('blood_pressure_logs')
+          .select('systolic, diastolic')
+          .eq('user_id', user.id)
+          .eq('date', date)
+          .maybeSingle();
+
+        if (logEntry) {
+          sys = logEntry.systolic;
+          dia = logEntry.diastolic;
+        }
       }
+
+      setTodayLog({ 
+        systolic: sys, 
+        diastolic: dia, 
+        date: date 
+      });
 
       // 2. FETCH HISTORY FROM LOGS (For the Graph & Previous Days)
       const { data: history, error: historyError } = await supabase
@@ -65,35 +92,41 @@ const BloodPressure = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [date]); // 🌟 ADDED: 'date' as a dependency
 
   useEffect(() => {
     fetchBPData();
-  }, [fetchBPData, range]);
+  }, [fetchBPData, range, date]); // 🌟 ADDED: 'date' to useEffect
 
   const handleAddReading = async () => {
     if (!newReading.systolic || !newReading.diastolic) return;
 
     const { data: { user } } = await supabase.auth.getUser();
-    const todayStr = new Date().toISOString().split('T')[0];
     const formattedBP = `${newReading.systolic}/${newReading.diastolic}`;
 
-    // Update both tables to keep Dashboard and History in sync
+    // Update log for the SELECTED date
     const { error: logError } = await supabase
       .from('blood_pressure_logs')
       .upsert({
         user_id: user.id,
-        date: todayStr,
+        date: date, // 🌟 UPDATED: Uses selected date instead of "today"
         systolic: parseInt(newReading.systolic),
         diastolic: parseInt(newReading.diastolic)
       }, { onConflict: 'user_id,date' });
 
-    const { error: profError } = await supabase
-        .from('profiles')
-        .update({ blood_pressure: formattedBP })
-        .eq('id', user.id);
+    // Only update the profile if the reading is for Today
+    const isToday = date === new Date().toISOString().split('T')[0];
+    let profError = null;
+    
+    if (isToday) {
+      const { error } = await supabase
+          .from('profiles')
+          .update({ blood_pressure: formattedBP })
+          .eq('id', user.id);
+      profError = error;
+    }
 
-    if (!logError && !profError) {
+    if (!logError) {
       setIsAdding(false);
       setNewReading({ systolic: '', diastolic: '' });
       fetchBPData(); // Refresh UI without full reload
@@ -173,7 +206,17 @@ const BloodPressure = () => {
                ))}
             </div>
 
-            <button className="calendar-btn"><FiCalendar /></button>
+            {/* 🌟 UPDATED: Wrapped the icon in an invisible date input */}
+            <button className="calendar-btn" style={{ position: 'relative', overflow: 'hidden' }}>
+              <FiCalendar />
+              <input 
+                type="date" 
+                value={date} 
+                onChange={(e) => setDate(e.target.value)} 
+                max={new Date().toISOString().split('T')[0]} 
+                style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer', left: 0, top: 0 }}
+              />
+            </button>
           </div>
 
           <div className="stats-block">
@@ -189,7 +232,7 @@ const BloodPressure = () => {
 
           <div className="today-reading-block">
              <div className="today-header">
-                <h3>Latest Entry</h3>
+                <h3>{date === new Date().toISOString().split('T')[0] ? 'Latest Entry' : 'Entry for Date'}</h3>
                 <button className="add-reading-btn" onClick={() => setIsAdding(!isAdding)}>
                    {isAdding ? 'Close' : <FiPlus />}
                 </button>
@@ -218,7 +261,8 @@ const BloodPressure = () => {
                 </h1>
              )}
              <p className="date-sub">
-                {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {/* 🌟 UPDATED: Shows the selected date instead of "today" */}
+                {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
              </p>
           </div>
         </div>
