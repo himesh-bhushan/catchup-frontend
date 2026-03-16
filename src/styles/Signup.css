@@ -300,7 +300,6 @@
   .hero-image {
     width: 100% !important;      /* 🌟 CHANGED: Increased from 90% */
     max-width: 550px !important; /* 🌟 CHANGED: Increased from 400px */
-    height: auto !important;
     object-fit: contain !important;
     display: block !important; 
     margin: 0 auto !important; 
