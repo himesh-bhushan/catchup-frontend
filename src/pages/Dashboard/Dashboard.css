@@ -395,19 +395,74 @@
   filter: grayscale(0%) opacity(100%); 
 }
 
-/* --- RECOMMENDATIONS & CLINICS --- */
-.recommendations-section { width: 100%; margin-top: 40px; margin-bottom: 20px; }
-.section-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; }
-.section-header-row h3 { margin: 0 !important; font-size: 1.5rem; color: var(--text-primary); font-weight: 700; }
-.empty-clinics-state p { color: var(--text-secondary); font-size: 0.95rem; margin-top: 0; }
+/* =========================================
+   RE-DESIGNED RECOMMENDATIONS SECTION
+   ========================================= */
+.recommendations-section { 
+    width: 100%; 
+    margin-top: 40px; 
+    margin-bottom: 20px; 
+}
 
-.recommendations-carousel { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 5px; scroll-behavior: smooth; }
-.recommendations-carousel::-webkit-scrollbar { display: none; }
-.blog-card { min-width: calc(33.333% - 15px); background: var(--card-bg); border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.blog-img-wrapper { width: 100%; height: 150px; display: flex; align-items: center; justify-content: center; }
-.blog-img-wrapper img { max-height: 75%; max-width: 75%; object-fit: contain; }
-.blog-content { padding: 15px; flex-grow: 1; }
-.blog-content p { margin: 0; font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+.recommendations-carousel { 
+    display: flex; 
+    gap: 20px; 
+    overflow-x: auto; 
+    padding-bottom: 10px; /* Space for scrollbar */
+    scroll-behavior: smooth; 
+}
+.recommendations-carousel::-webkit-scrollbar { display: none; } /* Optional: hides scrollbar */
+
+/* --- The New Tile (Card) --- */
+.blog-card { 
+    flex: 0 0 calc(33.333% - 14px); /* Three tiles wide on desktop */
+    min-width: 280px; /* Minimum width for mobile scroll */
+    background: var(--card-bg); 
+    border-radius: 24px; /* Fully rounded edges on all sides of the tile */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Softer shadow */
+    overflow: hidden; /* CRITICAL: Clips image to card's rounded corners */
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.blog-card:hover { transform: translateY(-5px); }
+
+/* --- The Image Spanning the Whole Top --- */
+.blog-img-wrapper { 
+    width: 100%; 
+    height: 180px; /* Set a consistent height for the top section */
+    overflow: hidden; /* Clips the top rounded corners of the image wrapper to the card */
+    border-radius: 24px 24px 0 0; /* Only top edges rounded to fit cleanly against content */
+}
+
+.blog-img-wrapper img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; /* Spans the entire top section, preserving aspect ratio */
+}
+
+/* --- The Content Below --- */
+.blog-content { 
+    padding: 20px; 
+    flex-grow: 1; /* Pushes content down to the bottom of the card */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.blog-content p { 
+    margin: 0; 
+    font-size: 1.1rem; 
+    font-weight: 700; /* Bolder font for article titles */
+    color: var(--text-primary); 
+    line-height: 1.3;
+}
+
+/* =========================================
+   CLINICS SECTION
+   ========================================= */
 
 .clinics-grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 10px; }
 .clinic-tile { background: var(--card-bg); border-radius: 20px; padding: 20px; min-height: 140px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
