@@ -188,64 +188,63 @@ h1 {
 
 
 /* =========================================
-   📱 MOBILE WELCOME / ONBOARDING SCREEN
+   📱 MOBILE VIEW (CLEANED UP & MERGED)
    ========================================= */
-
 @media (max-width: 768px) {
     
-    /* 1. Viewport & Container Setup */
     html, body {
         margin: 0 !important;
         padding: 0 !important;
         height: 100% !important;
-        overflow: hidden !important; /* Prevents any accidental scrolling */
+        overflow: hidden !important; 
     }
 
     .welcome-container {
         display: flex !important;
         flex-direction: column !important;
-        justify-content: space-between !important; /* Spreads Image, Text, and Buttons evenly */
-        height: 100dvh !important; /* Accounts for mobile browser UI bars */
-        padding: 40px 25px 50px 25px !important; 
+        justify-content: flex-start !important; /* Stacks items from top to bottom */
+        height: 100dvh !important; 
+        padding: 40px 25px 40px 25px !important; 
         box-sizing: border-box !important;
         background-color: #ffffff !important;
     }
 
-    /* 2. Hero Image Section */
+    /* 1. Hero Image Section (TOP) */
     .hero-section {
-        flex: 1 !important; /* Takes up the available empty space */
+        flex: 1 !important; /* Allows the image to take up the available top space */
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        margin: 0 !important;
+        margin: 0 0 20px 0 !important;
         width: 100% !important;
-        min-height: 0 !important; /* Prevents flexbox from stretching weirdly */
+        overflow: visible !important;
     }
 
     .hero-image {
-        width: 100% !important;
-        max-width: 320px !important; /* Keeps it from getting overwhelmingly huge */
+        width: 110% !important; /* Makes the tomato big and bold */
+        max-width: 380px !important; 
         height: auto !important;
+        max-height: 45vh !important; /* Prevents it from getting too tall and crushing buttons */
         object-fit: contain !important;
-        margin: 0 !important;
+        margin: 0 !important; /* 🌟 REMOVED the -50px desktop margin that was pulling it down */
     }
 
-    /* 3. Text Section */
+    /* 2. Text Section (MIDDLE) */
     .text-section {
         width: 100% !important;
-        text-align: center !important; /* Centered looks much cleaner on mobile splash screens */
-        margin: 0 0 35px 0 !important;
+        text-align: center !important; 
+        margin: 0 0 40px 0 !important;
     }
 
     h1 {
-        font-size: 38px !important;
+        font-size: 36px !important;
         font-weight: 800 !important;
         margin: 0 !important;
-        text-align: center !important; /* Overrides the desktop left-align */
-        line-height: 1.1 !important;
+        text-align: center !important; 
+        line-height: 1.15 !important;
     }
 
-    /* 4. Button Group */
+    /* 3. Button Group (BOTTOM) */
     .button-group {
         width: 100% !important;
         display: flex !important;
@@ -256,16 +255,15 @@ h1 {
 
     .btn {
         width: 100% !important;
-        height: 60px !important; /* Thick, premium touch target size */
+        height: 60px !important; 
         padding: 0 !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         font-size: 1.25rem !important;
-        border-radius: 999px !important; /* Perfect pill shape */
+        border-radius: 999px !important; 
     }
 
-    /* Keep the established colors */
     .btn-signup {
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -276,6 +274,6 @@ h1 {
         background-color: #FF3B30 !important;
         color: #ffffff !important;
         border: 2px solid #FF3B30 !important;
-        margin-top: 0 !important; /* Removed the random desktop margin */
+        margin-top: 0 !important; 
     }
 }
