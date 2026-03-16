@@ -297,14 +297,16 @@
   }
 
   /* 🌟 Updated to make the image bigger */
+ /* 🌟 Updated to make the image significantly bigger */
   .hero-image {
-    width: 100% !important;      /* 🌟 CHANGED: Increased from 90% */
-    max-width: 550px !important; /* 🌟 CHANGED: Increased from 400px */
+    width: 100% !important;      
+    max-width: 600px !important; /* Increased container allowance */
+    height: auto !important;
     object-fit: contain !important;
     display: block !important; 
     margin: 0 auto !important; 
     position: static !important; 
-    transform: none !important;
+    transform: scale(1.3) !important; /* 🌟 This forces the image to render 30% larger */
   }
 
   .signup-form-side {
