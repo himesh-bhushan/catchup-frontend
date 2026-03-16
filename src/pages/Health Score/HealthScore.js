@@ -25,6 +25,9 @@ const HealthScore = () => {
     waterContrib: 0
   });
 
+  // 🌟 NEW STATE: Stores the data for the past 7 days
+  const [weeklyData, setWeeklyData] = useState([]);
+
   const radius = 35;
   const circumference = 2 * Math.PI * radius; 
   const strokeWidth = 14; 
@@ -124,9 +127,76 @@ const HealthScore = () => {
     }
   }, [date]); // Re-runs every time the 'date' changes!
 
+  // 🌟 NEW FUNCTION: Fetches simplified stats for the past 7 days to draw the mini rings
+  const fetchWeeklyHistory = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const today = new Date();
+    // Generate array of last 7 dates
+    const past7Days = Array.from({length: 7}, (_, i) => {
+       const d = new Date(today);
+       d.setDate(today.getDate() - (6 - i));
+       return d.toISOString().split('T')[0];
+    });
+
+    try {
+      const { data: actLogs } = await supabase.from('activity_logs').select('date, calories').eq('user_id', user.id).in('date', past7Days);
+      const { data: slpLogs } = await supabase.from('sleep_logs').select('date, seconds').eq('user_id', user.id).in('date', past7Days);
+      const { data: hrLogs } = await supabase.from('heart_rate_logs').select('date, bpm').eq('user_id', user.id).in('date', past7Days);
+
+      const weekStats = past7Days.map(dateStr => {
+         const cals = actLogs?.find(l => l.date === dateStr)?.calories || 0;
+         const sleep = slpLogs?.find(l => l.date === dateStr)?.seconds || 0;
+         const hr = hrLogs?.find(l => l.date === dateStr)?.bpm || 0;
+
+         // Quick score calc for the mini rings
+         let hrScore = hr > 0 ? (hr >= 60 && hr <= 80 ? 100 : Math.max(0, 100 - Math.abs(hr - 70) * 2)) : 0; 
+         let sleepScore = sleep > 0 ? Math.min(100, (sleep / 28800) * 100) : 0;
+         let calScore = cals > 0 ? Math.min(100, (cals / 500) * 100) : 0;
+
+         const hrContrib = hrScore * 0.35;
+         const sleepContrib = sleepScore * 0.25;
+         const calContrib = calScore * 0.25;
+         const totalScore = Math.round(hrContrib + sleepContrib + calContrib); // Excluded water from history to keep it simple
+
+         return { date: dateStr, score: totalScore, hrContrib, sleepContrib, calContrib };
+      });
+
+      setWeeklyData(weekStats);
+    } catch (err) { console.error("Error fetching weekly history", err); }
+  }, []);
+
   useEffect(() => {
     fetchHealthData();
   }, [fetchHealthData]);
+
+  // Run weekly fetch once on mount
+  useEffect(() => {
+    fetchWeeklyHistory();
+  }, [fetchWeeklyHistory]);
+
+  // 🌟 HELPER: Renders a mini SVG ring for the weekly bar
+  const renderMiniRing = (dayStat) => {
+      const r = 20;
+      const circ = 2 * Math.PI * r;
+      const sw = 6;
+      const dayTotal = dayStat.hrContrib + dayStat.sleepContrib + dayStat.calContrib;
+      const dSafeTotal = dayTotal > 0 ? dayTotal : 1;
+
+      const dHrLen = (dayStat.hrContrib / dSafeTotal) * circ;
+      const dSleepLen = (dayStat.sleepContrib / dSafeTotal) * circ;
+      const dCalLen = (dayStat.calContrib / dSafeTotal) * circ;
+
+      return (
+          <svg width="100%" height="100%" viewBox="0 0 50 50" style={{ overflow: 'visible' }}>
+              <circle cx="25" cy="25" r={r} fill="transparent" stroke="#f0f0f0" strokeWidth={sw} />
+              {dayStat.hrContrib > 0 && <circle cx="25" cy="25" r={r} fill="transparent" stroke="#EF473A" strokeWidth={sw} strokeDasharray={`${dHrLen} ${circ}`} strokeDashoffset={0} transform="rotate(-90 25 25)" />}
+              {dayStat.sleepContrib > 0 && <circle cx="25" cy="25" r={r} fill="transparent" stroke="#F7931E" strokeWidth={sw} strokeDasharray={`${dSleepLen} ${circ}`} strokeDashoffset={-dHrLen} transform="rotate(-90 25 25)" />}
+              {dayStat.calContrib > 0 && <circle cx="25" cy="25" r={r} fill="transparent" stroke="#FDE08B" strokeWidth={sw} strokeDasharray={`${dCalLen} ${circ}`} strokeDashoffset={-(dHrLen + dSleepLen)} transform="rotate(-90 25 25)" />}
+          </svg>
+      );
+  };
 
   // ==========================================
   // 🎨 RING SVG CALCULATIONS (NO EMPTY SPACE)
@@ -287,6 +357,26 @@ const HealthScore = () => {
             </div>
 
           </div>
+
+          {/* 🌟 NEW: WEEKLY HISTORY BOTTOM ROW */}
+          <div className="hs-weekly-container">
+            {weeklyData.map((dayStat, index) => (
+                <div 
+                  key={index} 
+                  className={`hs-mini-day-card ${date === dayStat.date ? 'active' : ''}`}
+                  onClick={() => setDate(dayStat.date)}
+                >
+                    <span className="hs-mini-day-name">
+                        {new Date(dayStat.date).toLocaleDateString('en-US', { weekday: 'short' })}
+                    </span>
+                    <div className="hs-mini-ring-wrapper">
+                        {renderMiniRing(dayStat)}
+                        <span className="hs-mini-score">{dayStat.score}</span>
+                    </div>
+                </div>
+            ))}
+          </div>
+
         </div>
         
       </div>

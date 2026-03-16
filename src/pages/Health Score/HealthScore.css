@@ -235,6 +235,74 @@
 .pill-yellow { background: #FBE496; }
 .pill-blue   { background: #5D8BE0; }
 
+/* =========================================
+   WEEKLY HISTORY RINGS (BOTTOM ROW)
+   ========================================= */
+.hs-weekly-container {
+    width: 100%;
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 2px solid rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.hs-mini-day-card {
+    flex: 1;
+    min-width: 65px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.hs-mini-day-card:hover {
+    background: rgba(0,0,0,0.02);
+}
+
+.hs-mini-day-card.active {
+    background: #fff;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    border: 2px solid #EF473A;
+    transform: translateY(-3px);
+}
+
+.hs-mini-day-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #999;
+    text-transform: uppercase;
+}
+
+.hs-mini-day-card.active .hs-mini-day-name {
+    color: #EF473A;
+}
+
+.hs-mini-ring-wrapper {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hs-mini-score {
+    position: absolute;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #333;
+}
+
 /* Responsive adjustments */
 @media screen and (max-width: 1024px) {
     .hs-page-container {
