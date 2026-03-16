@@ -14,6 +14,9 @@ import tomatoHero from '../../assets/raise-hand.png';
 import heartVisual from '../../assets/heart-rate.png';
 import tomato from '../../assets/tomato.png';
 import awards from '../../assets/awards.png';
+import blog1 from '../../assets/blog1.png';
+import blog2 from '../../assets/blog2.png';
+import blog3 from '../../assets/blog3.png';
 
 // Styles & DB
 import './Dashboard.css';
@@ -191,9 +194,9 @@ const Dashboard = () => {
 
   // --- RECOMMENDATIONS ---
   const recommendations = [
-    { id: 1, title: t('rec_tomatoes') || "Health Benefits of Tomatoes", img: tomato, color: "#fff3e0" },
-    { id: 2, title: t('rec_heart') || "Better Heart Health", img: heartVisual, color: "#ffebee" },
-    { id: 3, title: t('rec_sleep') || "Why Sleep is Important", img: tomatoHero, color: "#e3f2fd" },
+    { id: 1, title: t('rec_tomatoes') || "Health Benefits of Tomatoes", img: blog1, color: "#fff3e0" },
+    { id: 2, title: t('rec_heart') || "Better Heart Health", img: blog2, color: "#ffebee" },
+    { id: 3, title: t('rec_sleep') || "Why Sleep is Important", img: blog3, color: "#e3f2fd" },
   ];
 
   // --- DATA FETCHING ---
