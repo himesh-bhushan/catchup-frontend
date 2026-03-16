@@ -5,7 +5,7 @@ import DashboardNav from '../../components/DashboardNav';
 import { 
   FiChevronRight, FiUser, FiHeart, FiActivity, FiMoon, 
   FiDroplet, FiWatch, FiRefreshCw, FiArrowLeft, FiNavigation, 
-  FiBluetooth, FiExternalLink, FiShare2, FiX 
+  FiExternalLink, FiShare2, FiX 
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
@@ -102,7 +102,6 @@ const Dashboard = () => {
       alert("User session not found. Please log in again.");
       return;
     }
-    
     try {
         await navigator.clipboard.writeText(user.id);
         window.open('https://www.icloud.com/shortcuts/525c6fb259844e4eb3e838d4553f77ca', '_blank');
@@ -222,7 +221,6 @@ const Dashboard = () => {
     if (session?.user) {
         setUser(session.user);
         try {
-            // 1. FETCH ALL DATA FIRST
             const todayStr = new Date().toISOString().split('T')[0];
             
             const { data: profile } = await supabase
@@ -231,15 +229,12 @@ const Dashboard = () => {
                 .eq('id', session.user.id).single();
             
             const { data: todayLog } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
-            
             const { data: sleepLog } = await supabase.from('sleep_logs').select('seconds').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
 
-            // 2. PROCESS VARIABLES
             const goal = profile?.calorie_goal || 500;
             const cals = todayLog?.calories || 0;
             const actualSleepSeconds = sleepLog?.seconds || 0; 
 
-            // 3. SET STATES
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
                 if (profile.avatar_url) {
@@ -267,7 +262,6 @@ const Dashboard = () => {
                 });
             }
 
-            // --- GOALS CALCULATION ---
             const stepGoalMet = (todayLog?.steps || 0) >= 5000;
             const moveGoalMet = cals >= goal; 
             const sleepGoalMet = actualSleepSeconds >= (7 * 3600);
@@ -288,7 +282,6 @@ const Dashboard = () => {
                 water: waterGoalMet
             });
 
-            // --- AWARDS LOGIC ---
             const today = new Date();
             const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
             const daysPassed = today.getDate(); 
@@ -324,9 +317,6 @@ const Dashboard = () => {
 
   useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
 
-  // ==========================================
-  // 🩺 HEALTH SCORE CALCULATIONS (FOR DASHBOARD PREVIEW)
-  // ==========================================
   const heart = otherStats.heart_rate || 0;
   const sleep = otherStats.sleep || 0;
   const cals = activityData.calories || 0;
@@ -363,7 +353,6 @@ const Dashboard = () => {
   
   const totalScore = Math.round(hrContrib + sleepContrib + calContrib + waterContrib);
 
-  // SVG Configuration
   const radius = 35;
   const circumference = 2 * Math.PI * radius;
   const strokeWidth = 14;
@@ -381,7 +370,6 @@ const Dashboard = () => {
   const calOffset = hrLen + sleepLen;
   const waterOffset = hrLen + sleepLen + calLen;
 
-  // --- RENDER ---
   return (
     <div className="dashboard-wrapper">
       <DashboardNav />
@@ -426,7 +414,6 @@ const Dashboard = () => {
             <div className="big-tile-container">
                 <div className="big-connect-card" style={{ position: 'relative', minHeight: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     
-                    {/* Universal Close Button (Top Right) */}
                     <button 
                         onClick={() => {
                             localStorage.setItem('skipTracker', 'true');
@@ -438,14 +425,11 @@ const Dashboard = () => {
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             cursor: 'pointer', color: '#555', zIndex: 10, transition: '0.2s'
                         }}
-                        onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#E64A45'; e.currentTarget.style.color = '#FFF'; }}
-                        onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#f5f5f5'; e.currentTarget.style.color = '#555'; }}
                     >
                         <FiX size={20} />
                     </button>
 
                     {showConnectMenu ? (
-                        /* --- BEAUTIFIED APPLE HEALTH SCREEN --- */
                         <div className="connect-device-card-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '20px' }}>
                             <button onClick={() => setShowConnectMenu(false)} className="back-btn" style={{ position: 'absolute', top: '20px', left: '20px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#111' }}>
                                 <FiArrowLeft size={26} />
@@ -469,13 +453,10 @@ const Dashboard = () => {
                                     cursor: 'pointer', width: '100%', maxWidth: '300px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
                                     transition: 'transform 0.2s'
                                 }}
-                                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 Download Shortcut
                             </button>
 
-                            {/* Guaranteed-to-work Continue Button */}
                             <button 
                                 onClick={() => {
                                     localStorage.setItem('skipTracker', 'true');
@@ -486,16 +467,13 @@ const Dashboard = () => {
                                     padding: '15px', marginTop: '15px', fontSize: '0.95rem', fontWeight: '700',
                                     cursor: 'pointer', transition: 'color 0.2s'
                                 }}
-                                onMouseOver={(e) => e.target.style.color = '#111'}
-                                onMouseOut={(e) => e.target.style.color = '#888'}
                             >
                                 Skip & Continue to Dashboard
                             </button>
                         </div>
                     ) : (
-                        /* --- MAIN CONNECT SCREEN --- */
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                            <FiWatch size={65} color="#E64A45" style={{ marginBottom: '15px' }} />
+                            <FiActivity size={65} color="#E64A45" style={{ marginBottom: '15px' }} />
                             <h2 style={{ fontSize: '1.8rem', fontWeight: '900', margin: '0 0 10px 0', color: '#111' }}>
                                 {t('connect_title') || 'Connect Tracker'}
                             </h2>
@@ -522,7 +500,6 @@ const Dashboard = () => {
                 
                 <div className="dash-grid">
                     
-                    {/* Activity Ring */}
                     <div className="card activity-card" onClick={() => navigate('/activity')}>
                         <div className="card-header">
                             <h3>{t('Activity Ring')}</h3>
@@ -546,8 +523,6 @@ const Dashboard = () => {
                     </div>
 
                     <div className="sync-card" style={{ display: 'grid', gridTemplateColumns: '1.95fr 0.925fr 0.925fr', gap: '20px', width: '100%', background: 'transparent', boxShadow: 'none', padding: 0 }}>
-                        
-                        {/* Actual Sync Tile */}
                         <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
                             <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                                 <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
@@ -557,8 +532,6 @@ const Dashboard = () => {
                                 Synced {lastSyncedAgo ? lastSyncedAgo : 'just now'}
                             </p>
                         </div>
-
-                        {/* Actual Water Tile */}
                         <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Water')}</h3>
@@ -568,8 +541,6 @@ const Dashboard = () => {
                                 {otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>L</span>
                             </div>
                         </div>
-
-                        {/* Actual Sleep Tile */}
                         <div className="card" onClick={() => navigate('/sleep')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Sleep')}</h3>
@@ -579,7 +550,6 @@ const Dashboard = () => {
                                 {otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-secondary, #666)' }}>hrs</span>
                             </div>
                         </div>
-
                     </div>
 
                     <div className="card goals-card" onClick={() => navigate('/goals')}>
@@ -648,7 +618,6 @@ const Dashboard = () => {
                         <div className="tile-value">{otherStats.heart_rate} <span>BPM</span></div>
                     </div>
 
-                    {/* Health Score Section */}
                     <div className="card score-card" onClick={() => navigate('/health-score')}>
                         <div className="card-header score-header-nudged">
                             <h3>{t('Health Score') || "Health Score"}</h3>
@@ -659,30 +628,12 @@ const Dashboard = () => {
                             <div className="score-ring-wrapper" style={{ position: 'relative' }}>
                                 <svg width="100%" height="100%" viewBox="0 0 100 100" style={{ overflow: 'visible' }}>
                                   <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#f0f0f0" strokeWidth={strokeWidth} />
-                                  {hrContrib > 0 && (
-                                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#EF473A" strokeWidth={strokeWidth}
-                                      strokeDasharray={`${hrLen} ${circumference}`} strokeDashoffset={-hrOffset} transform="rotate(-90 50 50)" />
-                                  )}
-                                  {sleepContrib > 0 && (
-                                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#F7931E" strokeWidth={strokeWidth}
-                                      strokeDasharray={`${sleepLen} ${circumference}`} strokeDashoffset={-sleepOffset} transform="rotate(-90 50 50)" />
-                                  )}
-                                  {calContrib > 0 && (
-                                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#FDE08B" strokeWidth={strokeWidth}
-                                      strokeDasharray={`${calLen} ${circumference}`} strokeDashoffset={-calOffset} transform="rotate(-90 50 50)" />
-                                  )}
-                                  {waterContrib > 0 && (
-                                    <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#4A90E2" strokeWidth={strokeWidth}
-                                      strokeDasharray={`${waterLen} ${circumference}`} strokeDashoffset={-waterOffset} transform="rotate(-90 50 50)" />
-                                  )}
+                                  {hrContrib > 0 && <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#EF473A" strokeWidth={strokeWidth} strokeDasharray={`${hrLen} ${circumference}`} strokeDashoffset={-hrOffset} transform="rotate(-90 50 50)" />}
+                                  {sleepContrib > 0 && <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#F7931E" strokeWidth={strokeWidth} strokeDasharray={`${sleepLen} ${circumference}`} strokeDashoffset={-sleepOffset} transform="rotate(-90 50 50)" />}
+                                  {calContrib > 0 && <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#FDE08B" strokeWidth={strokeWidth} strokeDasharray={`${calLen} ${circumference}`} strokeDashoffset={-calOffset} transform="rotate(-90 50 50)" />}
+                                  {waterContrib > 0 && <circle cx="50" cy="50" r={radius} fill="transparent" stroke="#4A90E2" strokeWidth={strokeWidth} strokeDasharray={`${waterLen} ${circumference}`} strokeDashoffset={-waterOffset} transform="rotate(-90 50 50)" />}
                                 </svg>
-                                <div style={{
-                                    position: 'absolute',
-                                    top: 0, left: 0, right: 0, bottom: 0,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}>
+                                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <span style={{ color: '#DE4B4E', fontWeight: 'bold', fontSize: '1.2rem' }}>{totalScore}</span>
                                 </div>
                             </div>
@@ -700,11 +651,7 @@ const Dashboard = () => {
                                     <div className="metric-icon-circle"><FiMoon color="#F7931E" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Sleep Hours</span>
-                                        <span className="metric-value">
-                                            {otherStats.sleep > 0 
-                                                ? (otherStats.sleep / 3600).toFixed(1) 
-                                                : '0.0'} <strong>hours</strong>
-                                        </span>
+                                        <span className="metric-value">{otherStats.sleep > 0 ? (otherStats.sleep / 3600).toFixed(1) : '0.0'} <strong>hours</strong></span>
                                     </div>
                                 </div>
 
@@ -720,11 +667,7 @@ const Dashboard = () => {
                                     <div className="metric-icon-circle"><FiDroplet color="#4A90E2" /></div>
                                     <div className="metric-text-group">
                                         <span className="metric-label">Water Intake</span>
-                                        <span className="metric-value">
-                                            {otherStats.water_intake > 0 
-                                                ? (otherStats.water_intake / 1000).toFixed(1) 
-                                                : '0.0'} <strong>L</strong>
-                                        </span>
+                                        <span className="metric-value">{otherStats.water_intake > 0 ? (otherStats.water_intake / 1000).toFixed(1) : '0.0'} <strong>L</strong></span>
                                     </div>
                                 </div>
                             </div>
@@ -734,28 +677,14 @@ const Dashboard = () => {
                     <div className="card awards-card" onClick={() => navigate('/awards')}>
                         <div className="card-header"><h3>{t('Awards')}</h3><FiChevronRight className="card-arrow" color="var(--text-secondary, #999)" /></div>
                         <div className="awards-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <img 
-                                src={awards} 
-                                alt="Award Badge" 
-                                className={`award-badge-status ${isAwardEarned ? 'earned-color' : 'not-earned-gray'}`} 
-                            />
-                            
-                            {/* Share Button shows up only if award is earned */}
+                            <img src={awards} alt="Award Badge" className={`award-badge-status ${isAwardEarned ? 'earned-color' : 'not-earned-gray'}`} />
                             {isAwardEarned && (
                                 <button 
                                     onClick={handleShare}
                                     style={{
-                                        marginTop: '15px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        background: '#DE4B4E',
-                                        color: 'white',
-                                        border: 'none',
-                                        padding: '8px 16px',
-                                        borderRadius: '20px',
-                                        fontWeight: 'bold',
-                                        cursor: 'pointer',
+                                        marginTop: '15px', display: 'flex', alignItems: 'center', gap: '8px',
+                                        background: '#DE4B4E', color: 'white', border: 'none', padding: '8px 16px',
+                                        borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer',
                                         boxShadow: '0 4px 10px rgba(222, 75, 78, 0.3)'
                                     }}>
                                     <FiShare2 size={16} /> Share
@@ -765,7 +694,6 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Recommendations */}
                 <div className="recommendations-section">
                     <h3>{t('recommendations') || "Recommendations"}</h3>
                     <div className="recommendations-carousel">
@@ -778,18 +706,14 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Nearby Care */}
                 <div className="recommendations-section">
-                    
                     <div className="section-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                         <h3 style={{ margin: 0 }}>{t('nearby_care') || "Find Nearby Care"}</h3>
-                        
                         <button onClick={handleGetLocation} className="loc-btn">
                              <FiNavigation /> {locationLoading ? t('locating') : t('use_my_location') || "Use My Location"}
                         </button>
                     </div>
 
-                    {/* Subtitle / Empty State text sits below the row */}
                     {clinics.length === 0 && !locationLoading && (
                         <div className="empty-clinics-state">
                             <p style={{ marginTop: 0 }}>{t('location_prompt') || 'Click "Use My Location" to see clinics near you.'}</p>
