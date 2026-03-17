@@ -56,6 +56,7 @@ const Dashboard = () => {
   const [showConnectMenu, setShowConnectMenu] = useState(false);
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [emailSending, setEmailSending] = useState(false); // 🌟 NEW STATE
 
   // --- HELPER: TIME AGO ---
   const calculateTimeAgo = (dateString) => {
@@ -96,18 +97,39 @@ const Dashboard = () => {
     window.location.href = authUrl;
   };
 
-  // --- DOWNLOAD APPLE HEALTH SHORTCUT ---
-  const handleDownload = async () => {
-    if (!user) {
+  // --- SEND APPLE HEALTH SETUP EMAIL ---
+  const handleSendSetupEmail = async () => {
+    if (!user || !user.email) {
       alert("User session not found. Please log in again.");
       return;
     }
+    
+    setEmailSending(true);
     try {
-        await navigator.clipboard.writeText(user.id);
-        window.open('https://www.icloud.com/shortcuts/525c6fb259844e4eb3e838d4553f77ca', '_blank');
+        // 1. Call your Express backend to send the email
+        await axios.post('https://backend.catchup.page/api/send-tracker-email', {
+            email: user.email,
+            userId: user.id,
+            firstName: firstName
+        });
+
+        // 2. Update Supabase so they never see this screen again on any device
+        const { error } = await supabase
+            .from('profiles')
+            .update({ google_connected: true }) 
+            .eq('id', user.id);
+
+        if (error) throw error;
+
+        // 3. Update the local UI to immediately show the dashboard
+        setIsDeviceConnected(true);
+        alert("Setup guide sent! Please check your email to install the shortcut.");
+
     } catch (err) {
-        console.error("Failed to copy ID to clipboard", err);
-        alert("Oops! We couldn't copy your ID. Please ensure clipboard permissions are allowed.");
+        console.error("Failed to send setup email", err);
+        alert("Oops! We couldn't send the email. Please try again.");
+    } finally {
+        setEmailSending(false);
     }
   };
 
@@ -442,16 +464,19 @@ const Dashboard = () => {
                             </p>
 
                             <button 
-                                onClick={handleDownload} 
+                                onClick={handleSendSetupEmail} 
+                                disabled={emailSending}
                                 style={{
                                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-                                    background: '#111', color: '#FFF', border: 'none',
+                                    background: emailSending ? '#666' : '#111', color: '#FFF', border: 'none',
                                     padding: '16px 30px', borderRadius: '30px', fontSize: '1.1rem', fontWeight: '800',
-                                    cursor: 'pointer', width: '100%', maxWidth: '300px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
+                                    cursor: emailSending ? 'not-allowed' : 'pointer', width: '100%', maxWidth: '300px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
                                     transition: 'transform 0.2s'
                                 }}
+                                onMouseOver={(e) => { if(!emailSending) e.currentTarget.style.transform = 'scale(1.05)' }}
+                                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
-                                Download Shortcut
+                                {emailSending ? "Sending Email..." : "Email me the Setup Guide"}
                             </button>
 
                             <button 
