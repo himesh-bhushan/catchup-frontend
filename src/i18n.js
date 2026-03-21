@@ -108,6 +108,19 @@ const resources = {
       "monthly_mover_desc": "Hit your move goal every day this month.",
       "share": "Share",
 
+      // --- Sharing / Leaderboard ---
+      "find_add_friends": "Find and add friends...",
+      "find_friends_title": "Find Friends",
+      "search_by_name": "Search by name...",
+      "your_network": "YOUR NETWORK",
+      "score": "Score",
+      "view": "View",
+      "you_badge": "(You)",
+      "rank_1": "1ST",
+      "rank_2": "2ND",
+      "rank_3": "3RD",
+      "rank_other": "{{rank}}TH",
+
       // --- Report Page ---
       "qr_title": "My Biomarker Data?",
       "scan_here": "Scan Here!",
@@ -235,6 +248,19 @@ const resources = {
       "monthly_mover_desc": "本月每天达到您的活动目标。",
       "share": "分享",
 
+      // --- Sharing / Leaderboard ---
+      "find_add_friends": "查找并添加好友...",
+      "find_friends_title": "查找好友",
+      "search_by_name": "按名字搜索...",
+      "your_network": "你的网络",
+      "score": "得分",
+      "view": "查看",
+      "you_badge": "(你)",
+      "rank_1": "第一名",
+      "rank_2": "第二名",
+      "rank_3": "第三名",
+      "rank_other": "第{{rank}}名",
+
       // --- Report Page ---
       "qr_title": "我的生物标志物数据？",
       "scan_here": "扫描这里！",
@@ -361,6 +387,19 @@ const resources = {
       "monthly_mover": "Penggerak Bulanan",
       "monthly_mover_desc": "Capai matlamat pergerakan anda setiap hari bulan ini.",
       "share": "Kongsi",
+
+      // --- Sharing / Leaderboard ---
+      "find_add_friends": "Cari dan tambah rakan...",
+      "find_friends_title": "Cari Rakan",
+      "search_by_name": "Cari mengikut nama...",
+      "your_network": "RANGKAIAN ANDA",
+      "score": "Skor",
+      "view": "Lihat",
+      "you_badge": "(Anda)",
+      "rank_1": "PERTAMA",
+      "rank_2": "KE-2",
+      "rank_3": "KE-3",
+      "rank_other": "KE-{{rank}}",
 
       // --- Report Page ---
       "qr_title": "Data Biomarker Saya?",
