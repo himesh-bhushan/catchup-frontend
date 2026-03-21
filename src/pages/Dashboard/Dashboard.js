@@ -608,7 +608,7 @@ const Dashboard = () => {
                                 <div className="goal-item-header">
                                     <div className="goal-dot" style={{ backgroundColor: goalsData.steps ? '#4CAF50' : '#E0E0E0' }}></div> {t('daily_steps')}
                                 </div>
-                                <p>{t('steps_desc')}</p>
+                                <p>{t('steps_desc', { steps: 5000 })}</p>
                             </div>
                             <div className="goal-item-detailed">
                                 <div className="goal-item-header">
@@ -620,13 +620,13 @@ const Dashboard = () => {
                                 <div className="goal-item-header">
                                     <div className="goal-dot" style={{ backgroundColor: goalsData.sleep ? '#4CAF50' : '#E0E0E0' }}></div> {t('Sleep')}
                                 </div>
-                                <p>{t('sleep_desc')}</p>
+                                <p>{t('sleep_desc', { hours: 7 })}</p>
                             </div>
                             <div className="goal-item-detailed">
                                 <div className="goal-item-header">
                                     <div className="goal-dot" style={{ backgroundColor: goalsData.water ? '#4CAF50' : '#E0E0E0' }}></div> {t('Water')}
                                 </div>
-                                <p>{t('water_desc')}</p>
+                                <p>{t('water_desc', { liters: 2 })}</p>
                             </div>
                         </div>
                     </div>
