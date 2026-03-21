@@ -406,14 +406,14 @@ const Dashboard = () => {
           
           <div className="header-flex">
             <div className="header-text-group">
-                <h1 className="desktop-title">Welcome back, {firstName}</h1>
-                <h1 className="mobile-title">Hi, {firstName} <br/> Have a nice day</h1>
+                <h1 className="desktop-title">{t('welcome_message', { name: firstName })}</h1>
+                <h1 className="mobile-title">{t('hi_message', { name: firstName })} <br/> {t('have_nice_day')}</h1>
                 
                 {lastSynced && (
                     <div className="last-synced-wrapper">
                         <FiRefreshCw className={`sync-icon-small ${loading ? "icon-spin" : ""}`} />
                         <p className="last-synced-label">
-                            Last updated: {lastSynced} <span className="sync-time-ago">({lastSyncedAgo})</span>
+                            {t('last_updated')}: {lastSynced} <span className="sync-time-ago">({lastSyncedAgo})</span>
                         </p>
                     </div>
                 )}
@@ -548,10 +548,11 @@ const Dashboard = () => {
                         <div className="card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
                             <div className="sync-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                                 <div className="sync-dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', marginRight: '8px' }}></div>
-                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing') || 'Syncing'}</h3>
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing')}</h3>
                             </div>
                             <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary, #666)' }}>
-                                Synced {lastSyncedAgo ? lastSyncedAgo : 'just now'}
+                                {/* 🌟 FIXED: Replaced hardcoded "Synced" with "last_updated" translation */}
+                                {t('last_updated')} {lastSyncedAgo ? lastSyncedAgo : 'just now'}
                             </p>
                         </div>
                         <div className="card" onClick={() => navigate('/water')} style={{ margin: 0, padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
