@@ -44,6 +44,9 @@ const resources = {
       "have_nice_day": "Have a nice day",
       "loading_data": "Loading your wellness data...",
       "last_updated": "Last updated",
+      "steps_desc": "Walk 5,000 steps per day",
+      "sleep_desc": "7 hours per day",
+      "water_desc": "2 Liters",
       
       // Connection Modal
       "connect_title": "Let's Get Connected",
@@ -165,6 +168,12 @@ const resources = {
       "have_nice_day": "祝你有美好的一天",
       "loading_data": "正在加载您的健康数据...",
       "last_updated": "最后更新",
+      "steps_desc": "每天步行 5,000 步",
+      "sleep_desc": "每天 7 小时",
+      "water_desc": "2 升",
+      "steps_desc": "每天步行 {{steps}} 步",
+      "sleep_desc": "每天 {{hours}} 小时",
+      "water_desc": "{{liters}} 升",
       
       // Connection Modal
       "connect_title": "连接设备",
@@ -286,6 +295,12 @@ const resources = {
       "have_nice_day": "Semoga hari anda indah",
       "loading_data": "Memuatkan data kesihatan anda...",
       "last_updated": "Kemas kini terakhir",
+      "steps_desc": "Berjalan 5,000 langkah sehari",
+      "sleep_desc": "7 jam sehari",
+      "water_desc": "2 Liter",
+      "steps_desc": "Berjalan {{steps}} langkah sehari",
+      "sleep_desc": "{{hours}} jam sehari",
+      "water_desc": "{{liters}} Liter",
       
       // Connection Modal
       "connect_title": "Mari Berhubung",
