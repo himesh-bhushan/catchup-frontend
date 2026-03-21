@@ -606,27 +606,27 @@ const Dashboard = () => {
                         <div className="goals-detailed-grid">
                             <div className="goal-item-detailed">
                                 <div className="goal-item-header">
-                                    <div className="goal-dot" style={{ backgroundColor: goalsData.steps ? '#4CAF50' : '#E0E0E0' }}></div> Daily Steps
+                                    <div className="goal-dot" style={{ backgroundColor: goalsData.steps ? '#4CAF50' : '#E0E0E0' }}></div> {t('daily_steps')}
                                 </div>
-                                <p>Walk 5,000 steps per day</p>
+                                <p>{t('steps_desc')}</p>
                             </div>
                             <div className="goal-item-detailed">
                                 <div className="goal-item-header">
-                                    <div className="goal-dot" style={{ backgroundColor: goalsData.move ? '#4CAF50' : '#E0E0E0' }}></div> Move
+                                    <div className="goal-dot" style={{ backgroundColor: goalsData.move ? '#4CAF50' : '#E0E0E0' }}></div> {t('move')}
                                 </div>
-                                <p>Hit daily calorie goal</p>
+                                <p>{t('hit_calorie_goal')}</p>
                             </div>
                             <div className="goal-item-detailed">
                                 <div className="goal-item-header">
-                                    <div className="goal-dot" style={{ backgroundColor: goalsData.sleep ? '#4CAF50' : '#E0E0E0' }}></div> Sleep
+                                    <div className="goal-dot" style={{ backgroundColor: goalsData.sleep ? '#4CAF50' : '#E0E0E0' }}></div> {t('Sleep')}
                                 </div>
-                                <p>7 hours per day</p>
+                                <p>{t('sleep_desc')}</p>
                             </div>
                             <div className="goal-item-detailed">
                                 <div className="goal-item-header">
-                                    <div className="goal-dot" style={{ backgroundColor: goalsData.water ? '#4CAF50' : '#E0E0E0' }}></div> Water
+                                    <div className="goal-dot" style={{ backgroundColor: goalsData.water ? '#4CAF50' : '#E0E0E0' }}></div> {t('Water')}
                                 </div>
-                                <p>2 Liters</p>
+                                <p>{t('water_desc')}</p>
                             </div>
                         </div>
                     </div>
