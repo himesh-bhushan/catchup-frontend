@@ -4,6 +4,8 @@ import {
   FiUserPlus, FiCheck, FiTrash2, FiHeart, FiMoon, FiActivity, FiDroplet, FiChevronRight, FiShare2 
 } from 'react-icons/fi';
 import { supabase } from '../../supabase';
+// 🌟 Added the i18n hook import
+import { useTranslation } from 'react-i18next';
 
 import DashboardNav from '../../components/DashboardNav';
 
@@ -16,6 +18,9 @@ import awards from '../../assets/awards.png'; // Ensure this exists
 import './Sharing.css';
 
 const Sharing = () => {
+  // 🌟 Initialize translation hook
+  const { t } = useTranslation();
+
   const [isSearching, setIsSearching] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -206,6 +211,15 @@ const Sharing = () => {
 
   const isAwardEarned = friendStats?.awards && friendStats.awards.length > 0;
 
+  // 🌟 Helper for dynamic rank translation
+  const getRankText = (index) => {
+    const rank = index + 1;
+    if (rank === 1) return t('rank_1');
+    if (rank === 2) return t('rank_2');
+    if (rank === 3) return t('rank_3');
+    return t('rank_other', { rank: rank });
+  };
+
   return (
     <div className="dashboard-wrapper sharing-page-bg">
       <DashboardNav />
@@ -225,13 +239,15 @@ const Sharing = () => {
                   </div>
                   <div className="profile-text">
                     <h1 className="black-name-title">{viewingFriend.first_name} {viewingFriend.last_name}</h1>
-                    <span className="health-score-pill">Health Score: {friendStats?.healthScore}</span>
+                    {/* 🌟 Translated Health Score label */}
+                    <span className="health-score-pill">{t('Health Score')}: {friendStats?.healthScore}</span>
                   </div>
                 </div>
               </header>
 
               {friendLoading ? (
-                <div className="lb-placeholder-text">Syncing Health Data...</div>
+                {/* 🌟 Translated Loading message */}
+                <div className="lb-placeholder-text">{t('loading_data')}</div>
               ) : (
                 <div className="dashboard-grid-layout">
                   
@@ -241,7 +257,8 @@ const Sharing = () => {
                     {/* Activity Ring (Dashboard Side-by-Side Style) */}
                     <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
-                        <h3>Activity Ring</h3>
+                        {/* 🌟 Translated Activity Ring label */}
+                        <h3>{t('Activity Ring')}</h3>
                       </div>
                       <div className="dash-card-body activity-body-side">
                         <div className="dash-ring-wrapper-large">
@@ -259,15 +276,16 @@ const Sharing = () => {
                         </div>
                         <div className="dash-stats-list">
                           <div className="dash-stat-item">
-                            <span className="stat-lbl">Move</span>
+                            {/* 🌟 Translated labels */}
+                            <span className="stat-lbl">{t('move')}</span>
                             <span className="stat-val">{friendStats?.activity?.calories || 0}/500 <small>KCAL</small></span>
                           </div>
                           <div className="dash-stat-item">
-                            <span className="stat-lbl">Steps</span>
+                            <span className="stat-lbl">{t('step_count')}</span>
                             <span className="stat-val">{friendStats?.activity?.steps || 0}</span>
                           </div>
                           <div className="dash-stat-item">
-                            <span className="stat-lbl">Distance</span>
+                            <span className="stat-lbl">{t('distance')}</span>
                             <span className="stat-val">{((friendStats?.activity?.steps || 0) * 0.0008).toFixed(2)} <small>KM</small></span>
                           </div>
                         </div>
@@ -277,11 +295,11 @@ const Sharing = () => {
                     {/* Health Score */}
                     <div className="glass-card dash-style-card">
                       <div className="dash-card-header">
-                        <h3>Health Score</h3>
+                        {/* 🌟 Translated Health Score label */}
+                        <h3>{t('Health Score')}</h3>
                       </div>
                       <div className="dash-card-body hs-body">
                         <div className="dash-ring-wrapper-medium">
-                          {/* 4-Color Segmented Ring */}
                           <svg viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="35" stroke="#D3504A" strokeWidth="16" fill="none" strokeDasharray="75 220" strokeDashoffset="0" />
                             <circle cx="50" cy="50" r="35" stroke="#E29E3A" strokeWidth="16" fill="none" strokeDasharray="60 220" strokeDashoffset="-75" />
@@ -295,19 +313,20 @@ const Sharing = () => {
                         <div className="hs-pills-list">
                           <div className="hs-pill bg-red hs-thinner-pill">
                             <div className="pill-icon-wrapper-small HS-SMALL-ICON-BOX"><FiHeart className="icon-red hs-icon-scale" /></div>
-                            <div className="pill-text hs-smaller-text"><span>Heart Rate</span><strong>{friendStats?.profile?.heart_rate || '--'} <small>BPM</small></strong></div>
+                            {/* 🌟 Translated metric labels */}
+                            <div className="pill-text hs-smaller-text"><span>{t('Heart Rate')}</span><strong>{friendStats?.profile?.heart_rate || '--'} <small>BPM</small></strong></div>
                           </div>
                           <div className="hs-pill bg-orange hs-thinner-pill">
                             <div className="pill-icon-wrapper-small HS-SMALL-ICON-BOX"><FiMoon className="icon-orange hs-icon-scale" /></div>
-                            <div className="pill-text hs-smaller-text"><span>Sleep Hours</span><strong>{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <small>HOURS</small></strong></div>
+                            <div className="pill-text hs-smaller-text"><span>{t('Sleep')}</span><strong>{(friendStats?.profile?.sleep_seconds / 3600).toFixed(1) || '0'} <small>HOURS</small></strong></div>
                           </div>
                           <div className="hs-pill bg-yellow hs-thinner-pill">
                             <div className="pill-icon-wrapper-small HS-SMALL-ICON-BOX"><FiActivity className="icon-dark hs-icon-scale" /></div>
-                            <div className="pill-text dark-text hs-smaller-text"><span>Calories Burned</span><strong>{friendStats?.activity?.calories || 0} <small>KCAL</small></strong></div>
+                            <div className="pill-text dark-text hs-smaller-text"><span>{t('calories_burned')}</span><strong>{friendStats?.activity?.calories || 0} <small>KCAL</small></strong></div>
                           </div>
                           <div className="hs-pill bg-blue hs-thinner-pill">
                             <div className="pill-icon-wrapper-small HS-SMALL-ICON-BOX"><FiDroplet className="icon-blue hs-icon-scale" /></div>
-                            <div className="pill-text hs-smaller-text"><span>Water Intake</span><strong>{(friendStats?.profile?.water_intake / 1000).toFixed(1) || '0'} <small>L</small></strong></div>
+                            <div className="pill-text hs-smaller-text"><span>{t('Water')}</span><strong>{(friendStats?.profile?.water_intake / 1000).toFixed(1) || '0'} <small>L</small></strong></div>
                           </div>
                         </div>
                       </div>
@@ -319,7 +338,8 @@ const Sharing = () => {
                     
                     {/* Weekly Performance Rings */}
                     <div className="glass-card sharing-weekly-card">
-                      <div className="dash-card-header"><h3>Weekly Performance</h3></div>
+                      {/* 🌟 Translated Weekly Progress label */}
+                      <div className="dash-card-header"><h3>{t('weekly_progress')}</h3></div>
                       <div className="weekly-rings-container">
                         {friendWeeklyData.map((day, i) => (
                           <div key={i} className="mini-ring-col">
@@ -342,7 +362,8 @@ const Sharing = () => {
                     {/* Single Award Card */}
                     <div className="glass-card sharing-awards-card">
                         <div className="dash-card-header">
-                            <h3>Awards</h3>
+                            {/* 🌟 Translated Awards label */}
+                            <h3>{t('Awards')}</h3>
                         </div>
                         <div className="awards-content">
                             <img 
@@ -355,7 +376,8 @@ const Sharing = () => {
                                 <button 
                                     onClick={handleShare}
                                     className="award-share-btn">
-                                    <FiShare2 size={16} /> Share
+                                    {/* 🌟 Translated Share label */}
+                                    <FiShare2 size={16} /> {t('share')}
                                 </button>
                             )}
                         </div>
@@ -377,7 +399,8 @@ const Sharing = () => {
                   {/* NEW WRAPPER: Keeps search bar and button together */}
                   <div className="lb-search-group">
                       <div className="lb-search-bar-alt" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
-                        Find and add friends...
+                        {/* 🌟 Translated Placeholder text */}
+                        {t('find_add_friends')}
                       </div>
                       <button className="lb-transparent-btn" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
                         <FiUserPlus size={28} />
@@ -386,24 +409,29 @@ const Sharing = () => {
               </div>
               <div className="lb-podium">
                 <div className="podium-col second-place" onClick={() => myFriends[1] && handleViewFriend(myFriends[1])}>
-                    <span className="podium-rank">2ND</span>
+                    {/* 🌟 Translated Rank */}
+                    <span className="podium-rank">{t('rank_2')}</span>
                     <div className="podium-avatar">{myFriends[1]?.avatar_url ? <img src={myFriends[1].avatar_url} alt="" /> : <FiUser size={40} color="#E64A45" />}</div>
                     <span className="podium-score">{myFriends[1]?.score || 0}</span>
-                    <span className="podium-name">{myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase()}${myFriends[1].isMe ? ' (You)' : ''}` : ''}</span>
+                    {/* 🌟 Translated '(You)' badge */}
+                    <span className="podium-name">{myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase()}${myFriends[1].isMe ? ` ${t('you_badge')}` : ''}` : ''}</span>
                 </div>
                 
                 <div className="podium-col first-place" onClick={() => myFriends[0] && handleViewFriend(myFriends[0])}>
                     <span className="podium-crown">👑</span>
                     <div className="podium-avatar first-avatar">{myFriends[0]?.avatar_url ? <img src={myFriends[0].avatar_url} alt="" /> : <FiUser size={50} color="#E64A45" />}</div>
                     <span className="podium-score first-score">{myFriends[0]?.score || 0}</span>
-                    <span className="podium-name">{myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase()}${myFriends[0].isMe ? ' (You)' : ''}` : ''}</span>
+                    {/* 🌟 Translated '(You)' badge */}
+                    <span className="podium-name">{myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase()}${myFriends[0].isMe ? ` ${t('you_badge')}` : ''}` : ''}</span>
                 </div>
                 
                 <div className="podium-col third-place" onClick={() => myFriends[2] && handleViewFriend(myFriends[2])}>
-                    <span className="podium-rank">3RD</span>
+                    {/* 🌟 Translated Rank */}
+                    <span className="podium-rank">{t('rank_3')}</span>
                     <div className="podium-avatar">{myFriends[2]?.avatar_url ? <img src={myFriends[2].avatar_url} alt="" /> : <FiUser size={40} color="#E64A45" />}</div>
                     <span className="podium-score">{myFriends[2]?.score || 0}</span>
-                    <span className="podium-name">{myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase()}${myFriends[2].isMe ? ' (You)' : ''}` : ''}</span>
+                    {/* 🌟 Translated '(You)' badge */}
+                    <span className="podium-name">{myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase()}${myFriends[2].isMe ? ` ${t('you_badge')}` : ''}` : ''}</span>
                 </div>
               </div>
 
@@ -411,9 +439,11 @@ const Sharing = () => {
                 {myFriends.slice(3).map((f, i) => (
                   <div key={f.id} className="lb-list-card" onClick={() => handleViewFriend(f)}>
                     <div className="lb-card-left">
-                      <div className="lb-card-rank">{i + 4}TH</div>
+                      {/* 🌟 Used helper function to translate dynamic ranks (4th, 5th, etc) */}
+                      <div className="lb-card-rank">{getRankText(i + 3)}</div>
                       <div className="lb-card-avatar">{f.avatar_url ? <img src={f.avatar_url} alt="" /> : <FiUser size={24} />}</div>
-                      <span className="lb-card-name">@{f.first_name?.toLowerCase()} {f.isMe && '(You)'}</span>
+                      {/* 🌟 Translated '(You)' badge */}
+                      <span className="lb-card-name">@{f.first_name?.toLowerCase()} {f.isMe && t('you_badge')}</span>
                     </div>
                     <span className="lb-card-score">{f.score}</span>
                   </div>
@@ -437,12 +467,14 @@ const Sharing = () => {
               ) : (
                 <div className="theme-container">
                   <div className="search-header">
-                    <h3 className="theme-heading">Find Friends</h3>
+                    {/* 🌟 Translated "Find Friends" header */}
+                    <h3 className="theme-heading">{t('find_friends_title')}</h3>
                     <FiX size={24} onClick={() => { if(myFriends.length > 1) setShowLeaderboard(true); setIsSearching(false); }} style={{cursor:'pointer'}} />
                   </div>
 
                   <div className="search-input-wrapper">
-                    <input className="theme-search-input" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                    {/* 🌟 Translated input placeholder */}
+                    <input className="theme-search-input" placeholder={t('search_by_name')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                   </div>
 
                   {incomingRequests.length > 0 && (
@@ -481,7 +513,8 @@ const Sharing = () => {
                   </div>
 
                   <div className="friends-list-group">
-                    <h4 className="section-label">Your Network</h4>
+                    {/* 🌟 Translated "Your Network" label */}
+                    <h4 className="section-label">{t('your_network')}</h4>
                     <div className="friends-grid">
                       {myFriends.filter(f => !f.isMe).map((friend) => (
                         <div key={friend.id} className="theme-card">
@@ -489,11 +522,13 @@ const Sharing = () => {
                             {friend.avatar_url ? <img src={friend.avatar_url} className="theme-avatar-sm" alt="" /> : <FiUser />}
                             <div className="text-group">
                               <p className="name-bold">{friend.first_name}</p>
-                              <span className="badge-online">Score: {friend.score}</span>
+                              {/* 🌟 Translated "Score" label */}
+                              <span className="badge-online">{t('score')}: {friend.score}</span>
                             </div>
                           </div>
                           <div className="action-btns-row">
-                            <button className="theme-btn-outline" onClick={() => { setIsSearching(false); handleViewFriend(friend); }}>View</button>
+                            {/* 🌟 Translated "View" button */}
+                            <button className="theme-btn-outline" onClick={() => { setIsSearching(false); handleViewFriend(friend); }}>{t('view')}</button>
                             <button className="icon-btn-delete" onClick={() => handleRemoveFriend(friend.id)}><FiTrash2 /></button>
                           </div>
                         </div>
