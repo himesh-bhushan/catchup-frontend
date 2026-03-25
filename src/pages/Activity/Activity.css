@@ -2,17 +2,17 @@
 .activity-page-wrapper {
     min-height: 100vh;
     padding: 40px 80px; 
-    background: #fff;
+    background: var(--bg-color); /* Swapped from #fff */
     font-family: 'Poppins', sans-serif;
-    color: #333;
+    color: var(--text-primary); /* Swapped from #333 */
     box-sizing: border-box;
 }
 
 /* Overrides dashboard background specifically for the Activity page */
 .dashboard-wrapper.activity-page-bg,
 .activity-page-bg .dashboard-content {
-    background: #FFFFFF !important; 
-    background-color: #FFFFFF !important;
+    background: var(--bg-color) !important; /* Swapped from #FFFFFF */
+    background-color: var(--bg-color) !important; /* Swapped from #FFFFFF */
     min-height: 100vh;
 }
 
@@ -39,24 +39,30 @@
     gap: 15px; 
 }
 
-.header-left h2 { font-size: 1.8rem; font-weight: 600; margin: 0; color: #000; }
+.header-left h2 { font-size: 1.8rem; font-weight: 600; margin: 0; color: var(--text-primary); } /* Swapped from #000 */
 
 .back-btn-icon {
     background: none; border: none; cursor: pointer; padding: 0;
-    display: flex; align-items: center; color: #000; transition: transform 0.2s;
+    display: flex; align-items: center; color: var(--text-primary); transition: transform 0.2s; /* Swapped from #000 */
 }
 .back-btn-icon:hover { transform: translateX(-3px); }
 
 /* Updated Calendar Button Style */
 .calendar-wrapper {
-    background: #fff; width: 40px; height: 40px;
-    border-radius: 50%; border: 1px solid #ddd;
+    background: var(--card-bg); width: 40px; height: 40px; /* Swapped from #fff */
+    border-radius: 50%; border: 1px solid var(--border-color); /* Swapped from #ddd */
     display: flex; justify-content: center; align-items: center;
     cursor: pointer; position: relative;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     margin-left: 5px; 
 }
-.calendar-wrapper:hover { transform: scale(1.05); border-color: #bbb; }
+
+/* Add an icon rule to handle dark mode calendar icon */
+.calendar-wrapper svg {
+    color: var(--text-primary) !important; /* Forces icon to match text theme */
+}
+
+.calendar-wrapper:hover { transform: scale(1.05); border-color: var(--text-secondary); } /* Swapped from #bbb */
 .hidden-date-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
 
 
@@ -113,6 +119,7 @@
     transform-origin: 50% 50% !important;
 }
 
+/* Branding colors kept intact */
 .mini-circle-bg { fill: #F8E7D6; stroke: none; } 
 .mini-circle { fill: none; stroke: #E63946; stroke-width: 6; stroke-linecap: round; } 
 
@@ -140,10 +147,10 @@
     overflow: visible !important; 
 }
 
-/* The Solid Beige Center */
+/* The Solid Beige Center - Branding colors kept intact */
 .circle-bg { fill: #F8E7D6; stroke: none; }
 
-/* The Red Progress Ring */
+/* The Red Progress Ring - Branding colors kept intact */
 .circle { 
     fill: none; 
     stroke: #D93025; 
@@ -168,14 +175,14 @@
     justify-content: center;
     z-index: 10;
     pointer-events: none;
-    color: white;
+    color: white; /* Arrow icon color stays white for contrast on red */
     box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
 .ring-arrow-overlay svg, 
 .ring-arrow-overlay i {
     font-size: 16px;
-    transform: rotate(0deg); /* Keeps the arrow pointing right */
+    transform: rotate(0deg); 
 }
 
 .change-goal-btn {
@@ -191,12 +198,12 @@
 /* --- RIGHT COLUMN: STATS --- */
 .stats-graphs-section { padding-left: 0; }
 .stat-block { margin-bottom: 50px; }
-.stat-block h3 { margin: 0 0 5px 0; font-size: 1.2rem; font-weight: 400; color: #333; }
+.stat-block h3 { margin: 0 0 5px 0; font-size: 1.2rem; font-weight: 400; color: var(--text-primary); } /* Swapped from #333 */
 .stat-highlight { display: flex; align-items: baseline; gap: 8px; margin-bottom: 25px; }
 
 .big-num { font-size: 2rem; font-weight: 700; line-height: 1; }
-.red-text { color: #E63946; }
-.black-text { color: #000; }
+.red-text { color: #E63946; } /* Kept branding red */
+.black-text { color: var(--text-primary); } /* Swapped from #000 */
 .sub-text { font-size: 1rem; color: #E63946; font-weight: 600; text-transform: uppercase; }
 
 .dual-stat-header { display: flex; justify-content: space-between; margin-bottom: 25px; }
@@ -207,17 +214,17 @@
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     display: flex; flex-direction: column; justify-content: space-between; z-index: 0;
 }
-.grid-line { width: 100%; height: 1px; background: #EAEAEA; }
+.grid-line { width: 100%; height: 1px; background: var(--border-color); } /* Swapped from #EAEAEA */
 
 .bar-chart-container {
     position: relative; z-index: 1; display: flex; align-items: flex-end;
     justify-content: space-between; height: 100%; width: 100%; padding: 0 10px;
 }
 .bar-wrapper { width: 8%; height: 100%; display: flex; align-items: flex-end; }
-.bar-fill { width: 100%; background: #F25C54; border-radius: 2px 2px 0 0; transition: height 0.4s ease; }
+.bar-fill { width: 100%; background: #F25C54; border-radius: 2px 2px 0 0; transition: height 0.4s ease; } /* Branding color kept */
 
 .chart-labels {
-    display: flex; justify-content: space-between; font-size: 0.7rem; color: #aaa; margin-top: 8px;
+    display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-secondary); margin-top: 8px; /* Swapped from #aaa */
 }
 .total-burn {
     margin-top: 15px; font-size: 0.75rem; color: #F25C54; font-weight: 600; text-transform: uppercase;
@@ -228,30 +235,31 @@
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5); 
+    background: rgba(0, 0, 0, 0.7); /* Darkened slightly for better contrast in dark mode */
     display: flex; align-items: center; justify-content: center;
     z-index: 1000;
     animation: fadeIn 0.2s ease-out;
 }
 
 .modal-content {
-    background: white;
+    background: var(--card-bg); /* Swapped from white */
     padding: 30px;
     border-radius: 20px;
     width: 300px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* Darkened shadow for dark mode */
     transform: scale(0.9);
     animation: popIn 0.2s ease-out forwards;
 }
 
-.modal-content h3 { margin: 0 0 15px 0; color: #333; }
+.modal-content h3 { margin: 0 0 15px 0; color: var(--text-primary); } /* Swapped from #333 */
 
 .modal-input {
     width: 100%;
     padding: 10px;
     font-size: 1.2rem;
-    border: 2px solid #eee;
+    border: 2px solid var(--border-color); /* Swapped from #eee */
+    background: var(--bg-color); /* Added to support dark mode input */
     border-radius: 10px;
     text-align: center;
     margin-bottom: 20px;
@@ -268,7 +276,7 @@
     padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600;
 }
 .btn-cancel {
-    background: #eee; color: #333; border: none;
+    background: var(--border-color); color: var(--text-primary); border: none; /* Swapped from #eee and #333 */
     padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600;
 }
 
@@ -282,7 +290,6 @@
 
 @media (max-width: 768px) {
     
-    /* --- 1. Global Wrapper & Padding --- */
     .activity-page-wrapper, 
     .dashboard-wrapper.activity-page-bg {
         padding: 20px 20px 130px 20px !important; 
@@ -299,7 +306,6 @@
         width: 100% !important;
     }
 
-    /* --- 2. Header Fixes --- */
     .activity-header {
         margin-bottom: 30px !important;
         display: flex !important;
@@ -315,7 +321,6 @@
         width: 40px !important; height: 40px !important; flex-shrink: 0 !important;
     }
 
-    /* --- 3. Convert Desktop Grid to Mobile Vertical Stack --- */
     .activity-grid {
         display: flex !important;
         flex-direction: column !important;
@@ -323,7 +328,6 @@
         width: 100% !important;
     }
 
-    /* --- 4. Horizontal Week View --- */
     .week-sidebar {
         flex-direction: row !important;
         justify-content: space-between !important;
@@ -347,7 +351,7 @@
     }
 
     .day-row.selected .day-letter-box {
-        background-color: #F0F0F0 !important; color: #E63946 !important;
+        background-color: var(--border-color) !important; color: #E63946 !important; /* Swapped from #F0F0F0 */
     }
 
     .mini-ring-wrapper {
@@ -355,7 +359,6 @@
         position: relative !important;
     }
 
-    /* --- 5. RING ROTATION (MOBILE BULLETPROOFING) --- */
     svg.large-circular-chart, 
     svg.mini-circular-chart,
     .large-circular-chart, 
@@ -366,7 +369,6 @@
         overflow: visible !important;
     }
 
-    /* --- 6. Center the Main Large Ring --- */
     .main-ring-section {
         width: 100% !important; padding: 0 !important;
         margin-top: 10px !important; margin-bottom: 40px !important;
@@ -380,7 +382,6 @@
         display: flex !important; justify-content: center !important; align-items: center !important;
     }
 
-    /* Keep the arrow overlay aligned perfectly on mobile */
     .ring-arrow-overlay {
         position: absolute !important;
         top: 18px !important; left: 50% !important;
@@ -389,12 +390,11 @@
         z-index: 10 !important;
     }
 
-    /* --- 7. Stats Section Alignment --- */
     .stats-graphs-section { width: 100% !important; }
     .stat-block { margin-bottom: 30px !important; width: 100% !important; }
 
     .stat-block h3 {
-        font-size: 1.6rem !important; color: #111 !important;
+        font-size: 1.6rem !important; color: var(--text-primary) !important; /* Swapped from #111 */
         margin-bottom: 5px !important; text-align: left !important; margin-left: 5px !important;
     }
 
@@ -405,7 +405,6 @@
     .big-num { font-size: 2.2rem !important; line-height: 1 !important; }
     .sub-text { font-size: 1.3rem !important; }
 
-    /* --- 8. Steps & Distance Side-by-Side row --- */
     .dual-stat-header {
         display: flex !important; flex-direction: row !important; 
         justify-content: space-between !important; width: 100% !important;
@@ -416,10 +415,9 @@
         flex: 1 !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; 
     }
 
-    .dual-stat-header h3 { font-size: 1.4rem !important; margin-bottom: 5px !important; color: #111 !important; font-weight: 400 !important; }
-    .dual-stat-header .big-num { font-size: 1.6rem !important; color: #000 !important; }
-    .dual-stat-header .sub-text { font-size: 1rem !important; color: #000 !important; }
+    .dual-stat-header h3 { font-size: 1.4rem !important; margin-bottom: 5px !important; color: var(--text-primary) !important; font-weight: 400 !important; } /* Swapped from #111 */
+    .dual-stat-header .big-num { font-size: 1.6rem !important; color: var(--text-primary) !important; } /* Swapped from #000 */
+    .dual-stat-header .sub-text { font-size: 1rem !important; color: var(--text-primary) !important; } /* Swapped from #000 */
 
-    /* Fix Bar Chart Width */
     .chart-outer-wrapper { height: 80px !important; width: 100% !important; }
 }
