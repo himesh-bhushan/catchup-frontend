@@ -398,13 +398,14 @@ const Sharing = () => {
               {/* 🌟 NEW: Show Loading Card OR the Leaderboard */}
               {isLeaderboardLoading ? (
                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                     <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '350px' }}>
-                         <h3 style={{ color: '#111', fontSize: '1.4rem', fontWeight: '800', marginBottom: '8px' }}>
+                     <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '550px' }}>                         
+                         <h3 style={{ color: '#111', fontSize: '1.4rem', fontWeight: '800', marginBottom: '8px', whiteSpace: 'nowrap' }}>
                              Catching the leaderboard...
                          </h3>
-                         <p style={{ color: '#666', fontSize: '0.95rem' }}>
+                         <p style={{ color: '#666', fontSize: '0.95rem', margin: 0, whiteSpace: 'nowrap' }}>
                              Syncing your friends' latest scores
                          </p>
+                         
                      </div>
                  </div>
               ) : (
