@@ -98,7 +98,6 @@ const ProfileMenu = () => {
     { label: t('personal_details'), path: '/profile/details' },
     { label: t('medical_id'), path: '/profile/medical' },
     { label: t('display_title'), path: '/profile/display', section: t('features') }, 
-    { label: t('notifications'), path: '/profile/notifications', section: t('features') },
     { label: t('connected_apps'), path: '/profile/apps', section: t('integrations') },
   ];
 
