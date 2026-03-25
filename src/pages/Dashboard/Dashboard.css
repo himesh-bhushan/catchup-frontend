@@ -604,12 +604,12 @@
 }
 
 /* =========================================
-   ARTICLE MODAL POPUP STYLES
+   ARTICLE MODAL POPUP STYLES (DARK MODE READY)
    ========================================= */
 .article-modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    background: rgba(0, 0, 0, 0.6); /* Dimmed background */
     backdrop-filter: blur(5px); /* Blurs the dashboard behind it */
     z-index: 999999; /* Ensures it sits above everything */
     display: flex;
@@ -620,7 +620,7 @@
 }
 
 .article-modal-content {
-    background: #fff;
+    background: var(--card-bg); /* 🌟 THE FIX: Swapped hardcoded white */
     width: 100%;
     max-width: 750px;
     max-height: 90vh; /* Prevents it from going off screen */
@@ -628,6 +628,7 @@
     overflow-y: auto; /* Allows scrolling inside the modal */
     position: relative;
     box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color); /* 🌟 THE FIX: Subtle border for dark mode */
     animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
@@ -638,7 +639,7 @@
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.9); /* Keeps it visible on all images */
     border: none;
     width: 45px;
     height: 45px;
@@ -648,7 +649,7 @@
     justify-content: center;
     cursor: pointer;
     z-index: 10;
-    color: #111;
+    color: #111; /* Keep icon black for contrast */
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     transition: transform 0.2s, background 0.2s;
 }
@@ -659,12 +660,11 @@
 }
 
 /* Image Header */
-/* Image Header */
 .article-modal-header {
     width: 100%;
     height: 350px;
-    min-height: 350px; /* 👈 ADDED: Forces the height to stay at 350px */
-    flex-shrink: 0;    /* 👈 ADDED: Stops the text from crushing the image */
+    min-height: 350px; 
+    flex-shrink: 0;    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -683,14 +683,14 @@
 /* Article Typography */
 .article-modal-body {
     padding: 50px 60px;
-    color: #333;
+    color: var(--text-primary); /* 🌟 THE FIX: Swapped hardcoded #333 */
 }
 
 .article-category {
     font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 2px;
-    color: #EF473A;
+    color: #EF473A; /* Keep branding red */
     text-transform: uppercase;
 }
 
@@ -699,7 +699,7 @@
     font-weight: 800;
     margin: 15px 0 25px 0;
     line-height: 1.1;
-    color: #111;
+    color: var(--text-primary); /* 🌟 THE FIX: Swapped hardcoded #111 */
     letter-spacing: -1px;
 }
 
@@ -707,28 +707,29 @@
     display: flex;
     gap: 30px;
     margin-bottom: 40px;
-    border-top: 2px solid #f0f0f0;
-    border-bottom: 2px solid #f0f0f0;
+    border-top: 2px solid var(--border-color); /* 🌟 THE FIX: Swapped hardcoded #f0f0f0 */
+    border-bottom: 2px solid var(--border-color);
     padding: 15px 0;
 }
 
 .article-credits p {
     margin: 0;
     font-size: 0.8rem;
-    color: #888;
+    color: var(--text-secondary); /* 🌟 THE FIX: Swapped hardcoded #888 */
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .article-credits strong {
-    color: #111;
+    color: var(--text-primary); /* 🌟 THE FIX: Swapped hardcoded #111 */
 }
 
 .article-text p {
     font-size: 1.15rem;
     line-height: 1.8;
     margin-bottom: 25px;
-    color: #444;
+    color: var(--text-primary); /* 🌟 THE FIX: Swapped hardcoded #444 */
+    opacity: 0.9;
 }
 
 /* Animations & Mobile Fixes */
@@ -736,7 +737,6 @@
     from { opacity: 0; transform: translateY(60px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
 /* =========================================
    📱 MOBILE DASHBOARD RESPONSIVENESS (MASTER)
    ========================================= */
