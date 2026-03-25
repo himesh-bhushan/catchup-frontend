@@ -139,38 +139,49 @@
   resize: none;
 }
 
-/* --- CHECKBOX GRID --- */
+/* --- PRE-EXISTING CONDITIONS CHECKBOXES --- */
 .checkbox-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 15px;
   margin-bottom: 30px;
 }
 
-.checkbox-item {
+.condition-checkbox-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
-  padding: 5px;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: white;
+  transition: all 0.2s ease;
 }
 
-.circle-check {
+/* When the checkbox is selected, highlight the whole box */
+.condition-checkbox-label.checked {
+  border-color: #FF3B30;
+  background-color: #FFF0F0;
+}
+
+.condition-checkbox-input {
   width: 20px;
   height: 20px;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  position: relative;
+  cursor: pointer;
+  accent-color: #FF3B30; 
 }
 
-.checkbox-item.checked .circle-check {
-  border-color: #FF3B30;
-  background-color: #FF3B30;
-}
-
-.checkbox-item span {
+.condition-checkbox-text {
   font-size: 14px;
   color: #333;
+  transition: color 0.2s, font-weight 0.2s;
+}
+
+/* Make the text bold and red when checked */
+.condition-checkbox-label.checked .condition-checkbox-text {
+  color: #FF3B30;
+  font-weight: 600;
 }
 
 /* --- TERMS CHECKBOX --- */
@@ -287,26 +298,23 @@
     width: 100% !important;
   }
 
-  /* 🌟 Updated to make the text smaller */
   .signup-hero-side h1 {
-    font-size: 2.8rem; /* 🌟 CHANGED: Decreased from 3.5rem */
+    font-size: 2.8rem; 
     font-weight: 800;
     color: #FF3B30;
     line-height: 1.1;
     margin: 0; 
   }
 
-  /* 🌟 Updated to make the image bigger */
- /* 🌟 Updated to make the image significantly bigger */
   .signup-hero-image {
     width: 100% !important;      
-    max-width: 300px !important; /* Increased container allowance */
+    max-width: 300px !important; 
     height: auto !important;
     object-fit: contain !important;
     display: block !important; 
     margin: 0 auto !important; 
     position: static !important; 
-    transform: scale(1.3) !important; /* 🌟 This forces the image to render 30% larger */
+    transform: scale(1.3) !important; 
   }
 
   .signup-form-side {
@@ -388,7 +396,7 @@
         gap: 12px !important;
         margin-bottom: 25px !important;
     }
-    .checkbox-item span {
+    .condition-checkbox-text {
         font-size: 14px !important;
     }
     .terms-checkbox-wrapper {
