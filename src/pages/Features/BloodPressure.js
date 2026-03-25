@@ -30,6 +30,7 @@ const BloodPressure = () => {
     if (!user) return;
 
     try {
+      // 🌟 UPDATED: Check if the selected date is Today
       const isToday = date === new Date().toISOString().split('T')[0];
       let sys = 0;
       let dia = 0;
@@ -91,11 +92,11 @@ const BloodPressure = () => {
     } finally {
       setLoading(false);
     }
-  }, [date]);
+  }, [date]); // 🌟 ADDED: 'date' as a dependency
 
   useEffect(() => {
     fetchBPData();
-  }, [fetchBPData, range, date]); 
+  }, [fetchBPData, range, date]); // 🌟 ADDED: 'date' to useEffect
 
   const handleAddReading = async () => {
     if (!newReading.systolic || !newReading.diastolic) return;
@@ -108,7 +109,7 @@ const BloodPressure = () => {
       .from('blood_pressure_logs')
       .upsert({
         user_id: user.id,
-        date: date, 
+        date: date, // 🌟 UPDATED: Uses selected date instead of "today"
         systolic: parseInt(newReading.systolic),
         diastolic: parseInt(newReading.diastolic)
       }, { onConflict: 'user_id,date' });
@@ -128,7 +129,7 @@ const BloodPressure = () => {
     if (!logError) {
       setIsAdding(false);
       setNewReading({ systolic: '', diastolic: '' });
-      fetchBPData(); 
+      fetchBPData(); // Refresh UI without full reload
     }
   };
 
@@ -140,7 +141,7 @@ const BloodPressure = () => {
     if (logs.length < 1) {
        return (
          <div className="no-data-container">
-            <FiActivity size={40} color="var(--text-secondary)" /> {/* Swapped from #ccc */}
+            <FiActivity size={40} color="var(--text-secondary)" />
             <p>No history for this period. Sync Apple Health to see your trends.</p>
          </div>
        );
@@ -160,18 +161,17 @@ const BloodPressure = () => {
         {/* Y-Axis Grid Lines */}
         {[60, 90, 120, 150, 180].map(val => (
            <g key={val}>
-             {/* Swapped stroke from #F0F0F0 and fill from #BBB */}
              <line x1="0" y1={getY(val)} x2={width} y2={getY(val)} stroke="var(--border-color)" strokeWidth="1" />
              <text x={width + 15} y={getY(val) + 5} fontSize="14" fill="var(--text-secondary)" fontFamily="Poppins">{val}</text>
            </g>
         ))}
 
-        {/* Line connecting points - Kept CatchUp Red */}
+        {/* Line connecting points */}
         {logs.length > 1 && (
             <polyline points={points} fill="none" stroke="#FF3B30" strokeWidth="4" strokeLinecap="round" />
         )}
 
-        {/* Dots for each day - Kept CatchUp Red with variable border */}
+        {/* Dots for each day */}
         {logs.map((log, i) => (
           <g key={i}>
             <circle cx={getX(i)} cy={getY(log.systolic)} r="7" fill="#FF3B30" stroke="var(--card-bg)" strokeWidth="3" />
@@ -181,7 +181,6 @@ const BloodPressure = () => {
         {/* X-Axis Dates */}
         {logs.map((log, i) => (
           <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="var(--text-secondary)" textAnchor="middle" fontFamily="Poppins">
-            {/* Swapped from #999 */}
             {new Date(log.date).toLocaleDateString('en-US', { weekday: 'short' })}
           </text>
         ))}
@@ -207,6 +206,7 @@ const BloodPressure = () => {
                ))}
             </div>
 
+            {/* 🌟 UPDATED: Wrapped the icon in an invisible date input */}
             <button className="calendar-btn" style={{ position: 'relative', overflow: 'hidden' }}>
               <FiCalendar />
               <input 
@@ -227,7 +227,7 @@ const BloodPressure = () => {
           </div>
 
           <div className="chart-container">
-             {loading ? <div className="loader-box" style={{ color: 'var(--text-secondary)' }}>Syncing...</div> : renderChart()}
+             {loading ? <div className="loader-box" style={{color: 'var(--text-secondary)'}}>Syncing...</div> : renderChart()}
           </div>
 
           <div className="today-reading-block">
@@ -261,6 +261,7 @@ const BloodPressure = () => {
                 </h1>
              )}
              <p className="date-sub">
+                {/* 🌟 UPDATED: Shows the selected date instead of "today" */}
                 {new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
              </p>
           </div>
