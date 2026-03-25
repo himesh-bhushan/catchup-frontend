@@ -132,7 +132,7 @@
     position: absolute; 
     top: 50%; 
     transform: translateY(-50%); 
-    right: -110px; 
+    right: -90px; 
     max-height: 120px; 
     z-index: 1; 
     object-fit: contain;
