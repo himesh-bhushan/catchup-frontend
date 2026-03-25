@@ -243,7 +243,16 @@ const Sharing = () => {
               </header>
 
               {friendLoading ? (
-                <div className="lb-placeholder-text">{t('loading_data')}</div>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                     <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '550px' }}>
+                         <FiRefreshCw size={40} color="#DE4B4E" className="icon-spin" style={{ marginBottom: '20px' }} />
+                         
+                         <h3 style={{ color: '#111', fontSize: '1.4rem', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>
+                             Catching up with your friends score...
+                         </h3>
+                         
+                     </div>
+                 </div>
               ) : (
                 <div className="dashboard-grid-layout">
                   
