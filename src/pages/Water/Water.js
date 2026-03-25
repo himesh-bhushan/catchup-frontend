@@ -114,7 +114,8 @@ const Water = () => {
 
   const renderChart = () => {
     const width = 1000; const height = 250; const padding = 50; 
-    if (logs.length < 1) return (<div className="no-data-container"><FiDroplet size={40} color="#ccc" /><p>No water history found for this period.</p></div>);
+    // 🌟 CHANGED SVG FILL COLORS TO CSS VARIABLES
+    if (logs.length < 1) return (<div className="no-data-container"><FiDroplet size={40} color="var(--text-secondary)" /><p>No water history found for this period.</p></div>);
 
     const minVal = 0; const maxVal = 5; 
     const getY = (val) => height - ((val - minVal) / (maxVal - minVal)) * height;
@@ -125,14 +126,14 @@ const Water = () => {
       <svg viewBox={`-10 -20 ${width + 60} ${height + 60}`} className="water-chart-svg">
         {[1, 2, 3, 4, 5].map(val => (
            <g key={val}>
-             <line x1="0" y1={getY(val)} x2={width} y2={getY(val)} stroke="#F0F0F0" strokeWidth="1" />
-             <text x={width + 15} y={getY(val) + 5} fontSize="14" fill="#BBB" fontFamily="Poppins">{val}L</text>
+             <line x1="0" y1={getY(val)} x2={width} y2={getY(val)} stroke="var(--border-color)" strokeWidth="1" />
+             <text x={width + 15} y={getY(val) + 5} fontSize="14" fill="var(--text-secondary)" fontFamily="Poppins">{val}L</text>
            </g>
         ))}
         {logs.length > 1 && <polyline points={points} fill="none" stroke="#4A90E2" strokeWidth="4" strokeLinecap="round" />}
-        {logs.map((log, i) => <circle key={i} cx={getX(i)} cy={getY(log.liters)} r="7" fill="#4A90E2" stroke="white" strokeWidth="3" />)}
+        {logs.map((log, i) => <circle key={i} cx={getX(i)} cy={getY(log.liters)} r="7" fill="#4A90E2" stroke="var(--card-bg)" strokeWidth="3" />)}
         {logs.map((log, i) => (
-          <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="#999" textAnchor="middle" fontFamily="Poppins">
+          <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="var(--text-secondary)" textAnchor="middle" fontFamily="Poppins">
             {new Date(log.date).toLocaleDateString('en-US', { weekday: 'short' })}
           </text>
         ))}
@@ -184,7 +185,8 @@ const Water = () => {
           </div>
 
           <div className="chart-container">
-             {loading ? <div className="loader-box">Loading...</div> : renderChart()}
+             {/* 🌟 CHANGED LOADING TEXT TO VARIABLE */}
+             {loading ? <div className="loader-box" style={{color: 'var(--text-secondary)'}}>Loading...</div> : renderChart()}
           </div>
 
           <div className="today-reading-block">
