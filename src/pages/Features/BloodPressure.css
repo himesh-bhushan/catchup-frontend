@@ -1,9 +1,8 @@
-
 /* Overrides dashboard background specifically for the Blood Pressure page */
 .dashboard-wrapper.bp-page-wrapper-bg,
 .bp-page-wrapper-bg .dashboard-content {
-    background: #FFFFFF !important; 
-    background-color: #FFFFFF !important;
+    background: var(--bg-color) !important; /* Swapped from #FFFFFF */
+    background-color: var(--bg-color) !important; /* Swapped from #FFFFFF */
     min-height: 100vh;
 }
 .bp-page-container {
@@ -13,7 +12,7 @@
   min-height: 100vh; /* Changed from height to min-height so it doesn't cut off on small screens */
   /* Removed overflow: hidden so you can scroll if the screen is short */
   
-  background-color: #fff;
+  background-color: var(--bg-color); /* Swapped from #fff */
   font-family: 'Poppins', sans-serif;
   margin: 0 auto;
   padding: 30px 40px;
@@ -39,7 +38,7 @@
   border: none; 
   font-size: 24px; 
   cursor: pointer;
-  color: #000;
+  color: var(--text-primary); /* Swapped from #000 */
   display: flex; 
   align-items: center; 
   justify-content: center;
@@ -49,7 +48,8 @@
 
 /* Pills Container */
 .range-pills {
-  background-color: #F2E8E8; 
+  background-color: var(--card-bg); /* Swapped from #F2E8E8 to fit dark mode better */
+  border: 1px solid var(--border-color); /* Added border to separate from background */
   padding: 5px;
   border-radius: 30px;
   display: flex;
@@ -64,38 +64,39 @@
   border: none; background: transparent;
   padding: 8px 15px; /* Smaller padding */
   border-radius: 25px;
-  font-size: 13px; font-weight: 600; color: #555;
+  font-size: 13px; font-weight: 600; color: var(--text-secondary); /* Swapped from #555 */
   cursor: pointer; transition: 0.2s ease;
   flex: 1;
   white-space: nowrap;
 }
 
 .pill.active {
-  background-color: #fff;
-  color: #000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  border: 1px solid #FFCDD2; 
+  background-color: var(--bg-color); /* Swapped from #fff */
+  color: var(--text-primary); /* Swapped from #000 */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Slightly darkened shadow */
+  border: 1px solid var(--border-color); /* Swapped from #FFCDD2 so it blends well in all themes */
 }
 
 /* Calendar Button */
 .calendar-btn {
   width: 40px; height: 40px; 
   border-radius: 50%; 
-  border: 1px solid #000; 
-  background: #fff;
+  border: 1px solid var(--border-color); /* Swapped from #000 */
+  background: var(--card-bg); /* Swapped from #fff */
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; cursor: pointer; color: #000;
+  font-size: 18px; cursor: pointer; color: var(--text-primary); /* Swapped from #000 */
 }
 
 /* --- Stats Header --- */
 .stats-block { margin-bottom: 15px; flex-shrink: 0; }
-.stats-block h2 { font-size: 28px; font-weight: 500; color: #333; margin: 0; }
-.highlight-red { color: #D32F2F; font-weight: 700; }
-.date-range-sub { color: #999; font-size: 14px; margin-top: 5px; }
+.stats-block h2 { font-size: 28px; font-weight: 500; color: var(--text-primary); margin: 0; } /* Swapped from #333 */
+.highlight-red { color: #D32F2F; font-weight: 700; } /* Kept branding red */
+.date-range-sub { color: var(--text-secondary); font-size: 14px; margin-top: 5px; } /* Swapped from #999 */
 
 /* --- Chart Area --- */
 .chart-container {
-  background: #F9F9F9; 
+  background: var(--card-bg); /* Swapped from #F9F9F9 */
+  border: 1px solid var(--border-color); /* Added border for dark mode definition */
   border-radius: 20px;
   margin-bottom: 20px; /* Reduced margin */
   flex: 1; /* Allow chart to take available space */
@@ -118,7 +119,7 @@
   display: flex; 
   align-items: center; 
   justify-content: center;
-  color: #bbb;
+  color: var(--text-secondary); /* Swapped from #bbb */
   font-size: 18px;
 }
 
@@ -134,20 +135,24 @@
 }
 
 .today-reading-block h3 {
-  font-size: 24px; font-weight: 600; margin: 0; color: #333;
+  font-size: 24px; font-weight: 600; margin: 0; color: var(--text-primary); /* Swapped from #333 */
 }
 
 .today-reading-block h1 {
   font-size: 36px; margin: 10px 0 5px 0;
   display: flex; align-items: center; gap: 10px;
+  color: var(--text-primary); /* Ensure numbers change in dark mode */
 }
 
-.unit { font-size: 20px; color: #D32F2F; font-weight: 700; }
-.date-sub { color: #bbb; font-size: 14px; }
+.unit { font-size: 20px; color: #D32F2F; font-weight: 700; } /* Kept branding red */
+.date-sub { color: var(--text-secondary); font-size: 14px; } /* Swapped from #bbb */
 
 /* --- Add Form --- */
 .add-reading-btn {
-  border: none; background: #f0f0f0; width: 35px; height: 35px; border-radius: 50%;
+  border: 1px solid var(--border-color); /* Swapped from none */
+  background: var(--card-bg); /* Swapped from #f0f0f0 */
+  color: var(--text-primary); /* Ensure plus icon changes */
+  width: 35px; height: 35px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center; cursor: pointer;
   font-size: 18px;
 }
@@ -156,12 +161,13 @@
   display: flex; align-items: center; gap: 10px; margin-top: 10px;
 }
 .add-form input {
-  width: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 12px; 
+  width: 80px; padding: 10px; border: 1px solid var(--border-color); border-radius: 12px; /* Swapped from #ddd */
+  background: var(--card-bg); color: var(--text-primary); /* Ensure input fields work in dark mode */
   font-size: 18px; text-align: center; font-weight: 700;
 }
-.add-form .divider { font-size: 24px; color: #ccc; }
+.add-form .divider { font-size: 24px; color: var(--text-secondary); } /* Swapped from #ccc */
 .add-form button {
-  padding: 10px 20px; background: #FF3B30; color: white; 
+  padding: 10px 20px; background: #FF3B30; color: white; /* Kept branding red */
   border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 14px;
 }
 
