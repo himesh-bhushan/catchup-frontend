@@ -3,7 +3,7 @@
    ========================================= */
 
 .dashboard-wrapper.awards-page-bg {
-    background-color: #F8DBCA !important; 
+    background-color: var(--bg-color) !important; /* Swapped from #F8DBCA */
     min-height: 100vh;
 }
 
@@ -12,7 +12,7 @@
     max-width: 1200px; 
     margin: 0 auto;
     font-family: 'Poppins', sans-serif;
-    color: #111;
+    color: var(--text-primary); /* Swapped from #111 */
     padding: 30px 40px; 
 }
 
@@ -37,26 +37,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #111;
+    color: var(--text-primary); /* Swapped from #111 */
     padding: 8px;
     border-radius: 50%;
     transition: background 0.2s;
 }
 
-.icon-btn:hover { background: rgba(0,0,0,0.05); }
+/* Ensure the hover state is slightly visible in dark mode */
+.icon-btn:hover { background: var(--border-color); } 
 
 /* --- Main Achievements Card --- */
 .achievements-card {
-    background-color: #FBF7EC; 
+    background-color: var(--card-bg);  /* Swapped from #FBF7EC */
     border-radius: 20px; 
     padding: 40px 50px; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.04);
     width: 100%;
+    border: 1px solid var(--border-color); /* Added border to separate from bg in dark mode */
 }
 
 .ac-card-body {
     display: flex;
-    /* THE FIX: Forces both columns to start at the absolute top edge */
     align-items: flex-start; 
     justify-content: space-between;
     width: 100%;
@@ -70,12 +71,12 @@
     align-items: center; 
 }
 
-/* Title is perfectly at the top left */
 .ac-card-title {
     align-self: flex-start; 
     font-size: 2rem;
     font-weight: 500;
     margin: 0 0 30px 0; 
+    color: var(--text-primary); /* Ensures it follows theme */
 }
 
 .ac-main-badge-wrapper {
@@ -94,20 +95,21 @@
     font-size: 1.4rem; 
     font-weight: 500;
     margin: 25px 0 15px 0;
+    color: var(--text-primary); /* Ensures it follows theme */
 }
 
 .ac-progress-bar {
     width: 100%;
     max-width: 240px; 
     height: 14px; 
-    background-color: #BDC3C7; 
+    background-color: var(--border-color); /* Swapped from #BDC3C7 */
     border-radius: 10px;
     overflow: hidden;
 }
 
 .ac-progress-fill {
     height: 100%;
-    background-color: #4CAF50; 
+    background-color: #4CAF50; /* Kept brand green for progress */
     border-radius: 10px;
 }
 
@@ -120,14 +122,8 @@
 
 .ac-grid {
     display: grid;
-    
-    /* THE FIX: Changed '1fr' to 'max-content' so they hug the images tightly */
     grid-template-columns: repeat(4, max-content); 
-    
-    /* Centers the tightly packed group inside the right column */
     justify-content: center; 
-    
-    /* You can now perfectly control the exact pixel gap (Row-Gap Column-Gap) */    
     width: 100%;
 }
 
@@ -138,10 +134,8 @@
 }
 
 .ac-grid-item img {
-    /* THE FIX: Bumped up the size significantly! */
     width: 135px; 
     height: 135px;
-    
     object-fit: contain;
     transition: all 0.3s ease;
 }
@@ -157,10 +151,10 @@
 .ac-grid-item span {
     font-size: 0.95rem; 
     font-weight: 400;
-    color: #333;
+    color: var(--text-secondary); /* Swapped from #333 */
 }
 
-/* --- THE FIX: Restored Bottom Section --- */
+/* --- Restored Bottom Section --- */
 .other-awards-section {
     margin-top: 50px;
     display: flex;
@@ -175,7 +169,6 @@
 .other-badge {
     width: 240px; 
     object-fit: contain;
-    /* Crops the badge perfectly at the bottom */
     clip-path: inset(0 0 35% 0); 
 }
 
@@ -183,12 +176,10 @@
 .milestone-awards-container {
     display: flex;
     flex-direction: row; 
-    /* THE FIX: This pushes the left and right items to perfectly align with the edges of the white box! */
     justify-content: space-between; 
     align-items: flex-start; 
     width: 100%;
     margin-top: 20px;
-    /* Removed the hardcoded gap and padding so it relies entirely on the card's width */
 }
 
 .milestone-item {
@@ -196,13 +187,11 @@
     flex-direction: column; 
     align-items: center;
     gap: 20px; 
-    /* Widened the item container so the text doesn't squish */
     width: 320px; 
     text-align: center;
 }
 
 .milestone-item img {
-    /* THE FIX: Massively increased the size so they fill the space beautifully! */
     width: 250px; 
     height: 250px;
     object-fit: contain;
@@ -210,10 +199,9 @@
 }
 
 .milestone-item span {
-    /* Scaled up the text slightly to match the new giant badges */
     font-size: 1.3rem; 
     font-weight: 500;
-    color: #111;
+    color: var(--text-primary); /* Swapped from #111 */
     line-height: 1.4;
 }
 
