@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FiLock, FiCheckCircle, FiX, FiUser, FiArrowLeft, 
-  FiUserPlus, FiCheck, FiTrash2, FiHeart, FiMoon, FiActivity, FiDroplet, FiChevronRight, FiShare2 
+  FiUserPlus, FiCheck, FiTrash2, FiHeart, FiMoon, FiActivity, FiDroplet, FiChevronRight, FiShare2, FiRefreshCw
 } from 'react-icons/fi';
 import { supabase } from '../../supabase';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +32,7 @@ const Sharing = () => {
   const [friendStats, setFriendStats] = useState(null);
   const [friendWeeklyData, setFriendWeeklyData] = useState([]);
   const [friendLoading, setFriendLoading] = useState(false);
+  const [isLeaderboardLoading, setIsLeaderboardLoading] = useState(true);
 
   useEffect(() => {
     const hasOnboarded = localStorage.getItem('has_onboarded_sharing');
@@ -78,6 +79,7 @@ const Sharing = () => {
   };
 
   const fetchFriends = async () => {
+    setIsLeaderboardLoading(true);
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (!authUser) return;
     const todayStr = new Date().toISOString().split('T')[0];
@@ -107,6 +109,7 @@ const Sharing = () => {
       setMyFriends(networkWithScores.sort((a, b) => b.score - a.score));
       if (networkWithScores.length > 1) localStorage.setItem('has_onboarded_sharing', 'true');
     }
+    setIsLeaderboardLoading(false);
   };
 
   const getLast7Days = () => {
@@ -391,52 +394,70 @@ const Sharing = () => {
                       </button>
                   </div>
               </div>
-              <div className="lb-podium">
-                <div className="podium-col second-place" onClick={() => myFriends[1] && handleViewFriend(myFriends[1])}>
-                    <span className="podium-rank">{t('rank_2')}</span>
-                    <div className="podium-avatar">{myFriends[1]?.avatar_url ? <img src={myFriends[1].avatar_url} alt="" /> : <FiUser size={40} color="#E64A45" />}</div>
-                    <span className="podium-score">{myFriends[1]?.score || 0}</span>
-                    <span className="podium-name">
-                      {myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase()}` : ''}
-                      {myFriends[1]?.isMe ? ` ${t('you_badge')}` : ''}
-                    </span>
-                </div>
-                
-                <div className="podium-col first-place" onClick={() => myFriends[0] && handleViewFriend(myFriends[0])}>
-                    <span className="podium-crown">👑</span>
-                    <div className="podium-avatar first-avatar">{myFriends[0]?.avatar_url ? <img src={myFriends[0].avatar_url} alt="" /> : <FiUser size={50} color="#E64A45" />}</div>
-                    <span className="podium-score first-score">{myFriends[0]?.score || 0}</span>
-                    <span className="podium-name">
-                      {myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase()}` : ''}
-                      {myFriends[0]?.isMe ? ` ${t('you_badge')}` : ''}
-                    </span>
-                </div>
-                
-                <div className="podium-col third-place" onClick={() => myFriends[2] && handleViewFriend(myFriends[2])}>
-                    <span className="podium-rank">{t('rank_3')}</span>
-                    <div className="podium-avatar">{myFriends[2]?.avatar_url ? <img src={myFriends[2].avatar_url} alt="" /> : <FiUser size={40} color="#E64A45" />}</div>
-                    <span className="podium-score">{myFriends[2]?.score || 0}</span>
-                    <span className="podium-name">
-                      {myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase()}` : ''}
-                      {myFriends[2]?.isMe ? ` ${t('you_badge')}` : ''}
-                    </span>
-                </div>
-              </div>
 
-              <div className="lb-list-alt">
-                {myFriends.slice(3).map((f, i) => (
-                  <div key={f.id} className="lb-list-card" onClick={() => handleViewFriend(f)}>
-                    <div className="lb-card-left">
-                      <div className="lb-card-rank">{getRankText(i + 3)}</div>
-                      <div className="lb-card-avatar">{f.avatar_url ? <img src={f.avatar_url} alt="" /> : <FiUser size={24} />}</div>
-                      <span className="lb-card-name">
-                        @{f.first_name?.toLowerCase()} {f.isMe ? t('you_badge') : ''}
-                      </span>
+              {/* 🌟 NEW: Show Loading Card OR the Leaderboard */}
+              {isLeaderboardLoading ? (
+                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                     <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '350px' }}>
+                         <FiRefreshCw size={40} color="#DE4B4E" className="icon-spin" style={{ marginBottom: '20px' }} />
+                         <h3 style={{ color: '#111', fontSize: '1.4rem', fontWeight: '800', marginBottom: '8px' }}>
+                             Loading wellness data...
+                         </h3>
+                         <p style={{ color: '#666', fontSize: '0.95rem' }}>
+                             Crunching the numbers for your network
+                         </p>
+                     </div>
+                 </div>
+              ) : (
+                 <>
+                    <div className="lb-podium">
+                      <div className="podium-col second-place" onClick={() => myFriends[1] && handleViewFriend(myFriends[1])}>
+                          <span className="podium-rank">{t('rank_2')}</span>
+                          <div className="podium-avatar">{myFriends[1]?.avatar_url ? <img src={myFriends[1].avatar_url} alt="" /> : <FiUser size={40} color="#E64A45" />}</div>
+                          <span className="podium-score">{myFriends[1]?.score || 0}</span>
+                          <span className="podium-name">
+                            {myFriends[1] ? `@${myFriends[1].first_name?.toLowerCase()}` : ''}
+                            {myFriends[1]?.isMe ? ` ${t('you_badge')}` : ''}
+                          </span>
+                      </div>
+                      
+                      <div className="podium-col first-place" onClick={() => myFriends[0] && handleViewFriend(myFriends[0])}>
+                          <span className="podium-crown">👑</span>
+                          <div className="podium-avatar first-avatar">{myFriends[0]?.avatar_url ? <img src={myFriends[0].avatar_url} alt="" /> : <FiUser size={50} color="#E64A45" />}</div>
+                          <span className="podium-score first-score">{myFriends[0]?.score || 0}</span>
+                          <span className="podium-name">
+                            {myFriends[0] ? `@${myFriends[0].first_name?.toLowerCase()}` : ''}
+                            {myFriends[0]?.isMe ? ` ${t('you_badge')}` : ''}
+                          </span>
+                      </div>
+                      
+                      <div className="podium-col third-place" onClick={() => myFriends[2] && handleViewFriend(myFriends[2])}>
+                          <span className="podium-rank">{t('rank_3')}</span>
+                          <div className="podium-avatar">{myFriends[2]?.avatar_url ? <img src={myFriends[2].avatar_url} alt="" /> : <FiUser size={40} color="#E64A45" />}</div>
+                          <span className="podium-score">{myFriends[2]?.score || 0}</span>
+                          <span className="podium-name">
+                            {myFriends[2] ? `@${myFriends[2].first_name?.toLowerCase()}` : ''}
+                            {myFriends[2]?.isMe ? ` ${t('you_badge')}` : ''}
+                          </span>
+                      </div>
                     </div>
-                    <span className="lb-card-score">{f.score}</span>
-                  </div>
-                ))}
-              </div>
+
+                    <div className="lb-list-alt">
+                      {myFriends.slice(3).map((f, i) => (
+                        <div key={f.id} className="lb-list-card" onClick={() => handleViewFriend(f)}>
+                          <div className="lb-card-left">
+                            <div className="lb-card-rank">{getRankText(i + 3)}</div>
+                            <div className="lb-card-avatar">{f.avatar_url ? <img src={f.avatar_url} alt="" /> : <FiUser size={24} />}</div>
+                            <span className="lb-card-name">
+                              @{f.first_name?.toLowerCase()} {f.isMe ? t('you_badge') : ''}
+                            </span>
+                          </div>
+                          <span className="lb-card-score">{f.score}</span>
+                        </div>
+                      ))}
+                    </div>
+                 </>
+              )}
             </div>
           ) : (
             /* --- 3. ONBOARDING / SEARCH VIEW --- */
