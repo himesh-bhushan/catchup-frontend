@@ -287,21 +287,32 @@ const Signup = () => {
           </div>
 
           <h3 className="subsection-title">Pre-existing Condition</h3>
+          
+          {/* 🌟 THIS IS THE NEW CLEAN HTML CHECKBOX GRID */}
           <div className="checkbox-grid">
-            {['Asthma', 'Diabetes', 'Hypertension', 'Arthritis', 'High Cholesterol', 'Thyroid Disorder', 'Heart Disease', 'Others...'].map(cond => (
-              <div 
-                key={cond} 
-                className={`checkbox-item ${formData.conditions.includes(cond) ? 'checked' : ''}`}
-                onClick={() => toggleCondition(cond)}
-              >
-                <div className="circle-check"></div>
-                <span>{cond}</span>
-              </div>
-            ))}
+            {['Asthma', 'Diabetes', 'Hypertension', 'Arthritis', 'High Cholesterol', 'Thyroid Disorder', 'Heart Disease', 'Others...'].map(cond => {
+              const isChecked = formData.conditions.includes(cond);
+              return (
+                <label 
+                  key={cond} 
+                  className={`condition-checkbox-label ${isChecked ? 'checked' : ''}`}
+                >
+                  <input 
+                    type="checkbox" 
+                    className="condition-checkbox-input"
+                    checked={isChecked}
+                    onChange={() => toggleCondition(cond)}
+                  />
+                  <span className="condition-checkbox-text">
+                    {cond}
+                  </span>
+                </label>
+              );
+            })}
           </div>
 
           {formData.conditions.includes('Others...') && (
-            <div className="animate-fade-in" style={{marginBottom: '20px'}}>
+            <div className="animate-fade-in" style={{marginTop: '20px', marginBottom: '20px'}}>
                 <label className="input-label" style={{marginTop: 0}}>Please specify condition:</label>
                 <input 
                     type="text" 
