@@ -399,12 +399,11 @@ const Sharing = () => {
               {isLeaderboardLoading ? (
                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                      <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '350px' }}>
-                         <FiRefreshCw size={40} color="#DE4B4E" className="icon-spin" style={{ marginBottom: '20px' }} />
                          <h3 style={{ color: '#111', fontSize: '1.4rem', fontWeight: '800', marginBottom: '8px' }}>
-                             Loading wellness data...
+                             Catching the leaderboard...
                          </h3>
                          <p style={{ color: '#666', fontSize: '0.95rem' }}>
-                             Crunching the numbers for your network
+                             Syncing your friends' latest scores
                          </p>
                      </div>
                  </div>
