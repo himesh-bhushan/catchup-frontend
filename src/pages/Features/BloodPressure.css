@@ -79,7 +79,7 @@
   font-size: 18px; cursor: pointer; color: var(--text-primary);
 }
 
-/* --- Stats Header --- */
+/* --- Stats Header (AVERAGE TEXT FIXED HERE) --- */
 .stats-block { margin-bottom: 15px; flex-shrink: 0; }
 .stats-block h2 { font-size: 28px; font-weight: 500; color: var(--text-primary); margin: 0; }
 .highlight-red { color: #D32F2F; font-weight: 700; }
@@ -126,6 +126,7 @@
   display: flex; align-items: center; justify-content: space-between;
 }
 
+/* Latest Entry Text Fixed */
 .today-reading-block h3 {
   font-size: 24px; font-weight: 600; margin: 0; color: var(--text-primary);
 }

@@ -158,7 +158,7 @@ const BloodPressure = () => {
     return (
       <svg viewBox={`-10 -20 ${width + 60} ${height + 60}`} className="bp-chart-svg">
         
-        {/* Y-Axis Grid Lines */}
+        {/* Y-Axis Grid Lines - CHANGED TO VARS */}
         {[60, 90, 120, 150, 180].map(val => (
            <g key={val}>
              <line x1="0" y1={getY(val)} x2={width} y2={getY(val)} stroke="var(--border-color)" strokeWidth="1" />
@@ -171,14 +171,14 @@ const BloodPressure = () => {
             <polyline points={points} fill="none" stroke="#FF3B30" strokeWidth="4" strokeLinecap="round" />
         )}
 
-        {/* Dots for each day */}
+        {/* Dots for each day - ADDED VAR FOR STROKE */}
         {logs.map((log, i) => (
           <g key={i}>
             <circle cx={getX(i)} cy={getY(log.systolic)} r="7" fill="#FF3B30" stroke="var(--card-bg)" strokeWidth="3" />
           </g>
         ))}
 
-        {/* X-Axis Dates */}
+        {/* X-Axis Dates - CHANGED TO VARS */}
         {logs.map((log, i) => (
           <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="var(--text-secondary)" textAnchor="middle" fontFamily="Poppins">
             {new Date(log.date).toLocaleDateString('en-US', { weekday: 'short' })}
@@ -220,6 +220,7 @@ const BloodPressure = () => {
           </div>
 
           <div className="stats-block">
+             {/* THE AVERAGE TEXT IS CONTROLLED BY CSS NOW */}
              <h2>Average <span className="highlight-red">{average.systolic || '--'}/{average.diastolic || '--'}</span></h2>
              <p className="date-range-sub">
                 Trends from your recorded history
