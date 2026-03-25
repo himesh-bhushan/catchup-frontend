@@ -156,16 +156,6 @@ const MedicalID = () => {
         )}
       </div>
 
-      <div className="toggle-row">
-        <div>
-            <span style={{ fontSize: '16px', fontWeight: '500' }}>Show When Locked</span>
-            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>Display Medical ID on lock screen notification.</p>
-        </div>
-        <div className={`toggle-switch ${isLockedVisible ? 'on' : ''}`} onClick={handleToggle}>
-          <div className="toggle-thumb"></div>
-        </div>
-      </div>
-
       <div style={{border: '1px solid var(--border-color)', borderRadius: '15px', padding: '20px', marginTop: '10px'}}>
         
         {/* User Summary */}
