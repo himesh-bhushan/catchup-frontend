@@ -109,7 +109,6 @@ const Sleep = () => {
   const handleCalendarClick = () => {
     if (dateInputRef.current) {
         try {
-            // This forces the native browser calendar popup to open
             dateInputRef.current.showPicker();
         } catch (e) {
             dateInputRef.current.focus();
@@ -119,7 +118,7 @@ const Sleep = () => {
 
   const renderChart = () => {
     const width = 1000; const height = 250; const padding = 50; 
-    if (logs.length < 1) return (<div className="no-data-container"><FiMoon size={40} color="#ccc" /><p>No sleep history found for this period.</p></div>);
+    if (logs.length < 1) return (<div className="no-data-container"><FiMoon size={40} color="var(--text-secondary)" /><p>No sleep history found for this period.</p></div>);
 
     const minVal = 0; const maxVal = 12; 
     const getY = (val) => height - ((val - minVal) / (maxVal - minVal)) * height;
@@ -128,16 +127,19 @@ const Sleep = () => {
 
     return (
       <svg viewBox={`-10 -20 ${width + 60} ${height + 60}`} className="sleep-chart-svg">
+        {/* CHANGED: SVG gridlines and text now use variables */}
         {[2, 4, 6, 8, 10, 12].map(val => (
            <g key={val}>
-             <line x1="0" y1={getY(val)} x2={width} y2={getY(val)} stroke="#F0F0F0" strokeWidth="1" />
-             <text x={width + 15} y={getY(val) + 5} fontSize="14" fill="#BBB" fontFamily="Poppins">{val}h</text>
+             <line x1="0" y1={getY(val)} x2={width} y2={getY(val)} stroke="var(--border-color)" strokeWidth="1" />
+             <text x={width + 15} y={getY(val) + 5} fontSize="14" fill="var(--text-secondary)" fontFamily="Poppins">{val}h</text>
            </g>
         ))}
         {logs.length > 1 && <polyline points={points} fill="none" stroke="#F7931E" strokeWidth="4" strokeLinecap="round" />}
-        {logs.map((log, i) => <circle key={i} cx={getX(i)} cy={getY(log.hours)} r="7" fill="#F7931E" stroke="white" strokeWidth="3" />)}
+        {/* CHANGED: Circle stroke now matches card background */}
+        {logs.map((log, i) => <circle key={i} cx={getX(i)} cy={getY(log.hours)} r="7" fill="#F7931E" stroke="var(--card-bg)" strokeWidth="3" />)}
+        {/* CHANGED: Bottom labels use variables */}
         {logs.map((log, i) => (
-          <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="#999" textAnchor="middle" fontFamily="Poppins">
+          <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="var(--text-secondary)" textAnchor="middle" fontFamily="Poppins">
             {new Date(log.date).toLocaleDateString('en-US', { weekday: 'short' })}
           </text>
         ))}
@@ -175,7 +177,7 @@ const Sleep = () => {
                       top: '100%', 
                       right: 0, 
                       opacity: 0, 
-                      pointerEvents: 'none', /* Prevents input from intercepting button clicks */
+                      pointerEvents: 'none', 
                       width: '40px',
                       height: '40px'
                     }}
@@ -189,7 +191,7 @@ const Sleep = () => {
           </div>
 
           <div className="chart-container">
-             {loading ? <div className="loader-box">Loading...</div> : renderChart()}
+             {loading ? <div className="loader-box" style={{ color: 'var(--text-secondary)'}}>Loading...</div> : renderChart()}
           </div>
 
           <div className="today-reading-block">

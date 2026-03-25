@@ -1,8 +1,8 @@
 /* --- Overrides dashboard background specifically for Sleep page --- */
 .dashboard-wrapper.sleep-page-wrapper-bg,
 .sleep-page-wrapper-bg .dashboard-content {
-    background: #FFFFFF !important; 
-    background-color: #FFFFFF !important;
+    background: var(--bg-color) !important; /* Swapped from #FFFFFF */
+    background-color: var(--bg-color) !important; /* Swapped from #FFFFFF */
     min-height: 100vh;
 }
 
@@ -10,7 +10,7 @@
   width: 100%;
   max-width: 1200px;
   min-height: 100vh; 
-  background-color: #fff;
+  background-color: var(--bg-color); /* Swapped from #fff */
   padding: 30px 40px; 
   font-family: 'Poppins', sans-serif;
   margin: 0 auto;
@@ -29,40 +29,48 @@
 }
 
 .sleep-back-btn {
-  background: none; border: none; font-size: 24px; cursor: pointer; color: #000;
+  background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-primary); /* Swapped from #000 */
   display: flex; align-items: center; justify-content: center; padding: 0; width: 40px;
 }
 
 /* SLEEP THEME (ORANGE) */
 .range-pills {
-  background-color: #FFF3E0; padding: 5px; border-radius: 30px;
+  background-color: var(--card-bg); /* Swapped from #FFF3E0 to match theme */
+  border: 1px solid var(--border-color); /* Added border to pop */
+  padding: 5px; border-radius: 30px;
   display: flex; gap: 5px; flex: 1; justify-content: center; max-width: 600px; margin: 0 auto; 
 }
 
 .pill {
   border: none; background: transparent; padding: 8px 15px; border-radius: 25px;
-  font-size: 13px; font-weight: 600; color: #555; cursor: pointer; transition: 0.2s ease;
+  font-size: 13px; font-weight: 600; color: var(--text-secondary); /* Swapped from #555 */
+  cursor: pointer; transition: 0.2s ease;
   flex: 1; white-space: nowrap;
 }
 
 .pill.active {
-  background-color: #fff; color: #000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #FFE0B2; 
+  background-color: var(--bg-color); /* Swapped from #fff */
+  color: var(--text-primary); /* Swapped from #000 */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid var(--border-color); /* Swapped from #FFE0B2 */
 }
 
 .calendar-btn {
-  width: 40px; height: 40px; border-radius: 50%; border: 1px solid #000; background: #fff;
-  display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; color: #000;
+  width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-color); /* Swapped from #000 */
+  background: var(--card-bg); /* Swapped from #fff */
+  display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; color: var(--text-primary); /* Swapped from #000 */
 }
 
 /* --- Stats Header --- */
 .stats-block { margin-bottom: 15px; flex-shrink: 0; }
-.stats-block h2 { font-size: 28px; font-weight: 500; color: #333; margin: 0; }
-.highlight-orange { color: #F7931E; font-weight: 700; }
-.date-range-sub { color: #999; font-size: 14px; margin-top: 5px; }
+.stats-block h2 { font-size: 28px; font-weight: 500; color: var(--text-primary); margin: 0; } /* Swapped from #333 */
+.highlight-orange { color: #F7931E; font-weight: 700; } /* Kept branding orange */
+.date-range-sub { color: var(--text-secondary); font-size: 14px; margin-top: 5px; } /* Swapped from #999 */
 
 /* --- Chart Area --- */
 .chart-container {
-  background: #F9F9F9; border-radius: 20px; margin-bottom: 20px;
+  background: var(--card-bg); /* Swapped from #F9F9F9 */
+  border: 1px solid var(--border-color); /* Added for dark mode */
+  border-radius: 20px; margin-bottom: 20px;
   flex: 1; min-height: 0; position: relative;
   display: flex; align-items: center; justify-content: center;
 }
@@ -70,28 +78,32 @@
 .sleep-chart-svg { width: 100%; height: 100%; overflow: visible; }
 
 .no-data-container {
-  height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #bbb; font-size: 18px; gap: 10px;
+  height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 18px; gap: 10px;
 }
 
 /* --- Bottom: Today --- */
 .today-reading-block { margin-top: 10px; flex-shrink: 0; padding-bottom: 10px; }
 
 .today-header { display: flex; align-items: center; justify-content: space-between; }
-.today-reading-block h3 { font-size: 24px; font-weight: 600; margin: 0; color: #333; }
-.today-reading-block h1 { font-size: 36px; margin: 10px 0 5px 0; display: flex; align-items: center; gap: 10px; }
+.today-reading-block h3 { font-size: 24px; font-weight: 600; margin: 0; color: var(--text-primary); } /* Swapped from #333 */
+.today-reading-block h1 { font-size: 36px; margin: 10px 0 5px 0; display: flex; align-items: center; gap: 10px; color: var(--text-primary); } /* Ensured numbers follow theme */
 
 .unit { font-size: 20px; color: #F7931E; font-weight: 700; }
-.date-sub { color: #bbb; font-size: 14px; }
+.date-sub { color: var(--text-secondary); font-size: 14px; } /* Swapped from #bbb */
 
 /* --- Add Form --- */
 .add-reading-btn {
-  border: none; background: #f0f0f0; width: 35px; height: 35px; border-radius: 50%;
+  border: 1px solid var(--border-color); /* Swapped from none */
+  background: var(--card-bg); /* Swapped from #f0f0f0 */
+  color: var(--text-primary);
+  width: 35px; height: 35px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px;
 }
 
 .add-form { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
 .add-form input {
-  width: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 12px; 
+  width: 100px; padding: 10px; border: 1px solid var(--border-color); border-radius: 12px; /* Swapped from #ddd */
+  background: var(--card-bg); color: var(--text-primary); /* Support input in dark mode */
   font-size: 18px; text-align: center; font-weight: 700;
 }
 .add-form button {
