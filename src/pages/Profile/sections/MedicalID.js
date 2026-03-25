@@ -30,6 +30,8 @@ const MedicalID = () => {
     age: cache.age || ''
   });
 
+  const [avatarUrl, setAvatarUrl] = useState(null);
+
   const [formData, setFormData] = useState({
     bloodType: cache.bloodType || '',
     conditions: cache.conditions || '',
@@ -72,7 +74,7 @@ const MedicalID = () => {
         try {
           const { data, error } = await supabase
             .from('profiles')
-            .select('first_name, last_name, dob, gender, blood_type, conditions, allergies, emergency_name, emergency_phone') 
+            .select('first_name, last_name, dob, gender, blood_type, conditions, allergies, emergency_name, emergency_phone, avatar_url') 
             .eq('id', session.user.id)
             .single();
 
@@ -90,6 +92,16 @@ const MedicalID = () => {
                 emergencyName: data.emergency_name || '',
                 emergencyPhone: data.emergency_phone || ''
             };
+
+            if (data.avatar_url) {
+                if (data.avatar_url.startsWith('http')) {
+                    setAvatarUrl(data.avatar_url);
+                } else {
+                    const fileName = data.avatar_url.split('/').pop();
+                    const { data: img } = await supabase.storage.from('avatars').download(fileName);
+                    if (img) setAvatarUrl(URL.createObjectURL(img));
+                }
+            }
 
             setHeaderInfo(newHeader);
             setFormData(newForm);
@@ -160,8 +172,12 @@ const MedicalID = () => {
         
         {/* User Summary */}
         <div style={{display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid var(--border-color)'}}>
-           <div style={{width: '50px', height: '50px', background: 'var(--bg-color)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-             <FiUser color="var(--text-secondary)" size={24} />
+           <div style={{width: '50px', height: '50px', background: 'var(--bg-color)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'}}>
+             {avatarUrl ? (
+                 <img src={avatarUrl} alt="User" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+             ) : (
+                 <FiUser color="var(--text-secondary)" size={24} />
+             )}
            </div>
            <div>
              <div style={{fontWeight: 'bold', fontSize: '1.1rem'}}>{headerInfo.name || "—"}</div>
