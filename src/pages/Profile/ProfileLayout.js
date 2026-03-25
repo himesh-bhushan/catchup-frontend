@@ -4,7 +4,7 @@ import ProfileMenu from './ProfileMenu';
 import PersonalDetails from './sections/PersonalDetails';
 import MedicalID from './sections/MedicalID';
 import Display from './sections/Display';
-import ConnectedApps from './sections/Apps'; 
+import Tracker from './sections/Apps'; 
 import './Profile.css';
 
 const ProfileLayout = () => {
@@ -22,7 +22,7 @@ const ProfileLayout = () => {
           <Route path="details" element={<PersonalDetails />} />
           <Route path="medical" element={<MedicalID />} />
           <Route path="display" element={<Display />} />
-          <Route path="apps" element={<ConnectedApps />} />
+          <Route path="apps" element={<Tracker />} />
           
           
           
