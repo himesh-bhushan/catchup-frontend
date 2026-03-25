@@ -1,6 +1,6 @@
 /* --- GLOBAL WRAPPER & STRETCH --- */
 .dashboard-wrapper.sharing-page-bg {
-    background-color: #F8DBCA;
+    background-color: var(--bg-color); /* Swapped from #F8DBCA */
     min-height: 100vh;
     display: flex;
 }
@@ -18,7 +18,7 @@
 .lb-header {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Space out evenly to keep Add Friend on right */
+    justify-content: space-between; 
     position: relative; 
     gap: 15px;
     margin-bottom: 30px;
@@ -28,7 +28,7 @@
 .lb-transparent-btn {
     background: transparent !important;
     border: none !important;
-    color: #111 !important;
+    color: var(--text-primary) !important; /* Swapped from #111 */
     box-shadow: none !important;
     padding: 0 !important;
     cursor: pointer;
@@ -37,7 +37,7 @@
     justify-content: center;
     transition: transform 0.2s ease;
 }
-/* Add this new class */
+
 .lb-search-group {
     display: flex;
     align-items: center;
@@ -47,27 +47,16 @@
     margin: 0 auto;
 }
 
-/* Update your existing search bar class to this */
-.lb-search-bar-alt {
-    flex: 1; /* Tells the bar to take up the remaining space next to the icon */
-    padding: 18px 24px;
-    border-radius: 16px;
-    border: none;
-    background: #FFF;
-    font-size: 1.1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    outline: none;
-    margin: 0;
-}
 .lb-transparent-btn:hover { transform: scale(1.15); }
 
 .lb-search-bar-alt {
-    flex: 1; /* Takes middle space evenly */
+    flex: 1; 
     max-width: 700px;
     padding: 18px 24px;
     border-radius: 16px;
-    border: none;
-    background: #FFF;
+    border: 1px solid var(--border-color); /* Added border for dark mode */
+    background: var(--card-bg); /* Swapped from #FFF */
+    color: var(--text-primary); /* Swapped from #111 */
     font-size: 1.1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     outline: none;
@@ -105,16 +94,19 @@
 
 .podium-avatar {
     width: 110px; height: 110px;
-    background: #FFF; border-radius: 50%;
+    background: var(--card-bg); /* Swapped from #FFF */
+    border-radius: 50%;
     margin-bottom: 0;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     display: flex; align-items: center; justify-content: center;
-    overflow: hidden; border: 4px solid #fff; position: relative;
+    overflow: hidden; 
+    border: 4px solid var(--card-bg); /* Swapped from #fff */
+    position: relative;
 }
 
 .first-avatar { width: 140px; height: 140px; border: 5px solid #E64A45; }
 .podium-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.podium-rank { font-weight: 800; color: #111; font-size: 1.1rem; margin-bottom: 15px; }
+.podium-rank { font-weight: 800; color: var(--text-primary); font-size: 1.1rem; margin-bottom: 15px; } /* Swapped from #111 */
 .podium-crown { font-size: 2.4rem; margin-bottom: -12px; z-index: 10; position: relative; }
 
 .podium-score {
@@ -123,7 +115,7 @@
     line-height: 1; margin-top: 15px; margin-bottom: 5px;
 }
 .first-score { font-size: 2.8rem; }
-.podium-name { display: block; width: 100%; text-align: center; color: #555; font-size: 1.05rem; font-weight: 600; margin: 0; }
+.podium-name { display: block; width: 100%; text-align: center; color: var(--text-secondary); font-size: 1.05rem; font-weight: 600; margin: 0; } /* Swapped from #555 */
 
 /* --- FRIEND DETAIL HEADER --- */
 .friend-detail-dashboard {
@@ -143,7 +135,9 @@
 .back-circle-btn {
     width: 50px; height: 50px;
     border-radius: 50%;
-    background: white; border: none;
+    background: var(--card-bg); /* Swapped from white */
+    color: var(--text-primary); /* Swapped from default */
+    border: none;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
@@ -153,18 +147,18 @@
 .profile-image-ring {
     width: 85px; height: 85px;
     background: #E64A45;
-    border-radius: 50%; /* Force pure circle */
+    border-radius: 50%; 
     overflow: hidden;
     display: flex; align-items: center; justify-content: center;
 }
 
 .profile-image-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.black-name-title { color: #000000 !important; margin: 0; font-size: 2rem; font-weight: 900; }
+.black-name-title { color: var(--text-primary) !important; margin: 0; font-size: 2rem; font-weight: 900; } /* Swapped from #000 */
 
 .health-score-pill {
     display: inline-block;
-    background: #FFF0EF;
+    background: rgba(230, 74, 69, 0.1); /* Swapped from hard #FFF0EF for dark mode safety */
     color: #E64A45;
     padding: 5px 15px;
     border-radius: 20px;
@@ -177,11 +171,11 @@
 .dashboard-grid-layout { display: flex; flex-direction: column; gap: 20px; }
 
 .glass-card {
-    background: #FFFFFF;
+    background: var(--card-bg); /* Swapped from #FFFFFF */
     border-radius: 20px;
     padding: 22px 25px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-    border: 1px solid #f0f0f0;
+    border: 1px solid var(--border-color); /* Swapped from #f0f0f0 */
 }
 
 .dash-card-header {
@@ -192,7 +186,7 @@
     width: 100%;
 }
 
-.dash-card-header h3 { margin: 0; font-size: 1.2rem; font-weight: 900; color: #222; }
+.dash-card-header h3 { margin: 0; font-size: 1.2rem; font-weight: 900; color: var(--text-primary); } /* Swapped from #222 */
 
 /* --- TOP ROW: ACTIVITY RING & HEALTH SCORE --- */
 .activity-main-row {
@@ -201,7 +195,6 @@
     gap: 20px;
 }
 
-/* Activity Ring Styling (Side-by-side view like the dashboard) */
 .activity-body-side {
     display: flex;
     flex-direction: row;
@@ -218,7 +211,7 @@
 }
 
 .dash-ring-wrapper-large svg { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotate(-90deg); }
-.dash-bg-ring { fill: none; stroke: #EAEAEA; stroke-width: 16; }
+.dash-bg-ring { fill: none; stroke: var(--border-color); stroke-width: 16; } /* Swapped from #EAEAEA */
 .dash-meter-ring { 
     fill: none; stroke: #E64A45; stroke-width: 16; stroke-linecap: butt; 
     transition: stroke-dasharray 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
@@ -230,7 +223,7 @@
     transform: translate(-50%, -50%);
     width: 100px;
     height: 100px;
-    background-color: #FFFBEB; 
+    background-color: var(--bg-color); /* Swapped from #FFFBEB */
     border-radius: 50%;
     display: flex;
     flex-direction: column;
@@ -242,10 +235,11 @@
 .inner-avatar { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 2px; object-fit: cover; }
 .inner-emoji { font-size: 1.8rem; margin-bottom: 2px; }
 .inner-percent { 
-    font-size: 2rem; /* Increased so it looks good alone */
+    font-size: 2rem; 
     font-weight: 900; 
-    color: #111; 
+    color: var(--text-primary); /* Swapped from #111 */
 }
+
 .dash-stats-list {
     display: flex;
     flex-direction: column;
@@ -255,9 +249,9 @@
 }
 
 .dash-stat-item { display: flex; flex-direction: column; gap: 2px; }
-.stat-lbl { font-size: 1.05rem; font-weight: 800; color: #333; line-height: 1;}
-.stat-val { font-size: 1.6rem; font-weight: 900; color: #222; display: flex; align-items: baseline; gap: 5px; line-height: 1;}
-.stat-val small { font-size: 0.9rem; font-weight: 700; color: #888; text-transform: uppercase; }
+.stat-lbl { font-size: 1.05rem; font-weight: 800; color: var(--text-primary); line-height: 1;} /* Swapped from #333 */
+.stat-val { font-size: 1.6rem; font-weight: 900; color: var(--text-primary); display: flex; align-items: baseline; gap: 5px; line-height: 1;} /* Swapped from #222 */
+.stat-val small { font-size: 0.9rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; } /* Swapped from #888 */
 
 /* Health Score Card Styling */
 .hs-body {
@@ -265,14 +259,14 @@
     flex-direction: row; 
     align-items: center;
     justify-content: flex-start;
-    gap: 35px; /* Space between ring and pills */
+    gap: 35px; 
     flex: 1;
 }
 
 .dash-ring-wrapper-medium {
     position: relative;
-    width: 180px;  /* Increased from 145px */
-    height: 180px; /* Increased from 145px */
+    width: 180px;  
+    height: 180px; 
     flex-shrink: 0;
 }
 
@@ -297,20 +291,19 @@
 }
 .hs-pills-list {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Keeps the 2x2 grid */
+    grid-template-columns: 1fr 1fr; 
     gap: 12px; 
-    flex: 1; /* Takes up the remaining space next to the ring */
+    flex: 1; 
     width: 100%;
-    margin: 0; /* Removes the centering we added earlier */
-    max-width: none; /* Removes the width restriction */
+    margin: 0; 
+    max-width: none; 
 }
 
-/* Adjust the internal padding and gap slightly so the content fits well in the slimmer boxes */
 .hs-pill {
     display: flex;
     align-items: center;
-    gap: 8px; /* Slightly reduced gap between icon and text */
-    padding: 10px 12px; /* Balanced padding for the new shape */
+    gap: 8px; 
+    padding: 10px 12px; 
     border-radius: 12px;
     width: 100%;
     box-sizing: border-box;
@@ -318,7 +311,7 @@
 
 .pill-icon-wrapper-small {
     width: 28px; height: 28px;
-    background: #FFFFFF;
+    background: var(--card-bg); /* Swapped from #FFFFFF */
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
@@ -326,20 +319,19 @@
 
 .icon-red { color: #D3504A; font-size: 1rem; }
 .icon-orange { color: #E29E3A; font-size: 1rem; }
-.icon-dark { color: #333333; font-size: 1rem; }
+.icon-dark { color: var(--text-primary); font-size: 1rem; } /* Swapped from #333333 */
 .icon-blue { color: #5C83D6; font-size: 1rem; }
 
 .pill-text { display: flex; flex-direction: column; }
 
-/* Added color: #FFF to explicitly force the text to be white */
 .pill-text span { 
-    font-size: 0.62rem; /* Slightly smaller to fit perfectly */
+    font-size: 0.62rem; 
     font-weight: 600; 
     opacity: 0.9; 
     margin-bottom: 2px; 
     text-transform: capitalize; 
     color: #FFF; 
-    white-space: nowrap; /* This prevents the text from wrapping to a second line */
+    white-space: nowrap; 
 }
 
 .pill-text strong { 
@@ -378,12 +370,11 @@
 
 
 /* --- BOTTOM ROW: WEEKLY RINGS & AWARDS --- */
-/* The layout strictly forces exactly 2 columns and stretches height */
 .awards-weekly-row {
     display: grid;
-    grid-template-columns: 2.2fr 1fr; /* Stretches the weekly performance slightly wider */
+    grid-template-columns: 2.2fr 1fr; 
     gap: 20px;
-    align-items: stretch; /* Cards will be identical in height */
+    align-items: stretch; 
 }
 
 /* --- WEEKLY 7-DAY MINI RINGS --- */
@@ -391,7 +382,7 @@
     display: flex;
     flex-direction: column;
     height: auto;
-    margin: 0 !important; /* Overrides global CSS forcing grid rows */
+    margin: 0 !important; 
     grid-area: auto !important;
 }
 
@@ -401,7 +392,7 @@
     align-items: center;
     padding: 10px 10px 20px 10px;
     flex: 1; 
-    width: 100%; /* Ensures it stretches to fit the card */
+    width: 100%; 
     box-sizing: border-box;
 }
 
@@ -412,15 +403,15 @@
     gap: 12px;
 }
 
-.bar-day-lbl { font-size: 0.85rem; font-weight: 800; color: #888; text-transform: capitalize; }
+.bar-day-lbl { font-size: 0.85rem; font-weight: 800; color: var(--text-secondary); text-transform: capitalize; } /* Swapped from #888 */
 
 .mini-ring-wrapper { 
     position: relative; 
-    width: 35px; /* Reduced from 45px */
+    width: 35px; 
     height: 35px; 
 }
 .mini-ring-wrapper svg { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotate(-90deg); }
-.dash-bg-ring-mini { fill: none; stroke: #F3F3F3; stroke-width: 6; }
+.dash-bg-ring-mini { fill: none; stroke: var(--border-color); stroke-width: 6; } /* Swapped from #F3F3F3 */
 .dash-meter-ring-mini { 
     fill: none; stroke: #E64A45; stroke-width: 6; stroke-linecap: round; 
     transition: stroke-dasharray 1s ease; 
@@ -431,8 +422,8 @@
     display: flex;
     flex-direction: column;
     height: auto;
-    margin: 0 !important; /* Overrides any global Dashboard.css positioning */
-    grid-area: auto !important; /* Prevents global grid collision */
+    margin: 0 !important; 
+    grid-area: auto !important; 
 }
 
 .awards-content {
@@ -441,11 +432,11 @@
     align-items: center;
     justify-content: center;
     flex: 1;
-    padding: 0; /* Removed vertical padding */
+    padding: 0; 
 }
 
 .award-badge-status {
-    width: 170px; /* Reduced from 140px */
+    width: 170px; 
     height: 170px; 
     object-fit: contain; 
     transition: all 0.3s ease;
@@ -460,14 +451,14 @@
 }
 
 .award-share-btn {
-    margin-top: 10px; /* Tighter gap */
+    margin-top: 10px; 
     display: flex;
     align-items: center;
     gap: 8px;
     background: #DE4B4E;
     color: white;
     border: none;
-    padding: 6px 16px; /* Smaller padding */
+    padding: 6px 16px; 
     border-radius: 20px;
     font-weight: bold;
     cursor: pointer;
@@ -482,7 +473,7 @@
 
 /* --- FIND FRIENDS SECTION --- */
 .theme-container {
-    background-color: #FFF !important;
+    background-color: var(--card-bg) !important; /* Swapped from #FFF */
     width: 100%;
     max-width: 850px;
     margin: 0 auto;
@@ -493,40 +484,39 @@
 }
 
 .search-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-.theme-heading { font-size: 1.8rem; font-weight: 800; color: #111; margin: 0; }
+.theme-heading { font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin: 0; } /* Swapped from #111 */
 
 .search-input-wrapper { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; }
-.theme-search-input { flex: 1; padding: 18px 25px; border-radius: 18px; border: 1px solid #f2f2f2; background: #F8F9FA; font-size: 1.1rem; outline: none; transition: all 0.2s ease; }
-.theme-search-input:focus { background: #fff; border-color: #E64A45; }
+.theme-search-input { flex: 1; padding: 18px 25px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); font-size: 1.1rem; outline: none; transition: all 0.2s ease; } /* Swapped hardcoded values */
+.theme-search-input:focus { background: var(--card-bg); border-color: #E64A45; }
 
 .section-label { font-size: 0.85rem; font-weight: 900; color: #E64A45; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; display: block; }
 
-.theme-card { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 18px 25px; border-radius: 22px; margin-bottom: 12px; border: 1px solid #f5f5f5; transition: transform 0.2s; }
+.theme-card { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 18px 25px; border-radius: 22px; margin-bottom: 12px; border: 1px solid var(--border-color); transition: transform 0.2s; } /* Swapped hardcoded values */
 .theme-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
 
 .user-info-row { display: flex; align-items: center; gap: 20px; }
 .theme-avatar-sm { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: transparent; display: block; }
-.name-bold { font-size: 1.2rem; font-weight: 800; color: #111; margin: 0; }
+.name-bold { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin: 0; } /* Swapped from #111 */
 
 .action-btns-row { display: flex; align-items: center; gap: 12px; }
 .theme-btn-outline { background: transparent; color: #E64A45; border: 2px solid #E64A45; padding: 9px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 .theme-btn-outline:hover { background: #E64A45; color: white; }
-.icon-btn-delete { background: #FFF0F0; border: none; color: #E64A45; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; }
+.icon-btn-delete { background: rgba(230, 74, 69, 0.1); border: none; color: #E64A45; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; }
 
 /* --- LEADERBOARD LIST ITEMS --- */
-/* Update this class to include width: 100% */
 .lb-list-alt { 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
     gap: 15px; 
-    width: 100%; /* THIS FIXES THE SQUISHED RECTANGLE */
+    width: 100%; 
 }
 .lb-list-card { display: flex; justify-content: space-between; align-items: center; background: #D4664C; width: 100%; max-width: 700px; padding: 18px 30px; border-radius: 16px; color: #FFF; margin: 0 auto 15px; transition: transform 0.2s; cursor: pointer; }
 .lb-list-card:hover { transform: scale(1.02); }
 .lb-card-left { display: flex; align-items: center; gap: 20px; }
 .lb-card-rank { font-weight: 800; text-align: center; }
-.lb-card-avatar { width: 50px; height: 50px; background: #FFF; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.lb-card-avatar { width: 50px; height: 50px; background: var(--card-bg); border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; } /* Swapped from #FFF */
 .lb-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .lb-card-score { font-weight: 800; font-size: 1.5rem; }
 
@@ -535,12 +525,12 @@
 .avatar-group { display: flex; justify-content: center; margin-bottom: 40px; }
 .sharing-avatar { border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.08); object-fit: cover; }
 .side-avatar { width: 140px; height: 140px; }
-.middle-avatar { width: 170px; height: 170px; margin: 0 -30px; z-index: 2; border: 5px solid #F8DBCA; }
-.sharing-title { font-size: 3.2rem; font-weight: 800; color: #111; margin: 0; }
-.sharing-subtitle { max-width: 650px; font-size: 1.15rem; color: #444; text-align: center; margin: 20px 0 60px; line-height: 1.6; }
+.middle-avatar { width: 170px; height: 170px; margin: 0 -30px; z-index: 2; border: 5px solid var(--bg-color); } /* Swapped from #F8DBCA */
+.sharing-title { font-size: 3.2rem; font-weight: 800; color: var(--text-primary); margin: 0; } /* Swapped from #111 */
+.sharing-subtitle { max-width: 650px; font-size: 1.15rem; color: var(--text-secondary); text-align: center; margin: 20px 0 60px; line-height: 1.6; } /* Swapped from #444 */
 .share-cta-btn { background-color: #E64A45; color: white; border: none; border-radius: 20px; padding: 15px 30px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
 .theme-btn-sm { background-color: #E64A45; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.theme-btn-sm.requested { background: #F0F0F0; color: #888; cursor: not-allowed; }
+.theme-btn-sm.requested { background: var(--border-color); color: var(--text-secondary); cursor: not-allowed; } /* Swapped from #F0F0F0 and #888 */
 .icon-btn.approve { background: #E64A45; color: white; border: none; border-radius: 10px; padding: 8px 15px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
 /* --- UTILS --- */
@@ -560,7 +550,6 @@
 
 @media (max-width: 768px) {
     
-    /* --- 1. GENERAL LAYOUT & HEADER --- */
     .sharing-page-container {
         padding: 20px 15px !important;
     }
@@ -579,10 +568,9 @@
         font-size: 24px !important;
         font-weight: 800 !important;
         margin: 0 !important;
-        color: #000 !important;
+        color: var(--text-primary) !important; /* Swapped from #000 */
     }
 
-    /* --- 2. THE PODIUM (Top 3) --- */
     .lb-podium {
         gap: 15px !important;
         margin-bottom: 40px !important;
@@ -590,7 +578,7 @@
     }
 
     .podium-rank {
-        color: #FFF !important;
+        color: var(--text-primary) !important; /* Swapped from #FFF */
         font-size: 1rem !important;
         margin-bottom: 8px !important;
         text-shadow: 0 1px 4px rgba(0,0,0,0.15) !important; 
@@ -599,8 +587,8 @@
     .podium-avatar {
         width: 75px !important;
         height: 75px !important;
-        background: #FFF !important;
-        border: 3px solid #FFF !important; 
+        background: var(--card-bg) !important; /* Swapped from #FFF */
+        border: 3px solid var(--card-bg) !important; /* Swapped from #FFF */
         box-shadow: 0 8px 20px rgba(0,0,0,0.05) !important;
     }
 
@@ -629,11 +617,10 @@
     .podium-name {
         font-family: monospace !important;
         font-size: 0.75rem !important;
-        color: #888 !important;
+        color: var(--text-secondary) !important; /* Swapped from #888 */
         margin-top: 2px !important;
     }
 
-    /* --- 3. LIST CARDS (4th to 7th) --- */
     .lb-list-alt {
         gap: 12px !important;
         padding: 0 5px !important;
@@ -662,7 +649,7 @@
         width: 55px !important;
         height: 55px !important;
         border: none !important;
-        background: #FFF !important;
+        background: var(--card-bg) !important; /* Swapped from #FFF */
     }
 
     .lb-card-name, .lb-card-left span {
@@ -680,7 +667,6 @@
         color: #FFF !important;
     }
 
-    /* --- 4. EMPTY STATE / ONBOARDING SCREEN --- */
     .sharing-title {
         font-size: 2.2rem !important;
         text-align: center !important;
@@ -700,7 +686,6 @@
     .side-avatar { width: 100px !important; height: 100px !important; }
     .avatar-group { margin-bottom: 30px !important; }
 
-    /* --- 5. "FIND FRIENDS" MODAL --- */
     .theme-container {
         padding: 25px 20px 120px 20px !important; 
         width: 100% !important;
@@ -757,7 +742,7 @@
 
     .user-info-row span {
         font-size: 0.85rem !important;
-        color: #666 !important;
+        color: var(--text-secondary) !important; /* Swapped from #666 */
         margin-top: 2px !important;
         white-space: nowrap !important;
     }
@@ -779,10 +764,7 @@
         border-radius: 10px !important;
         font-size: 1.1rem !important;
     }
-
-    /* --- 6. FRIEND DETAIL PAGE --- */
     
-    /* Ensure scrolling is unlocked and Nav Bar is cleared */
     .dashboard-wrapper.sharing-page-bg {
         display: block !important;
         height: 100dvh !important;
@@ -802,7 +784,6 @@
         overflow: visible !important;
     }
 
-    /* Detail Header */
     .detail-header-new {
         gap: 12px !important; 
         margin-bottom: 25px !important;
@@ -834,7 +815,6 @@
         margin-top: 4px !important;
     }
 
-    /* Glass Cards Base */
     .dashboard-grid-layout { gap: 15px !important; }
 
     .glass-card {
@@ -844,10 +824,9 @@
     
     .dash-card-header h3 { font-size: 1.1rem !important; }
 
-    /* --- Activity Ring Scaling (Side-by-Side) --- */
     .activity-body-side {
         display: flex !important;
-        flex-direction: row !important; /* 🌟 Forces ring on left, text on right */
+        flex-direction: row !important; 
         align-items: center !important;
         justify-content: flex-start !important;
         text-align: left !important;
@@ -877,10 +856,9 @@
     }
     
     .dash-stat-item { align-items: flex-start !important; }
-    .stat-lbl { font-size: 0.85rem !important; color: #666 !important; }
+    .stat-lbl { font-size: 0.85rem !important; color: var(--text-secondary) !important; } /* Swapped from #666 */
     .stat-val { font-size: 1.25rem !important; }
 
-    /* --- Health Score Scaling --- */
     .hs-body { gap: 20px !important; }
 
     .dash-ring-wrapper-medium {
@@ -895,7 +873,6 @@
     .hs-pill { padding: 8px 10px !important; }
     .pill-text strong { font-size: 0.85rem !important; }
 
-    /* --- Weekly Performance Scaling (Fit all 7 days) --- */
     .weekly-rings-container {
         padding: 5px 0 !important;
         gap: 2px !important; 
@@ -905,11 +882,10 @@
     .mini-ring-col { gap: 6px !important; }
 
     .mini-ring-wrapper {
-        width: 28px !important; /* Shrunk so all 7 fit */
+        width: 28px !important; 
         height: 28px !important;
     }
 
-    /* Thins the ring lines slightly for small screens */
     .dash-meter-ring-mini, 
     .dash-bg-ring-mini {
         stroke-width: 5 !important; 
