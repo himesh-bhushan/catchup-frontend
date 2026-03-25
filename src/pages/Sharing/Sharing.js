@@ -381,10 +381,6 @@ const Sharing = () => {
             /* --- 2. LEADERBOARD VIEW --- */
             <div className="leaderboard-wrapper">
               <div className="lb-header">
-                  <button className="lb-transparent-btn" onClick={() => setShowLeaderboard(false)}>
-                    <FiArrowLeft size={28} />
-                  </button>
-                  
                   <div className="lb-search-group">
                       <div className="lb-search-bar-alt" onClick={() => { setShowLeaderboard(false); setIsSearching(true); }}>
                         {t('find_add_friends')}
