@@ -243,11 +243,12 @@ const Sharing = () => {
               </header>
 
               {friendLoading ? (
+                /* 🌟 THEME FIX: Removed hardcoded colors, relying on CSS vars */
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                      <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '550px' }}>
                          <FiRefreshCw size={40} color="#DE4B4E" className="icon-spin" style={{ marginBottom: '20px' }} />
                          
-                         <h3 style={{ color: '#111', fontSize: '1.4rem', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>
+                         <h3 style={{ color: 'var(--text-primary)', fontSize: '1.4rem', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>
                              Catching up with your friends score...
                          </h3>
                          
@@ -402,12 +403,13 @@ const Sharing = () => {
 
               {/* 🌟 NEW: Show Loading Card OR the Leaderboard */}
               {isLeaderboardLoading ? (
+                 /* 🌟 THEME FIX: Removed hardcoded colors */
                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                      <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '700px' }}>                         
-                         <h3 style={{ color: '#111', fontSize: '1.5rem', fontWeight: '800', marginBottom: '15px', whiteSpace: 'nowrap' }}>
+                         <h3 style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: '800', marginBottom: '15px', whiteSpace: 'nowrap' }}>
                              Catching the leaderboard...
                          </h3>
-                         <p style={{ color: '#666', fontSize: '1rem', margin: '10px', whiteSpace: 'nowrap' }}>
+                         <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: '10px', whiteSpace: 'nowrap' }}>
                              Syncing your friends' latest scores
                          </p>
                          
