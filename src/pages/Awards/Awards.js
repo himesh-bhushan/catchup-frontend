@@ -33,7 +33,7 @@ const Awards = () => {
     if (!user) return;
 
     try {
-      // 1. Get user's profile data (Includes new columns for leaderboard & friends)
+      // 1. Get user's profile data
       const { data: profile } = await supabase
         .from('profiles')
         .select('calorie_goal, times_rank_one, friends_invited')
@@ -62,24 +62,27 @@ const Awards = () => {
 
       const newMonthlyData = monthNames.map(name => ({ name, earned: false }));
       const monthlyMetDays = new Array(12).fill(0);
-      const uniqueDays = new Set();
+      const successfulDates = []; // Array of actual date strings where goal was met
 
       if (logs) {
         // Process logs into months and count valid goal days
         logs.forEach(log => {
-          if (log.calories >= goal && !uniqueDays.has(log.date)) {
-            uniqueDays.add(log.date);
-            const month = parseInt(log.date.split('-')[1], 10) - 1; // Extract month safely
+          if (log.calories >= goal) {
+            successfulDates.push(log.date);
+            const logDate = new Date(log.date);
+            const month = logDate.getMonth(); // 0-11
             monthlyMetDays[month]++;
           }
         });
 
-        // Evaluate Months for the 12-month Grid
+        // 🌟 FIX: Evaluate Months for the 12-month Grid accurately
         for (let i = 0; i < 12; i++) {
-          const daysInMonth = new Date(currentYear, i + 1, 0).getDate();
+          const daysInThisMonth = new Date(currentYear, i + 1, 0).getDate();
+          
           if (i < currentMonthIndex) {
              // Past months: Must have hit goal every day of that month
-            newMonthlyData[i].earned = monthlyMetDays[i] >= daysInMonth;
+             // (We use >= just in case of multiple entries on one day)
+            newMonthlyData[i].earned = monthlyMetDays[i] >= daysInThisMonth;
           } else if (i === currentMonthIndex) {
             // Current month: Must have hit goal every day up to TODAY
             const isEarned = monthlyMetDays[i] >= currentDay;
@@ -95,23 +98,26 @@ const Awards = () => {
 
       setMonthlyData(newMonthlyData);
 
-      // 4. Calculate 5-Day Workout Streak for Milestones
-      const sortedMetDates = Array.from(uniqueDays).sort();
+      // 4. 🌟 FIX: Calculate 5-Day Workout Streak accurately using real chronological dates
+      const sortedMetDates = [...new Set(successfulDates)].sort(); // Remove duplicates, sort oldest to newest
       let maxStreak = 0;
       let currentStreak = 0;
       let previousDate = null;
 
       sortedMetDates.forEach(dateStr => {
          const currDate = new Date(dateStr);
+         currDate.setHours(0,0,0,0); // Normalize to midnight to avoid timezone shift errors
+
          if (!previousDate) {
              currentStreak = 1;
          } else {
              const diffTime = Math.abs(currDate - previousDate);
-             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+             const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)); // Use round instead of ceil
+             
              if (diffDays === 1) {
-                 currentStreak++;
+                 currentStreak++; // Consecutive day!
              } else {
-                 currentStreak = 1;
+                 currentStreak = 1; // Streak broken, reset to 1
              }
          }
          maxStreak = Math.max(maxStreak, currentStreak);
