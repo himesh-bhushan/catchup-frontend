@@ -64,9 +64,18 @@ const HealthScore = () => {
         .eq('date', date)
         .maybeSingle();
 
+      // --- ADDED: Fetch Historical Water Log by Date ---
+      const { data: waterLog } = await supabase
+        .from('water_logs')
+        .select('water_ml')
+        .eq('user_id', user.id)
+        .eq('date', date)
+        .maybeSingle();
+
       // Assign data based on the date selected
       const heart = isToday ? (profile?.heart_rate || 0) : 0; 
-      const water = isToday ? (profile?.water_intake || 0) : 0; 
+      // --- UPDATED: Fallback to waterLog if it's not today ---
+      const water = isToday ? (profile?.water_intake || 0) : (waterLog?.water_ml || 0); 
       const cals = activityLog?.calories || 0;
       const sleep = sleepLog?.seconds || 0;
 
@@ -144,23 +153,34 @@ const HealthScore = () => {
       const { data: actLogs } = await supabase.from('activity_logs').select('date, calories').eq('user_id', user.id).in('date', past7Days);
       const { data: slpLogs } = await supabase.from('sleep_logs').select('date, seconds').eq('user_id', user.id).in('date', past7Days);
       const { data: hrLogs } = await supabase.from('heart_rate_logs').select('date, bpm').eq('user_id', user.id).in('date', past7Days);
+      // --- ADDED: Fetch Weekly Water ---
+      const { data: wtrLogs } = await supabase.from('water_logs').select('date, water_ml').eq('user_id', user.id).in('date', past7Days);
 
       const weekStats = past7Days.map(dateStr => {
          const cals = actLogs?.find(l => l.date === dateStr)?.calories || 0;
          const sleep = slpLogs?.find(l => l.date === dateStr)?.seconds || 0;
          const hr = hrLogs?.find(l => l.date === dateStr)?.bpm || 0;
+         // --- ADDED: Match Water ---
+         const water = wtrLogs?.find(l => l.date === dateStr)?.water_ml || 0;
 
          // Quick score calc for the mini rings
          let hrScore = hr > 0 ? (hr >= 60 && hr <= 80 ? 100 : Math.max(0, 100 - Math.abs(hr - 70) * 2)) : 0; 
          let sleepScore = sleep > 0 ? Math.min(100, (sleep / 28800) * 100) : 0;
          let calScore = cals > 0 ? Math.min(100, (cals / 500) * 100) : 0;
+         // --- ADDED: Water Score ---
+         let waterScore = water > 0 ? Math.min(100, ((water/1000) / 2.5) * 100) : 0;
 
          const hrContrib = hrScore * 0.35;
          const sleepContrib = sleepScore * 0.25;
          const calContrib = calScore * 0.25;
-         const totalScore = Math.round(hrContrib + sleepContrib + calContrib); // Excluded water from history to keep it simple
+         // --- ADDED: Water Contrib ---
+         const waterContrib = waterScore * 0.15; 
+         
+         // --- UPDATED: Added waterContrib to total ---
+         const totalScore = Math.round(hrContrib + sleepContrib + calContrib + waterContrib); 
 
-         return { date: dateStr, score: totalScore, hrContrib, sleepContrib, calContrib };
+         // --- UPDATED: Return waterContrib ---
+         return { date: dateStr, score: totalScore, hrContrib, sleepContrib, calContrib, waterContrib };
       });
 
       setWeeklyData(weekStats);
@@ -181,12 +201,15 @@ const HealthScore = () => {
       const r = 20;
       const circ = 2 * Math.PI * r;
       const sw = 6;
-      const dayTotal = dayStat.hrContrib + dayStat.sleepContrib + dayStat.calContrib;
+      // --- UPDATED: Include waterContrib in the total ---
+      const dayTotal = dayStat.hrContrib + dayStat.sleepContrib + dayStat.calContrib + (dayStat.waterContrib || 0);
       const dSafeTotal = dayTotal > 0 ? dayTotal : 1;
 
       const dHrLen = (dayStat.hrContrib / dSafeTotal) * circ;
       const dSleepLen = (dayStat.sleepContrib / dSafeTotal) * circ;
       const dCalLen = (dayStat.calContrib / dSafeTotal) * circ;
+      // --- ADDED: Calculate Water Length ---
+      const dWaterLen = ((dayStat.waterContrib || 0) / dSafeTotal) * circ;
 
       return (
           <svg width="100%" height="100%" viewBox="0 0 50 50" style={{ overflow: 'visible' }}>
@@ -194,6 +217,8 @@ const HealthScore = () => {
               {dayStat.hrContrib > 0 && <circle cx="25" cy="25" r={r} fill="transparent" stroke="#EF473A" strokeWidth={sw} strokeDasharray={`${dHrLen} ${circ}`} strokeDashoffset={0} transform="rotate(-90 25 25)" />}
               {dayStat.sleepContrib > 0 && <circle cx="25" cy="25" r={r} fill="transparent" stroke="#F7931E" strokeWidth={sw} strokeDasharray={`${dSleepLen} ${circ}`} strokeDashoffset={-dHrLen} transform="rotate(-90 25 25)" />}
               {dayStat.calContrib > 0 && <circle cx="25" cy="25" r={r} fill="transparent" stroke="#FDE08B" strokeWidth={sw} strokeDasharray={`${dCalLen} ${circ}`} strokeDashoffset={-(dHrLen + dSleepLen)} transform="rotate(-90 25 25)" />}
+              {/* --- ADDED: Render Water Circle --- */}
+              {(dayStat.waterContrib > 0) && <circle cx="25" cy="25" r={r} fill="transparent" stroke="#4A90E2" strokeWidth={sw} strokeDasharray={`${dWaterLen} ${circ}`} strokeDashoffset={-(dHrLen + dSleepLen + dCalLen)} transform="rotate(-90 25 25)" />}
           </svg>
       );
   };
