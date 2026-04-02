@@ -20,7 +20,6 @@ const Water = () => {
   const [newWater, setNewWater] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // --- NEW: Reference for the date picker ---
   const dateInputRef = useRef(null);
 
   const fetchWaterData = useCallback(async () => {
@@ -104,11 +103,8 @@ const Water = () => {
 
   const handleCalendarClick = () => {
     if (dateInputRef.current) {
-        try {
-            dateInputRef.current.showPicker();
-        } catch (e) {
-            dateInputRef.current.focus();
-        }
+        try { dateInputRef.current.showPicker(); } 
+        catch (e) { dateInputRef.current.focus(); }
     }
   };
 
@@ -124,67 +120,78 @@ const Water = () => {
       );
     }
 
-    // 🌟 1. DEFINE THE TIMELINE SCALE BASED ON SELECTED RANGE
-    const endDate = new Date(selectedDate);
-    endDate.setHours(23, 59, 59, 999);
-    const endMs = endDate.getTime();
-    
-    let startMs = endMs;
-    let xLabels = [];
+    // 🌟 1. PERFECT MATHEMATICAL TIMELINE SCALES
+    let startMs = 0; let endMs = 0; let xLabels = [];
 
     if (range === 'Day') {
-      const startDate = new Date(selectedDate); startDate.setHours(0, 0, 0, 0);
-      startMs = startDate.getTime();
+      const d = new Date(selectedDate);
+      startMs = new Date(d.setHours(0,0,0,0)).getTime();
+      endMs = new Date(d.setHours(23,59,59,999)).getTime();
       xLabels = [
-        { label: '12 AM', ms: startDate.setHours(0, 0, 0, 0) },
-        { label: '6 AM', ms: startDate.setHours(6, 0, 0, 0) },
-        { label: '12 PM', ms: startDate.setHours(12, 0, 0, 0) },
-        { label: '6 PM', ms: startDate.setHours(18, 0, 0, 0) },
-        { label: '11 PM', ms: startDate.setHours(23, 59, 59, 999) }
+        { label: '12 AM', ms: startMs },
+        { label: '6 AM', ms: startMs + 6*3600*1000 },
+        { label: '12 PM', ms: startMs + 12*3600*1000 },
+        { label: '6 PM', ms: startMs + 18*3600*1000 },
+        { label: '11 PM', ms: endMs }
       ];
     } else if (range === 'Week') {
-      const startDate = new Date(selectedDate); startDate.setDate(startDate.getDate() - 6); startDate.setHours(0, 0, 0, 0);
-      startMs = startDate.getTime();
+      const e = new Date(selectedDate);
+      endMs = new Date(e.setHours(23,59,59,999)).getTime();
+      const s = new Date(selectedDate); s.setDate(s.getDate() - 6);
+      startMs = new Date(s.setHours(0,0,0,0)).getTime();
       for (let i = 0; i <= 6; i++) {
-        const d = new Date(startDate); d.setDate(d.getDate() + i);
+        const d = new Date(startMs + i * 24*3600*1000);
         xLabels.push({ label: d.toLocaleDateString('en-US', { weekday: 'short' }), ms: d.getTime() });
       }
     } else if (range === 'Month') {
-      const startDate = new Date(selectedDate); startDate.setDate(startDate.getDate() - 29); startDate.setHours(0, 0, 0, 0);
-      startMs = startDate.getTime();
-      // Plot week markers (every 7 days)
-      for (let i = 0; i <= 4; i++) {
-        const d = new Date(startDate); d.setDate(d.getDate() + i * 7);
-        if (d.getTime() > endMs) d.setTime(endMs);
+      const e = new Date(selectedDate);
+      endMs = new Date(e.setHours(23,59,59,999)).getTime();
+      const s = new Date(selectedDate); s.setDate(s.getDate() - 29);
+      startMs = new Date(s.setHours(0,0,0,0)).getTime();
+      const interval = (endMs - startMs) / 4;
+      for (let i = 0; i <= 4; i++) { // Exactly 5 evenly spaced labels
+        const d = new Date(startMs + i * interval);
         xLabels.push({ label: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), ms: d.getTime() });
       }
     } else if (range === 'Year') {
-      const startDate = new Date(selectedDate); startDate.setMonth(startDate.getMonth() - 11); startDate.setDate(1); startDate.setHours(0, 0, 0, 0);
-      startMs = startDate.getTime();
-      // Plot exactly 12 month markers
-      for (let i = 0; i <= 11; i++) {
-        const d = new Date(startDate); d.setMonth(d.getMonth() + i);
+      const e = new Date(selectedDate);
+      e.setDate(1); e.setMonth(e.getMonth() + 1); e.setDate(0); 
+      endMs = new Date(e.setHours(23,59,59,999)).getTime();
+      const s = new Date(selectedDate); s.setDate(1); s.setMonth(s.getMonth() - 11);
+      startMs = new Date(s.setHours(0,0,0,0)).getTime();
+      for (let i = 0; i < 12; i++) { // Exactly 12 labels sitting in the middle of each month
+        const d = new Date(s.getFullYear(), s.getMonth() + i, 15); 
         xLabels.push({ label: d.toLocaleDateString('en-US', { month: 'short' }), ms: d.getTime() });
       }
     }
 
-    // 🌟 2. MATH FUNCTIONS TO PLOT DOTS PRECISELY ON THE TIMELINE
+    // 🌟 2. DATA AGGREGATION (THE MAGIC TRICK FOR YEAR VIEW)
+    let chartData = [];
+    if (range === 'Year') {
+      const monthly = {};
+      logs.forEach(log => {
+        const d = new Date(log.date);
+        const key = `${d.getFullYear()}-${d.getMonth()}`;
+        if (!monthly[key]) {
+          monthly[key] = { sum: 0, count: 0, ms: new Date(d.getFullYear(), d.getMonth(), 15).getTime() }; 
+        }
+        monthly[key].sum += log.liters;
+        monthly[key].count += 1;
+      });
+      chartData = Object.values(monthly).sort((a,b) => a.ms - b.ms).map(m => ({ ms: m.ms, liters: m.sum / m.count }));
+    } else {
+      chartData = logs.map(log => {
+        const d = new Date(log.date);
+        d.setHours(12, 0, 0, 0); // Center dot on the day
+        return { ms: d.getTime(), liters: log.liters };
+      });
+    }
+
     const minVal = 0; const maxVal = 5; 
     const getY = (val) => height - ((val - minVal) / (maxVal - minVal)) * height;
+    const getX = (timestamp) => ((timestamp - startMs) / (endMs - startMs)) * (width - padding);
     
-    const getX = (timestamp) => {
-      if (startMs === endMs) return padding / 2; // Failsafe
-      return ((timestamp - startMs) / (endMs - startMs)) * (width - padding);
-    };
-
-    const getLogTime = (log) => {
-      const d = new Date(log.date);
-      // Places daily logs exactly at noon for visual centering on the timeline
-      d.setHours(12, 0, 0, 0);
-      return d.getTime();
-    };
-
-    const points = logs.map((log) => `${getX(getLogTime(log))},${getY(log.liters)}`).join(' ');
+    const points = chartData.map(d => `${getX(d.ms)},${getY(d.liters)}`).join(' ');
 
     return (
       <svg viewBox={`-10 -20 ${width + 60} ${height + 60}`} className="water-chart-svg">
@@ -197,7 +204,7 @@ const Water = () => {
            </g>
         ))}
 
-        {/* Dynamic X-Axis Timeline Labels */}
+        {/* X-Axis Timeline Labels */}
         {xLabels.map((lbl, i) => (
           <text key={i} x={getX(lbl.ms)} y={height + 35} fontSize="14" fill="var(--text-secondary)" textAnchor="middle" fontFamily="Poppins">
             {lbl.label}
@@ -205,20 +212,20 @@ const Water = () => {
         ))}
 
         {/* Connect the dots */}
-        {logs.length > 1 && (
+        {chartData.length > 1 && (
             <polyline points={points} fill="none" stroke="#4A90E2" strokeWidth="4" strokeLinecap="round" />
         )}
 
-        {/* Render Dots (Shrinks dots automatically if displaying a full Year) */}
-        {logs.map((log, i) => (
+        {/* Render Dots with Dynamic Sizing */}
+        {chartData.map((d, i) => (
           <g key={i}>
             <circle 
-              cx={getX(getLogTime(log))} 
-              cy={getY(log.liters)} 
-              r={range === 'Year' ? "3" : "7"} 
+              cx={getX(d.ms)} 
+              cy={getY(d.liters)} 
+              r={range === 'Month' ? "4" : "7"} /* Smaller, elegant dots for Month view */
               fill="#4A90E2" 
               stroke="var(--card-bg)" 
-              strokeWidth={range === 'Year' ? "1" : "3"} 
+              strokeWidth={range === 'Month' ? "2" : "3"} 
             />
           </g>
         ))}
@@ -240,7 +247,6 @@ const Water = () => {
                ))}
             </div>
 
-            {/* --- FIXED CALENDAR BUTTON --- */}
             <div style={{ position: 'relative' }}>
                 <button className="calendar-btn" onClick={handleCalendarClick}>
                   <FiCalendar />
@@ -251,15 +257,7 @@ const Water = () => {
                     value={selectedDate}
                     max={new Date().toISOString().split('T')[0]}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    style={{ 
-                      position: 'absolute', 
-                      top: '100%', 
-                      right: 0, 
-                      opacity: 0, 
-                      pointerEvents: 'none',
-                      width: '40px',
-                      height: '40px'
-                    }}
+                    style={{ position: 'absolute', top: '100%', right: 0, opacity: 0, pointerEvents: 'none', width: '40px', height: '40px' }}
                 />
             </div>
           </div>
