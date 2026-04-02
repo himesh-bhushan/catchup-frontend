@@ -41,11 +41,9 @@ const Awards = () => {
         .single();
         
       const goal = profile?.calorie_goal || 500;
-      
-      // If the column doesn't exist yet, we default to 5 so the UI works based on your completed challenges!
       const rankOneCount = profile?.times_rank_one !== undefined ? profile.times_rank_one : 5; 
 
-      // 2. 🌟 FIXED: Dynamically count actual accepted friends from the database!
+      // 2. Count actual accepted friends
       const { data: friendsData } = await supabase
           .from('friend_requests')
           .select('id')
@@ -57,13 +55,13 @@ const Awards = () => {
       // 3. Setup Date Variables
       const today = new Date();
       const currentYear = today.getFullYear();
-      const currentMonthIndex = today.getMonth(); // 0-11
+      const currentMonthIndex = today.getMonth(); 
       const currentDay = today.getDate();
       
       const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
       setCurrentMonthName(monthNames[currentMonthIndex]);
 
-      // 4. 🌟 FIXED: Fetch Activity Logs including STEPS to make the streak logic more accurate
+      // 4. Fetch Activity Logs including STEPS
       const { data: logs } = await supabase
         .from('activity_logs')
         .select('date, calories, steps')
@@ -72,30 +70,24 @@ const Awards = () => {
 
       const newMonthlyData = monthNames.map(name => ({ name, earned: false }));
       const monthlyMetDays = new Array(12).fill(0);
-      const successfulDates = []; // Array of actual date strings where goal was met
+      const successfulDates = []; 
 
       if (logs) {
-        // Process logs into months and count valid goal days
         logs.forEach(log => {
-          // 🌟 FIXED: Count day as successful if Calories OR Steps goal is met
           if (log.calories >= goal || log.steps >= 5000) {
             successfulDates.push(log.date);
             const logDate = new Date(log.date);
-            const month = logDate.getMonth(); // 0-11
+            const month = logDate.getMonth(); 
             monthlyMetDays[month]++;
           }
         });
 
-        // Evaluate Months for the 12-month Grid
         for (let i = 0; i < 12; i++) {
           const daysInThisMonth = new Date(currentYear, i + 1, 0).getDate();
           
           if (i < currentMonthIndex) {
-             // 🌟 FIXED: Allow an 80% completion rate for past months to earn the badge
-             // (Nobody is perfect 31/31 days every month!)
             newMonthlyData[i].earned = monthlyMetDays[i] >= (daysInThisMonth * 0.8);
           } else if (i === currentMonthIndex) {
-            // Current month: Must have hit goal for 80% of the days up to TODAY
             const requiredDays = Math.max(1, Math.floor(currentDay * 0.8));
             const isEarned = monthlyMetDays[i] >= requiredDays;
             
@@ -103,7 +95,6 @@ const Awards = () => {
             setIsCurrentMonthEarned(isEarned);
             setProgressPercentage(Math.min((monthlyMetDays[i] / currentDay) * 100, 100));
           } else {
-            // Future months
             newMonthlyData[i].earned = false;
           }
         }
@@ -111,7 +102,7 @@ const Awards = () => {
 
       setMonthlyData(newMonthlyData);
 
-      // 5. 🌟 FIXED: Calculate 5-Day Workout Streak flawlessly handling dates
+      // 5. Calculate 5-Day Workout Streak 
       const sortedMetDates = [...new Set(successfulDates)].sort(); 
       let maxStreak = 0;
       let currentStreak = 0;
@@ -119,7 +110,7 @@ const Awards = () => {
 
       sortedMetDates.forEach(dateStr => {
          const currDate = new Date(dateStr);
-         currDate.setHours(0,0,0,0); // Normalize to midnight to prevent timezone bugs
+         currDate.setHours(0,0,0,0); 
 
          if (!previousDate) {
              currentStreak = 1;
@@ -128,9 +119,9 @@ const Awards = () => {
              const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)); 
              
              if (diffDays === 1) {
-                 currentStreak++; // Consecutive day hit!
+                 currentStreak++; 
              } else {
-                 currentStreak = 1; // Streak broken, reset
+                 currentStreak = 1; 
              }
          }
          maxStreak = Math.max(maxStreak, currentStreak);
@@ -155,38 +146,65 @@ const Awards = () => {
     fetchAwardsData();
   }, [fetchAwardsData]);
 
-  // --- NATIVE SOCIAL SHARING ---
+  // --- 🌟 FIXED: ADVANCED NATIVE SOCIAL SHARING WITH IMAGES ---
+  
+  const triggerShare = async (shareData, imageSrc) => {
+    try {
+      if (navigator.share) {
+        // Try to attach the image file if the browser supports it
+        if (imageSrc) {
+          try {
+            const response = await fetch(imageSrc);
+            const blob = await response.blob();
+            const file = new File([blob], 'award.png', { type: blob.type });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                title: shareData.title,
+                text: shareData.text,
+                url: shareData.url,
+                files: [file] // 🌟 This attaches the actual image to WhatsApp/Instagram/etc!
+              });
+              return; // Exit if successful
+            }
+          } catch (imgErr) {
+            console.warn("Could not attach image to share, falling back to text only.", imgErr);
+          }
+        }
+        
+        // Fallback: Share text and URL only if image fails or isn't supported
+        await navigator.share(shareData);
+      } else {
+        // Ultimate Fallback: Desktop browsers without native share
+        navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        alert("Award text copied to clipboard! Paste it on social media to share.");
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        console.error('Error sharing:', err);
+      }
+    }
+  };
+
   const handleMainShare = async () => {
     const shareData = {
       title: 'Monthly Mover Award!',
       text: `I just unlocked the '${currentMonthName} Mover' badge on CatchUp for completing my activity ring! 🍅💪 Catch up with me!`,
       url: 'https://catchup.page',
     };
-    triggerShare(shareData);
+    // 🌟 Pass the actual image asset to the share function
+    triggerShare(shareData, awardsBadge);
   };
 
-  const handleMilestoneShare = async (awardTitle) => {
+  const handleMilestoneShare = async (award) => {
     const shareData = {
       title: 'New Milestone Unlocked!',
-      text: `I just unlocked the '${awardTitle}' badge on CatchUp! 🏆 Come join me and let's get healthy together!`,
+      text: `I just unlocked the '${award.title}' badge on CatchUp! 🏆 Come join me and let's get healthy together!`,
       url: 'https://catchup.page',
     };
-    triggerShare(shareData);
+    // 🌟 Pass the specific award image asset
+    triggerShare(shareData, award.image);
   };
-
-  const triggerShare = async (shareData) => {
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        // Fallback for browsers that don't support native sharing
-        navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        alert("Award text copied to clipboard! Paste it on social media to share.");
-      }
-    } catch (err) {
-      console.error('Error sharing:', err);
-    }
-  }
 
   return (
     <div className="dashboard-wrapper awards-page-bg">
@@ -273,7 +291,7 @@ const Awards = () => {
                   <div 
                     key={award.id} 
                     className="milestone-item"
-                    onClick={() => award.earned && handleMilestoneShare(award.title)}
+                    onClick={() => award.earned && handleMilestoneShare(award)}
                     style={award.earned ? { cursor: 'pointer', transition: 'transform 0.2s' } : { opacity: 0.7 }}
                     title={award.earned ? "Click to share this award!" : "Keep going to unlock this!"}
                     onMouseOver={(e) => { if(award.earned) e.currentTarget.style.transform = 'scale(1.05)'; }}
