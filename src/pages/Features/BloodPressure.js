@@ -69,30 +69,42 @@ const BloodPressure = () => {
         date: date 
       });
 
+      // 🌟 FIX 1: DYNAMIC LIMITS BASED ON SELECTED RANGE
+      let limit = 7;
+      if (range === 'Month') limit = 30;
+      if (range === 'Year') limit = 365;
+      if (range === 'Day') limit = 1;
+
       // 2. FETCH HISTORY FROM LOGS (For the Graph & Previous Days)
       const { data: history, error: historyError } = await supabase
         .from('blood_pressure_logs')
         .select('systolic, diastolic, date')
         .eq('user_id', user.id)
-        .order('date', { ascending: true });
+        .lte('date', date)
+        .order('date', { ascending: false }) // Fetch descending to get newest first up to the limit
+        .limit(limit);
 
       if (!historyError && history && history.length > 0) {
-        setLogs(history);
+        const formattedHistory = history.reverse(); // Reverse back for chronological graphing
+        setLogs(formattedHistory);
 
         // Calculate Average across all historical entries
-        const totalSys = history.reduce((sum, log) => sum + log.systolic, 0);
-        const totalDia = history.reduce((sum, log) => sum + log.diastolic, 0);
+        const totalSys = formattedHistory.reduce((sum, log) => sum + log.systolic, 0);
+        const totalDia = formattedHistory.reduce((sum, log) => sum + log.diastolic, 0);
         setAverage({
-          systolic: Math.round(totalSys / history.length),
-          diastolic: Math.round(totalDia / history.length)
+          systolic: Math.round(totalSys / formattedHistory.length),
+          diastolic: Math.round(totalDia / formattedHistory.length)
         });
+      } else {
+        setLogs([]);
+        setAverage({ systolic: 0, diastolic: 0 });
       }
     } catch (err) {
       console.error("Error fetching BP data:", err);
     } finally {
       setLoading(false);
     }
-  }, [date]); // 🌟 ADDED: 'date' as a dependency
+  }, [date, range]); // 🌟 FIX: Added 'range' as a dependency so chart updates on pill click
 
   useEffect(() => {
     fetchBPData();
@@ -116,14 +128,12 @@ const BloodPressure = () => {
 
     // Only update the profile if the reading is for Today
     const isToday = date === new Date().toISOString().split('T')[0];
-    let profError = null;
     
     if (isToday) {
-      const { error } = await supabase
+      await supabase
           .from('profiles')
           .update({ blood_pressure: formattedBP })
           .eq('id', user.id);
-      profError = error;
     }
 
     if (!logError) {
@@ -178,12 +188,31 @@ const BloodPressure = () => {
           </g>
         ))}
 
-        {/* X-Axis Dates - CHANGED TO VARS */}
-        {logs.map((log, i) => (
-          <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="var(--text-secondary)" textAnchor="middle" fontFamily="Poppins">
-            {new Date(log.date).toLocaleDateString('en-US', { weekday: 'short' })}
-          </text>
-        ))}
+        {/* 🌟 FIX 2: DYNAMICALLY SPACED X-AXIS LABELS */}
+        {logs.map((log, i) => {
+          let label = '';
+          const d = new Date(log.date);
+          
+          if (range === 'Day' || range === 'Week') {
+              label = d.toLocaleDateString('en-US', { weekday: 'short' });
+          } else if (range === 'Month') {
+              // Only show ~6 labels spread across the month
+              if (i % Math.ceil(logs.length / 5) === 0 || i === logs.length - 1) {
+                  label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+              }
+          } else if (range === 'Year') {
+              // Only show ~8 labels spread across the year
+              if (i % Math.ceil(logs.length / 8) === 0 || i === logs.length - 1) {
+                  label = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+              }
+          }
+
+          return label ? (
+            <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="var(--text-secondary)" textAnchor="middle" fontFamily="Poppins">
+              {label}
+            </text>
+          ) : null;
+        })}
       </svg>
     );
   };
