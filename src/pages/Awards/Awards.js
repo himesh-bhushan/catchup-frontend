@@ -146,17 +146,53 @@ const Awards = () => {
     fetchAwardsData();
   }, [fetchAwardsData]);
 
-  // --- 🌟 FIXED: SIMPLE TEXT SHARING LOGIC ---
-  const triggerShare = async (shareData) => {
+  // --- NATIVE SOCIAL SHARING ---
+  const triggerShare = async (shareData, imageSrc) => {
     try {
+      let fileShared = false;
+
+      if (navigator.share && imageSrc) {
+        try {
+          const response = await fetch(imageSrc);
+          const blob = await response.blob();
+          const file = new File([blob], 'award.png', { type: blob.type || 'image/png' });
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: shareData.title,
+              text: shareData.text,
+              url: shareData.url,
+              files: [file] 
+            });
+            fileShared = true;
+            return; 
+          }
+        } catch (imgErr) {
+          console.warn("Could not attach image to native share.", imgErr);
+        }
+      }
+
+      if (!fileShared && imageSrc) {
+          const link = document.createElement('a');
+          link.href = imageSrc;
+          link.download = 'CatchUp_Award.png';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+          
+          alert("🎉 Award badge downloaded & caption copied to clipboard!\n\nYou can now attach the image and paste the text to share on social media.");
+          return;
+      }
+
       if (navigator.share) {
-          // Instantly pop open the native share sheet with just the text and URL
           await navigator.share(shareData);
       } else {
-          // Fallback for older desktop browsers
           navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
           alert("Award text copied to clipboard!");
       }
+
     } catch (err) {
       if (err.name !== 'AbortError') {
         console.error('Error sharing:', err);
@@ -170,7 +206,7 @@ const Awards = () => {
       text: `I just unlocked the '${currentMonthName} Mover' badge on CatchUp for completing my activity ring! 🍅💪 Catch up with me!`,
       url: 'https://catchup.page',
     };
-    triggerShare(shareData);
+    triggerShare(shareData, awardsBadge);
   };
 
   const handleMilestoneShare = async (award) => {
@@ -179,7 +215,7 @@ const Awards = () => {
       text: `I just unlocked the '${award.title}' badge on CatchUp! 🏆 Come join me and let's get healthy together!`,
       url: 'https://catchup.page',
     };
-    triggerShare(shareData);
+    triggerShare(shareData, award.image);
   };
 
   return (
@@ -210,6 +246,7 @@ const Awards = () => {
                     <h3 className="ac-card-title">Monthly Achievements</h3>
                     
                     <div className="ac-main-badge-wrapper">
+                      {/* 🌟 FIXED: Apply grayscale filter to main image if not earned yet! */}
                       <img 
                         src={awardsBadge} 
                         alt="Monthly Mover" 
