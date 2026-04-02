@@ -85,15 +85,17 @@ const Awards = () => {
         for (let i = 0; i < 12; i++) {
           const daysInThisMonth = new Date(currentYear, i + 1, 0).getDate();
           
+          // 🌟 FIXED: Target is 80% of the ENTIRE month, not just the days passed so far!
+          const requiredDaysToEarn = Math.max(1, Math.floor(daysInThisMonth * 0.8));
+          
           if (i < currentMonthIndex) {
-            newMonthlyData[i].earned = monthlyMetDays[i] >= (daysInThisMonth * 0.8);
+            newMonthlyData[i].earned = monthlyMetDays[i] >= requiredDaysToEarn;
           } else if (i === currentMonthIndex) {
-            const requiredDays = Math.max(1, Math.floor(currentDay * 0.8));
-            const isEarned = monthlyMetDays[i] >= requiredDays;
+            const isEarned = monthlyMetDays[i] >= requiredDaysToEarn;
             
             newMonthlyData[i].earned = isEarned;
             setIsCurrentMonthEarned(isEarned);
-            setProgressPercentage(Math.min((monthlyMetDays[i] / currentDay) * 100, 100));
+            setProgressPercentage(Math.min((monthlyMetDays[i] / requiredDaysToEarn) * 100, 100));
           } else {
             newMonthlyData[i].earned = false;
           }
