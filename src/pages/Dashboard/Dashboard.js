@@ -36,7 +36,7 @@ const Dashboard = () => {
   const [lastSynced, setLastSynced] = useState(null); 
   const [lastSyncedAgo, setLastSyncedAgo] = useState(null);
   const [skipConnect, setSkipConnect] = useState(localStorage.getItem('skipTracker') === 'true');
-  const [selectedArticle, setSelectedArticle] = useState(null); // 🌟 Modal State
+  const [selectedArticle, setSelectedArticle] = useState(null); 
   
   const [activityData, setActivityData] = useState({
     calories: 0, steps: 0, distance: 0, goal: 500, percentage: 0
@@ -56,7 +56,7 @@ const Dashboard = () => {
   const [showConnectMenu, setShowConnectMenu] = useState(false);
   const [clinics, setClinics] = useState([]);
   const [locationLoading, setLocationLoading] = useState(false);
-  const [emailSending, setEmailSending] = useState(false); // 🌟 NEW STATE
+  const [emailSending, setEmailSending] = useState(false); 
 
   // --- HELPER: TIME AGO ---
   const calculateTimeAgo = (dateString) => {
@@ -97,7 +97,6 @@ const Dashboard = () => {
     window.location.href = authUrl;
   };
 
-  // --- SEND APPLE HEALTH SETUP EMAIL ---
   const handleSendSetupEmail = async () => {
     if (!user || !user.email) {
       alert("User session not found. Please log in again.");
@@ -106,14 +105,12 @@ const Dashboard = () => {
     
     setEmailSending(true);
     try {
-        // 1. Call your Express backend to send the email
         await axios.post('https://backend.catchup.page/api/send-tracker-email', {
             email: user.email,
             userId: user.id,
             firstName: firstName
         });
 
-        // 2. Update Supabase so they never see this screen again on any device
         const { error } = await supabase
             .from('profiles')
             .update({ google_connected: true }) 
@@ -121,7 +118,6 @@ const Dashboard = () => {
 
         if (error) throw error;
 
-        // 3. Update the local UI to immediately show the dashboard
         setIsDeviceConnected(true);
         alert("Setup guide sent! Please check your email to install the shortcut.");
 
@@ -201,7 +197,6 @@ const Dashboard = () => {
     }
   };
 
-  // 🌟 RECOMMENDATIONS WITH FULL ARTICLE CONTENT
   const recommendations = [
     { 
         id: 1, 
@@ -249,10 +244,15 @@ const Dashboard = () => {
             
             const { data: todayLog } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
             const { data: sleepLog } = await supabase.from('sleep_logs').select('seconds').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
+            
+            // 🌟 FIXED: Fetch Water Intake from the actual logs for today!
+            const { data: waterLog } = await supabase.from('water_logs').select('water_ml').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
 
             const goal = profile?.calorie_goal || 500;
             const cals = todayLog?.calories || 0;
             const actualSleepSeconds = sleepLog?.seconds || 0; 
+            // 🌟 FIXED: Use actual log data over profile fallback
+            const actualWaterMl = waterLog?.water_ml || profile?.water_intake || 0;
 
             if (profile) {
                 if (profile.first_name) setFirstName(profile.first_name);
@@ -276,7 +276,7 @@ const Dashboard = () => {
                 setOtherStats({
                     heart_rate: profile.heart_rate || 0,
                     sleep: actualSleepSeconds, 
-                    water_intake: profile.water_intake || 0,
+                    water_intake: actualWaterMl, // 🌟 FIXED
                     blood_pressure: profile.blood_pressure || "--/--"
                 });
             }
@@ -284,7 +284,7 @@ const Dashboard = () => {
             const stepGoalMet = (todayLog?.steps || 0) >= 5000;
             const moveGoalMet = cals >= goal; 
             const sleepGoalMet = actualSleepSeconds >= (7 * 3600);
-            const waterGoalMet = profile?.water_intake >= 2000; 
+            const waterGoalMet = actualWaterMl >= 2000; // 🌟 FIXED
 
             let completedGoals = 0;
             if (stepGoalMet) completedGoals++;
@@ -551,7 +551,6 @@ const Dashboard = () => {
                                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary, #333)' }}>{t('Syncing')}</h3>
                             </div>
                             <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary, #666)' }}>
-                                {/* 🌟 FIXED: Replaced hardcoded "Synced" with "last_updated" translation */}
                                 {t('last_updated')} {lastSyncedAgo ? lastSyncedAgo : 'just now'}
                             </p>
                         </div>
