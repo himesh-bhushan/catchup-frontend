@@ -161,13 +161,34 @@ const Dashboard = () => {
     } catch (err) { console.error(err); } finally { setLocationLoading(false); }
   };
 
+  // 🌟 FIXED: Auto-load location on mount if it was saved previously
+  useEffect(() => {
+    const savedLat = localStorage.getItem('userLat');
+    const savedLng = localStorage.getItem('userLng');
+    
+    if (savedLat && savedLng) {
+       fetchNearbyClinics(parseFloat(savedLat), parseFloat(savedLng));
+    }
+  }, []);
+
   const handleGetLocation = () => {
     if (navigator.geolocation) {
       setLocationLoading(true);
       navigator.geolocation.getCurrentPosition(
-        (position) => fetchNearbyClinics(position.coords.latitude, position.coords.longitude),
+        (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            
+            // 🌟 FIXED: Save coordinates to local storage so they persist on refresh
+            localStorage.setItem('userLat', lat);
+            localStorage.setItem('userLng', lng);
+            
+            fetchNearbyClinics(lat, lng);
+        },
         () => setLocationLoading(false)
       );
+    } else {
+        alert("Geolocation is not supported by this browser.");
     }
   };
 
@@ -245,13 +266,11 @@ const Dashboard = () => {
             const { data: todayLog } = await supabase.from('activity_logs').select('*').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
             const { data: sleepLog } = await supabase.from('sleep_logs').select('seconds').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
             
-            // 🌟 FIXED: Fetch Water Intake from the actual logs for today!
             const { data: waterLog } = await supabase.from('water_logs').select('water_ml').eq('user_id', session.user.id).eq('date', todayStr).maybeSingle();
 
             const goal = profile?.calorie_goal || 500;
             const cals = todayLog?.calories || 0;
             const actualSleepSeconds = sleepLog?.seconds || 0; 
-            // 🌟 FIXED: Use actual log data over profile fallback
             const actualWaterMl = waterLog?.water_ml || profile?.water_intake || 0;
 
             if (profile) {
@@ -276,7 +295,7 @@ const Dashboard = () => {
                 setOtherStats({
                     heart_rate: profile.heart_rate || 0,
                     sleep: actualSleepSeconds, 
-                    water_intake: actualWaterMl, // 🌟 FIXED
+                    water_intake: actualWaterMl, 
                     blood_pressure: profile.blood_pressure || "--/--"
                 });
             }
@@ -284,7 +303,7 @@ const Dashboard = () => {
             const stepGoalMet = (todayLog?.steps || 0) >= 5000;
             const moveGoalMet = cals >= goal; 
             const sleepGoalMet = actualSleepSeconds >= (7 * 3600);
-            const waterGoalMet = actualWaterMl >= 2000; // 🌟 FIXED
+            const waterGoalMet = actualWaterMl >= 2000; 
 
             let completedGoals = 0;
             if (stepGoalMet) completedGoals++;
@@ -731,9 +750,25 @@ const Dashboard = () => {
                 <div className="recommendations-section">
                     <div className="section-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                         <h3 style={{ margin: 0 }}>{t('nearby_care') || "Find Nearby Care"}</h3>
-                        <button onClick={handleGetLocation} className="loc-btn">
-                             <FiNavigation /> {locationLoading ? t('locating') : t('use_my_location') || "Use My Location"}
-                        </button>
+                        
+                        {/* 🌟 FIXED: Added a Clear Location button when clinics are already loaded */}
+                        {clinics.length > 0 ? (
+                            <button 
+                                onClick={() => {
+                                    localStorage.removeItem('userLat');
+                                    localStorage.removeItem('userLng');
+                                    setClinics([]); 
+                                }} 
+                                className="loc-btn"
+                                style={{ background: 'transparent', color: '#DE4B4E', border: '1px solid #DE4B4E' }}
+                            >
+                                Clear Location
+                            </button>
+                        ) : (
+                            <button onClick={handleGetLocation} className="loc-btn">
+                                 <FiNavigation /> {locationLoading ? t('locating') : t('use_my_location') || "Use My Location"}
+                            </button>
+                        )}
                     </div>
 
                     {clinics.length === 0 && !locationLoading && (
