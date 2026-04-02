@@ -146,59 +146,17 @@ const Awards = () => {
     fetchAwardsData();
   }, [fetchAwardsData]);
 
-  // --- 🌟 FIXED: BULLETPROOF SHARING LOGIC ---
-  const triggerShare = async (shareData, imageSrc) => {
+  // --- 🌟 FIXED: SIMPLE TEXT SHARING LOGIC ---
+  const triggerShare = async (shareData) => {
     try {
-      let fileShared = false;
-
-      // 1. Try native file sharing (Works mostly on mobile iOS/Android)
-      if (navigator.share && imageSrc) {
-        try {
-          const response = await fetch(imageSrc);
-          const blob = await response.blob();
-          const file = new File([blob], 'award.png', { type: blob.type || 'image/png' });
-
-          // Check if the browser actually allows file sharing
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              title: shareData.title,
-              text: shareData.text,
-              url: shareData.url,
-              files: [file]
-            });
-            fileShared = true;
-            return; // Success!
-          }
-        } catch (imgErr) {
-          console.warn("Could not attach image to native share.", imgErr);
-        }
-      }
-
-      // 2. 🌟 FALLBACK: If device blocks native image sharing (e.g., Desktop Chrome/Safari)
-      if (!fileShared && imageSrc) {
-          // Force download the image
-          const link = document.createElement('a');
-          link.href = imageSrc;
-          link.download = 'CatchUp_Award.png';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-
-          // Copy caption to clipboard
-          navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-          
-          alert("🎉 Award badge downloaded & caption copied to clipboard!\n\nYou can now attach the image and paste the text to share on social media.");
-          return;
-      }
-
-      // 3. Ultimate Fallback (Text only, no image available)
       if (navigator.share) {
+          // Instantly pop open the native share sheet with just the text and URL
           await navigator.share(shareData);
       } else {
+          // Fallback for older desktop browsers
           navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
           alert("Award text copied to clipboard!");
       }
-
     } catch (err) {
       if (err.name !== 'AbortError') {
         console.error('Error sharing:', err);
@@ -212,7 +170,7 @@ const Awards = () => {
       text: `I just unlocked the '${currentMonthName} Mover' badge on CatchUp for completing my activity ring! 🍅💪 Catch up with me!`,
       url: 'https://catchup.page',
     };
-    triggerShare(shareData, awardsBadge);
+    triggerShare(shareData);
   };
 
   const handleMilestoneShare = async (award) => {
@@ -221,7 +179,7 @@ const Awards = () => {
       text: `I just unlocked the '${award.title}' badge on CatchUp! 🏆 Come join me and let's get healthy together!`,
       url: 'https://catchup.page',
     };
-    triggerShare(shareData, award.image);
+    triggerShare(shareData);
   };
 
   return (
@@ -255,7 +213,7 @@ const Awards = () => {
                       <img 
                         src={awardsBadge} 
                         alt="Monthly Mover" 
-                        className={`ac-main-badge ${isCurrentMonthEarned ? '' : 'grayscale'}`} 
+                        className={`ac-main-badge ${isCurrentMonthEarned ? '' : 'badge-unearned'}`} 
                         style={!isCurrentMonthEarned ? { filter: 'grayscale(100%) opacity(0.5)' } : {}}
                       />
                     </div>
