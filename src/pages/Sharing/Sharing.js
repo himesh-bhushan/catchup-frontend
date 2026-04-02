@@ -133,24 +133,27 @@ const Sharing = () => {
     return days;
   };
 
+  // 🌟 FIXED: Logic to dynamically calculate the friend's award status matching Awards.js
   const handleViewFriend = async (friend) => {
     setViewingFriend(friend);
     setFriendLoading(true);
     try {
       const todayStr = new Date().toISOString().split('T')[0];
-      const lastWeek = new Date();
-      lastWeek.setDate(lastWeek.getDate() - 6);
-      const lastWeekStr = lastWeek.toISOString().split('T')[0];
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonthIndex = today.getMonth();
+      const currentDay = today.getDate();
 
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', friend.id).single();
       const { data: activity } = await supabase.from('activity_logs').select('*').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
       const { data: waterLog } = await supabase.from('water_logs').select('water_ml').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
-      const { data: earnedAwards } = await supabase.from('user_awards').select('*').eq('user_id', friend.id);
-      const { data: weeklyLogs } = await supabase
+      
+      // Fetch entire year to calculate weekly progress AND the monthly award
+      const { data: allLogs } = await supabase
         .from('activity_logs')
-        .select('date, calories')
+        .select('date, calories, steps')
         .eq('user_id', friend.id)
-        .gte('date', lastWeekStr)
+        .gte('date', `${currentYear}-01-01`)
         .order('date', { ascending: true });
 
       const profileWithWater = {
@@ -162,13 +165,31 @@ const Sharing = () => {
       const goal = profileWithWater?.calorie_goal > 0 ? profileWithWater.calorie_goal : 500;
       const movePct = ((activity?.calories || 0) / goal) * 100;
 
+      // 1. Calculate Weekly Progress
       const last7Days = getLast7Days();
       const processedWeekly = last7Days.map(day => {
-        const log = (weeklyLogs || []).find(l => l.date === day.dateStr);
+        const log = (allLogs || []).find(l => l.date === day.dateStr);
         const cal = log?.calories || 0;
         const pct = Math.min((cal / goal) * 100, 100);
         return { dayName: day.dayName, percent: pct };
       });
+
+      // 2. Calculate Monthly Mover Award
+      let monthlyMetDays = 0;
+      const uniqueDates = new Set();
+      (allLogs || []).forEach(log => {
+        if (log.calories >= goal || log.steps >= 5000) {
+          if (!uniqueDates.has(log.date)) {
+              uniqueDates.add(log.date);
+              const logDate = new Date(log.date);
+              if (logDate.getMonth() === currentMonthIndex) {
+                  monthlyMetDays++;
+              }
+          }
+        }
+      });
+      const requiredDays = Math.max(1, Math.floor(currentDay * 0.8));
+      const isEarned = monthlyMetDays >= requiredDays;
 
       setFriendWeeklyData(processedWeekly);
       setFriendStats({
@@ -176,7 +197,7 @@ const Sharing = () => {
         activity,
         healthScore: score,
         movePercent: Math.min(movePct, 100),
-        awards: earnedAwards || []
+        isAwardEarned: isEarned // 🌟 FIXED: Passed explicitly to state
       });
     } catch (err) {
       console.error(err);
@@ -198,19 +219,15 @@ const Sharing = () => {
     fetchFriends();
   };
 
-  // 🌟 FIXED: Added Error catching and UI fallback
   const handleRemoveFriend = async (friendId) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!window.confirm("Remove this friend and stop data sharing?")) return;
     
-    // Store backup in case the database rejects the delete
     const backupFriends = [...myFriends];
 
     try {
-        // 1. Optimistically remove from UI instantly
         setMyFriends(prev => prev.filter(f => f.id !== friendId));
 
-        // 2. Explicitly delete both possible directions
         const { error: err1 } = await supabase
             .from('friend_requests')
             .delete()
@@ -224,16 +241,13 @@ const Sharing = () => {
         if (err1 || err2) {
             console.error("Database deletion error:", err1 || err2);
             alert("Unable to remove friend. Please check your Supabase permissions.");
-            setMyFriends(backupFriends); // Put the friend back on screen
+            setMyFriends(backupFriends); 
             return;
         }
-
-        // 3. Re-fetch to ensure perfect sync
         fetchFriends();
-
     } catch (err) {
         console.error("Failed to execute remove friend:", err);
-        setMyFriends(backupFriends); // Put the friend back on screen
+        setMyFriends(backupFriends); 
     }
   };
 
@@ -253,7 +267,7 @@ const Sharing = () => {
     return () => clearTimeout(delaySearch);
   }, [searchTerm]);
 
-  const isAwardEarned = friendStats?.awards && friendStats.awards.length > 0;
+  const isAwardEarned = friendStats?.isAwardEarned || false;
 
   const getRankText = (index) => {
     const rank = index + 1;
@@ -324,17 +338,18 @@ const Sharing = () => {
                           </div>
                         </div>
                         <div className="dash-stats-list">
-                          <div className="dash-stat-item">
-                            <span className="stat-lbl">{t('move')}</span>
-                            <span className="stat-val">{friendStats?.activity?.calories || 0}/500 <small>KCAL</small></span>
+                          {/* 🌟 FIXED: Adjusted sizing hierarchy for the stats text */}
+                          <div className="dash-stat-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '15px' }}>
+                            <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)' }}>{t('move') || 'Move'}</span>
+                            <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)' }}>{friendStats?.activity?.calories || 0}/{friendStats?.profile?.calorie_goal || 500} KCAL</span>
                           </div>
-                          <div className="dash-stat-item">
-                            <span className="stat-lbl">{t('step_count')}</span>
-                            <span className="stat-val">{friendStats?.activity?.steps || 0}</span>
+                          <div className="dash-stat-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '15px' }}>
+                            <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)' }}>{t('step_count') || 'Step Count'}</span>
+                            <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)' }}>{friendStats?.activity?.steps || 0}</span>
                           </div>
-                          <div className="dash-stat-item">
-                            <span className="stat-lbl">{t('distance')}</span>
-                            <span className="stat-val">{((friendStats?.activity?.steps || 0) * 0.0008).toFixed(2)} <small>KM</small></span>
+                          <div className="dash-stat-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '15px' }}>
+                            <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)' }}>{t('distance') || 'Distance'}</span>
+                            <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)' }}>{((friendStats?.activity?.steps || 0) * 0.0008).toFixed(2)} KM</span>
                           </div>
                         </div>
                       </div>
