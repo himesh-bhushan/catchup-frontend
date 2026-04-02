@@ -14,7 +14,7 @@ import tomatoGym from '../../assets/tomato-health.png';
 const DEFAULT_GOALS = {
   steps_current: 0, steps_target: 5000,
   sleep_current: 0, sleep_target: 7,
-  move_current: 0, move_target: 500, // Replaced exercise with move (calories)
+  move_current: 0, move_target: 500, 
   water_current: 0, water_target: 2
 };
 
@@ -25,7 +25,7 @@ const Goals = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [goals, setGoals] = useState(DEFAULT_GOALS);
 
-  // --- 1. Fetch Real Data (Synced with Dashboard) ---
+  // --- 1. Fetch Real Data (100% Synced with Dashboard) ---
   useEffect(() => {
     let mounted = true;
     const fetchGoals = async () => {
@@ -36,38 +36,37 @@ const Goals = () => {
       try {
         const isToday = date === new Date().toISOString().split('T')[0];
 
-        // Fetch Profile Data (for targets and today's quick stats)
+        // Fetch everything unconditionally for the selected date
         const { data: profile } = await supabase.from('profiles').select('calorie_goal, sleep_seconds, water_intake').eq('id', user.id).single();
-        
-        // Fetch Activity Logs (Steps & Move Ring)
         const { data: activity } = await supabase.from('activity_logs').select('steps, calories').eq('user_id', user.id).eq('date', date).maybeSingle();
-        
-        // Fetch Sleep Logs
+        const { data: sleepLog } = await supabase.from('sleep_logs').select('hours, seconds').eq('user_id', user.id).eq('date', date).maybeSingle();
+        const { data: waterLog } = await supabase.from('water_logs').select('water_ml').eq('user_id', user.id).eq('date', date).maybeSingle();
+
+        // 🌟 SYNC FIX: Prioritize actual logs first, fallback to profile ONLY if it's today
         let sleepHrs = 0;
-        if (isToday && profile?.sleep_seconds) sleepHrs = profile.sleep_seconds / 3600;
-        else {
-            const { data: sleepLog } = await supabase.from('sleep_logs').select('hours, seconds').eq('user_id', user.id).eq('date', date).maybeSingle();
-            if (sleepLog) sleepHrs = sleepLog.hours ? sleepLog.hours : (sleepLog.seconds / 3600);
+        if (sleepLog) {
+            sleepHrs = sleepLog.hours || (sleepLog.seconds / 3600);
+        } else if (isToday && profile?.sleep_seconds) {
+            sleepHrs = profile.sleep_seconds / 3600;
         }
 
-        // Fetch Water Logs
         let waterL = 0;
-        if (isToday && profile?.water_intake) waterL = profile.water_intake / 1000;
-        else {
-            const { data: waterLog } = await supabase.from('water_logs').select('water_ml').eq('user_id', user.id).eq('date', date).maybeSingle();
-            if (waterLog) waterL = waterLog.water_ml / 1000;
+        if (waterLog) {
+            waterL = waterLog.water_ml / 1000;
+        } else if (isToday && profile?.water_intake) {
+            waterL = profile.water_intake / 1000;
         }
 
         if (mounted) {
             setGoals({
                 steps_current: activity?.steps || 0,
-                steps_target: 5000, // Matching dashboard target
+                steps_target: 5000, 
                 move_current: activity?.calories || 0,
-                move_target: profile?.calorie_goal || 500, // Matching dashboard target
+                move_target: profile?.calorie_goal || 500, 
                 sleep_current: parseFloat(sleepHrs.toFixed(1)),
-                sleep_target: 7, // Matching dashboard target
+                sleep_target: 7, 
                 water_current: parseFloat(waterL.toFixed(1)),
-                water_target: 2 // Matching dashboard target
+                water_target: 2 
             });
         }
       } catch (err) {
@@ -101,7 +100,7 @@ const Goals = () => {
           user_id: user.id, date: date, water_ml: Math.round(goals.water_current * 1000)
       }, { onConflict: 'user_id,date' });
 
-      // If updating today's data, also push it to the main profile to immediately update the Dashboard preview
+      // If updating today's data, also push it to the main profile
       if (isToday) {
           await supabase.from('profiles').update({
               sleep_seconds: Math.round(goals.sleep_current * 3600),
@@ -170,12 +169,10 @@ const Goals = () => {
               </div>
           ) : (
               <>
-                  {/* Bottom Text: Black (Shows over the empty white bar) */}
                   <div className="progress-text-overlay text-black">
                       <span>{current} / {target} {item.unit}</span>
                   </div>
                   
-                  {/* Top Text: Pure White (Clipped perfectly to match the colored bar's width!) */}
                   <div className="progress-text-overlay text-white" style={{ clipPath: `inset(0 ${100 - pct}% 0 0)` }}>
                       <span>{current} / {target} {item.unit}</span>
                   </div>
@@ -209,7 +206,6 @@ const Goals = () => {
                  <button onClick={() => navigate('/dashboard')} className="icon-btn"><FiArrowLeft size={24} /></button>
                  <h2>{date === new Date().toISOString().split('T')[0] ? 'Today' : new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short'})}</h2>
                  
-                 {/* Fixed invisible native calendar picker */}
                  <div className="date-picker-wrapper" style={{position: 'relative'}}>
                      <button className="icon-btn" onClick={() => document.getElementById('goalsDatePicker').showPicker()} style={{width: 40, height: 40, border: 'none', background: 'transparent', cursor: 'pointer'}}>
                         <FiCalendar size={20} />
