@@ -198,11 +198,14 @@ const Sharing = () => {
     fetchFriends();
   };
 
-  // 🌟 FIXED: Robust Remove Friend Logic
+  // 🌟 FIXED: Added Error catching and UI fallback
   const handleRemoveFriend = async (friendId) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!window.confirm("Remove this friend and stop data sharing?")) return;
     
+    // Store backup in case the database rejects the delete
+    const backupFriends = [...myFriends];
+
     try {
         // 1. Optimistically remove from UI instantly
         setMyFriends(prev => prev.filter(f => f.id !== friendId));
@@ -211,24 +214,26 @@ const Sharing = () => {
         const { error: err1 } = await supabase
             .from('friend_requests')
             .delete()
-            .eq('sender_id', user.id)
-            .eq('receiver_id', friendId);
-
-        if (err1) console.error("Error deleting (sender):", err1.message);
+            .match({ sender_id: user.id, receiver_id: friendId });
 
         const { error: err2 } = await supabase
             .from('friend_requests')
             .delete()
-            .eq('sender_id', friendId)
-            .eq('receiver_id', user.id);
+            .match({ sender_id: friendId, receiver_id: user.id });
 
-        if (err2) console.error("Error deleting (receiver):", err2.message);
+        if (err1 || err2) {
+            console.error("Database deletion error:", err1 || err2);
+            alert("Unable to remove friend. Please check your Supabase permissions.");
+            setMyFriends(backupFriends); // Put the friend back on screen
+            return;
+        }
 
         // 3. Re-fetch to ensure perfect sync
         fetchFriends();
 
     } catch (err) {
         console.error("Failed to execute remove friend:", err);
+        setMyFriends(backupFriends); // Put the friend back on screen
     }
   };
 
