@@ -133,7 +133,6 @@ const Sharing = () => {
     return days;
   };
 
-  // 🌟 FIXED: Logic to dynamically calculate the friend's award status matching Awards.js
   const handleViewFriend = async (friend) => {
     setViewingFriend(friend);
     setFriendLoading(true);
@@ -148,7 +147,6 @@ const Sharing = () => {
       const { data: activity } = await supabase.from('activity_logs').select('*').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
       const { data: waterLog } = await supabase.from('water_logs').select('water_ml').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
       
-      // Fetch entire year to calculate weekly progress AND the monthly award
       const { data: allLogs } = await supabase
         .from('activity_logs')
         .select('date, calories, steps')
@@ -197,7 +195,7 @@ const Sharing = () => {
         activity,
         healthScore: score,
         movePercent: Math.min(movePct, 100),
-        isAwardEarned: isEarned // 🌟 FIXED: Passed explicitly to state
+        isAwardEarned: isEarned 
       });
     } catch (err) {
       console.error(err);
@@ -305,11 +303,9 @@ const Sharing = () => {
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                      <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '550px' }}>
                          <FiRefreshCw size={40} color="#DE4B4E" className="icon-spin" style={{ marginBottom: '20px' }} />
-                         
                          <h3 style={{ color: 'var(--text-primary)', fontSize: '1.4rem', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>
                              Catching up with your friends score...
                          </h3>
-                         
                      </div>
                  </div>
               ) : (
@@ -338,18 +334,18 @@ const Sharing = () => {
                           </div>
                         </div>
                         <div className="dash-stats-list">
-                          {/* 🌟 FIXED: Adjusted sizing hierarchy for the stats text */}
+                          {/* 🌟 FIXED: Added whiteSpace: 'nowrap' to ensure values and units stay firmly on the same line */}
                           <div className="dash-stat-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '15px' }}>
-                            <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)' }}>{t('move') || 'Move'}</span>
-                            <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)' }}>{friendStats?.activity?.calories || 0}/{friendStats?.profile?.calorie_goal || 500} KCAL</span>
+                            <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{t('move') || 'Move'}</span>
+                            <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>{friendStats?.activity?.calories || 0}/{friendStats?.profile?.calorie_goal || 500} KCAL</span>
                           </div>
                           <div className="dash-stat-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '15px' }}>
-                            <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)' }}>{t('step_count') || 'Step Count'}</span>
-                            <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)' }}>{friendStats?.activity?.steps || 0}</span>
+                            <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{t('step_count') || 'Step Count'}</span>
+                            <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>{friendStats?.activity?.steps || 0}</span>
                           </div>
                           <div className="dash-stat-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '15px' }}>
-                            <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)' }}>{t('distance') || 'Distance'}</span>
-                            <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)' }}>{((friendStats?.activity?.steps || 0) * 0.0008).toFixed(2)} KM</span>
+                            <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{t('distance') || 'Distance'}</span>
+                            <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>{((friendStats?.activity?.steps || 0) * 0.0008).toFixed(2)} KM</span>
                           </div>
                         </div>
                       </div>
@@ -469,7 +465,6 @@ const Sharing = () => {
                          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: '10px', whiteSpace: 'nowrap' }}>
                              Syncing your friends' latest scores
                          </p>
-                         
                      </div>
                  </div>
               ) : (
