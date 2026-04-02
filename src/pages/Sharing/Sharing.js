@@ -96,13 +96,23 @@ const Sharing = () => {
 
       const { data: profiles } = await supabase.from('profiles').select('*').in('id', allIds);
       const { data: activities } = await supabase.from('activity_logs').select('*').in('user_id', allIds).eq('date', todayStr);
+      // 🌟 FIXED: Fetch Water Logs for Leaderboard
+      const { data: waterLogs } = await supabase.from('water_logs').select('*').in('user_id', allIds).eq('date', todayStr);
 
       const networkWithScores = profiles.map(profile => {
         const activity = activities?.find(a => a.user_id === profile.id);
+        const waterLog = waterLogs?.find(w => w.user_id === profile.id);
+
+        // 🌟 FIXED: Merge water data into profile object to pass to score calculator
+        const profileWithWater = {
+            ...profile,
+            water_intake: waterLog?.water_ml || profile.water_intake || 0
+        };
+
         return {
-          ...profile,
+          ...profileWithWater,
           isMe: profile.id === authUser.id,
-          score: calculateUserScore(profile, activity)
+          score: calculateUserScore(profileWithWater, activity)
         };
       });
 
@@ -136,6 +146,8 @@ const Sharing = () => {
 
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', friend.id).single();
       const { data: activity } = await supabase.from('activity_logs').select('*').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
+      // 🌟 FIXED: Fetch Water Log for Detailed Friend View
+      const { data: waterLog } = await supabase.from('water_logs').select('water_ml').eq('user_id', friend.id).eq('date', todayStr).maybeSingle();
       const { data: earnedAwards } = await supabase.from('user_awards').select('*').eq('user_id', friend.id);
       const { data: weeklyLogs } = await supabase
         .from('activity_logs')
@@ -144,8 +156,14 @@ const Sharing = () => {
         .gte('date', lastWeekStr)
         .order('date', { ascending: true });
 
-      const score = calculateUserScore(profile, activity);
-      const goal = profile?.calorie_goal > 0 ? profile.calorie_goal : 500;
+      // 🌟 FIXED: Inject the water_logs data directly into the profile object so the UI renders it
+      const profileWithWater = {
+          ...profile,
+          water_intake: waterLog?.water_ml || profile?.water_intake || 0
+      };
+
+      const score = calculateUserScore(profileWithWater, activity);
+      const goal = profileWithWater?.calorie_goal > 0 ? profileWithWater.calorie_goal : 500;
       const movePct = ((activity?.calories || 0) / goal) * 100;
 
       const last7Days = getLast7Days();
@@ -158,7 +176,7 @@ const Sharing = () => {
 
       setFriendWeeklyData(processedWeekly);
       setFriendStats({
-        profile,
+        profile: profileWithWater, // 🌟 FIXED
         activity,
         healthScore: score,
         movePercent: Math.min(movePct, 100),
@@ -187,8 +205,11 @@ const Sharing = () => {
   const handleRemoveFriend = async (friendId) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!window.confirm("Remove this friend and stop data sharing?")) return;
-    await supabase.from('friend_requests').delete()
-      .or(`and(sender_id.eq.${user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${user.id})`);
+    
+    // 🌟 FIXED: Perform two explicit deletes to bypass any tricky PostgREST .or() syntax issues
+    await supabase.from('friend_requests').delete().match({ sender_id: user.id, receiver_id: friendId });
+    await supabase.from('friend_requests').delete().match({ sender_id: friendId, receiver_id: user.id });
+    
     fetchFriends();
   };
 
@@ -243,7 +264,6 @@ const Sharing = () => {
               </header>
 
               {friendLoading ? (
-                /* 🌟 THEME FIX: Removed hardcoded colors, relying on CSS vars */
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                      <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '550px' }}>
                          <FiRefreshCw size={40} color="#DE4B4E" className="icon-spin" style={{ marginBottom: '20px' }} />
@@ -401,9 +421,7 @@ const Sharing = () => {
                   </div>
               </div>
 
-              {/* 🌟 NEW: Show Loading Card OR the Leaderboard */}
               {isLeaderboardLoading ? (
-                 /* 🌟 THEME FIX: Removed hardcoded colors */
                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                      <div className="glass-card" style={{ padding: '40px', textAlign: 'center', width: '100%', maxWidth: '700px' }}>                         
                          <h3 style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: '800', marginBottom: '15px', whiteSpace: 'nowrap' }}>
