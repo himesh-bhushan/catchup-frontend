@@ -182,7 +182,7 @@ const Awards = () => {
 
           navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
           
-          alert("🎉 Award badge downloaded & caption copied to clipboard!\n\nYou can now attach the image and paste the text to share on social media.");
+          alert("Award badge downloaded!\n\nYou can now attach the image and paste the text to share on social media.");
           return;
       }
 
@@ -203,7 +203,7 @@ const Awards = () => {
   const handleMainShare = async () => {
     const shareData = {
       title: 'Monthly Mover Award!',
-      text: `I just unlocked the '${currentMonthName} Mover' badge on CatchUp for completing my activity ring! 🍅💪 Catch up with me!`,
+      text: `I just unlocked the '${currentMonthName} Mover' badge on CatchUp for completing my activity ring! Catch up with me!`,
       url: 'https://catchup.page',
     };
     triggerShare(shareData, awardsBadge);
