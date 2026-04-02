@@ -334,7 +334,6 @@ const Sharing = () => {
                           </div>
                         </div>
                         <div className="dash-stats-list">
-                          {/* 🌟 FIXED: Added whiteSpace: 'nowrap' to ensure values and units stay firmly on the same line */}
                           <div className="dash-stat-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '15px' }}>
                             <span className="stat-lbl" style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{t('move') || 'Move'}</span>
                             <span className="stat-val" style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>{friendStats?.activity?.calories || 0}/{friendStats?.profile?.calorie_goal || 500} KCAL</span>
@@ -426,14 +425,6 @@ const Sharing = () => {
                                 alt="Award Badge" 
                                 className={`award-badge-status ${isAwardEarned ? 'earned-color' : 'not-earned-gray'}`} 
                             />
-                            
-                            {isAwardEarned && (
-                                <button 
-                                    onClick={handleShare}
-                                    className="award-share-btn">
-                                    <FiShare2 size={16} /> {t('share')}
-                                </button>
-                            )}
                         </div>
                     </div>
 
