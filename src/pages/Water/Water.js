@@ -114,28 +114,113 @@ const Water = () => {
 
   const renderChart = () => {
     const width = 1000; const height = 250; const padding = 50; 
-    // 🌟 CHANGED SVG FILL COLORS TO CSS VARIABLES
-    if (logs.length < 1) return (<div className="no-data-container"><FiDroplet size={40} color="var(--text-secondary)" /><p>No water history found for this period.</p></div>);
+    
+    if (logs.length < 1) {
+      return (
+        <div className="no-data-container">
+          <FiDroplet size={40} color="var(--text-secondary)" />
+          <p>No water history found for this period.</p>
+        </div>
+      );
+    }
 
+    // 🌟 1. DEFINE THE TIMELINE SCALE BASED ON SELECTED RANGE
+    const endDate = new Date(selectedDate);
+    endDate.setHours(23, 59, 59, 999);
+    const endMs = endDate.getTime();
+    
+    let startMs = endMs;
+    let xLabels = [];
+
+    if (range === 'Day') {
+      const startDate = new Date(selectedDate); startDate.setHours(0, 0, 0, 0);
+      startMs = startDate.getTime();
+      xLabels = [
+        { label: '12 AM', ms: startDate.setHours(0, 0, 0, 0) },
+        { label: '6 AM', ms: startDate.setHours(6, 0, 0, 0) },
+        { label: '12 PM', ms: startDate.setHours(12, 0, 0, 0) },
+        { label: '6 PM', ms: startDate.setHours(18, 0, 0, 0) },
+        { label: '11 PM', ms: startDate.setHours(23, 59, 59, 999) }
+      ];
+    } else if (range === 'Week') {
+      const startDate = new Date(selectedDate); startDate.setDate(startDate.getDate() - 6); startDate.setHours(0, 0, 0, 0);
+      startMs = startDate.getTime();
+      for (let i = 0; i <= 6; i++) {
+        const d = new Date(startDate); d.setDate(d.getDate() + i);
+        xLabels.push({ label: d.toLocaleDateString('en-US', { weekday: 'short' }), ms: d.getTime() });
+      }
+    } else if (range === 'Month') {
+      const startDate = new Date(selectedDate); startDate.setDate(startDate.getDate() - 29); startDate.setHours(0, 0, 0, 0);
+      startMs = startDate.getTime();
+      // Plot week markers (every 7 days)
+      for (let i = 0; i <= 4; i++) {
+        const d = new Date(startDate); d.setDate(d.getDate() + i * 7);
+        if (d.getTime() > endMs) d.setTime(endMs);
+        xLabels.push({ label: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), ms: d.getTime() });
+      }
+    } else if (range === 'Year') {
+      const startDate = new Date(selectedDate); startDate.setMonth(startDate.getMonth() - 11); startDate.setDate(1); startDate.setHours(0, 0, 0, 0);
+      startMs = startDate.getTime();
+      // Plot exactly 12 month markers
+      for (let i = 0; i <= 11; i++) {
+        const d = new Date(startDate); d.setMonth(d.getMonth() + i);
+        xLabels.push({ label: d.toLocaleDateString('en-US', { month: 'short' }), ms: d.getTime() });
+      }
+    }
+
+    // 🌟 2. MATH FUNCTIONS TO PLOT DOTS PRECISELY ON THE TIMELINE
     const minVal = 0; const maxVal = 5; 
     const getY = (val) => height - ((val - minVal) / (maxVal - minVal)) * height;
-    const getX = (index) => (index / (Math.max(logs.length - 1, 1))) * (width - padding);
-    const points = logs.map((log, i) => `${getX(i)},${getY(log.liters)}`).join(' ');
+    
+    const getX = (timestamp) => {
+      if (startMs === endMs) return padding / 2; // Failsafe
+      return ((timestamp - startMs) / (endMs - startMs)) * (width - padding);
+    };
+
+    const getLogTime = (log) => {
+      const d = new Date(log.date);
+      // Places daily logs exactly at noon for visual centering on the timeline
+      d.setHours(12, 0, 0, 0);
+      return d.getTime();
+    };
+
+    const points = logs.map((log) => `${getX(getLogTime(log))},${getY(log.liters)}`).join(' ');
 
     return (
       <svg viewBox={`-10 -20 ${width + 60} ${height + 60}`} className="water-chart-svg">
+        
+        {/* Y-Axis Grid Lines */}
         {[1, 2, 3, 4, 5].map(val => (
            <g key={val}>
              <line x1="0" y1={getY(val)} x2={width} y2={getY(val)} stroke="var(--border-color)" strokeWidth="1" />
              <text x={width + 15} y={getY(val) + 5} fontSize="14" fill="var(--text-secondary)" fontFamily="Poppins">{val}L</text>
            </g>
         ))}
-        {logs.length > 1 && <polyline points={points} fill="none" stroke="#4A90E2" strokeWidth="4" strokeLinecap="round" />}
-        {logs.map((log, i) => <circle key={i} cx={getX(i)} cy={getY(log.liters)} r="7" fill="#4A90E2" stroke="var(--card-bg)" strokeWidth="3" />)}
-        {logs.map((log, i) => (
-          <text key={i} x={getX(i)} y={height + 35} fontSize="14" fill="var(--text-secondary)" textAnchor="middle" fontFamily="Poppins">
-            {new Date(log.date).toLocaleDateString('en-US', { weekday: 'short' })}
+
+        {/* Dynamic X-Axis Timeline Labels */}
+        {xLabels.map((lbl, i) => (
+          <text key={i} x={getX(lbl.ms)} y={height + 35} fontSize="14" fill="var(--text-secondary)" textAnchor="middle" fontFamily="Poppins">
+            {lbl.label}
           </text>
+        ))}
+
+        {/* Connect the dots */}
+        {logs.length > 1 && (
+            <polyline points={points} fill="none" stroke="#4A90E2" strokeWidth="4" strokeLinecap="round" />
+        )}
+
+        {/* Render Dots (Shrinks dots automatically if displaying a full Year) */}
+        {logs.map((log, i) => (
+          <g key={i}>
+            <circle 
+              cx={getX(getLogTime(log))} 
+              cy={getY(log.liters)} 
+              r={range === 'Year' ? "3" : "7"} 
+              fill="#4A90E2" 
+              stroke="var(--card-bg)" 
+              strokeWidth={range === 'Year' ? "1" : "3"} 
+            />
+          </g>
         ))}
       </svg>
     );
@@ -185,7 +270,6 @@ const Water = () => {
           </div>
 
           <div className="chart-container">
-             {/* 🌟 CHANGED LOADING TEXT TO VARIABLE */}
              {loading ? <div className="loader-box" style={{color: 'var(--text-secondary)'}}>Loading...</div> : renderChart()}
           </div>
 
