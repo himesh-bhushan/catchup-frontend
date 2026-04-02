@@ -146,39 +146,59 @@ const Awards = () => {
     fetchAwardsData();
   }, [fetchAwardsData]);
 
-  // --- 🌟 FIXED: ADVANCED NATIVE SOCIAL SHARING WITH IMAGES ---
-  
+  // --- 🌟 FIXED: BULLETPROOF SHARING LOGIC ---
   const triggerShare = async (shareData, imageSrc) => {
     try {
-      if (navigator.share) {
-        // Try to attach the image file if the browser supports it
-        if (imageSrc) {
-          try {
-            const response = await fetch(imageSrc);
-            const blob = await response.blob();
-            const file = new File([blob], 'award.png', { type: blob.type });
+      let fileShared = false;
 
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-              await navigator.share({
-                title: shareData.title,
-                text: shareData.text,
-                url: shareData.url,
-                files: [file] // 🌟 This attaches the actual image to WhatsApp/Instagram/etc!
-              });
-              return; // Exit if successful
-            }
-          } catch (imgErr) {
-            console.warn("Could not attach image to share, falling back to text only.", imgErr);
+      // 1. Try native file sharing (Works mostly on mobile iOS/Android)
+      if (navigator.share && imageSrc) {
+        try {
+          const response = await fetch(imageSrc);
+          const blob = await response.blob();
+          const file = new File([blob], 'award.png', { type: blob.type || 'image/png' });
+
+          // Check if the browser actually allows file sharing
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: shareData.title,
+              text: shareData.text,
+              url: shareData.url,
+              files: [file]
+            });
+            fileShared = true;
+            return; // Success!
           }
+        } catch (imgErr) {
+          console.warn("Could not attach image to native share.", imgErr);
         }
-        
-        // Fallback: Share text and URL only if image fails or isn't supported
-        await navigator.share(shareData);
-      } else {
-        // Ultimate Fallback: Desktop browsers without native share
-        navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        alert("Award text copied to clipboard! Paste it on social media to share.");
       }
+
+      // 2. 🌟 FALLBACK: If device blocks native image sharing (e.g., Desktop Chrome/Safari)
+      if (!fileShared && imageSrc) {
+          // Force download the image
+          const link = document.createElement('a');
+          link.href = imageSrc;
+          link.download = 'CatchUp_Award.png';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // Copy caption to clipboard
+          navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+          
+          alert("🎉 Award badge downloaded & caption copied to clipboard!\n\nYou can now attach the image and paste the text to share on social media.");
+          return;
+      }
+
+      // 3. Ultimate Fallback (Text only, no image available)
+      if (navigator.share) {
+          await navigator.share(shareData);
+      } else {
+          navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+          alert("Award text copied to clipboard!");
+      }
+
     } catch (err) {
       if (err.name !== 'AbortError') {
         console.error('Error sharing:', err);
@@ -192,7 +212,6 @@ const Awards = () => {
       text: `I just unlocked the '${currentMonthName} Mover' badge on CatchUp for completing my activity ring! 🍅💪 Catch up with me!`,
       url: 'https://catchup.page',
     };
-    // 🌟 Pass the actual image asset to the share function
     triggerShare(shareData, awardsBadge);
   };
 
@@ -202,7 +221,6 @@ const Awards = () => {
       text: `I just unlocked the '${award.title}' badge on CatchUp! 🏆 Come join me and let's get healthy together!`,
       url: 'https://catchup.page',
     };
-    // 🌟 Pass the specific award image asset
     triggerShare(shareData, award.image);
   };
 
